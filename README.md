@@ -35,6 +35,8 @@ Diese Anwendung ermöglicht die Verwaltung von Immobilien und deren Mietern.
 - [Mockups](#mockups)
 - [Database](#database)
 
+<a id="frameworks"></a>
+
 ## Frameworks
 
 - **Java 21**
@@ -104,59 +106,79 @@ Diese Anwendung ermöglicht die Verwaltung von Immobilien und deren Mietern.
 
 #### Schritt 1: Definition des Projektumfangs und der Anforderungen
 
-- [x] **Anforderungen sammeln**: Zusammenarbeit mit Stakeholdern (Immobilienverwalter, Makler usw.), um detaillierte funktionale und nicht-funktionale Anforderungen zu definieren.
-- [x] **Projektumfang definieren**: Den Projektumfang klar abgrenzen, um Feature-Creep zu vermeiden und sicherzustellen, dass alle Beteiligten die gleichen Erwartungen haben.
+- [x] **Anforderungen sammeln**: Zusammenarbeit mit Stakeholdern (Immobilienverwalter, Makler usw.), um detaillierte
+      funktionale und nicht-funktionale Anforderungen zu definieren.
+- [x] **Projektumfang definieren**: Den Projektumfang klar abgrenzen, um Feature-Creep zu vermeiden und sicherzustellen,
+      dass alle Beteiligten die gleichen Erwartungen haben.
 
 #### Schritt 2: Entwicklungsumgebung einrichten
 
-- [x] **Werkzeuge installieren**: Sicherstellen, dass alle Entwickler Java, IDE (wie IntelliJ IDEA oder Eclipse) und notwendige Plugins/Tools (für Vaadin, Spring usw.) installiert haben.
-- [x] **Versionskontrolle einrichten**: Ein Git-Repository initialisieren und Strategien für das Branch-Management definieren (z.B. Git Flow).
+- [x] **Werkzeuge installieren**: Sicherstellen, dass alle Entwickler Java, IDE (wie IntelliJ IDEA oder Eclipse) und
+      notwendige Plugins/Tools (für Vaadin, Spring usw.) installiert haben.
+- [x] **Versionskontrolle einrichten**: Ein Git-Repository initialisieren und Strategien für das Branch-Management
+      definieren (z.B. Git Flow).
 
 #### Schritt 3: Systemarchitektur entwerfen
 
-- [ ] **Architektur definieren**: Entscheidung über die Anwendungsarchitektur (z.B. geschichtete Architektur, Microservices) basierend auf den Projektanforderungen.
-- [x] **Technologiestapel wählen**: Auswahl für Backend, Frontend, Datenbank und andere Dienste wie Nachrichtenbroker oder externe APIs bestätigen.
+- [ ] **Architektur definieren**: Entscheidung über die Anwendungsarchitektur (z.B. geschichtete Architektur,
+      Microservices) basierend auf den Projektanforderungen.
+- [x] **Technologiestapel wählen**: Auswahl für Backend, Frontend, Datenbank und andere Dienste wie Nachrichtenbroker
+      oder externe APIs bestätigen.
 
 #### Schritt 4: Beginnen mit dem Datenmodell
 
-- [x] **Entity-Definition**: Definition von Entity-Klassen, die Geschäftsobjekte wie `Eigentum`, `Mieter` und `Mietvertrag` widerspiegeln.
-- [x] **Beziehungsmapping**: Kartierung der Beziehungen zwischen Entitäten (z.B. eins-zu-viele zwischen `Eigentum` und `Mietvertrag`).
+- [x] **Entity-Definition**: Definition von Entity-Klassen, die Geschäftsobjekte wie `Eigentum`, `Mieter`
+      und `Mietvertrag` widerspiegeln.
+- [x] **Beziehungsmapping**: Kartierung der Beziehungen zwischen Entitäten (z.B. eins-zu-viele zwischen `Eigentum`
+      und `Mietvertrag`).
 
 #### Schritt 5: Repositories einrichten
 
-- [ ] **Repository-Schnittstellen erstellen**: Entwicklung von Schnittstellen für Ihre Repositories mit Spring Data JPA, um alle Datenbankoperationen zu abstrahieren und zu kapseln.
-- [ ] **Benutzerdefinierte Abfragen definieren**: Bei Bedarf benutzerdefinierte Abfragen mit den Abfragemethoden von Spring Data JPA oder der Annotation @Query definieren.
+- [ ] **Repository-Schnittstellen erstellen**: Entwicklung von Schnittstellen für Ihre Repositories mit Spring Data JPA,
+      um alle Datenbankoperationen zu abstrahieren und zu kapseln.
+- [ ] **Benutzerdefinierte Abfragen definieren**: Bei Bedarf benutzerdefinierte Abfragen mit den Abfragemethoden von
+      Spring Data JPA oder der Annotation @Query definieren.
 
 #### Schritt 6: Geschäftslogik entwickeln (Service Layer)
 
-- [ ] **Service-Implementierung**: Entwicklung von Service-Klassen, die Geschäftslogik enthalten und mit Repositories interagieren, um Daten zu abzurufen und zu manipulieren.
-- [ ] **Service-API definieren**: Klar definieren, welche Geschäftsoperationen Ihre Service-Schicht anderen Teilen der Anwendung anbietet.
+- [ ] **Service-Implementierung**: Entwicklung von Service-Klassen, die Geschäftslogik enthalten und mit Repositories
+      interagieren, um Daten zu abzurufen und zu manipulieren.
+- [ ] **Service-API definieren**: Klar definieren, welche Geschäftsoperationen Ihre Service-Schicht anderen Teilen der
+      Anwendung anbietet.
 
 #### Schritt 7: Sicherheit implementieren
 
-- [ ] **Spring Security konfigurieren**: Einrichten von Authentifizierung (z.B. JWT, OAuth2) und Autorisierungsmechanismen, um Ihre Anwendung zu sichern.
-- [ ] **Benutzerrollen und Berechtigungen**: Definition unterschiedlicher Rollen (z.B. Admin, Benutzer, Verwalter) und Konfiguration von Zugriffskontrollen basierend auf diesen Rollen.
+- [ ] **Spring Security konfigurieren**: Einrichten von Authentifizierung (z.B. JWT, OAuth2) und
+      Autorisierungsmechanismen, um Ihre Anwendung zu sichern.
+- [ ] **Benutzerrollen und Berechtigungen**: Definition unterschiedlicher Rollen (z.B. Admin, Benutzer, Verwalter) und
+      Konfiguration von Zugriffskontrollen basierend auf diesen Rollen.
 
 #### Schritt 8: Vaadin-Ansichten erstellen
 
-- [ ] **UI-Design**: Skizzieren oder Prototypen des UI-Designs (Erwägung der Verwendung von Tools wie Figma oder Adobe XD für Mockups).
-- [ ] **Vaadin-Komponenten entwickeln**: Entwicklung responsiver UI-Komponenten mit Vaadin, die sicherstellen, dass sie mit den Backend-Services verbunden sind.
+- [ ] **UI-Design**: Skizzieren oder Prototypen des UI-Designs (Erwägung der Verwendung von Tools wie Figma oder Adobe
+      XD für Mockups).
+- [ ] **Vaadin-Komponenten entwickeln**: Entwicklung responsiver UI-Komponenten mit Vaadin, die sicherstellen, dass sie
+      mit den Backend-Services verbunden sind.
 
 #### Schritt 9: Testing
 
-- [ ] **Unit Testing**: Schreiben von Unit-Tests sowohl für das Backend (Services, Repositories) als auch für Frontend-Komponenten.
-- [ ] **Integrationstests**: Entwicklung von Integrationstests, die kritische Workflows und Interaktionen zwischen Komponenten abdecken.
+- [ ] **Unit Testing**: Schreiben von Unit-Tests sowohl für das Backend (Services, Repositories) als auch für
+      Frontend-Komponenten.
+- [ ] **Integrationstests**: Entwicklung von Integrationstests, die kritische Workflows und Interaktionen zwischen
+      Komponenten abdecken.
 
 #### Schritt 10: Bereitstellungsvorbereitung
 
 - [ ] **Dockerisierung**: Containerisierung Ihrer Anwendung mit Docker zur einfachen Bereitstellung und Skalierung.
-- [ ] **Continuous Integration einrichten**: Konfigurieren von CI-Pipelines (mit Jenkins, GitHub Actions usw.) für automatisiertes Testing und Deployment.
+- [ ] **Continuous Integration einrichten**: Konfigurieren von CI-Pipelines (mit Jenkins, GitHub Actions usw.) für
+      automatisiertes Testing und Deployment.
 
 #### Schritt 11: Start und iterative Verbesserung
 
 - [ ] **In Produktion gehen**: Verwenden eines Dienstes wie AWS, Azure oder DigitalOcean für die Bereitstellung.
 - [ ] **Überwachung und Optimierung**: Implementierung von Überwachungstools zur Leistungs- und Nutzungskontrolle.
-- [ ] **Feedback-Schleife**: Einrichten eines Prozesses zur Sammlung von Nutzerfeedback und zur kontinuierlichen Verbesserung der Anwendung basierend auf diesem Feedback.
+- [ ] **Feedback-Schleife**: Einrichten eines Prozesses zur Sammlung von Nutzerfeedback und zur kontinuierlichen
+      Verbesserung der Anwendung basierend auf diesem Feedback.
 
 <a id="mockups"></a>
 
@@ -201,52 +223,72 @@ Diese Anwendung ermöglicht die Verwaltung von Immobilien und deren Mietern.
 
 ```mermaid
 erDiagram
-    PROPERTY ||--o{ TENANT : "has"
-    PROPERTY {
-        string PropertyID PK
-        string Address
-        string PropertyType
-        int NumUnits
-        int TotalSquareMeters
-        int Floors
+    ADRESSE ||--|| EIGENTUM : "gehört zu"
+    ADRESSE {
+        string AdresseID PK
+        int Postleitzahl FK
+        string Strasse
+        string Hausnummer
     }
-    TENANT ||--o{ CONTRACT : "signs"
-    TENANT {
-        string TenantID PK
-        string PropertyID FK
+    STADT ||--|{ ADRESSE : "gehört zu"
+    STADT {
+        int Postleitzahl PK
+        string Stadt
+        string Land
+    }
+    EIGENTUM ||--o| MIETER : "hat"
+    EIGENTUM {
+        string EigentumID PK
+        string AdresseID FK
+        string Eigentumstyp
+        int AnzahlEinheiten
+        int GesamtQuadratmeter
+        int Etagen
+        int Baujahr
+        int AnzahlBaeder
+        int AnzahlSchlafzimmer
+        boolean Balkon
+        boolean Terrasse
+        boolean Garten
+        boolean Klimaanlage
+    }
+    MIETER ||--o| VERTRAG : "unterzeichnet"
+    MIETER {
+        string MieterID PK
+        string EigentumID FK
         string Name
-        string PhoneNumber
-        decimal Income
-        decimal Expenses
+        string Vorname
+        string Telefonnummer
+        decimal Einkommen
+        decimal Ausgaben
+        date Mietbeginn
+        date Mietende
+        decimal Kaution
+        int AnzahlBewohner
     }
-    CONTRACT ||--o{ DOCUMENT : "associated"
-    CONTRACT {
-        string ContractID PK
-        string TenantID FK
-        date StartDate
-        date EndDate
-        string ContractType
+    VERTRAG ||--|| DOKUMENT : "zugeordnet"
+    VERTRAG {
+        string VertragsID PK
+        string MieterID FK
+        date Startdatum
+        date Enddatum
+        string Vertragsart
     }
-    PROPERTY ||--o{ DOCUMENT : "contains"
-    DOCUMENT {
-        string DocumentID PK
-        string PropertyID FK
-        string TenantID FK
-        string ContractID FK
-        string DocumentType
-        string FilePath
+    EIGENTUM ||--o{ DOKUMENT : "enthält"
+    DOKUMENT {
+        string DokumentID PK
+        string EigentumID FK
+        string MieterID FK
+        string VertragsID FK
+        string Dokumenttyp
+        string Dateipfad
     }
-    PROPERTY ||--o{ UTILITY_READING : "records"
-    UTILITY_READING {
-        string ReadingID PK
-        string PropertyID FK
-        date ReadingDate
-        string MeterReading
-    }
-    DASHBOARD_METRICS {
-        int MetricID PK
-        int NumProperties
-        decimal TotalIncome
+    EIGENTUM ||--|{ ZAEHLERSTAND : "aufgezeichnet"
+    ZAEHLERSTAND {
+        string ZaehlerstandID PK
+        string EigentumID FK
+        date Ablesedatum
+        string Messwert
     }
 ```
 
