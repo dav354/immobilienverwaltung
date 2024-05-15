@@ -223,26 +223,25 @@ Diese Anwendung ermöglicht die Verwaltung von Immobilien und deren Mietern.
 
 ```mermaid
 erDiagram
-    ADRESSE ||--|| EIGENTUM : "gehört zu"
+    ADRESSE ||--|| WOHNUNG : "gehört zu"
     ADRESSE {
         string AdresseID PK
         int Postleitzahl FK
+        string Stadt
         string Strasse
         string Hausnummer
     }
-    STADT ||--|{ ADRESSE : "gehört zu"
-    STADT {
+    POSTLEITZAHL ||--|{ ADRESSE : "gehört zu"
+    POSTLEITZAHL {
         int Postleitzahl PK
         string Stadt
         string Land
     }
-    EIGENTUM ||--o| MIETER : "hat"
-    EIGENTUM {
-        string EigentumID PK
+    WOHNUNG ||--o| MIETER : "hat"
+    WOHNUNG {
+        string WohnungId PK
         string AdresseID FK
-        string Eigentumstyp
         int GesamtQuadratmeter
-        int Etagen
         int Baujahr
         int AnzahlBaeder
         int AnzahlSchlafzimmer
@@ -254,30 +253,29 @@ erDiagram
     MIETER ||--o| DOKUMENT : "unterzeichnet"
     MIETER {
         string MieterID PK
-        string EigentumID FK
+        string WohnungId FK
         string Name
         string Vorname
-        string Telefonnummer
-        decimal Einkommen
-        decimal Ausgaben
+        long Telefonnummer
+        int Einkommen
+        int Ausgaben
         date Mietbeginn
         date Mietende
-        decimal Kaution
+        int Kaution
         int AnzahlBewohner
     }
-    EIGENTUM ||--o{ DOKUMENT : "enthält"
+    WOHNUNG ||--o{ DOKUMENT : "enthält"
     DOKUMENT {
         string DokumentID PK
-        string EigentumID FK
+        string WohnungId FK
         string MieterID FK
-        string VertragsID FK
         string Dokumenttyp
         string Dateipfad
     }
-    EIGENTUM ||--|{ ZAEHLERSTAND : "aufgezeichnet"
+    WOHNUNG ||--|{ ZAEHLERSTAND : "aufgezeichnet"
     ZAEHLERSTAND {
         string ZaehlerstandID PK
-        string EigentumID FK
+        string WohnungId FK
         date Ablesedatum
         string Messwert
     }
