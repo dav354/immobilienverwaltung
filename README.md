@@ -3,7 +3,7 @@
 ![Java Version](https://img.shields.io/badge/java-v21-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
-<img src="assets/artwork.webp" width="60%"/>
+<img src="assets/artwork.webp" width="60%" alt="artwork"/>
 
 _Erstellt mit DALL-E_
 
@@ -20,7 +20,7 @@ Diese Anwendung ermöglicht die Verwaltung von Immobilien und deren Mietern.
 > Under heavy development
 
 <div style="text-align: center;">
-    <img src="assets/progproj.gif" width="30%"/>
+    <img src="assets/progproj.gif" width="30%" alt="project"/>
 </div>
 
 ## Inhaltsverzeichnis
@@ -42,7 +42,7 @@ Diese Anwendung ermöglicht die Verwaltung von Immobilien und deren Mietern.
 - **Java 21**
 - **Backend**: Spring Boot
   - **Komponenten**: Includes Spring Data JPA, Spring Web, and Spring Security.
-- **Database**: H2, MYSQL, PostgreSQL
+- **Database**: H2, PostgreSQL
   - H2 zur Entwicklung, fürs deployment wahlweise Postgres/MySQL
 - **Frontend**: Vaadin
   - **Details**: Enables the development of reactive user interfaces entirely in Java.
@@ -120,7 +120,7 @@ Diese Anwendung ermöglicht die Verwaltung von Immobilien und deren Mietern.
 
 #### Schritt 3: Systemarchitektur entwerfen
 
-- [ ] **Architektur definieren**: Entscheidung über die Anwendungsarchitektur (z.B. geschichtete Architektur,
+- [x] **Architektur definieren**: Entscheidung über die Anwendungsarchitektur (z.B. geschichtete Architektur,
       Microservices) basierend auf den Projektanforderungen.
 - [x] **Technologiestapel wählen**: Auswahl für Backend, Frontend, Datenbank und andere Dienste wie Nachrichtenbroker
       oder externe APIs bestätigen.
