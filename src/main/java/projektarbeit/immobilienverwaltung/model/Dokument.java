@@ -3,18 +3,22 @@ package projektarbeit.immobilienverwaltung.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "dokument")
+@Table(name = "dokument", indexes = {
+        @Index(name = "idx_dokument_eigentumId", columnList = "eigentumId"),
+        @Index(name = "idx_dokument_mieterId", columnList = "mieterId")
+})
+
 public class Dokument {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long dokumentId;
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "eigentumId", nullable = true)
     private Wohnung wohnung;
 
-    @OneToOne(optional = true, fetch = FetchType.LAZY)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "mieterId", nullable = true)
     private Mieter mieter;
 

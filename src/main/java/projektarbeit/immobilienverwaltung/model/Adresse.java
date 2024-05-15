@@ -6,16 +6,17 @@ import jakarta.validation.constraints.Min;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "adresse")
+@Table(name = "adresse", indexes = {
+        @Index(name = "idx_adresse_postleitzahl", columnList = "postleitzahl")
+})
+
 public class Adresse {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long adresseID;
 
-    @Min(11111)    // Postleitzahlen haben minestens 5 Ziffern
-    @Max(99999)
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "postleitzahl", nullable = false)
     private Postleitzahl postleitzahl;
 

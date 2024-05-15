@@ -7,7 +7,11 @@ import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
-@Table(name = "zaehlerstand")
+@Table(name = "zaehlerstand", indexes = {
+        @Index(name = "idx_zaehlerstand_eigentumID", columnList = "eigentumID"),
+        @Index(name = "idx_zaehlerstand_ablesedatum", columnList = "ablesedatum")
+})
+
 public class Zaehlerstand {
 
     @Id

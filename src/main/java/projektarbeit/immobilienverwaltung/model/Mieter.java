@@ -8,7 +8,11 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.PastOrPresent;
 
 @Entity
-@Table(name = "mieter")
+@Table(name = "mieter", indexes = {
+        @Index(name = "idx_mieter_wohnungId", columnList = "wohnungId"),
+        @Index(name = "idx_mieter_mietperiode", columnList = "mietbeginn, mietende")
+})
+
 public class Mieter {
 
     @Id
@@ -27,7 +31,7 @@ public class Mieter {
 
     @Column(nullable = false)
     @Min(value = 6)
-    private long telefonnummer;
+    private String telefonnummer; // can start with 0 or +
 
     @Column(nullable = false)
     @Min(value = 0, message = "Einkommen cannot be negative")
@@ -75,7 +79,7 @@ public class Mieter {
                   Wohnung wohnung,
                   String name,
                   String vorname,
-                  long telefonnummer,
+                  String telefonnummer,
                   int einkommen,
                   int ausgaben,
                   Date mietbeginn,
@@ -127,11 +131,11 @@ public class Mieter {
         this.vorname = vorname;
     }
 
-    public long getTelefonnummer() {
+    public String  getTelefonnummer() {
         return telefonnummer;
     }
 
-    public void setTelefonnummer(long telefonnummer) {
+    public void setTelefonnummer(String telefonnummer) {
         this.telefonnummer = telefonnummer;
     }
 

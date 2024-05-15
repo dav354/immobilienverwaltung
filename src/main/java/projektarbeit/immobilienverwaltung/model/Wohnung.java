@@ -7,7 +7,11 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "eigentum")
+@Table(name = "eigentum", indexes = {
+        @Index(name = "idx_eigentum_adresse", columnList = "address_id"),
+        @Index(name = "idx_eigentum_baujahr", columnList = "baujahr")
+})
+
 public class Wohnung {
 
     @Id
