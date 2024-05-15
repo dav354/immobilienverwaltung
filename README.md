@@ -241,7 +241,6 @@ erDiagram
         string EigentumID PK
         string AdresseID FK
         string Eigentumstyp
-        int AnzahlEinheiten
         int GesamtQuadratmeter
         int Etagen
         int Baujahr
@@ -252,7 +251,7 @@ erDiagram
         boolean Garten
         boolean Klimaanlage
     }
-    MIETER ||--o| VERTRAG : "unterzeichnet"
+    MIETER ||--o| DOKUMENT : "unterzeichnet"
     MIETER {
         string MieterID PK
         string EigentumID FK
@@ -265,14 +264,6 @@ erDiagram
         date Mietende
         decimal Kaution
         int AnzahlBewohner
-    }
-    VERTRAG ||--|| DOKUMENT : "zugeordnet"
-    VERTRAG {
-        string VertragsID PK
-        string MieterID FK
-        date Startdatum
-        date Enddatum
-        string Vertragsart
     }
     EIGENTUM ||--o{ DOKUMENT : "enthält"
     DOKUMENT {
