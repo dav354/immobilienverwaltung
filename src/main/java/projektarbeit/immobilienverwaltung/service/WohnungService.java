@@ -1,37 +1,36 @@
 package projektarbeit.immobilienverwaltung.service;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
-import projektarbeit.immobilienverwaltung.repository.EigentumRepository;
+import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class EigentumService {
+public class WohnungService {
 
     @Autowired
-    private EigentumRepository eigentumRepository;
+    private WohnungRepository wohnungRepository;
 
-    // Methode zum Speichern und Aktualisieren von Eigentum
-    public Wohnung saveOrUpdateEigentum(Wohnung wohnung) {
-        return eigentumRepository.save(wohnung);
+    // Save or update an Objekt
+    public Wohnung saveOrUpdateObjekt(Wohnung objekt) {
+        return wohnungRepository.save(objekt);
     }
 
-    // Methode zum Abrufen aller Eigentum-Objekte
-    public List<Wohnung> findAllEigentum() {
-        return eigentumRepository.findAll();
+    // Get all Objekts
+    public List<Wohnung> findAllObjekts() {
+        return wohnungRepository.findAll();
     }
 
-    // Methode zum Abrufen eines Eigentum-Objekts nach ID
-    public Wohnung findEigentumById(Long id) {
-        Optional<Wohnung> result = eigentumRepository.findById(id);
-        return result.orElse(null);
+    // Get an Objekt by id
+    public Wohnung getObjektById(Long id) {
+        Optional<Wohnung> objekt = wohnungRepository.findById(id);
+        return objekt.orElse(null);
     }
 
-    // Methode zum Löschen eines Eigentum-Objekts nach ID
-    public void deleteEigentum(Long id) {
-        eigentumRepository.deleteById(id);
+    // Delete an Objekt
+    public void deleteObjekt(Long id) {
+        wohnungRepository.deleteById(id);
     }
 }
