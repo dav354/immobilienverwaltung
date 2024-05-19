@@ -1,36 +1,55 @@
 package projektarbeit.immobilienverwaltung.service;
-import projektarbeit.immobilienverwaltung.model.Wohnung;
-import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import projektarbeit.immobilienverwaltung.model.Dokument;
+import projektarbeit.immobilienverwaltung.model.Mieter;
+import projektarbeit.immobilienverwaltung.model.Wohnung;
+import projektarbeit.immobilienverwaltung.repository.DokumentRepository;
+import projektarbeit.immobilienverwaltung.repository.MieterRepository;
+import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class WohnungService {
 
-    @Autowired
-    private WohnungRepository wohnungRepository;
+    private final WohnungRepository wohnungRepository;
+    private final DokumentRepository dokumentRepository;
+    private final MieterRepository mieterRepository;
+    private final DokumentService dokumentService;
 
-    // Save or update an Objekt
-    public Wohnung saveOrUpdateObjekt(Wohnung objekt) {
-        return wohnungRepository.save(objekt);
+    @Autowired
+    public WohnungService(WohnungRepository wohnungRepository, DokumentRepository dokumentRepository, MieterRepository mieterRepository, DokumentService dokumentService) {
+        this.wohnungRepository = wohnungRepository;
+        this.dokumentRepository = dokumentRepository;
+        this.mieterRepository = mieterRepository;
+        this.dokumentService = dokumentService;
     }
 
-    // Get all Objekts
-    public List<Wohnung> findAllObjekts() {
+    public List<Wohnung> findAllWohnungen() {
         return wohnungRepository.findAll();
     }
 
-    // Get an Objekt by id
-    public Wohnung getObjektById(Long id) {
-        Optional<Wohnung> objekt = wohnungRepository.findById(id);
-        return objekt.orElse(null);
+    public Wohnung save(Wohnung wohnung) {
+        return wohnungRepository.save(wohnung);
     }
 
-    // Delete an Objekt
-    public void deleteObjekt(Long id) {
-        wohnungRepository.deleteById(id);
+    @Transactional
+    public void delete(Wohnung wohnung) {
+        dokumentService.deleteDokumenteByWohnung(wohnung);
+
+        List<Mieter> mieter = mieterRepository.findByWohnung(wohnung);
+        for (Mieter m : mieter) {
+            m.setWohnung(null);
+            mieterRepository.save(m); // Save the updated Mieter with null Wohnung reference
+        }
+
+        wohnungRepository.delete(wohnung);
+    }
+
+    public List<Dokument> findDokumenteByWohnung(Wohnung wohnung) {
+        return dokumentRepository.findByWohnung(wohnung);
     }
 }

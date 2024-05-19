@@ -6,13 +6,16 @@ import projektarbeit.immobilienverwaltung.model.Postleitzahl;
 import projektarbeit.immobilienverwaltung.repository.PostleitzahlRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PostleitzahlService {
 
+    private final PostleitzahlRepository postleitzahlRepository;
+
     @Autowired
-    private PostleitzahlRepository postleitzahlRepository;
+    public PostleitzahlService(PostleitzahlRepository repository) {
+        this.postleitzahlRepository = repository;
+    }
 
     // Save or update a Postleitzahl
     public Postleitzahl saveOrUpdatePostleitzahl(Postleitzahl postleitzahl) {
@@ -25,12 +28,12 @@ public class PostleitzahlService {
     }
 
     // Retrieve a single Postleitzahl by ID
-    public Postleitzahl getPostleitzahlById(int id) {
+    public Postleitzahl getPostleitzahlById(String id) {
         return postleitzahlRepository.findById(id).orElse(null);
     }
 
     // Delete a Postleitzahl by ID
-    public void deletePostleitzahl(int id) {
+    public void deletePostleitzahl(String id) {
         postleitzahlRepository.deleteById(id);
     }
 }

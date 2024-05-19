@@ -6,13 +6,16 @@ import projektarbeit.immobilienverwaltung.model.Zaehlerstand;
 import projektarbeit.immobilienverwaltung.repository.ZaehlerstandRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
-public class ZaehlerService {
+public class ZaehlerstandService {
+
+    private final ZaehlerstandRepository zaehlerstandRepository;
 
     @Autowired
-    private ZaehlerstandRepository zaehlerstandRepository;
+    public ZaehlerstandService(ZaehlerstandRepository zaehlerstandRepository) {
+        this.zaehlerstandRepository = zaehlerstandRepository;
+    }
 
     // Save or update a Zaehlerstand
     public Zaehlerstand saveOrUpdateZaehlerstand(Zaehlerstand zaehlerstand) {

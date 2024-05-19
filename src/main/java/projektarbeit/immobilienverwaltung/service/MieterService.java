@@ -6,13 +6,16 @@ import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.repository.MieterRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MieterService {
 
+    private final MieterRepository mieterRepository;
+
     @Autowired
-    private MieterRepository mieterRepository;
+    public MieterService(MieterRepository mieterRepository) {
+        this.mieterRepository = mieterRepository;
+    }
 
     // Save or update a Mieter
     public Mieter saveOrUpdateMieter(Mieter mieter) {
@@ -20,7 +23,7 @@ public class MieterService {
     }
 
     // Retrieve all Mieters
-    public List<Mieter> findAllMieters() {
+    public List<Mieter> findAllMieter() {
         return mieterRepository.findAll();
     }
 
