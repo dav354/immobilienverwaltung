@@ -34,6 +34,7 @@ Diese Anwendung ermöglicht die Verwaltung von Immobilien und deren Mietern.
 - [Erste Schritte](#erste-schritte)
 - [Mockups](#mockups)
 - [Database](#database)
+- [Dev Setup](#dev_setup)
 
 <a id="frameworks"></a>
 
@@ -41,9 +42,9 @@ Diese Anwendung ermöglicht die Verwaltung von Immobilien und deren Mietern.
 
 - **Java 21**
 - **Backend**: Spring Boot
-  - **Komponenten**: Includes Spring Data JPA, Spring Web, and Spring Security.
+  - **Komponenten**: Includes Spring Data JPA, Spring Web, Spring Dev Tools, and Spring Security.
 - **Database**: H2, PostgreSQL
-  - H2 zur Entwicklung, fürs deployment wahlweise Postgres/MySQL
+  - H2 zur Entwicklung, fürs deployment Postgres
 - **Frontend**: Vaadin
   - **Details**: Enables the development of reactive user interfaces entirely in Java.
 - **Build-Tool**: Maven
@@ -225,7 +226,7 @@ Diese Anwendung ermöglicht die Verwaltung von Immobilien und deren Mietern.
 erDiagram
     ADRESSE ||--|| WOHNUNG : "gehört zu"
     ADRESSE {
-        string AdresseID PK
+        string WohnungID PK
         int Postleitzahl FK
         string Stadt
         string Strasse
@@ -240,7 +241,6 @@ erDiagram
     WOHNUNG ||--o| MIETER : "hat"
     WOHNUNG {
         string WohnungId PK
-        string AdresseID FK
         int GesamtQuadratmeter
         int Baujahr
         int AnzahlBaeder
@@ -282,6 +282,27 @@ erDiagram
 ```
 
 </details>
+
+<a id="dedatabasev_setup"></a>
+
+## Dev Env Setup
+
+**Voraussetzungen:**
+
+- Java 21
+- Git
+- Maven bzw. Intellij installiert alles andere
+
+**Setup:** Run/Debug Configuration:
+
+1. Spring Boot auswählen
+2. Modify Options: Add VM Options
+3. Dort `-Dspring.profiles.active=dev` eingeben, um das Entwicklungsprofil auszuwählen
+
+**Setup:** Database Connection
+
+- Automatisch: Intellij schlägt die Verbindung vor: Nur die H2 verbinden, config wird automatisch übernommen. Die Postgres mit `-` heraus löschen
+- Manuell: Auf der rechten Seite unter dem Database reiter die Verbindung zur H2 manuell hinzufügen.
 
 ## Lizenz
 
