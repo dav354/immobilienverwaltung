@@ -1,42 +1,51 @@
 package projektarbeit.immobilienverwaltung.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
+/**
+ * Represents a postal code entity with a city and country.
+ * This entity is mapped to the database table 'postleitzahl'.
+ */
 @Entity
 @Table(name = "postleitzahl")
 public class Postleitzahl {
 
     @Id
     @Column(nullable = false)
-    private int postleitzahl;
+    private String postleitzahl; // String, da PLZ mit 0 beginnen kann
 
     @Column(nullable = false, length = 100)
     private String stadt;
 
-    @Column(nullable = false, length = 50)
-    private String land;
+    @Enumerated(EnumType.STRING)
+    private Land land;
 
     /**
-     * Constructs a new Stadt with specified postal code, city name, and country.
-     *
-     * @param postleitzahl The postal code of the city.
-     * @param stadt The name of the city.
-     * @param land The country in which the city is located.
+     * Default constructor for JPA.
      */
+    public Postleitzahl() {}
 
-    public Postleitzahl(int postleitzahl, String stadt, String land) {
+    /**
+     * Constructs a new Postleitzahl instance with specified details.
+     *
+     * @param postleitzahl The postal code.
+     * @param stadt        The city associated with the postal code.
+     * @param land         The country associated with the postal code.
+     */
+    public Postleitzahl(String postleitzahl,
+                        String stadt,
+                        Land land) {
         this.postleitzahl = postleitzahl;
         this.stadt = stadt;
         this.land = land;
     }
 
-    public Postleitzahl() {}
-
-    public int getPostleitzahl() {
+    // Getter und Setter
+    public String getPostleitzahl() {
         return postleitzahl;
     }
 
-    public void setPostleitzahl(int postleitzahl) {
+    public void setPostleitzahl(String postleitzahl) {
         this.postleitzahl = postleitzahl;
     }
 
@@ -48,20 +57,20 @@ public class Postleitzahl {
         this.stadt = stadt;
     }
 
-    public String getLand() {
+    public Land getLand() {
         return land;
     }
 
-    public void setLand(String land) {
+    public void setLand(Land land) {
         this.land = land;
     }
 
     @Override
     public String toString() {
         return "Postleitzahl[" +
-                "postleitzahl=" + postleitzahl +
-                ", stadt=\"" + stadt + "/" +
-                ", land=\"" + land + "/" +
-                "]";
+                "postleitzahl='" + postleitzahl +
+                "', stadt='" + stadt +
+                "', land='" + land +
+                "']";
     }
 }

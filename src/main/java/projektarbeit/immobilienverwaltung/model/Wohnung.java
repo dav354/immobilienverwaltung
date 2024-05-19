@@ -1,26 +1,31 @@
 package projektarbeit.immobilienverwaltung.model;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import java.util.List;
 
-import javax.persistence.*;
-import java.time.LocalDate;
-
+/**
+ * Represents a property (Wohnung) entity with details about the property such as address, size, number of rooms, and amenities.
+ * This entity is mapped to the database table 'wohnung'.
+ */
 @Entity
-@Table(name = "eigentum", indexes = {
-        @Index(name = "idx_eigentum_adresse", columnList = "address_id"),
-        @Index(name = "idx_eigentum_baujahr", columnList = "baujahr")
-})
-
+@Table(name = "wohnung")
 public class Wohnung {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long wohnungId;
+    private Long wohnung_id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "adresse_id", referencedColumnName = "adresse_id", nullable = false)
     private Adresse adresse;
+
+    @OneToMany(mappedBy = "wohnung", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Dokument> dokumente;
+
+    @OneToMany(mappedBy = "wohnung", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Zaehlerstand> zaehlerstand;
 
     @Min(1)
     @Column(nullable = false)
@@ -46,19 +51,23 @@ public class Wohnung {
     private boolean hatKlimaanlage;
 
     /**
-     * Constructs a new Eigentum with specified details.
-     *
-     * @param adresse the address of the property
-     * @param gesamtQuadratmeter the total area of the property in square meters
-     * @param baujahr the year the property was built
-     * @param anzahlBaeder the number of bathrooms in the property
-     * @param anzahlSchlafzimmer the number of bedrooms in the property
-     * @param hatBalkon whether the property has a balcony
-     * @param hatTerrasse whether the property has a terrace
-     * @param hatGarten whether the property has a garden
-     * @param hatKlimaanlage whether the property has air conditioning
+     * Default constructor for JPA.
      */
+    public Wohnung() {}
 
+    /**
+     * Constructs a new Wohnung instance with specified details.
+     *
+     * @param adresse           The address of the property.
+     * @param gesamtQuadratmeter The total area of the property in square meters.
+     * @param baujahr           The year the property was built.
+     * @param anzahlBaeder      The number of bathrooms in the property.
+     * @param anzahlSchlafzimmer The number of bedrooms in the property.
+     * @param hatBalkon         Whether the property has a balcony.
+     * @param hatTerrasse       Whether the property has a terrace.
+     * @param hatGarten         Whether the property has a garden.
+     * @param hatKlimaanlage    Whether the property has air conditioning.
+     */
     public Wohnung(Adresse adresse,
                    int gesamtQuadratmeter,
                    int baujahr,
@@ -79,15 +88,13 @@ public class Wohnung {
         this.hatKlimaanlage = hatKlimaanlage;
     }
 
-    public Wohnung() {}
-
     // Getter und Setter
-    public Long getWohnungId() {
-        return wohnungId;
+    public Long getWohnung_id() {
+        return wohnung_id;
     }
 
-    public void setWohnungId(Long wohnungId) {
-        this.wohnungId = wohnungId;
+    public void setWohnungId(Long wohnung_id) {
+        this.wohnung_id = wohnung_id;
     }
 
     public Adresse getAdresse() {
@@ -98,26 +105,38 @@ public class Wohnung {
         this.adresse = adresse;
     }
 
+    public List<Dokument> getDokumente() {
+        return dokumente;
+    }
+
+    public void setDokumente(List<Dokument> dokumente) {
+        this.dokumente = dokumente;
+    }
+
+    public List<Zaehlerstand> getZaehlerstand() {
+        return zaehlerstand;
+    }
+
+    public void setZaehlerstand(List<Zaehlerstand> zaehlerstand) {
+        this.zaehlerstand = zaehlerstand;
+    }
+
     public int getGesamtQuadratmeter() {
         return gesamtQuadratmeter;
     }
 
     public void setGesamtQuadratmeter(int gesamtQuadratmeter) {
-        if (gesamtQuadratmeter <= 0) {
-            throw new IllegalArgumentException("GesamtQuadratmeter must be greater than zero.");
-        }
         this.gesamtQuadratmeter = gesamtQuadratmeter;
     }
+
     public int getBaujahr() {
         return baujahr;
     }
 
     public void setBaujahr(int baujahr) {
-        if (baujahr > LocalDate.now().getYear()) {
-            throw new IllegalArgumentException("Baujahr cannot be in the future.");
-        }
         this.baujahr = baujahr;
     }
+
     public int getAnzahlBaeder() {
         return anzahlBaeder;
     }
@@ -168,24 +187,17 @@ public class Wohnung {
 
     @Override
     public String toString() {
-        return String.format("Eigentum[Adresse='%s', " +
-                "GesamtQuadratmeter=%d" +
-                "Baujahr=%d" +
-                "AnzahlBaeder=%d" +
-                "AnzahlSchlafzimmer=%d" +
-                "Balkon=%b" +
-                "Terrasse=%b" +
-                "Garten=%b" +
-                "Klimaanlage=%b]",
-                getAdresse().toString(),
-                getGesamtQuadratmeter(),
-                getBaujahr(),
-                getAnzahlBaeder(),
-                getAnzahlSchlafzimmer(),
-                isHatBalkon(),
-                isHatTerrasse(),
-                isHatGarten(),
-                isHatKlimaanlage()
-                );
+        return "Wohnung[" +
+                "wohnung_id='" + wohnung_id +
+                "', adresse='" + adresse +
+                "', gesamtQuadratmeter='" + gesamtQuadratmeter +
+                "', baujahr='" + baujahr +
+                "', anzahlBaeder='" + anzahlBaeder +
+                "', anzahlSchlafzimmer='" + anzahlSchlafzimmer +
+                "', hatBalkon='" + hatBalkon +
+                "', hatTerrasse='" + hatTerrasse +
+                "', hatGarten='" + hatGarten +
+                "', hatKlimaanlage='" + hatKlimaanlage +
+                "']";
     }
 }

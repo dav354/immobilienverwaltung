@@ -1,25 +1,25 @@
 package projektarbeit.immobilienverwaltung.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
+/**
+ * Represents a document entity associated with a property (Wohnung) or a tenant (Mieter).
+ * This entity is mapped to the database table 'dokument'.
+ */
 @Entity
-@Table(name = "dokument", indexes = {
-        @Index(name = "idx_dokument_eigentumId", columnList = "eigentumId"),
-        @Index(name = "idx_dokument_mieterId", columnList = "mieterId")
-})
-
+@Table(name = "dokument")
 public class Dokument {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long dokumentId;
+    private Long dokument_id;
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "eigentumId", nullable = true)
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "wohnung_id", nullable = true)
     private Wohnung wohnung;
 
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "mieterId", nullable = true)
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "mieter_id", nullable = true)
     private Mieter mieter;
 
     @Column(nullable = false)
@@ -31,49 +31,41 @@ public class Dokument {
     /**
      * Constructs a new Dokument with specified details.
      *
-     * @param dokumentId   The unique identifier for the document.
-     * @param wohnung     The Eigentum entity this document is associated with.
-     * @param mieter       The Mieter entity this document is associated with.
+     * @param wohnung       The property (Wohnung) this document is associated with.
+     * @param mieter        The tenant (Mieter) this document is associated with.
      * @param dokumententyp The type of the document.
-     * @param dateipfad    The file path where the document is stored.
+     * @param dateipfad     The file path where the document is stored.
      */
-
-    public Dokument(Long dokumentId,
-                    Wohnung wohnung,
+    public Dokument(Wohnung wohnung,
                     Mieter mieter,
                     String dokumententyp,
                     String dateipfad) {
-        this.dokumentId = dokumentId;
         this.wohnung = wohnung;
         this.mieter = mieter;
         this.dokumententyp = dokumententyp;
         this.dateipfad = dateipfad;
     }
 
+    /**
+     * Default constructor for JPA.
+     */
     public Dokument() {
     }
-    public Long getDokumentId() {
-        return dokumentId;
+
+    public Long getDokument_id() {
+        return dokument_id;
     }
 
-    public void setDokumentId(Long dokumentId) {
-        this.dokumentId = dokumentId;
-    }
-
-    public Wohnung getEigentumId() {
+    public Wohnung getWohnung() {
         return wohnung;
     }
 
-    public void setEigentumId(Wohnung wohnungId) {
-        this.wohnung = wohnungId;
+    public void setWohnung(Wohnung wohnung) {
+        this.wohnung = wohnung;
     }
 
-    public Mieter getMieterId() {
+    public Mieter getMieter() {
         return mieter;
-    }
-
-    public void setMieterId(Mieter mieterId) {
-        this.mieter = mieterId;
     }
 
     public String getDokumententyp() {
@@ -95,11 +87,11 @@ public class Dokument {
     @Override
     public String toString() {
         return "Dokument[" +
-                "dokumentId=" + dokumentId +
-                ", eigentum=" + (wohnung != null ? wohnung.getWohnungId() : "None") +
-                ", mieter=" + (mieter != null ? mieter.getMieterID() : "None") +
-                ", dokumententyp='" + dokumententyp + "/" +
-                ", dateipfad='" + dateipfad + "/" +
-                "]";
+                "dokumentId='" + dokument_id +
+                "', eigentum='" + (wohnung != null ? wohnung.getWohnung_id() : "None") +
+                "', mieter='" + (mieter != null ? mieter.getMieter_id() : "None") +
+                "', dokumententyp='" + dokumententyp +
+                "', dateipfad='" + dateipfad +
+                "']";
     }
 }

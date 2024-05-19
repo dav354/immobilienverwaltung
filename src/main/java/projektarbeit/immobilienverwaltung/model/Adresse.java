@@ -1,23 +1,21 @@
 package projektarbeit.immobilienverwaltung.model;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import jakarta.persistence.*;
 
-import javax.persistence.*;
-
+/**
+ * Represents an address entity with a street, house number, and postal code.
+ * This entity is mapped to the database table 'adresse'.
+ */
 @Entity
-@Table(name = "adresse", indexes = {
-        @Index(name = "idx_adresse_postleitzahl", columnList = "postleitzahl")
-})
-
+@Table(name = "adresse")
 public class Adresse {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long adresseID;
+    private Long adresse_id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "postleitzahl", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "postleitzahl", referencedColumnName = "postleitzahl", nullable = false)
     private Postleitzahl postleitzahl;
 
     @Column(nullable = false, length = 100)
@@ -29,11 +27,10 @@ public class Adresse {
     /**
      * Constructs a new Adresse instance with specified details.
      *
-     * @param postleitzahl The postal code of the address.
-     * @param strasse The street of the address.
-     * @param hausnummer The house number, which may include letters.
+     * @param postleitzahl The postal code associated with this address.
+     * @param strasse      The street name of this address.
+     * @param hausnummer   The house number, which may include letters.
      */
-
     public Adresse(Postleitzahl postleitzahl,
                    String strasse,
                    String hausnummer) {
@@ -42,13 +39,21 @@ public class Adresse {
         this.hausnummer = hausnummer;
     }
 
-    public Adresse(){}
+    /**
+     * Default constructor for JPA.
+     */
+    public Adresse() {
+    }
 
-    public Postleitzahl getPostleitzahl() {
+    public Long getAdresse_id() {
+        return adresse_id;
+    }
+
+    public Postleitzahl getPostleitzahlObj() {
         return postleitzahl;
     }
 
-    public void setPostleitzahl(Postleitzahl postleitzahl) {
+    public void setPostleitzahlObj(Postleitzahl postleitzahl) {
         this.postleitzahl = postleitzahl;
     }
 
@@ -70,12 +75,11 @@ public class Adresse {
 
     @Override
     public String toString() {
-        return String.format("Adresse[%s, " +
-                        "Hausnummer='%s'" +
-                        "Strasse='%s'" +
-                        "]",
-                        getPostleitzahl(),
-                        getHausnummer(),
-                        getStrasse());
+        return String.format("Adresse['%s', " +
+                        "Hausnummer='%s'," +
+                        "Strasse='%s']",
+                getPostleitzahlObj(),
+                getHausnummer(),
+                getStrasse());
     }
 }

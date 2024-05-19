@@ -1,26 +1,23 @@
 package projektarbeit.immobilienverwaltung.model;
 
-import javax.persistence.*;
-import java.sql.Date;
-
-import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.PastOrPresent;
+import java.time.LocalDate;
 
+/**
+ * Represents a tenant entity with details about the tenant and their rental agreement.
+ * This entity is mapped to the database table 'mieter'.
+ */
 @Entity
-@Table(name = "mieter", indexes = {
-        @Index(name = "idx_mieter_wohnungId", columnList = "wohnungId"),
-        @Index(name = "idx_mieter_mietperiode", columnList = "mietbeginn, mietende")
-})
-
+@Table(name = "mieter")
 public class Mieter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long mieterID;
+    private Long mieter_id;
 
     @ManyToOne
-    @JoinColumn(name = "wohnungId", nullable = false)
+    @JoinColumn(name = "wohnung_id")
     private Wohnung wohnung;
 
     @Column(nullable = false, length = 100)
@@ -43,13 +40,11 @@ public class Mieter {
 
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
-    @PastOrPresent
-    private Date mietbeginn;
+    private LocalDate mietbeginn;
 
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
-    @FutureOrPresent
-    private Date mietende;
+    private LocalDate mietende;
 
     @Column(nullable = false)
     @Min(value = 0, message = "Kaution cannot be negative")
@@ -62,31 +57,27 @@ public class Mieter {
     /**
      * Constructs a new Mieter (tenant) with the specified details.
      *
-     * @param mieterID Unique identifier for the tenant.
-     * @param wohnung The property associated with this tenant.
-     * @param name Last name of the tenant.
-     * @param vorname First name of the tenant.
-     * @param telefonnummer Contact number of the tenant.
-     * @param einkommen Monthly income of the tenant.
-     * @param ausgaben Monthly expenses of the tenant.
-     * @param mietbeginn The start date of the tenancy.
-     * @param mietende The end date of the tenancy.
-     * @param kaution Deposit amount paid by the tenant.
+     * @param wohnung        The property associated with this tenant.
+     * @param name           Last name of the tenant.
+     * @param vorname        First name of the tenant.
+     * @param telefonnummer  Contact number of the tenant.
+     * @param einkommen      Monthly income of the tenant.
+     * @param ausgaben       Monthly expenses of the tenant.
+     * @param mietbeginn     The start date of the tenancy.
+     * @param mietende       The end date of the tenancy.
+     * @param kaution        Deposit amount paid by the tenant.
      * @param anzahlBewohner Number of inhabitants living in the rented property.
      */
-
-    public Mieter(Long mieterID,
-                  Wohnung wohnung,
+    public Mieter(Wohnung wohnung,
                   String name,
                   String vorname,
                   String telefonnummer,
                   int einkommen,
                   int ausgaben,
-                  Date mietbeginn,
-                  Date mietende,
+                  LocalDate mietbeginn,
+                  LocalDate mietende,
                   int kaution,
                   int anzahlBewohner) {
-        this.mieterID = mieterID;
         this.wohnung = wohnung;
         this.name = name;
         this.vorname = vorname;
@@ -99,12 +90,13 @@ public class Mieter {
         this.anzahlBewohner = anzahlBewohner;
     }
 
-    public Long getMieterID() {
-        return mieterID;
-    }
+    /**
+     * Default constructor for JPA.
+     */
+    public Mieter() {}
 
-    public void setMieterID(Long mieterID) {
-        this.mieterID = mieterID;
+    public Long getMieter_id() {
+        return mieter_id;
     }
 
     public Wohnung getWohnung() {
@@ -131,7 +123,7 @@ public class Mieter {
         this.vorname = vorname;
     }
 
-    public String  getTelefonnummer() {
+    public String getTelefonnummer() {
         return telefonnummer;
     }
 
@@ -157,19 +149,24 @@ public class Mieter {
         this.ausgaben = ausgaben;
     }
 
-    public Date getMietbeginn() {
+    public LocalDate getMietbeginn() {
         return mietbeginn;
     }
 
-    public void setMietbeginn(Date mietbeginn) {
+    public void setMietbeginn(LocalDate mietbeginn) {
+        if (mietende != null && mietbeginn.isAfter(mietende)) {
+            throw new IllegalArgumentException("Mietbeginn must be before Mietende.");
+        }
         this.mietbeginn = mietbeginn;
     }
-
-    public Date getMietende() {
+    public LocalDate getMietende() {
         return mietende;
     }
 
-    public void setMietende(Date mietende) {
+    public void setMietende(LocalDate mietende) {
+        if (mietbeginn != null && mietende.isBefore(mietbeginn)) {
+            throw new IllegalArgumentException("Mietende must be after Mietbeginn.");
+        }
         this.mietende = mietende;
     }
 
@@ -192,17 +189,17 @@ public class Mieter {
     @Override
     public String toString() {
         return "Mieter[" +
-                "mieterID=" + mieterID +
-                ", eigentumID=" + (wohnung != null ? wohnung.getWohnungId() : "None") +
-                ", name='" + name + '\'' +
-                ", vorname='" + vorname + '\'' +
-                ", telefonnummer=" + telefonnummer +
-                ", einkommen=" + einkommen +
-                ", ausgaben=" + ausgaben +
-                ", mietbeginn=" + mietbeginn +
-                ", mietende=" + mietende +
-                ", kaution=" + kaution +
-                ", anzahlBewohner=" + anzahlBewohner +
-                ']';
+                "mieterID='" + mieter_id +
+                "', eigentumID='" + (wohnung != null ? wohnung.getWohnung_id() : "None") +
+                "', name='" + name + '\'' +
+                "', vorname='" + vorname + '\'' +
+                "', telefonnummer='" + telefonnummer +
+                "', einkommen='" + einkommen +
+                "', ausgaben='" + ausgaben +
+                "', mietbeginn='" + mietbeginn +
+                "', mietende='" + mietende +
+                "', kaution='" + kaution +
+                "', anzahlBewohner='" + anzahlBewohner +
+                "']";
     }
 }
