@@ -17,7 +17,7 @@ public class Wohnung {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long wohnung_id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "adresse_id", referencedColumnName = "adresse_id", nullable = false)
     private Adresse adresse;
 

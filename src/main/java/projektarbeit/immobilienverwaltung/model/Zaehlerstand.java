@@ -61,6 +61,10 @@ public class Zaehlerstand {
         return wohnung;
     }
 
+    public void setWohnung(Wohnung wohnung) {
+        this.wohnung = wohnung;
+    }
+
     public Date getAblesedatum() {
         return ablesedatum;
     }

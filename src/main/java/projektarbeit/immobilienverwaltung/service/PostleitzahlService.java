@@ -2,38 +2,28 @@ package projektarbeit.immobilienverwaltung.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import projektarbeit.immobilienverwaltung.model.Postleitzahl;
+import projektarbeit.immobilienverwaltung.repository.AdresseRepository;
 import projektarbeit.immobilienverwaltung.repository.PostleitzahlRepository;
-
-import java.util.List;
 
 @Service
 public class PostleitzahlService {
 
     private final PostleitzahlRepository postleitzahlRepository;
+    private final AdresseRepository adresseRepository;
 
     @Autowired
-    public PostleitzahlService(PostleitzahlRepository repository) {
-        this.postleitzahlRepository = repository;
+    public PostleitzahlService(PostleitzahlRepository postleitzahlRepository, AdresseRepository adresseRepository) {
+        this.postleitzahlRepository = postleitzahlRepository;
+        this.adresseRepository = adresseRepository;
     }
 
-    // Save or update a Postleitzahl
-    public Postleitzahl saveOrUpdatePostleitzahl(Postleitzahl postleitzahl) {
-        return postleitzahlRepository.save(postleitzahl);
-    }
-
-    // Retrieve all Postleitzahlen
-    public List<Postleitzahl> findAllPostleitzahlen() {
-        return postleitzahlRepository.findAll();
-    }
-
-    // Retrieve a single Postleitzahl by ID
-    public Postleitzahl getPostleitzahlById(String id) {
-        return postleitzahlRepository.findById(id).orElse(null);
-    }
-
-    // Delete a Postleitzahl by ID
-    public void deletePostleitzahl(String id) {
-        postleitzahlRepository.deleteById(id);
+    @Transactional
+    public void deletePostleitzahlIfUnused(Postleitzahl postleitzahl) {
+        long count = adresseRepository.countByPostleitzahl(postleitzahl);
+        if (count == 0) {
+            postleitzahlRepository.delete(postleitzahl);
+        }
     }
 }
