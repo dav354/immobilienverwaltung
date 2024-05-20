@@ -26,4 +26,9 @@ public class PostleitzahlService {
             postleitzahlRepository.delete(postleitzahl);
         }
     }
+
+    @Transactional
+    public Postleitzahl save(Postleitzahl postleitzahl) {
+        return postleitzahlRepository.save(postleitzahl);
+    }
 }

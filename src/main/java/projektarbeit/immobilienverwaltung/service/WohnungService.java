@@ -48,29 +48,48 @@ public class WohnungService {
         return wohnungRepository.findAll();
     }
 
+    @Transactional
     public Wohnung save(Wohnung wohnung) {
+        Adresse adresse = wohnung.getAdresse();
+
+        // Überprüfen, ob die Adresse bereits existiert
+        if (adresse.getAdresse_id() == null || !adresseRepository.existsById(adresse.getAdresse_id())) {
+            adresse = adresseRepository.save(adresse);
+        } else {
+            adresse = adresseRepository.findById(adresse.getAdresse_id()).orElseThrow(() -> new RuntimeException("Adresse nicht gefunden"));
+        }
+
+        // Setze die Adresse der Wohnung
+        wohnung.setAdresse(adresse);
+
         return wohnungRepository.save(wohnung);
     }
 
     @Transactional
     public void delete(Wohnung wohnung) {
+        // Delete documents associated with the Wohnung
         dokumentService.deleteDokumenteByWohnung(wohnung);
 
+        // Remove Mieter references to the Wohnung
         List<Mieter> mieter = mieterRepository.findByWohnung(wohnung);
         for (Mieter m : mieter) {
             m.setWohnung(null);
             mieterRepository.save(m); // Save the updated Mieter with null Wohnung reference
         }
 
-        List<Zaehlerstand> zaehlerstaende = zaehlerstandRepository.findByWohnung(wohnung);
-        for (Zaehlerstand z : zaehlerstaende) {
+        // Remove Zaehlerstand references to the Wohnung
+        List<Zaehlerstand> zaehlerstaend = zaehlerstandRepository.findByWohnung(wohnung);
+        for (Zaehlerstand z : zaehlerstaend) {
             z.setWohnung(null);
             zaehlerstandRepository.save(z); // Save the updated Zaehlerstand with null Wohnung reference
         }
 
+        // Delete the Wohnung and its associated Adresse
         Adresse adresse = wohnung.getAdresse();
         wohnungRepository.delete(wohnung);
         adresseRepository.delete(adresse);
+
+        // Delete the Postleitzahl if it is no longer used
         postleitzahlService.deletePostleitzahlIfUnused(adresse.getPostleitzahlObj());
     }
 

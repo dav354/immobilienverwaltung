@@ -1,5 +1,6 @@
 package projektarbeit.immobilienverwaltung.ui.views;
 
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -13,47 +14,57 @@ import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import projektarbeit.immobilienverwaltung.model.Adresse;
-import projektarbeit.immobilienverwaltung.model.Land;
-import projektarbeit.immobilienverwaltung.model.Postleitzahl;
-import projektarbeit.immobilienverwaltung.model.Wohnung;
+import projektarbeit.immobilienverwaltung.model.*;
 import projektarbeit.immobilienverwaltung.service.AdresseService;
+import projektarbeit.immobilienverwaltung.service.MieterService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
+
+import static com.vaadin.flow.component.Shortcuts.addShortcutListener;
 
 public class WohnungForm extends Dialog {
 
     private final WohnungService wohnungService;
     private final AdresseService adresseService;
+    private final MieterService mieterService;
     private final Binder<Wohnung> binder = new Binder<>(Wohnung.class);
     private Wohnung wohnung;
 
-    private TextField strasse = new TextField("Strasse");
-    private TextField hausnummer = new TextField("Hausnummer");
-    private IntegerField gesamtQuadratmeter = new IntegerField("Gesamt Quadratmeter");
-    private IntegerField baujahr = new IntegerField("Baujahr");
-    private IntegerField anzahlBaeder = new IntegerField("Anzahl Baeder");
-    private IntegerField anzahlSchlafzimmer = new IntegerField("Anzahl Schlafzimmer");
-    private Checkbox hatBalkon = new Checkbox("Hat Balkon");
-    private Checkbox hatTerrasse = new Checkbox("Hat Terrasse");
-    private Checkbox hatGarten = new Checkbox("Hat Garten");
-    private Checkbox hatKlimaanlage = new Checkbox("Hat Klimaanlage");
-    private ComboBox<Land> land = new ComboBox<>("Land");
-    private TextField postleitzahl = new TextField("Postleitzahl");
-    private TextField stadt = new TextField("Stadt");
+    private final TextField strasse = new TextField("Strasse");
+    private final TextField hausnummer = new TextField("Hausnummer");
+    private final IntegerField gesamtQuadratmeter = new IntegerField("Gesamt Quadratmeter");
+    private final IntegerField baujahr = new IntegerField("Baujahr");
+    private final IntegerField anzahlBaeder = new IntegerField("Anzahl Baeder");
+    private final IntegerField anzahlSchlafzimmer = new IntegerField("Anzahl Schlafzimmer");
+    private final Checkbox hatBalkon = new Checkbox("Hat Balkon");
+    private final Checkbox hatTerrasse = new Checkbox("Hat Terrasse");
+    private final Checkbox hatGarten = new Checkbox("Hat Garten");
+    private final Checkbox hatKlimaanlage = new Checkbox("Hat Klimaanlage");
+    private final ComboBox<Land> land = new ComboBox<>("Land");
+    private final TextField postleitzahl = new TextField("Postleitzahl");
+    private final TextField stadt = new TextField("Stadt");
+    private final ComboBox<Mieter> mieterComboBox = new ComboBox<>("Mieter");
 
-    private Div errorMessage = new Div();
+    private final Div errorMessage = new Div();
 
-    public WohnungForm(WohnungService wohnungService, AdresseService adresseService) {
+    public WohnungForm(WohnungService wohnungService, AdresseService adresseService, MieterService mieterService) {
         this.wohnungService = wohnungService;
         this.adresseService = adresseService;
+        this.mieterService = mieterService;
+
         land.setItems(Land.values()); // Populate ComboBox with Enum values
         land.setItemLabelGenerator(Land::getName);
+
+        mieterComboBox.setItems(mieterService.findAllMieter());
+        mieterComboBox.setItemLabelGenerator(Mieter::getFullName);
+
         add(createFormLayout(), createButtonLayout(), errorMessage);
         binder.bindInstanceFields(this);
         errorMessage.setVisible(false);
 
         getElement().getStyle().set("background-color", "var(--lumo-base-color)");
         getElement().getStyle().set("color", "var(--lumo-body-text-color)");
+
+        addShortcutListener(this, ()  -> close(), Key.ESCAPE);
     }
 
     public void setWohnung(Wohnung wohnung) {
@@ -66,12 +77,15 @@ public class WohnungForm extends Dialog {
             strasse.setValue(wohnung.getAdresse().getStrasse());
             hausnummer.setValue(wohnung.getAdresse().getHausnummer());
         }
+        if (wohnung.getMieter() != null) {
+            mieterComboBox.setValue(wohnung.getMieter());
+        }
         binder.readBean(wohnung);
     }
 
     private FormLayout createFormLayout() {
         FormLayout formLayout = new FormLayout();
-        formLayout.add(strasse, hausnummer, postleitzahl, stadt, land, gesamtQuadratmeter, baujahr, anzahlBaeder, anzahlSchlafzimmer, hatBalkon, hatTerrasse, hatGarten, hatKlimaanlage);
+        formLayout.add(strasse, hausnummer, postleitzahl, stadt, land, gesamtQuadratmeter, baujahr, anzahlBaeder, anzahlSchlafzimmer, hatBalkon, hatTerrasse, hatGarten, hatKlimaanlage, mieterComboBox);
         return formLayout;
     }
 
@@ -91,6 +105,7 @@ public class WohnungForm extends Dialog {
             adresseService.save(adresse);
 
             wohnung.setAdresse(adresse);
+            wohnung.setMieter(mieterComboBox.getValue()); // Set the selected tenant
             binder.writeBean(wohnung);
             wohnungService.save(wohnung);
             Notification.show("Wohnung saved", 3000, Notification.Position.BOTTOM_END)

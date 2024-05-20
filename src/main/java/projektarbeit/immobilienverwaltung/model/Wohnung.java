@@ -27,6 +27,9 @@ public class Wohnung {
     @OneToMany(mappedBy = "wohnung", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Zaehlerstand> zaehlerstand;
 
+    @ManyToOne
+    private Mieter mieter;
+
     @Min(1)
     @Column(nullable = false)
     private int gesamtQuadratmeter;
@@ -103,6 +106,14 @@ public class Wohnung {
 
     public void setAdresse(Adresse adresse) {
         this.adresse = adresse;
+    }
+
+    public Mieter getMieter() {
+        return mieter;
+    }
+
+    public void setMieter(Mieter mieter) {
+        this.mieter = mieter;
     }
 
     public List<Dokument> getDokumente() {
@@ -198,6 +209,7 @@ public class Wohnung {
                 "', hatTerrasse='" + hatTerrasse +
                 "', hatGarten='" + hatGarten +
                 "', hatKlimaanlage='" + hatKlimaanlage +
+                "', mieter='" + (mieter != null ? mieter.getFullName() : "keinen") +
                 "']";
     }
 }

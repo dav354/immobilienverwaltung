@@ -57,7 +57,6 @@ public class Mieter {
     /**
      * Constructs a new Mieter (tenant) with the specified details.
      *
-     * @param wohnung        The property associated with this tenant.
      * @param name           Last name of the tenant.
      * @param vorname        First name of the tenant.
      * @param telefonnummer  Contact number of the tenant.
@@ -68,8 +67,7 @@ public class Mieter {
      * @param kaution        Deposit amount paid by the tenant.
      * @param anzahlBewohner Number of inhabitants living in the rented property.
      */
-    public Mieter(Wohnung wohnung,
-                  String name,
+    public Mieter(String name,
                   String vorname,
                   String telefonnummer,
                   int einkommen,
@@ -78,7 +76,6 @@ public class Mieter {
                   LocalDate mietende,
                   int kaution,
                   int anzahlBewohner) {
-        this.wohnung = wohnung;
         this.name = name;
         this.vorname = vorname;
         this.telefonnummer = telefonnummer;
@@ -184,6 +181,11 @@ public class Mieter {
 
     public void setAnzahlBewohner(int anzahlBewohner) {
         this.anzahlBewohner = anzahlBewohner;
+    }
+
+    // Method to get the full name of the tenant
+    public String getFullName() {
+        return vorname + " " + name;
     }
 
     @Override

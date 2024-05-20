@@ -3,7 +3,10 @@ package projektarbeit.immobilienverwaltung.ui.views;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.H4;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -21,8 +24,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import projektarbeit.immobilienverwaltung.model.Dokument;
+import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.service.AdresseService;
+import projektarbeit.immobilienverwaltung.service.MieterService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 
@@ -41,9 +46,9 @@ public class WohnungListView extends VerticalLayout {
     private final WohnungForm form;
 
     @Autowired
-    public WohnungListView(WohnungService wohnungService, AdresseService adresseService) {
+    public WohnungListView(WohnungService wohnungService, AdresseService adresseService, MieterService mieterService) {
         this.wohnungService = wohnungService;
-        this.form = new WohnungForm(wohnungService, adresseService);
+        this.form = new WohnungForm(wohnungService, adresseService, mieterService);
         this.form.addDialogCloseActionListener(event -> updateList());
 
         HorizontalLayout header = new HorizontalLayout(new H1("Wohnungen Übersicht"), createAddButton());
@@ -71,18 +76,17 @@ public class WohnungListView extends VerticalLayout {
 
         // Define columns for the grid
         grid.removeAllColumns();
-        grid.addColumn(wohnung -> wohnung.getAdresse().getPostleitzahlObj().getPostleitzahl())
-                .setHeader("PLZ").setSortable(true).setClassNameGenerator(wohnung -> "centered-column");
-        grid.addColumn(wohnung -> wohnung.getAdresse().getStrasse() + " " + wohnung.getAdresse().getHausnummer())
-                .setHeader("Adresse").setSortable(true).setClassNameGenerator(wohnung -> "centered-column");
-        grid.addColumn(Wohnung::getGesamtQuadratmeter)
-                .setHeader("m²").setSortable(true).setClassNameGenerator(wohnung -> "centered-column");
-        grid.addColumn(Wohnung::getBaujahr)
-                .setHeader("Baujahr").setSortable(true).setClassNameGenerator(wohnung -> "centered-column");
-        grid.addColumn(Wohnung::getAnzahlBaeder)
-                .setHeader("Bäder").setSortable(true).setClassNameGenerator(wohnung -> "centered-column");
-        grid.addColumn(Wohnung::getAnzahlSchlafzimmer)
-                .setHeader("Schlafzimmer").setSortable(true).setClassNameGenerator(wohnung -> "centered-column");
+        grid.addColumn(wohnung -> wohnung.getAdresse().getPostleitzahlObj().getLand().name()).setHeader("Land").setSortable(true).setClassNameGenerator(wohnung -> "centered-column");
+        grid.addColumn(wohnung -> wohnung.getAdresse().getPostleitzahlObj().getPostleitzahl()).setHeader("PLZ").setSortable(true).setClassNameGenerator(wohnung -> "centered-column");
+        grid.addColumn(wohnung -> wohnung.getAdresse().getStrasse() + " " + wohnung.getAdresse().getHausnummer()).setHeader("Adresse").setSortable(true).setClassNameGenerator(wohnung -> "centered-column");
+        grid.addColumn(wohnung -> {
+            Mieter mieter = wohnung.getMieter();
+            return (mieter != null) ? mieter.getFullName() : "Kein Mieter";
+        }).setHeader("Mieter").setSortable(true).setClassNameGenerator(wohnung -> "centered-column");
+        grid.addColumn(Wohnung::getGesamtQuadratmeter).setHeader("m²").setSortable(true).setClassNameGenerator(wohnung -> "centered-column");
+        grid.addColumn(Wohnung::getBaujahr).setHeader("Baujahr").setSortable(true).setClassNameGenerator(wohnung -> "centered-column");
+        grid.addColumn(Wohnung::getAnzahlBaeder).setHeader("Bäder").setSortable(true).setClassNameGenerator(wohnung -> "centered-column");
+        grid.addColumn(Wohnung::getAnzahlSchlafzimmer).setHeader("Schlafzimmer").setSortable(true).setClassNameGenerator(wohnung -> "centered-column");
 
         grid.addComponentColumn(wohnung -> createIcon(wohnung.isHatBalkon())).setHeader("Balkon").setSortable(true).setClassNameGenerator(wohnung -> "centered-column");
         grid.addComponentColumn(wohnung -> createIcon(wohnung.isHatTerrasse())).setHeader("Terrasse").setSortable(true).setClassNameGenerator(wohnung -> "centered-column");
@@ -181,7 +185,9 @@ public class WohnungListView extends VerticalLayout {
         } else {
             form.setWohnung(wohnung);
             form.open();
-            updateList();
+            form.addDialogCloseActionListener(event -> {
+                updateList();
+            });
         }
     }
 
