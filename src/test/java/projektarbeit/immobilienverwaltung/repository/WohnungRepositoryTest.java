@@ -8,6 +8,7 @@ import projektarbeit.immobilienverwaltung.model.Postleitzahl;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static projektarbeit.immobilienverwaltung.model.Land.*;
 
 @DataJpaTest
 public class WohnungRepositoryTest {
@@ -23,7 +24,7 @@ public class WohnungRepositoryTest {
 
     @Test
     public void testSaveAndFindWohnung() {
-        Postleitzahl plz = new Postleitzahl("07111", "Stuttgart", "Deutschland");
+        Postleitzahl plz = new Postleitzahl("07111", "Stuttgart", DE);
         postleitzahlRepository.save(plz);
 
         Adresse adr = new Adresse(plz, "Teststrasse", "11");

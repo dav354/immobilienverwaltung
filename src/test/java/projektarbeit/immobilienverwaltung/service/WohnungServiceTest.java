@@ -14,6 +14,7 @@ import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static projektarbeit.immobilienverwaltung.model.Land.*;
 
 @SpringBootTest
 public class WohnungServiceTest {
@@ -33,7 +34,7 @@ public class WohnungServiceTest {
     @Test
     @Transactional
     public void testFindAllWohnungen() {
-        Postleitzahl plz = new Postleitzahl("07111", "Stuttgart", "Deutschland");
+        Postleitzahl plz = new Postleitzahl("07111", "Stuttgart", DE);
         postleitzahlRepository.save(plz);
 
         Adresse adr = new Adresse(plz, "Teststrasse", "11");

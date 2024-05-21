@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import projektarbeit.immobilienverwaltung.model.Postleitzahl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static projektarbeit.immobilienverwaltung.model.Land.*;
 
 @DataJpaTest
 public class PostleitzahlRepositoryTest {
@@ -15,7 +16,7 @@ public class PostleitzahlRepositoryTest {
 
     @Test
     public void testSaveAndFindPostleitzahl() {
-        Postleitzahl plz = new Postleitzahl("07111", "Stuttgart", "Deutschland");
+        Postleitzahl plz = new Postleitzahl("07111", "Stuttgart", DE);
         postleitzahlRepository.save(plz);
 
         Postleitzahl found = postleitzahlRepository.findById("07111").orElse(null);
