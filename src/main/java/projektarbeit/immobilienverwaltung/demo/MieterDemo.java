@@ -1,18 +1,21 @@
 package projektarbeit.immobilienverwaltung.demo;
 
 import ch.qos.logback.classic.LoggerContext;
+import org.assertj.core.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.repository.MieterRepository;
 import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -32,7 +35,8 @@ public class MieterDemo implements CommandLineRunner {
         loadMieterData();
     }
 
-    private void loadMieterData() {
+    @Transactional
+    public void loadMieterData() {
         if (mieterRepository.count() == 0) { // Only load if no data exists
             logger.info("Loading Mieter data...");
 

@@ -14,6 +14,7 @@ import projektarbeit.immobilienverwaltung.repository.MieterRepository;
 import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
 import projektarbeit.immobilienverwaltung.repository.ZaehlerstandRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -71,9 +72,9 @@ public class WohnungService {
         dokumentService.deleteDokumenteByWohnung(wohnung);
 
         // Remove Mieter references to the Wohnung
-        List<Mieter> mieter = mieterRepository.findByWohnung(wohnung);
+        List<Mieter> mieter = mieterRepository.findAllWithWohnungen();
         for (Mieter m : mieter) {
-            m.setWohnung(null);
+            m.setWohnung(new ArrayList<>());
             mieterRepository.save(m); // Save the updated Mieter with null Wohnung reference
         }
 

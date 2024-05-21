@@ -12,11 +12,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import projektarbeit.immobilienverwaltung.model.Adresse;
 import projektarbeit.immobilienverwaltung.model.Mieter;
+import projektarbeit.immobilienverwaltung.model.Postleitzahl;
 import projektarbeit.immobilienverwaltung.service.MieterService;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Route(value = "mieter", layout = MainLayout.class)
 @PageTitle("Mieter")
@@ -57,9 +60,24 @@ public class MieterListView extends VerticalLayout {
         grid.addColumn(Mieter::getMietende).setHeader("Mietende").setSortable(true);
         grid.addColumn(Mieter::getKaution).setHeader("Kaution").setSortable(true);
         grid.addColumn(Mieter::getAnzahlBewohner).setHeader("Anzahl Bewohner").setSortable(true);
-        grid.addColumn(mieter -> mieter.getWohnung().getAdresse().getStrasse()).setHeader("Strasse").setSortable(true);
-        grid.addColumn(mieter -> mieter.getWohnung().getAdresse().getHausnummer()).setHeader("Hausnummer").setSortable(true);
-        grid.addColumn(mieter -> mieter.getWohnung().getAdresse().getPostleitzahlObj().getPostleitzahl()).setHeader("Postleitzahl").setSortable(true);
+
+
+        // Adding column for the complete address
+        grid.addColumn(mieter -> mieter.getWohnung().isEmpty()
+                        ? "Keine Wohnung"
+                        : mieter.getWohnung().stream()
+                        .map(wohnung -> {
+                            Adresse adresse = wohnung.getAdresse();
+                            Postleitzahl postleitzahlObj = adresse.getPostleitzahlObj();
+                            return String.format("%s %s %s %s %s",
+                                    postleitzahlObj.getLand().name(),
+                                    postleitzahlObj.getPostleitzahl(),
+                                    postleitzahlObj.getStadt(),
+                                    adresse.getStrasse(),
+                                    adresse.getHausnummer());
+                        })
+                        .collect(Collectors.joining("\n")))
+                .setHeader("Mietobjekt").setSortable(true);
 
         grid.setSizeFull();
         grid.getColumns().forEach(col -> col.setAutoWidth(true));

@@ -3,6 +3,9 @@ package projektarbeit.immobilienverwaltung.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Represents a tenant entity with details about the tenant and their rental agreement.
@@ -16,9 +19,8 @@ public class Mieter {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long mieter_id;
 
-    @ManyToOne
-    @JoinColumn(name = "wohnung_id")
-    private Wohnung wohnung;
+    @OneToMany(mappedBy = "mieter")
+    private List<Wohnung> wohnung = new ArrayList<>();
 
     @Column(nullable = false, length = 100)
     private String name;
@@ -96,11 +98,11 @@ public class Mieter {
         return mieter_id;
     }
 
-    public Wohnung getWohnung() {
+    public List<Wohnung> getWohnung() {
         return wohnung;
     }
 
-    public void setWohnung(Wohnung wohnung) {
+    public void setWohnung(List<Wohnung> wohnung) {
         this.wohnung = wohnung;
     }
 
@@ -190,18 +192,19 @@ public class Mieter {
 
     @Override
     public String toString() {
+        String wohnungIds = wohnung.stream()
+                .map(w -> String.valueOf(w.getWohnung_id()))
+                .collect(Collectors.joining(", "));
+
         return "Mieter[" +
-                "mieterID='" + mieter_id +
-                "', eigentumID='" + (wohnung != null ? wohnung.getWohnung_id() : "None") +
-                "', name='" + name + '\'' +
-                "', vorname='" + vorname + '\'' +
+                "mieter_id='" + mieter_id +
+                "', name='" + name +
+                "', vorname='" + vorname +
                 "', telefonnummer='" + telefonnummer +
                 "', einkommen='" + einkommen +
                 "', ausgaben='" + ausgaben +
                 "', mietbeginn='" + mietbeginn +
-                "', mietende='" + mietende +
-                "', kaution='" + kaution +
-                "', anzahlBewohner='" + anzahlBewohner +
+                "', wohnungen='" + (wohnungIds.isEmpty() ? "None" : wohnungIds) +
                 "']";
     }
 }

@@ -18,7 +18,7 @@ public class Wohnung {
     private Long wohnung_id;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "adresse_id", referencedColumnName = "adresse_id", nullable = false)
+    @JoinColumn(name = "adresse_id", nullable = false)
     private Adresse adresse;
 
     @OneToMany(mappedBy = "wohnung", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -28,6 +28,7 @@ public class Wohnung {
     private List<Zaehlerstand> zaehlerstand;
 
     @ManyToOne
+    @JoinColumn(name = "mieter_id")
     private Mieter mieter;
 
     @Min(1)
@@ -112,8 +113,10 @@ public class Wohnung {
         return mieter;
     }
 
+    // Set a Mieter for this Wohnung
     public void setMieter(Mieter mieter) {
         this.mieter = mieter;
+        mieter.getWohnung().add(this);
     }
 
     public List<Dokument> getDokumente() {
