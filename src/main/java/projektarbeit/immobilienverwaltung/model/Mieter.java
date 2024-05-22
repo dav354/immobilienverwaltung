@@ -34,11 +34,11 @@ public class Mieter {
 
     @Column(nullable = false)
     @Min(value = 0, message = "Einkommen cannot be negative")
-    private int einkommen;
+    private double einkommen;
 
     @Column(nullable = false)
     @Min(value = 0, message = "Ausgaben cannot be negative")
-    private int ausgaben;
+    private double ausgaben;
 
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
@@ -50,11 +50,11 @@ public class Mieter {
 
     @Column(nullable = false)
     @Min(value = 0, message = "Kaution cannot be negative")
-    private int kaution;
+    private double kaution;
 
     @Column(nullable = false)
     @Min(value = 1, message = "Must have at least one inhabitant")
-    private int anzahlBewohner;
+    private double anzahlBewohner;
 
     /**
      * Constructs a new Mieter (tenant) with the specified details.
@@ -72,12 +72,12 @@ public class Mieter {
     public Mieter(String name,
                   String vorname,
                   String telefonnummer,
-                  int einkommen,
-                  int ausgaben,
+                  double einkommen,
+                  double ausgaben,
                   LocalDate mietbeginn,
                   LocalDate mietende,
-                  int kaution,
-                  int anzahlBewohner) {
+                  double kaution,
+                  double anzahlBewohner) {
         this.name = name;
         this.vorname = vorname;
         this.telefonnummer = telefonnummer;
@@ -130,20 +130,20 @@ public class Mieter {
         this.telefonnummer = telefonnummer;
     }
 
-    public int getEinkommen() {
+    public double getEinkommen() {
         return einkommen;
     }
 
-    public void setEinkommen(int einkommen) {
+    public void setEinkommen(double einkommen) {
         if (einkommen < 0) throw new IllegalArgumentException("Einkommen must be positive.");
         this.einkommen = einkommen;
     }
 
-    public int getAusgaben() {
+    public double getAusgaben() {
         return ausgaben;
     }
 
-    public void setAusgaben(int ausgaben) {
+    public void setAusgaben(double ausgaben) {
         if (ausgaben < 0) throw new IllegalArgumentException("Ausgaben must be positive.");
         this.ausgaben = ausgaben;
     }
@@ -169,19 +169,19 @@ public class Mieter {
         this.mietende = mietende;
     }
 
-    public int getKaution() {
+    public double getKaution() {
         return kaution;
     }
 
-    public void setKaution(int kaution) {
+    public void setKaution(double kaution) {
         this.kaution = kaution;
     }
 
-    public int getAnzahlBewohner() {
+    public double getAnzahlBewohner() {
         return anzahlBewohner;
     }
 
-    public void setAnzahlBewohner(int anzahlBewohner) {
+    public void setAnzahlBewohner(double anzahlBewohner) {
         this.anzahlBewohner = anzahlBewohner;
     }
 
@@ -207,4 +207,5 @@ public class Mieter {
                 "', wohnungen='" + (wohnungIds.isEmpty() ? "None" : wohnungIds) +
                 "']";
     }
+
 }

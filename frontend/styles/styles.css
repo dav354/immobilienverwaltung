@@ -1,5 +1,12 @@
 /* frontend/styles/styles.css */
 
+@media all and (max-width: 1100px) {
+    .list-view.editing .toolbar,
+    .list-view.editing .contact-grid {
+        display: none;
+    }
+}
+
 body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
