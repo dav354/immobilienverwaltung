@@ -36,10 +36,6 @@ public class Mieter {
     @Min(value = 0, message = "Einkommen cannot be negative")
     private double einkommen;
 
-    @Column(nullable = false)
-    @Min(value = 0, message = "Ausgaben cannot be negative")
-    private double ausgaben;
-
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
     private LocalDate mietbeginn;
@@ -63,7 +59,6 @@ public class Mieter {
      * @param vorname        First name of the tenant.
      * @param telefonnummer  Contact number of the tenant.
      * @param einkommen      Monthly income of the tenant.
-     * @param ausgaben       Monthly expenses of the tenant.
      * @param mietbeginn     The start date of the tenancy.
      * @param mietende       The end date of the tenancy.
      * @param kaution        Deposit amount paid by the tenant.
@@ -73,7 +68,6 @@ public class Mieter {
                   String vorname,
                   String telefonnummer,
                   double einkommen,
-                  double ausgaben,
                   LocalDate mietbeginn,
                   LocalDate mietende,
                   double kaution,
@@ -82,7 +76,6 @@ public class Mieter {
         this.vorname = vorname;
         this.telefonnummer = telefonnummer;
         this.einkommen = einkommen;
-        this.ausgaben = ausgaben;
         this.mietbeginn = mietbeginn;
         this.mietende = mietende;
         this.kaution = kaution;
@@ -139,15 +132,6 @@ public class Mieter {
         this.einkommen = einkommen;
     }
 
-    public double getAusgaben() {
-        return ausgaben;
-    }
-
-    public void setAusgaben(double ausgaben) {
-        if (ausgaben < 0) throw new IllegalArgumentException("Ausgaben must be positive.");
-        this.ausgaben = ausgaben;
-    }
-
     public LocalDate getMietbeginn() {
         return mietbeginn;
     }
@@ -202,7 +186,6 @@ public class Mieter {
                 "', vorname='" + vorname +
                 "', telefonnummer='" + telefonnummer +
                 "', einkommen='" + einkommen +
-                "', ausgaben='" + ausgaben +
                 "', mietbeginn='" + mietbeginn +
                 "', wohnungen='" + (wohnungIds.isEmpty() ? "None" : wohnungIds) +
                 "']";

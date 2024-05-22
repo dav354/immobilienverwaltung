@@ -45,22 +45,22 @@ public class MieterDemo implements CommandLineRunner {
 
             // Create Mieter
             if (!wohnungen.isEmpty()) {
-                Mieter mieter1 = new Mieter("Doe", "John", "0123456789", 3000, 1000, LocalDate.of(2023, 1, 1), LocalDate.of(2024, 1, 1), 1000, 2);
+                Mieter mieter1 = new Mieter("Doe", "John", "0123456789", 3000, LocalDate.of(2023, 1, 1), LocalDate.of(2024, 1, 1), 1000, 2);
                 mieterRepository.save(mieter1);
 
-                Mieter mieter2 = new Mieter( "Doe", "Jane", "9876543210", 4000, 1200, LocalDate.of(2023, 6, 1), LocalDate.of(2024, 6, 1), 1200, 3);
+                Mieter mieter2 = new Mieter( "Doe", "Jane", "9876543210", 4000, LocalDate.of(2023, 6, 1), LocalDate.of(2024, 6, 1), 1200, 3);
                 mieterRepository.save(mieter2);
 
-                Mieter mieter3 = new Mieter( "Mustermann", "Max", "1234567890", 2500, 800, LocalDate.of(2022, 5, 1), LocalDate.of(2023, 5, 1), 900, 1);
+                Mieter mieter3 = new Mieter( "Mustermann", "Max", "1234567890", 2500, LocalDate.of(2022, 5, 1), LocalDate.of(2023, 5, 1), 900, 1);
                 mieterRepository.save(mieter3);
 
-                Mieter mieter4 = new Mieter("Mustermann", "Erika", "0987654321", 2800, 900, LocalDate.of(2023, 3, 1), LocalDate.of(2024, 3, 1), 1000, 2);
+                Mieter mieter4 = new Mieter("Mustermann", "Erika", "0987654321", 2800, LocalDate.of(2023, 3, 1), LocalDate.of(2024, 3, 1), 1000, 2);
                 mieterRepository.save(mieter4);
 
-                Mieter mieter5 = new Mieter( "Schmidt", "Peter", "0123456788", 3200, 1100, LocalDate.of(2022, 2, 1), LocalDate.of(2023, 2, 1), 1100, 2);
+                Mieter mieter5 = new Mieter( "Schmidt", "Peter", "0123456788", 3200, LocalDate.of(2022, 2, 1), LocalDate.of(2023, 2, 1), 1100, 2);
                 mieterRepository.save(mieter5);
 
-                Mieter mieter6 = new Mieter("Schneider", "Laura", "9876543211", 4200, 1300, LocalDate.of(2023, 7, 1), LocalDate.of(2024, 7, 1), 1300, 3);
+                Mieter mieter6 = new Mieter("Schneider", "Laura", "9876543211", 4200, LocalDate.of(2023, 7, 1), LocalDate.of(2024, 7, 1), 1300, 3);
                 mieterRepository.save(mieter6);
 
                 logger.info("Mieter data loaded.");
