@@ -11,9 +11,13 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
+import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.model.Mieter;
+import projektarbeit.immobilienverwaltung.model.Postleitzahl;
 import projektarbeit.immobilienverwaltung.service.MService;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
+
+import java.util.stream.Collectors;
 
 @Route(value = "mieter", layout = MainLayout.class)
 @PageTitle("Mieter")
@@ -96,8 +100,10 @@ public class MieterListView extends VerticalLayout {
         grid.addClassNames("mieter-grid");
         grid.setSizeFull();
         //Hier bei getFirst muss man noch änderen da kein Mieter zu den Wohnungen zugeordnet ist
-        grid.addColumn(mieter -> mieter.getWohnung().getFirst()).setHeader("Wohnung");
         grid.setColumns("name", "vorname", "telefonnummer", "einkommen", "mietbeginn", "mietende", "kaution", "anzahlBewohner");
+        // Adding column for the complete address using getFormattedAddress
+        grid.addColumn(Mieter::getFormattedWohnung).setHeader("Mietobjekt");
+
         //Automatische Größe und Sotieren zulassen
         grid.getColumns().forEach(col -> col.setAutoWidth(true).setSortable(true));
 
@@ -136,41 +142,3 @@ public class MieterListView extends VerticalLayout {
         editMieter(new Mieter());
     }
 }
-    /*Nicht notwendig noch von David
-
-        // Adding column for the complete address
-        grid.addColumn(mieter -> mieter.getWohnung().isEmpty()
-                        ? "Keine Wohnung"
-                        : mieter.getWohnung().stream()
-                        .map(wohnung -> {
-                            Adresse adresse = wohnung.getAdresse();
-                            Postleitzahl postleitzahlObj = adresse.getPostleitzahlObj();
-                            return String.format("%s %s %s %s %s",
-                                    postleitzahlObj.getLand().name(),
-                                    postleitzahlObj.getPostleitzahl(),
-                                    postleitzahlObj.getStadt(),
-                                    adresse.getStrasse(),
-                                    adresse.getHausnummer());
-                        })
-                        .collect(Collectors.joining("\n")))
-                .setHeader("Mietobjekt").setSortable(true);
-
-        grid.setSizeFull();
-        grid.getColumns().forEach(col -> col.setAutoWidth(true));
-    }
-
-    private void updateList() {
-        logger.debug("updateList() method called");
-        List<Mieter> mieter = mieterService.findAllMieter();
-        if (mieter.isEmpty()) {
-            logger.warn("Keine Mieter gefunden");
-        } else {
-            logger.info("Mieter gefunden: {}", mieter.size());
-            mieter.forEach(m -> logger.debug(m.toString()));
-        }
-        grid.setItems(mieter);
-        logger.info("Grid items count: {}", grid.getDataProvider().size(new Query<>()));
-    }
-}
-
-     */

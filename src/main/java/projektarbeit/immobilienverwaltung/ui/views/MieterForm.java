@@ -49,6 +49,9 @@ public class MieterForm extends FormLayout {
 
         binder.bindInstanceFields(this);
 
+        wohnungComboBox.setItems(wohnungen);
+        wohnungComboBox.setItemLabelGenerator(Wohnung::getFormattedAddress);
+
         add(name,
                 vorname,
                 telefonnummer,
@@ -63,8 +66,10 @@ public class MieterForm extends FormLayout {
 
     //Die Mieter zum Binder binden
     public void setMieter(Mieter mieter) {
-        this.mieter = mieter;
-        binder.readBean(mieter);
+        if (mieter != null) {
+            this.mieter = mieter;
+            binder.readBean(mieter);
+        }
     }
 
     //Erstellt und konfiguriert eines Layout für die Buttons Speichern, Löschen und Schließen
@@ -132,10 +137,8 @@ public class MieterForm extends FormLayout {
     }
 
     //Fügt einen Listener für die angegebene Ereignis hinzu (Speichern, Löschen und Schließen)
-    public <T extends  ComponentEvent<?>> Registration addListener(Class<T> eventType,
-                                                                   ComponentEventListener<T> listener){
+    public <T extends  ComponentEvent<?>> Registration addListener(Class<T> eventType, ComponentEventListener<T> listener){
         return getEventBus().addListener(eventType, listener);
     }
 
 }
-

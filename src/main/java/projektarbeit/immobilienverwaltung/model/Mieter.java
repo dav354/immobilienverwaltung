@@ -19,7 +19,7 @@ public class Mieter {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long mieter_id;
 
-    @OneToMany(mappedBy = "mieter")
+    @OneToMany(mappedBy = "mieter", fetch = FetchType.EAGER)
     private List<Wohnung> wohnung = new ArrayList<>();
 
     @Column(nullable = false, length = 100)
@@ -172,6 +172,16 @@ public class Mieter {
     // Method to get the full name of the tenant
     public String getFullName() {
         return vorname + " " + name;
+    }
+
+    public String getFormattedWohnung() {
+        if (wohnung.isEmpty()) {
+            return "Keine Wohnung";
+        } else {
+            return wohnung.stream()
+                    .map(Wohnung::getFormattedAddress)
+                    .collect(Collectors.joining(", "));
+        }
     }
 
     @Override

@@ -199,6 +199,19 @@ public class Wohnung {
         this.hatKlimaanlage = hatKlimaanlage;
     }
 
+    public String getFormattedAddress() {
+        if (adresse != null && adresse.getPostleitzahlObj() != null) {
+            Postleitzahl postleitzahlObj = adresse.getPostleitzahlObj();
+            return String.format("%s %s %s %s %s",
+                    postleitzahlObj.getLand().name(),
+                    postleitzahlObj.getPostleitzahl(),
+                    postleitzahlObj.getStadt(),
+                    adresse.getStrasse(),
+                    adresse.getHausnummer());
+        }
+        return "Keine Adresse";
+    }
+
     @Override
     public String toString() {
         return "Wohnung[" +
