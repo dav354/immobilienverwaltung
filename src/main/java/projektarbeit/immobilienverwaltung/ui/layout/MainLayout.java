@@ -1,15 +1,15 @@
 package projektarbeit.immobilienverwaltung.ui.layout;
 
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.sidenav.SideNav;
+import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.theme.lumo.Lumo;
+import projektarbeit.immobilienverwaltung.service.MService;
 import projektarbeit.immobilienverwaltung.ui.views.DokumentListView;
 import projektarbeit.immobilienverwaltung.ui.views.MieterListView;
 import projektarbeit.immobilienverwaltung.ui.views.WohnungListView;
@@ -19,14 +19,13 @@ public class MainLayout extends AppLayout {
 
     private boolean isDarkMode = true; // Dark mode enabled by default
 
-    public MainLayout() {
+    public MainLayout(MService mService) {
         createHeader();
-        createDrawer();
+        createDrawer(mService);
         createFooter();
         enableDarkMode();
     }
 
-    @SuppressWarnings("removal")
     private void createHeader() {
         DrawerToggle toggle = new DrawerToggle();
         Label title = new Label("Immobilienverwaltung");
@@ -60,33 +59,36 @@ public class MainLayout extends AppLayout {
         isDarkMode = !isDarkMode;
     }
 
-    private void createDrawer() {
-        VerticalLayout layout = new VerticalLayout();
-        layout.add(new Span("Navigation"));
-        layout.add(createNavigationLink("Wohnungen", WohnungListView.class));
-        layout.add(createNavigationLink("Mieter", MieterListView.class));
-        layout.add(createNavigationLink("Zählerstand", ZaehlerstandListView.class));
-        layout.add(createNavigationLink("Dokumente", DokumentListView.class));
-        layout.setWidthFull();
-        layout.setSizeFull();
-        layout.getStyle().set("background-color", "var(--lumo-contrast-10pct)");
-        layout.getStyle().set("padding", "10px");
-        addToDrawer(layout);
-    }
+    private void createDrawer(MService mService) {
+        SideNav sideNav = new SideNav();
 
-    private RouterLink createNavigationLink(String text, Class<? extends Component> navigationTarget) {
-        RouterLink link = new RouterLink();
-        link.setText(text);
-        link.setRoute(navigationTarget);
-        link.getStyle().set("display", "block");
-        link.getStyle().set("padding", "10px");
-        link.getStyle().set("margin", "5px 0");
-        link.getStyle().set("border", "1px solid var(--lumo-contrast-20pct)");
-        link.getStyle().set("border-radius", "5px");
-        link.getStyle().set("text-decoration", "none");
-        link.getStyle().set("color", "var(--lumo-body-text-color)");
-        link.getStyle().set("background-color", "var(--lumo-contrast-5pct)");
-        link.getStyle().set("width", "80%");
-        return link;
+        long wohnungCount = mService.getWohnungCount();
+        long mieterCount = mService.getMieterCount();
+        long zaehlerstandCount = mService.getZaehlerstandCount();
+        long dokumentCount = mService.getDokumentCount();
+
+        SideNavItem wohnungItem = new SideNavItem("Wohnungen", WohnungListView.class);
+        Span wohnungCounter = new Span(String.valueOf(wohnungCount));
+        wohnungCounter.getElement().getThemeList().add("badge contrast pill");
+        wohnungItem.setSuffixComponent(wohnungCounter);
+
+        SideNavItem mieterItem = new SideNavItem("Mieter", MieterListView.class);
+        Span mieterCounter = new Span(String.valueOf(mieterCount));
+        mieterCounter.getElement().getThemeList().add("badge contrast pill");
+        mieterItem.setSuffixComponent(mieterCounter);
+
+        SideNavItem zaehlerstandItem = new SideNavItem("Zählerstand", ZaehlerstandListView.class);
+        Span zaehlerstandCounter = new Span(String.valueOf(zaehlerstandCount));
+        zaehlerstandCounter.getElement().getThemeList().add("badge contrast pill");
+        zaehlerstandItem.setSuffixComponent(zaehlerstandCounter);
+
+        SideNavItem dokumentItem = new SideNavItem("Dokumente", DokumentListView.class);
+        Span dokumentCounter = new Span(String.valueOf(dokumentCount));
+        dokumentCounter.getElement().getThemeList().add("badge contrast pill");
+        dokumentItem.setSuffixComponent(dokumentCounter);
+
+        sideNav.addItem(wohnungItem, mieterItem, zaehlerstandItem, dokumentItem);
+
+        addToDrawer(sideNav);
     }
 }

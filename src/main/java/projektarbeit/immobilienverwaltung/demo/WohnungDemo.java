@@ -54,6 +54,18 @@ public class WohnungDemo implements CommandLineRunner {
             Postleitzahl plz4 = new Postleitzahl("54321", "Hamburg", DE);
             postleitzahlService.save(plz4);
 
+            Postleitzahl plz5 = new Postleitzahl("9876", "Oberhausen", DE);
+            postleitzahlService.save(plz5);
+
+            Postleitzahl plz6 = new Postleitzahl("77777", "Berlin", DE);
+            postleitzahlService.save(plz6);
+
+            Postleitzahl plz7 = new Postleitzahl("88888", "Zürich", CH);
+            postleitzahlService.save(plz7);
+
+            Postleitzahl plz8 = new Postleitzahl("54555", "Altona", DE);
+            postleitzahlService.save(plz8);
+
             // Create Adresse
             Adresse adr1 = new Adresse(plz1, "Teststrasse", "11");
             adresseService.save(adr1);
@@ -67,6 +79,18 @@ public class WohnungDemo implements CommandLineRunner {
             Adresse adr4 = new Adresse(plz4, "Musterallee", "33b");
             adresseService.save(adr4);
 
+            Adresse adr5 = new Adresse(plz5, "Betastreet", "1111");
+            adresseService.save(adr5);
+
+            Adresse adr6 = new Adresse(plz6, "Lolgasse", "69");
+            adresseService.save(adr6);
+
+            Adresse adr7 = new Adresse(plz7, "strasse no 3", "333");
+            adresseService.save(adr7);
+
+            Adresse adr8 = new Adresse(plz8, "Königsstraße", "1");
+            adresseService.save(adr8);
+
             // Create Wohnung
             Wohnung w1 = new Wohnung(adr1, 200, 1900, 2, 2, true, true, true, true);
             wohnungService.save(w1);
@@ -79,6 +103,19 @@ public class WohnungDemo implements CommandLineRunner {
 
             Wohnung w4 = new Wohnung(adr4, 85, 1995, 2, 2, false, true, false, true);
             wohnungService.save(w4);
+
+            Wohnung w5 = new Wohnung(adr5, 222, 1967, 2, 2, true, true, true, true);
+            wohnungService.save(w5);
+
+            Wohnung w6 = new Wohnung(adr6, 35, 1943, 1, 1, false, false, false, false);
+            wohnungService.save(w6);
+
+            Wohnung w7 = new Wohnung(adr7, 44, 1877, 1, 3, true, false, true, false);
+            wohnungService.save(w7);
+
+            Wohnung w8 = new Wohnung(adr8, 55, 2008, 2, 2, false, true, false, true);
+            wohnungService.save(w8);
+
 
             logger.info("Wohnung data loaded.");
         } else {

@@ -63,6 +63,24 @@ public class MieterDemo implements CommandLineRunner {
                 Mieter mieter6 = new Mieter("Schneider", "Laura", "9876543211", 4200, LocalDate.of(2023, 7, 1), LocalDate.of(2024, 7, 1), 1300, 3);
                 mieterRepository.save(mieter6);
 
+                Mieter mieter7 = new Mieter("Matts", "John", "0123456789", 3000, LocalDate.of(2023, 1, 1), LocalDate.of(2024, 1, 1), 1000, 2);
+                mieterRepository.save(mieter7);
+
+                Mieter mieter8 = new Mieter( "Matts", "Jane", "9876543210", 4000, LocalDate.of(2023, 6, 1), LocalDate.of(2024, 6, 1), 1200, 3);
+                mieterRepository.save(mieter8);
+
+                Mieter mieter9 = new Mieter( "Musterfrau", "Max", "1234567890", 2500, LocalDate.of(2022, 5, 1), LocalDate.of(2023, 5, 1), 900, 1);
+                mieterRepository.save(mieter9);
+
+                Mieter mieter10 = new Mieter("Musterfrau", "Erika", "0987654321", 2800, LocalDate.of(2023, 3, 1), LocalDate.of(2024, 3, 1), 1000, 2);
+                mieterRepository.save(mieter10);
+
+                Mieter mieter11 = new Mieter( "Becker", "Lukas", "0123456788", 3200, LocalDate.of(2022, 2, 1), LocalDate.of(2023, 2, 1), 1100, 2);
+                mieterRepository.save(mieter11);
+
+                Mieter mieter12 = new Mieter("Schneider", "Moritz", "9876543211", 4200, LocalDate.of(2023, 7, 1), LocalDate.of(2024, 7, 1), 1300, 3);
+                mieterRepository.save(mieter12);
+
                 logger.info("Mieter data loaded.");
             } else {
                 logger.warn("No Wohnungen found, skipping Mieter data initialization.");
