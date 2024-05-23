@@ -2,7 +2,10 @@ package projektarbeit.immobilienverwaltung.ui.layout;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
+import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouterLink;
@@ -17,9 +20,22 @@ public class MainLayout extends AppLayout {
     private boolean isDarkMode = true; // Dark mode enabled by default
 
     public MainLayout() {
+        createHeader();
         createDrawer();
         createFooter();
         enableDarkMode();
+    }
+
+    @SuppressWarnings("removal")
+    private void createHeader() {
+        DrawerToggle toggle = new DrawerToggle();
+        Label title = new Label("Immobilienverwaltung");
+        Div header = new Div(toggle, title);
+        header.getStyle().set("padding", "10px");
+        header.getStyle().set("display", "flex");
+        header.getStyle().set("alignItems", "center");
+        header.getStyle().set("gap", "10px");
+        addToNavbar(header);
     }
 
     private void enableDarkMode() {
@@ -52,6 +68,7 @@ public class MainLayout extends AppLayout {
         layout.add(createNavigationLink("Zählerstand", ZaehlerstandListView.class));
         layout.add(createNavigationLink("Dokumente", DokumentListView.class));
         layout.setWidthFull();
+        layout.setSizeFull();
         layout.getStyle().set("background-color", "var(--lumo-contrast-10pct)");
         layout.getStyle().set("padding", "10px");
         addToDrawer(layout);
