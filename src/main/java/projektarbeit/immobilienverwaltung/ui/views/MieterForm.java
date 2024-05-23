@@ -5,7 +5,6 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -17,14 +16,23 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import projektarbeit.immobilienverwaltung.demo.AssignMieterToWohnungDemo;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
+import projektarbeit.immobilienverwaltung.service.MieterService;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class MieterForm extends FormLayout {
+
+    private final MieterService mieterService;
+    private List<Wohnung> availableWohnungen;
+    private Mieter mieter;
+    private static final Logger logger = LoggerFactory.getLogger(AssignMieterToWohnungDemo.class);
 
     //Datenbindung und Validierung zwischen UI-Komponenten und einem Java-Bean-Objekt zu erstellen
     Binder<Mieter> binder = new BeanValidationBinder<>(Mieter.class);
@@ -40,40 +48,38 @@ public class MieterForm extends FormLayout {
     IntegerField anzahlBewohner = new IntegerField("Anzahl Bewohner");
     MultiSelectComboBox<Wohnung> wohnungMultiSelectComboBox = new MultiSelectComboBox<>("Wohnung");
 
-
     // Die 3 Knöpfe zum Speichern, Löschen und Schließen des Forms
     Button speichern = new Button("Speichern");
     Button loeschen = new Button("Löschen");
     Button schliessen = new Button("Schließen");
-    private Mieter mieter;
 
     //Erstellung des Forms
-    public MieterForm(List<Wohnung> wohnungen) {
+    public MieterForm(MieterService mieterService) {
+        this.mieterService = mieterService;
+        this.availableWohnungen = mieterService.findAvailableWohnungen();
         addClassName("mieter-form");
 
         binder.bindInstanceFields(this);
 
-        wohnungMultiSelectComboBox.setItems(wohnungen);
+        wohnungMultiSelectComboBox.setItems(availableWohnungen);
         wohnungMultiSelectComboBox.setItemLabelGenerator(Wohnung::getFormattedAddress);
 
-        add(name,
-                vorname,
-                telefonnummer,
-                einkommen,
-                mietbeginn,
-                mietende,
-                kaution,
-                anzahlBewohner,
-                wohnungMultiSelectComboBox,
-                createButtonsLayout());
+        // Initially check if there are available Wohnungen and update the UI accordingly
+        updateWohnungComboBoxState();
+
+        add(name, vorname, telefonnummer, einkommen, mietbeginn, mietende, kaution, anzahlBewohner, wohnungMultiSelectComboBox, createButtonsLayout());
     }
 
-    //Die Mieter zum Binder binden
+    // Bind the Mieter to the binder
     public void setMieter(Mieter mieter) {
         if (mieter != null) {
             this.mieter = mieter;
             binder.readBean(mieter);
             wohnungMultiSelectComboBox.setValue(mieter.getWohnung().stream().collect(Collectors.toSet()));
+        } else {
+            this.mieter = new Mieter();
+            binder.readBean(this.mieter);
+            wohnungMultiSelectComboBox.clear();
         }
     }
 
@@ -95,15 +101,54 @@ public class MieterForm extends FormLayout {
     }
 
     @SuppressWarnings("CallToPrintStackTrace")
-    //Validiert die Eingaben im Formular und speichert die Daten, falls sie gültig sind
+    // Validates the inputs in the form and saves the data if valid
     private void validateAndSave() {
-        try{
+        try {
             binder.writeBean(mieter);
-            mieter.setWohnung(new ArrayList<>(wohnungMultiSelectComboBox.getValue()));
+
+            // Get the current and selected Wohnungen
+            List<Wohnung> currentWohnungen = new ArrayList<>(mieter.getWohnung());
+            List<Wohnung> selectedWohnungen = new ArrayList<>(wohnungMultiSelectComboBox.getValue());
+
+            // Determine which Wohnungen to remove
+            List<Wohnung> toRemove = currentWohnungen.stream()
+                    .filter(wohnung -> !selectedWohnungen.contains(wohnung))
+                    .collect(Collectors.toList());
+
+            // Save or update the Mieter and Wohnungen
+            if (!toRemove.isEmpty()) {
+                mieterService.removeWohnungFromMieter(mieter, toRemove);
+            }
+            mieterService.saveWohnungToMieter(mieter, selectedWohnungen);
+
+            // Refresh available Wohnungen list
+            refreshAvailableWohnungen();
+
             fireEvent(new SaveEvent(this, mieter));
-        }catch (ValidationException e){
+        } catch (ValidationException e) {
             e.printStackTrace();
         }
+    }
+
+    // Refreshes the available Wohnungen list and updates the MultiSelectComboBox items
+    private void refreshAvailableWohnungen() {
+        availableWohnungen = mieterService.findAvailableWohnungen();
+        wohnungMultiSelectComboBox.setItems(availableWohnungen);
+        updateWohnungComboBoxState();
+    }
+
+    // Updates the state of the MultiSelectComboBox based on available Wohnungen
+    private void updateWohnungComboBoxState() {
+        if (availableWohnungen.isEmpty()) {
+            wohnungMultiSelectComboBox.setPlaceholder("Keine Wohnungen verfügbar");
+        } else {
+            wohnungMultiSelectComboBox.setPlaceholder("Wohnung auswählen");
+        }
+    }
+
+    //Fügt einen Listener für die angegebene Ereignis hinzu (Speichern, Löschen und Schließen)
+    public <T extends ComponentEvent<?>> Registration addListener(Class<T> eventType, ComponentEventListener<T> listener) {
+        return getEventBus().addListener(eventType, listener);
     }
 
     // Events für die Buttons Speichern, Löschen und Schließen
@@ -140,11 +185,6 @@ public class MieterForm extends FormLayout {
         CloseEvent(MieterForm source) {
             super(source, null);
         }
-    }
-
-    //Fügt einen Listener für die angegebene Ereignis hinzu (Speichern, Löschen und Schließen)
-    public <T extends  ComponentEvent<?>> Registration addListener(Class<T> eventType, ComponentEventListener<T> listener){
-        return getEventBus().addListener(eventType, listener);
     }
 
 }

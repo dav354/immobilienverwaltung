@@ -11,7 +11,9 @@ import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.repository.MieterRepository;
 import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
+import projektarbeit.immobilienverwaltung.service.MieterService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -25,6 +27,9 @@ public class AssignMieterToWohnungDemo implements CommandLineRunner {
 
     @Autowired
     private WohnungRepository wohnungRepository;
+
+    @Autowired
+    private MieterService mieterService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -55,38 +60,25 @@ public class AssignMieterToWohnungDemo implements CommandLineRunner {
                 Wohnung wohnung5 = wohnungen.get(4);
                 Wohnung wohnung6 = wohnungen.get(5);
 
-                // Assign Mieter 1 to Wohnung 1 and Wohnung 2
-                mieter1.getWohnung().add(wohnung1);
-                mieter1.getWohnung().add(wohnung2);
-                mieter1.getWohnung().add(wohnung3);
-                wohnung1.setMieter(mieter1);
-                wohnung2.setMieter(mieter1);
-                wohnung3.setMieter(mieter1);
+                List<Wohnung> wohnungsListe1 = new ArrayList<>();
+                wohnungsListe1.add(wohnung1);
+                wohnungsListe1.add(wohnung2);
+                wohnungsListe1.add(wohnung3);
 
-                // Assign Mieter 2 to Wohnung 3
-                mieter2.getWohnung().add(wohnung4);
-                wohnung4.setMieter(mieter2);
+                List<Wohnung> wohnungsListe2 = new ArrayList<>();
+                wohnungsListe2.add(wohnung4);
 
-                // Assign Mieter 3 to Wohnung 5
-                mieter3.getWohnung().add(wohnung5);
-                wohnung5.setMieter(mieter3);
+                List<Wohnung> wohnungsListe3 = new ArrayList<>();
+                wohnungsListe3.add(wohnung5);
 
-                // Assign Mieter 4 to Wohnung 6
-                mieter4.getWohnung().add(wohnung6);
-                wohnung6.setMieter(mieter4);
+                List<Wohnung> wohnungsListe4 = new ArrayList<>();
+                wohnungsListe4.add(wohnung6);
 
                 // Save the updated entities
-                mieterRepository.save(mieter1);
-                mieterRepository.save(mieter2);
-                mieterRepository.save(mieter3);
-                mieterRepository.save(mieter4);
-                wohnungRepository.save(wohnung1);
-                wohnungRepository.save(wohnung2);
-                wohnungRepository.save(wohnung3);
-                wohnungRepository.save(wohnung4);
-                wohnungRepository.save(wohnung5);
-                wohnungRepository.save(wohnung6);
-
+                mieterService.saveWohnungToMieter(mieter1, wohnungsListe1);
+                mieterService.saveWohnungToMieter(mieter2, wohnungsListe2);
+                mieterService.saveWohnungToMieter(mieter3, wohnungsListe3);
+                mieterService.saveWohnungToMieter(mieter4, wohnungsListe4);
 
                 logger.info("Mieter data assigned to Wohnungen.");
             } else {

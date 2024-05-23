@@ -3,6 +3,7 @@ package projektarbeit.immobilienverwaltung.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+
 import java.util.List;
 
 /**
@@ -57,20 +58,21 @@ public class Wohnung {
     /**
      * Default constructor for JPA.
      */
-    public Wohnung() {}
+    public Wohnung() {
+    }
 
     /**
      * Constructs a new Wohnung instance with specified details.
      *
-     * @param adresse           The address of the property.
+     * @param adresse            The address of the property.
      * @param gesamtQuadratmeter The total area of the property in square meters.
-     * @param baujahr           The year the property was built.
-     * @param anzahlBaeder      The number of bathrooms in the property.
+     * @param baujahr            The year the property was built.
+     * @param anzahlBaeder       The number of bathrooms in the property.
      * @param anzahlSchlafzimmer The number of bedrooms in the property.
-     * @param hatBalkon         Whether the property has a balcony.
-     * @param hatTerrasse       Whether the property has a terrace.
-     * @param hatGarten         Whether the property has a garden.
-     * @param hatKlimaanlage    Whether the property has air conditioning.
+     * @param hatBalkon          Whether the property has a balcony.
+     * @param hatTerrasse        Whether the property has a terrace.
+     * @param hatGarten          Whether the property has a garden.
+     * @param hatKlimaanlage     Whether the property has air conditioning.
      */
     public Wohnung(Adresse adresse,
                    int gesamtQuadratmeter,
@@ -113,11 +115,26 @@ public class Wohnung {
         return mieter;
     }
 
-    // Set a Mieter for this Wohnung
+    /**
+     * Sets the Mieter for this Wohnung.
+     * <p>
+     * If the Wohnung is already associated with a Mieter, it will be removed from the current Mieter's list of Wohnungen.
+     * Then, the new Mieter will be assigned to this Wohnung, and this Wohnung will be added to the new Mieter's list of Wohnungen.
+     *
+     * @param mieter The new Mieter to be assigned to this Wohnung. If null, the Wohnung will be disassociated from any Mieter.
+     */
     public void setMieter(Mieter mieter) {
+        if (this.mieter != null) {
+            this.mieter.getWohnung().remove(this);  // Remove this Wohnung from the current Mieter's list
+        }
+
         this.mieter = mieter;
-        mieter.getWohnung().add(this);
+
+        if (mieter != null) {
+            mieter.getWohnung().add(this);  // Add this Wohnung to the new Mieter's list
+        }
     }
+
 
     public List<Dokument> getDokumente() {
         return dokumente;
@@ -199,6 +216,14 @@ public class Wohnung {
         this.hatKlimaanlage = hatKlimaanlage;
     }
 
+    /**
+     * Returns the formatted address of the Wohnung (apartment).
+     * <p>
+     * The address format includes the country, postal code, city, street, and house number.
+     * If the address or postal code object is null, it returns "Keine Adresse".
+     *
+     * @return A formatted string representing the address of the Wohnung, or "Keine Adresse" if the address or postal code object is null.
+     */
     public String getFormattedAddress() {
         if (adresse != null && adresse.getPostleitzahlObj() != null) {
             Postleitzahl postleitzahlObj = adresse.getPostleitzahlObj();
@@ -212,6 +237,9 @@ public class Wohnung {
         return "Keine Adresse";
     }
 
+    /**
+     * Returns a string representation of the Wohnung (apartment).
+     */
     @Override
     public String toString() {
         return "Wohnung[" +

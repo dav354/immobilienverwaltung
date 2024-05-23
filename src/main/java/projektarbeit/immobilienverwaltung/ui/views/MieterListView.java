@@ -72,7 +72,7 @@ public class MieterListView extends VerticalLayout {
 
     //Einstellungen des Forms für die Erstellung/Bearbeitung der Mieter
     private void configureForm() {
-        form = new MieterForm(mieterService.findAllWohnungen());
+        form = new MieterForm(mieterService);
         form.setWidth("400em");
         //Wartet darauf das die Knöpfe gedrückt werden und führt dann die passende Methode aus
         form.addListener(MieterForm.SaveEvent.class, this::saveMieter);

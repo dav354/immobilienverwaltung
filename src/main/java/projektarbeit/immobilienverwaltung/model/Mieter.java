@@ -169,11 +169,22 @@ public class Mieter {
         this.anzahlBewohner = anzahlBewohner;
     }
 
-    // Method to get the full name of the tenant
+    /**
+     * Returns the full name of the tenant by combining the first name and last name.
+     *
+     * @return The full name of the tenant in the format "FirstName LastName".
+     */
     public String getFullName() {
         return vorname + " " + name;
     }
 
+    /**
+     * Returns a formatted string of all the apartments associated with the tenant.
+     * If no apartments are associated, it returns "Keine Wohnung".
+     * Each apartment's address is formatted and separated by a line break.
+     *
+     * @return A formatted string of the tenant's apartments or "Keine Wohnung" if none are associated.
+     */
     public String getFormattedWohnung() {
         if (wohnung.isEmpty()) {
             return "Keine Wohnung";
@@ -184,6 +195,9 @@ public class Mieter {
         }
     }
 
+    /**
+     * Returns a string representation of the Mieter.
+     */
     @Override
     public String toString() {
         return "Mieter[" +
@@ -196,5 +210,4 @@ public class Mieter {
                 "', wohnungen='" + getFormattedWohnung() +
                 "']";
     }
-
 }
