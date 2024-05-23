@@ -65,7 +65,7 @@ public class MieterForm extends FormLayout {
         wohnungMultiSelectComboBox.setItemLabelGenerator(Wohnung::getFormattedAddress);
 
         // Initially check if there are available Wohnungen and update the UI accordingly
-        updateWohnungComboBoxState();
+        refreshAvailableWohnungen();
 
         add(name, vorname, telefonnummer, einkommen, mietbeginn, mietende, kaution, anzahlBewohner, wohnungMultiSelectComboBox, createButtonsLayout());
     }
@@ -133,16 +133,10 @@ public class MieterForm extends FormLayout {
     // Refreshes the available Wohnungen list and updates the MultiSelectComboBox items
     private void refreshAvailableWohnungen() {
         availableWohnungen = mieterService.findAvailableWohnungen();
-        wohnungMultiSelectComboBox.setItems(availableWohnungen);
-        updateWohnungComboBoxState();
-    }
-
-    // Updates the state of the MultiSelectComboBox based on available Wohnungen
-    private void updateWohnungComboBoxState() {
         if (availableWohnungen.isEmpty()) {
             wohnungMultiSelectComboBox.setPlaceholder("Keine Wohnungen verfügbar");
         } else {
-            wohnungMultiSelectComboBox.setPlaceholder("Wohnung auswählen");
+            wohnungMultiSelectComboBox.setItems(availableWohnungen);
         }
     }
 

@@ -22,6 +22,9 @@ public class Mieter {
     @OneToMany(mappedBy = "mieter", fetch = FetchType.EAGER)
     private List<Wohnung> wohnung = new ArrayList<>();
 
+    @OneToMany(mappedBy = "mieter", fetch = FetchType.EAGER)
+    private List<Dokument> dokument = new ArrayList<>();
+
     @Column(nullable = false, length = 100)
     private String name;
 
@@ -97,6 +100,14 @@ public class Mieter {
 
     public void setWohnung(List<Wohnung> wohnung) {
         this.wohnung = wohnung;
+    }
+
+    public List<Dokument> getDokument() {
+        return dokument;
+    }
+
+    public void setDokument(List<Dokument> dokument) {
+        this.dokument = dokument;
     }
 
     public String getName() {

@@ -7,13 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import projektarbeit.immobilienverwaltung.demo.AssignMieterToWohnungDemo;
+import projektarbeit.immobilienverwaltung.model.Dokument;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
+import projektarbeit.immobilienverwaltung.model.Zaehlerstand;
 import projektarbeit.immobilienverwaltung.repository.DokumentRepository;
 import projektarbeit.immobilienverwaltung.repository.MieterRepository;
 import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
 import projektarbeit.immobilienverwaltung.repository.ZaehlerstandRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,6 +29,14 @@ public class MieterService {
     private final ZaehlerstandRepository zaehlerstandRepository;
     private final DokumentRepository dokumentRepository;
 
+    /**
+     * Constructs a new MieterService with the given repositories.
+     *
+     * @param wohnungRepository the repository for Wohnung entities
+     * @param mieterRepository the repository for Mieter entities
+     * @param zaehlerstandRepository the repository for Zaehlerstand entities
+     * @param dokumentRepository the repository for Dokument entities
+     */
     @Autowired
     public MieterService(WohnungRepository wohnungRepository,
                          MieterRepository mieterRepository,
@@ -37,23 +48,49 @@ public class MieterService {
         this.dokumentRepository = dokumentRepository;
     }
 
+    /**
+     * Returns the count of Wohnung entities.
+     *
+     * @return the number of Wohnung entities
+     */
     public long getWohnungCount() {
         return wohnungRepository.count();
     }
 
+    /**
+     * Returns the count of Mieter entities.
+     *
+     * @return the number of Mieter entities
+     */
     public long getMieterCount() {
         return mieterRepository.count();
     }
 
+    /**
+     * Returns the count of Zaehlerstand entities.
+     *
+     * @return the number of Zaehlerstand entities
+     */
     public long getZaehlerstandCount() {
         return zaehlerstandRepository.count();
     }
 
+    /**
+     * Returns the count of Dokument entities.
+     *
+     * @return the number of Dokument entities
+     */
     public long getDokumentCount() {
         return dokumentRepository.count();
     }
 
-    // Alle Mieter aus den Daten holen
+    /**
+     * Retrieves all Mieter entities that match the given filter string.
+     * If the filter string is null or empty, returns all Mieter entities.
+     *
+     * @param stringFilter the filter string to search for
+     * @return a list of matching Mieter entities
+     */
     public List<Mieter> findAllMieter(String stringFilter) {
         if (stringFilter == null || stringFilter.isEmpty()) {
             return mieterRepository.findAll();
@@ -62,30 +99,56 @@ public class MieterService {
         }
     }
 
-    // Overloaded method that takes no arguments
+    /**
+     * Overloaded method that retrieves all Mieter entities without any filtering.
+     *
+     * @return a list of all Mieter entities
+     */
     public List<Mieter> findAllMieter(){
         return findAllMieter(null);
     }
 
-    public long countMieter() {
-        return mieterRepository.count();
-    }
-
+    /**
+     * Deletes the given Mieter entity from the repository and sets the associated Wohnungen & Dokumente to null.
+     *
+     * @param mieter the Mieter entity to delete
+     */
     public void deleteMieter(Mieter mieter) {
-        mieterRepository.delete(mieter);
+        if (mieter == null) {
+            logger.error("deleteMieter: Mieter is null.");
+            return;
+        }
+
+        // Set the mieter field to null for all associated Dokumente
+        List<Dokument> dokumente = new ArrayList<>(mieter.getDokument());
+        for (Dokument dokument : dokumente) {
+            dokument.setMieter(null);
+            dokumentRepository.save(dokument);
+        }
+
+        // Set the mieter field to null for all associated Wohnungen
+        List<Wohnung> wohnungen = new ArrayList<>(mieter.getWohnung());
+        for (Wohnung wohnung : wohnungen) {
+            wohnung.setMieter(null);
+            wohnungRepository.save(wohnung); // Save the updated Wohnung entity
+        }
+
+        mieterRepository.delete(mieter); // Delete the Mieter entity
     }
 
+
+    /**
+     * Saves the given tenant (Mieter) to the repository.
+     * Logs an error message if the tenant is null and does not perform any save operation.
+     *
+     * @param mieter The tenant to be saved. Must not be null.
+     */
     public void saveMieter(Mieter mieter) {
         if (mieter == null) {
-            logger.error("Mieter is null.");
+            logger.error("saveMieter: Mieter is null.");
             return;
         }
         mieterRepository.save(mieter);
-    }
-
-    //Alle Wohnungen aus den Daten holen
-    public List<Wohnung> findAllWohnungen() {
-        return wohnungRepository.findAll();
     }
 
     /**

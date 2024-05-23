@@ -68,6 +68,10 @@ public class Dokument {
         return mieter;
     }
 
+    public void setMieter(Mieter mieter) {
+        this.mieter = mieter;
+    }
+
     public String getDokumententyp() {
         return dokumententyp;
     }
