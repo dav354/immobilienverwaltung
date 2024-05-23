@@ -2,7 +2,10 @@ package projektarbeit.immobilienverwaltung.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Positive;
+
 import java.sql.Date;
 
 /**
@@ -19,15 +22,15 @@ public class Zaehlerstand {
 
     @ManyToOne
     @JoinColumn(name = "wohnung_id", nullable = false)
+    @NotNull(message = "Wohnung cannot be null")
     private Wohnung wohnung;
 
-    @Temporal(TemporalType.DATE)
-    @PastOrPresent
     @Column(nullable = false)
+    @NotNull(message = "Ablesedatum cannot be null")
     private Date ablesedatum;
 
-    @DecimalMin("0.0")
     @Column(nullable = false)
+    @Positive(message = "Ablesewert must be positive")
     private double ablesewert;
 
     /**
@@ -49,39 +52,96 @@ public class Zaehlerstand {
     public Zaehlerstand() {
     }
 
+    /**
+     * Returns the ID of the meter reading.
+     *
+     * @return the meter reading ID
+     */
     public Long getZaehlerstandId() {
         return zaehlerstandId;
     }
 
+    /**
+     * Sets the ID of the meter reading.
+     *
+     * @param zaehlerstandId the meter reading ID to set
+     */
     public void setZaehlerstandId(Long zaehlerstandId) {
         this.zaehlerstandId = zaehlerstandId;
     }
 
+    /**
+     * Returns the property (Wohnung) associated with the meter reading.
+     *
+     * @return the property associated with the meter reading
+     */
     public Wohnung getWohnung() {
         return wohnung;
     }
 
+    /**
+     * Sets the property (Wohnung) associated with the meter reading.
+     *
+     * @param wohnung the property to set
+     * @throws IllegalArgumentException if the Wohnung is null.
+     */
     public void setWohnung(Wohnung wohnung) {
+        if (wohnung == null) {
+            throw new IllegalArgumentException("Wohnung cannot be null");
+        }
         this.wohnung = wohnung;
     }
 
+    /**
+     * Returns the date of the meter reading.
+     *
+     * @return the date of the meter reading
+     */
     public Date getAblesedatum() {
         return ablesedatum;
     }
 
+    /**
+     * Sets the date of the meter reading.
+     *
+     * @param ablesedatum the date to set
+     * @throws IllegalArgumentException if the date is null.
+     */
     public void setAblesedatum(Date ablesedatum) {
+        if (ablesedatum == null) {
+            throw new IllegalArgumentException("Ablesedatum cannot be null");
+        }
         this.ablesedatum = ablesedatum;
     }
 
+    /**
+     * Returns the meter reading value.
+     *
+     * @return the meter reading value
+     */
     public double getAblesewert() {
         return ablesewert;
     }
 
+    /**
+     * Sets the meter reading value.
+     * Ensures the reading value is positive.
+     *
+     * @param ablesewert the meter reading value to set
+     * @throws IllegalArgumentException if the value is not positive.
+     */
     public void setAblesewert(double ablesewert) {
-        if (ablesewert < 0) throw new IllegalArgumentException("Ablesewert must be positive.");
+        if (ablesewert <= 0) {
+            throw new IllegalArgumentException("Ablesewert must be positive");
+        }
         this.ablesewert = ablesewert;
     }
 
+    /**
+     * Returns a string representation of this Zaehlerstand.
+     *
+     * @return a string representation of this Zaehlerstand.
+     */
     @Override
     public String toString() {
         return "Zaehlerstand[" +

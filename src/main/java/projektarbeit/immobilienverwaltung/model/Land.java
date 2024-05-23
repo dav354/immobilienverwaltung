@@ -1,6 +1,10 @@
 package projektarbeit.immobilienverwaltung.model;
-
+/**
+ * Represents a country with its name.
+ * This enum holds the ISO 3166-1 alpha-2 country codes along with their respective country names.
+ */
 public enum Land {
+    // List of countries with ISO 3166-1 alpha-2 codes and their names
     AF("Afghanistan"),
     EG("Ägypten"),
     AL("Albanien"),
@@ -195,17 +199,31 @@ public enum Land {
 
     private final String name;
 
+    /**
+     * Constructs a new Land with the specified country name.
+     *
+     * @param name the name of the country
+     */
     Land(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns the name of the country.
+     *
+     * @return the name of the country
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns a string representation of the country name.
+     *
+     * @return the name of the country
+     */
     @Override
     public String toString() {
         return name;
     }
-
 }

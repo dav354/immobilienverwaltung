@@ -1,7 +1,8 @@
 package projektarbeit.immobilienverwaltung.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.*;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,33 +27,38 @@ public class Mieter {
     private List<Dokument> dokument = new ArrayList<>();
 
     @Column(nullable = false, length = 100)
+    @NotBlank(message = "Name cannot be blank")
+    @Size(max = 100, message = "Name cannot exceed 100 characters")
     private String name;
 
     @Column(nullable = false, length = 100)
+    @NotBlank(message = "Vorname cannot be blank")
+    @Size(max = 100, message = "Vorname cannot exceed 100 characters")
     private String vorname;
 
     @Column(nullable = false)
-    @Min(value = 6)
+    @NotBlank(message = "Telefonnummer cannot be blank")
+    @Pattern(regexp = "^(\\+\\d{1,3}[- ]?)?\\d{10}$", message = "Invalid Telefonnummer format")
     private String telefonnummer; // can start with 0 or +
 
     @Column(nullable = false)
-    @Min(value = 0, message = "Einkommen cannot be negative")
+    @Positive(message = "Einkommen must be positive")
     private double einkommen;
 
-    @Temporal(TemporalType.DATE)
     @Column(nullable = false)
+    @NotNull(message = "Mietbeginn cannot be null")
     private LocalDate mietbeginn;
 
-    @Temporal(TemporalType.DATE)
     @Column(nullable = false)
+    @NotNull(message = "Mietende cannot be null")
     private LocalDate mietende;
 
     @Column(nullable = false)
-    @Min(value = 0, message = "Kaution cannot be negative")
+    @Positive(message = "Kaution must be positive")
     private double kaution;
 
     @Column(nullable = false)
-    @Min(value = 1, message = "Must have at least one inhabitant")
+    @Min(value = 1, message = "AnzahlBewohner must be at least 1")
     private int anzahlBewohner;
 
     /**
@@ -90,93 +96,227 @@ public class Mieter {
      */
     public Mieter() {}
 
+    /**
+     * Returns the ID of the tenant.
+     *
+     * @return the tenant's ID
+     */
     public Long getMieter_id() {
         return mieter_id;
     }
 
+    /**
+     * Returns the list of properties (Wohnungen) associated with the tenant.
+     *
+     * @return the list of properties
+     */
     public List<Wohnung> getWohnung() {
         return wohnung;
     }
 
+    /**
+     * Sets the list of properties (Wohnungen) for the tenant.
+     *
+     * @param wohnung the list of properties to set
+     */
     public void setWohnung(List<Wohnung> wohnung) {
         this.wohnung = wohnung;
     }
 
+    /**
+     * Returns the list of documents (Dokumente) associated with the tenant.
+     *
+     * @return the list of documents
+     */
     public List<Dokument> getDokument() {
         return dokument;
     }
 
+    /**
+     * Sets the list of documents (Dokumente) for the tenant.
+     *
+     * @param dokument the list of documents to set
+     */
     public void setDokument(List<Dokument> dokument) {
         this.dokument = dokument;
     }
 
+    /**
+     * Returns the last name of the tenant.
+     *
+     * @return the tenant's last name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the last name of the tenant.
+     *
+     * @param name the last name to set
+     * @throws IllegalArgumentException if the name is null, empty, or exceeds 100 characters
+     */
     public void setName(String name) {
+        if (name == null || name.isEmpty() || name.length() > 100) {
+            throw new IllegalArgumentException("Name cannot be null, empty, or exceed 100 characters");
+        }
         this.name = name;
     }
 
+    /**
+     * Returns the first name of the tenant.
+     *
+     * @return the tenant's first name
+     */
     public String getVorname() {
         return vorname;
     }
 
+    /**
+     * Sets the first name of the tenant.
+     *
+     * @param vorname the first name to set
+     * @throws IllegalArgumentException if the first name is null, empty, or exceeds 100 characters
+     */
     public void setVorname(String vorname) {
+        if (vorname == null || vorname.isEmpty() || vorname.length() > 100) {
+            throw new IllegalArgumentException("Vorname cannot be null, empty, or exceed 100 characters");
+        }
         this.vorname = vorname;
     }
 
+    /**
+     * Returns the phone number of the tenant.
+     *
+     * @return the tenant's phone number
+     */
     public String getTelefonnummer() {
         return telefonnummer;
     }
 
+    /**
+     * Sets the phone number of the tenant.
+     *
+     * @param telefonnummer the phone number to set
+     * @throws IllegalArgumentException if the phone number format is invalid
+     */
     public void setTelefonnummer(String telefonnummer) {
+        if (!telefonnummer.matches("^(\\+\\d{1,3}[- ]?)?\\d{10}$")) {
+            throw new IllegalArgumentException("Invalid Telefonnummer format");
+        }
         this.telefonnummer = telefonnummer;
     }
 
+    /**
+     * Returns the income of the tenant.
+     *
+     * @return the tenant's income
+     */
     public double getEinkommen() {
         return einkommen;
     }
 
+    /**
+     * Sets the income of the tenant.
+     * The income must be a positive value.
+     *
+     * @param einkommen the income to set
+     * @throws IllegalArgumentException if the income is negative
+     */
     public void setEinkommen(double einkommen) {
-        if (einkommen < 0) throw new IllegalArgumentException("Einkommen must be positive.");
+        if (einkommen <= 0) {
+            throw new IllegalArgumentException("Einkommen must be positive");
+        }
         this.einkommen = einkommen;
     }
 
+    /**
+     * Returns the start date of the tenancy.
+     *
+     * @return the start date of the tenancy
+     */
     public LocalDate getMietbeginn() {
         return mietbeginn;
     }
 
+    /**
+     * Sets the start date of the tenancy.
+     * The start date must be before the end date, if it is set.
+     *
+     * @param mietbeginn the start date to set
+     * @throws IllegalArgumentException if the start date is after the end date
+     */
     public void setMietbeginn(LocalDate mietbeginn) {
         if (mietende != null && mietbeginn.isAfter(mietende)) {
-            throw new IllegalArgumentException("Mietbeginn must be before Mietende.");
+            throw new IllegalArgumentException("Mietbeginn must be before Mietende");
         }
         this.mietbeginn = mietbeginn;
     }
+
+    /**
+     * Returns the end date of the tenancy.
+     *
+     * @return the end date of the tenancy
+     */
     public LocalDate getMietende() {
         return mietende;
     }
 
+    /**
+     * Sets the end date of the tenancy.
+     * The end date must be after the start date.
+     *
+     * @param mietende the end date to set
+     * @throws IllegalArgumentException if the end date is before the start date
+     */
     public void setMietende(LocalDate mietende) {
         if (mietbeginn != null && mietende.isBefore(mietbeginn)) {
-            throw new IllegalArgumentException("Mietende must be after Mietbeginn.");
+            throw new IllegalArgumentException("Mietende must be after Mietbeginn");
         }
         this.mietende = mietende;
     }
 
+    /**
+     * Returns the security deposit amount.
+     *
+     * @return the security deposit amount
+     */
     public double getKaution() {
         return kaution;
     }
 
+    /**
+     * Sets the security deposit amount.
+     *
+     * @param kaution the security deposit amount to set
+     * @throws IllegalArgumentException if the security deposit is not positive
+     */
     public void setKaution(double kaution) {
+        if (kaution <= 0) {
+            throw new IllegalArgumentException("Kaution must be positive");
+        }
         this.kaution = kaution;
     }
 
+    /**
+     * Returns the number of residents.
+     *
+     * @return the number of residents
+     */
     public int getAnzahlBewohner() {
         return anzahlBewohner;
     }
 
+    /**
+     * Sets the number of residents.
+     *
+     * @param anzahlBewohner the number of residents to set
+     * @throws IllegalArgumentException if the number of residents is less than 1
+     */
     public void setAnzahlBewohner(int anzahlBewohner) {
+        if (anzahlBewohner < 1) {
+            throw new IllegalArgumentException("AnzahlBewohner must be at least 1");
+        }
         this.anzahlBewohner = anzahlBewohner;
     }
 
@@ -207,7 +347,9 @@ public class Mieter {
     }
 
     /**
-     * Returns a string representation of the Mieter.
+     * Returns a string representation of this Mieter.
+     *
+     * @return a string representation of this Mieter.
      */
     @Override
     public String toString() {
