@@ -4,7 +4,6 @@ import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.component.html.Span;
@@ -28,7 +27,7 @@ public class MainLayout extends AppLayout {
 
     private void createHeader() {
         DrawerToggle toggle = new DrawerToggle();
-        Label title = new Label("Immobilienverwaltung");
+        Span title = new Span("Immobilienverwaltung");
         Div header = new Div(toggle, title);
         header.getStyle().set("padding", "10px");
         header.getStyle().set("display", "flex");
