@@ -180,16 +180,12 @@ public class Mieter {
         } else {
             return wohnung.stream()
                     .map(Wohnung::getFormattedAddress)
-                    .collect(Collectors.joining(", "));
+                    .collect(Collectors.joining("<br>"));
         }
     }
 
     @Override
     public String toString() {
-        String wohnungIds = wohnung.stream()
-                .map(w -> String.valueOf(w.getWohnung_id()))
-                .collect(Collectors.joining(", "));
-
         return "Mieter[" +
                 "mieter_id='" + mieter_id +
                 "', name='" + name +
@@ -197,7 +193,7 @@ public class Mieter {
                 "', telefonnummer='" + telefonnummer +
                 "', einkommen='" + einkommen +
                 "', mietbeginn='" + mietbeginn +
-                "', wohnungen='" + (wohnungIds.isEmpty() ? "None" : wohnungIds) +
+                "', wohnungen='" + getFormattedWohnung() +
                 "']";
     }
 
