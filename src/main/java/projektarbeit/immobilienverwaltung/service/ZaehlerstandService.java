@@ -12,27 +12,50 @@ public class ZaehlerstandService {
 
     private final ZaehlerstandRepository zaehlerstandRepository;
 
+    /**
+     * Constructs a new ZaehlerstandService with the specified ZaehlerstandRepository.
+     *
+     * @param zaehlerstandRepository the repository for Zaehlerstand entities
+     */
     @Autowired
     public ZaehlerstandService(ZaehlerstandRepository zaehlerstandRepository) {
         this.zaehlerstandRepository = zaehlerstandRepository;
     }
 
-    // Save or update a Zaehlerstand
+    /**
+     * Saves or updates a Zaehlerstand entity.
+     *
+     * @param zaehlerstand the Zaehlerstand entity to save or update
+     * @return the saved or updated Zaehlerstand entity
+     */
     public Zaehlerstand saveOrUpdateZaehlerstand(Zaehlerstand zaehlerstand) {
         return zaehlerstandRepository.save(zaehlerstand);
     }
 
-    // Retrieve all Zaehlerstande
+    /**
+     * Retrieves all Zaehlerstand entities.
+     *
+     * @return a list of all Zaehlerstand entities
+     */
     public List<Zaehlerstand> findAllZaehlerstaende() {
         return zaehlerstandRepository.findAll();
     }
 
-    // Retrieve a single Zaehlerstand by ID
+    /**
+     * Retrieves a Zaehlerstand entity by its ID.
+     *
+     * @param id the ID of the Zaehlerstand entity to retrieve
+     * @return the Zaehlerstand entity with the specified ID, or null if not found
+     */
     public Zaehlerstand getZaehlerstandById(Long id) {
         return zaehlerstandRepository.findById(id).orElse(null);
     }
 
-    // Delete a Zaehlerstand by ID
+    /**
+     * Deletes a Zaehlerstand entity by its ID.
+     *
+     * @param id the ID of the Zaehlerstand entity to delete
+     */
     public void deleteZaehlerstand(Long id) {
         zaehlerstandRepository.deleteById(id);
     }
