@@ -13,7 +13,7 @@ import projektarbeit.immobilienverwaltung.repository.MieterRepository;
 import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
 
 import java.util.List;
-/*
+
 @Component
 @Order(10)
 public class AssignMieterToWohnungDemo implements CommandLineRunner {
@@ -74,5 +74,3 @@ public class AssignMieterToWohnungDemo implements CommandLineRunner {
         }
     }
 }
-
- */
