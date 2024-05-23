@@ -13,13 +13,9 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
-import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.model.Mieter;
-import projektarbeit.immobilienverwaltung.model.Postleitzahl;
-import projektarbeit.immobilienverwaltung.service.MService;
+import projektarbeit.immobilienverwaltung.service.MieterService;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
-
-import java.util.stream.Collectors;
 
 @Route(value = "mieter", layout = MainLayout.class)
 @PageTitle("Mieter")
@@ -27,13 +23,13 @@ import java.util.stream.Collectors;
 public class MieterListView extends VerticalLayout {
 
     //Einzelnen Bestandteile der Seite
-    private final MService mieterService;
+    private final MieterService mieterService;
     Grid<Mieter> grid = new Grid<>(Mieter.class);
     TextField filterText = new TextField();
     MieterForm form;
 
     //Der Aufbau der Seite mit Überschrift, Eingabe und der Tabelle
-    public MieterListView(MService mieterService) {
+    public MieterListView(MieterService mieterService) {
         this.mieterService = mieterService;
 
         HorizontalLayout header = new HorizontalLayout(new H1("Mieter Übersicht"));

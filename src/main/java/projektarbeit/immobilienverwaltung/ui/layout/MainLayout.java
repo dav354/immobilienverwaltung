@@ -9,7 +9,7 @@ import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.theme.lumo.Lumo;
-import projektarbeit.immobilienverwaltung.service.MService;
+import projektarbeit.immobilienverwaltung.service.MieterService;
 import projektarbeit.immobilienverwaltung.ui.views.DokumentListView;
 import projektarbeit.immobilienverwaltung.ui.views.MieterListView;
 import projektarbeit.immobilienverwaltung.ui.views.WohnungListView;
@@ -19,9 +19,9 @@ public class MainLayout extends AppLayout {
 
     private boolean isDarkMode = true; // Dark mode enabled by default
 
-    public MainLayout(MService mService) {
+    public MainLayout(MieterService mieterService) {
         createHeader();
-        createDrawer(mService);
+        createDrawer(mieterService);
         createFooter();
         enableDarkMode();
     }
@@ -59,13 +59,13 @@ public class MainLayout extends AppLayout {
         isDarkMode = !isDarkMode;
     }
 
-    private void createDrawer(MService mService) {
+    private void createDrawer(MieterService mieterService) {
         SideNav sideNav = new SideNav();
 
-        long wohnungCount = mService.getWohnungCount();
-        long mieterCount = mService.getMieterCount();
-        long zaehlerstandCount = mService.getZaehlerstandCount();
-        long dokumentCount = mService.getDokumentCount();
+        long wohnungCount = mieterService.getWohnungCount();
+        long mieterCount = mieterService.getMieterCount();
+        long zaehlerstandCount = mieterService.getZaehlerstandCount();
+        long dokumentCount = mieterService.getDokumentCount();
 
         SideNavItem wohnungItem = new SideNavItem("Wohnungen", WohnungListView.class);
         Span wohnungCounter = new Span(String.valueOf(wohnungCount));
