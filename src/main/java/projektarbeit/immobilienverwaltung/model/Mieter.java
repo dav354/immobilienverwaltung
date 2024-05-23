@@ -50,7 +50,7 @@ public class Mieter {
 
     @Column(nullable = false)
     @Min(value = 1, message = "Must have at least one inhabitant")
-    private double anzahlBewohner;
+    private int anzahlBewohner;
 
     /**
      * Constructs a new Mieter (tenant) with the specified details.
@@ -71,7 +71,7 @@ public class Mieter {
                   LocalDate mietbeginn,
                   LocalDate mietende,
                   double kaution,
-                  double anzahlBewohner) {
+                  int anzahlBewohner) {
         this.name = name;
         this.vorname = vorname;
         this.telefonnummer = telefonnummer;
@@ -161,11 +161,11 @@ public class Mieter {
         this.kaution = kaution;
     }
 
-    public double getAnzahlBewohner() {
+    public int getAnzahlBewohner() {
         return anzahlBewohner;
     }
 
-    public void setAnzahlBewohner(double anzahlBewohner) {
+    public void setAnzahlBewohner(int anzahlBewohner) {
         this.anzahlBewohner = anzahlBewohner;
     }
 

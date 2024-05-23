@@ -6,9 +6,11 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -18,7 +20,9 @@ import com.vaadin.flow.shared.Registration;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MieterForm extends FormLayout {
 
@@ -33,8 +37,8 @@ public class MieterForm extends FormLayout {
     DatePicker mietbeginn = new DatePicker("Mietbeginn");
     DatePicker mietende = new DatePicker("Mietende");
     NumberField kaution = new NumberField("Kaution");
-    NumberField anzahlBewohner = new NumberField("Anzahl Bewohner");
-    ComboBox <Wohnung> wohnungComboBox = new ComboBox<>("Wohnung");
+    IntegerField anzahlBewohner = new IntegerField("Anzahl Bewohner");
+    MultiSelectComboBox<Wohnung> wohnungMultiSelectComboBox = new MultiSelectComboBox<>("Wohnung");
 
 
     // Die 3 Knöpfe zum Speichern, Löschen und Schließen des Forms
@@ -49,8 +53,8 @@ public class MieterForm extends FormLayout {
 
         binder.bindInstanceFields(this);
 
-        wohnungComboBox.setItems(wohnungen);
-        wohnungComboBox.setItemLabelGenerator(Wohnung::getFormattedAddress);
+        wohnungMultiSelectComboBox.setItems(wohnungen);
+        wohnungMultiSelectComboBox.setItemLabelGenerator(Wohnung::getFormattedAddress);
 
         add(name,
                 vorname,
@@ -60,7 +64,7 @@ public class MieterForm extends FormLayout {
                 mietende,
                 kaution,
                 anzahlBewohner,
-                wohnungComboBox,
+                wohnungMultiSelectComboBox,
                 createButtonsLayout());
     }
 
@@ -69,6 +73,7 @@ public class MieterForm extends FormLayout {
         if (mieter != null) {
             this.mieter = mieter;
             binder.readBean(mieter);
+            wohnungMultiSelectComboBox.setValue(mieter.getWohnung().stream().collect(Collectors.toSet()));
         }
     }
 
@@ -94,6 +99,7 @@ public class MieterForm extends FormLayout {
     private void validateAndSave() {
         try{
             binder.writeBean(mieter);
+            mieter.setWohnung(new ArrayList<>(wohnungMultiSelectComboBox.getValue()));
             fireEvent(new SaveEvent(this, mieter));
         }catch (ValidationException e){
             e.printStackTrace();

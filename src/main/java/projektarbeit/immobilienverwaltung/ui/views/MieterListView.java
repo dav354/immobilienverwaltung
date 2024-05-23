@@ -121,7 +121,7 @@ public class MieterListView extends VerticalLayout {
         }
     }
 
-    //Erstellung des Suchfelds und des Button
+    //Erstellung des Suchfelds und des Buttons
     private HorizontalLayout getToolbar() {
         filterText.setPlaceholder("Filter nach Name");
         filterText.setClearButtonVisible(true);
