@@ -2,7 +2,9 @@ package projektarbeit.immobilienverwaltung.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import projektarbeit.immobilienverwaltung.validation.ValidYear;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -36,13 +38,14 @@ public class Wohnung {
     @Min(value = 1, message = "GesamtQuadratmeter must be at least 1")
     private int gesamtQuadratmeter;
 
-    @Positive(message = "Baujahr must be positive")
+    @Positive(message = "Baujahr must be a four-digit year and not in the future")
+    @ValidYear(message = "Baujahr must be a four-digit year and not in the future")
     private int baujahr;
 
-    @Positive(message = "anzahlBäder must be positive")
+    @Positive(message = "AnzahlBäder must be positive")
     private int anzahlBaeder;
 
-    @PositiveOrZero(message = "anzahlSchlafzimmer must be positive or zero")
+    @PositiveOrZero(message = "AnzahlSchlafzimmer must be zero or positive")
     private int anzahlSchlafzimmer;
 
     private boolean hatBalkon;
@@ -99,6 +102,15 @@ public class Wohnung {
      */
     public Long getWohnung_id() {
         return wohnung_id;
+    }
+
+    /**
+     * Sets the unique identifier of the Wohnung.
+     *
+     * @param wohnung_id the unique identifier of the Wohnung
+     */
+    public void setWohnung_id(Long wohnung_id) {
+        this.wohnung_id = wohnung_id;
     }
 
     /**
@@ -235,9 +247,7 @@ public class Wohnung {
      * @throws IllegalArgumentException if the construction year is not positive.
      */
     public void setBaujahr(int baujahr) {
-        if (baujahr <= 0) {
-            throw new IllegalArgumentException("Baujahr must be positive.");
-        }
+        if (baujahr < 1000 || baujahr > LocalDate.now().getYear())  throw new IllegalArgumentException("Baujahr must be a four-digit year and not in the future");
         this.baujahr = baujahr;
     }
 
@@ -258,7 +268,7 @@ public class Wohnung {
      */
     public void setAnzahlBaeder(int anzahlBaeder) {
         if (anzahlBaeder <= 0) {
-            throw new IllegalArgumentException("AnzahlBaeder must be positive.");
+            throw new IllegalArgumentException("AnzahlBaeder must be positive");
         }
         this.anzahlBaeder = anzahlBaeder;
     }
@@ -280,7 +290,7 @@ public class Wohnung {
      */
     public void setAnzahlSchlafzimmer(int anzahlSchlafzimmer) {
         if (anzahlSchlafzimmer < 0) {
-            throw new IllegalArgumentException("AnzahlSchlafzimmer must be zero or positive.");
+            throw new IllegalArgumentException("AnzahlSchlafzimmer must be zero or positive");
         }
         this.anzahlSchlafzimmer = anzahlSchlafzimmer;
     }

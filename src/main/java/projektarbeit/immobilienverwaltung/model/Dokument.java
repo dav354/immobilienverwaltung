@@ -1,6 +1,7 @@
 package projektarbeit.immobilienverwaltung.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 /**
@@ -24,10 +25,12 @@ public class Dokument {
     private Mieter mieter;
 
     @Column(nullable = false)
+    @NotEmpty(message = "Dokumententyp cannot be null")
     @NotNull(message = "Dokumententyp cannot be null")
     private String dokumententyp;
 
     @Column(nullable = false)
+    @NotEmpty(message = "Dateipfad cannot be null")
     @NotNull(message = "Dateipfad cannot be null")
     private String dateipfad;
 
@@ -62,6 +65,15 @@ public class Dokument {
      */
     public Long getDokument_id() {
         return dokument_id;
+    }
+
+    /**
+     * Sets the ID of this document.
+     *
+     * @param dokument_id the document ID.
+     */
+    public void setDokument_id(Long dokument_id) {
+        this.dokument_id = dokument_id;
     }
 
     /**
@@ -116,9 +128,7 @@ public class Dokument {
      * @throws IllegalArgumentException if the document type is null or empty.
      */
     public void setDokumententyp(String dokumententyp) {
-        if (dokumententyp == null || dokumententyp.isEmpty()) {
-            throw new IllegalArgumentException("Dokumententyp cannot be null or empty");
-        }
+        if (dokumententyp == null || dokumententyp.isEmpty()) throw new IllegalArgumentException("Dokumententyp cannot be null");
         this.dokumententyp = dokumententyp;
     }
 
@@ -138,9 +148,7 @@ public class Dokument {
      * @throws IllegalArgumentException if the file path is null or empty.
      */
     public void setDateipfad(String dateipfad) {
-        if (dokumententyp == null || dokumententyp.isEmpty()) {
-            throw new IllegalArgumentException("Dokumententyp cannot be null or empty");
-        }
+        if (dateipfad == null || dateipfad.isEmpty()) throw new IllegalArgumentException("Dateipfad cannot be null");
         this.dateipfad = dateipfad;
     }
 

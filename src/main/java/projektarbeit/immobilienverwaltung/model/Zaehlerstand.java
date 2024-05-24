@@ -1,12 +1,10 @@
 package projektarbeit.immobilienverwaltung.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 /**
  * Represents a meter reading (Zaehlerstand) entity associated with a property (Wohnung).
@@ -27,10 +25,10 @@ public class Zaehlerstand {
 
     @Column(nullable = false)
     @NotNull(message = "Ablesedatum cannot be null")
-    private Date ablesedatum;
+    private LocalDate ablesedatum;
 
     @Column(nullable = false)
-    @Positive(message = "Ablesewert must be positive")
+    @Positive(message = "Ablesewert cannot be null")
     private double ablesewert;
 
     /**
@@ -40,7 +38,9 @@ public class Zaehlerstand {
      * @param ablesedatum  The date when the meter reading was taken.
      * @param ablesewert   The value of the meter reading.
      */
-    public Zaehlerstand(Wohnung wohnung, Date ablesedatum, double ablesewert) {
+    public Zaehlerstand(Wohnung wohnung,
+                        LocalDate ablesedatum,
+                        double ablesewert) {
         this.wohnung = wohnung;
         this.ablesedatum = ablesedatum;
         this.ablesewert = ablesewert;
@@ -86,9 +86,7 @@ public class Zaehlerstand {
      * @throws IllegalArgumentException if the Wohnung is null.
      */
     public void setWohnung(Wohnung wohnung) {
-        if (wohnung == null) {
-            throw new IllegalArgumentException("Wohnung cannot be null");
-        }
+        if (wohnung == null) throw new IllegalArgumentException("Wohnung cannot be null");
         this.wohnung = wohnung;
     }
 
@@ -97,7 +95,7 @@ public class Zaehlerstand {
      *
      * @return the date of the meter reading
      */
-    public Date getAblesedatum() {
+    public LocalDate getAblesedatum() {
         return ablesedatum;
     }
 
@@ -107,10 +105,8 @@ public class Zaehlerstand {
      * @param ablesedatum the date to set
      * @throws IllegalArgumentException if the date is null.
      */
-    public void setAblesedatum(Date ablesedatum) {
-        if (ablesedatum == null) {
-            throw new IllegalArgumentException("Ablesedatum cannot be null");
-        }
+    public void setAblesedatum(LocalDate ablesedatum) {
+        if (ablesedatum == null) throw new IllegalArgumentException("Ablesedatum cannot be null");
         this.ablesedatum = ablesedatum;
     }
 
@@ -131,9 +127,7 @@ public class Zaehlerstand {
      * @throws IllegalArgumentException if the value is not positive.
      */
     public void setAblesewert(double ablesewert) {
-        if (ablesewert <= 0) {
-            throw new IllegalArgumentException("Ablesewert must be positive");
-        }
+        if (ablesewert <= 0) throw new IllegalArgumentException("Ablesewert must be positive");
         this.ablesewert = ablesewert;
     }
 

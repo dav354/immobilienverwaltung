@@ -3,6 +3,7 @@ package projektarbeit.immobilienverwaltung.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 /**
@@ -15,13 +16,14 @@ public class Postleitzahl {
 
     @Id
     @Column(nullable = false)
-    @NotBlank(message = "Postleitzahl cannot be blank")
-    @Size(min = 4, max = 10, message = "Postleitzahl must be between 4 and 10 characters")
+    @NotNull(message = "Postleitzahl cannot be blank")
+    @Pattern(regexp = "^\\d{4,10}+$", message = "Postleitzahl must contain only numbers")
     private String postleitzahl; // String, da PLZ mit 0 beginnen kann
 
     @Column(nullable = false, length = 100)
-    @NotBlank(message = "Stadt cannot be blank")
-    @Size(max = 100, message = "Stadt cannot exceed 100 characters")
+    @NotBlank(message = "Illegal Stadt")
+    @Size(max = 100, message = "Illegal Stadt")
+    @Pattern(regexp = "^[\\p{L}\\s]+$", message = "Illegal Stadt")
     private String stadt;
 
     @Enumerated(EnumType.STRING)
@@ -31,7 +33,8 @@ public class Postleitzahl {
     /**
      * Default constructor for JPA.
      */
-    public Postleitzahl() {}
+    public Postleitzahl() {
+    }
 
     /**
      * Constructs a new Postleitzahl instance with specified details.
@@ -64,9 +67,12 @@ public class Postleitzahl {
      * @throws IllegalArgumentException if the postleitzahl is null, empty, or its length is not between 4 and 10 characters.
      */
     public void setPostleitzahl(String postleitzahl) {
-        if (postleitzahl == null || postleitzahl.isEmpty() || postleitzahl.length() < 4 || postleitzahl.length() > 10) {
+        if (postleitzahl == null || postleitzahl.isEmpty())
+            throw new IllegalArgumentException("Postleitzahl cannot be blank");
+        if (!postleitzahl.matches("^\\d*$"))
+            throw new IllegalArgumentException("Postleitzahl must contain only numbers");
+        if (postleitzahl.length() > 10 || postleitzahl.length() < 4)
             throw new IllegalArgumentException("Postleitzahl must be between 4 and 10 characters");
-        }
         this.postleitzahl = postleitzahl;
     }
 
@@ -86,9 +92,9 @@ public class Postleitzahl {
      * @throws IllegalArgumentException if the stadt is null, empty, or its length exceeds 100 characters.
      */
     public void setStadt(String stadt) {
-        if (stadt == null || stadt.isEmpty() || stadt.length() > 100) {
-            throw new IllegalArgumentException("Stadt cannot be null, empty, or exceed 100 characters");
-        }
+        if (stadt == null || stadt.isEmpty()) throw new IllegalArgumentException("Stadt cannot be blank");
+        if (stadt.length() > 100) throw new IllegalArgumentException("Stadt cannot exceed 100 characters");
+        if (!stadt.matches("^[\\p{L}\\s]+$")) throw new IllegalArgumentException("Stadt must contain only letters");
         this.stadt = stadt;
     }
 

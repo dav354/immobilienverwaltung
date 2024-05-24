@@ -2,6 +2,7 @@ package projektarbeit.immobilienverwaltung.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import projektarbeit.immobilienverwaltung.validation.ValidMietPeriod;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
  * This entity is mapped to the database table 'mieter'.
  */
 @Entity
+@ValidMietPeriod
 @Table(name = "mieter")
 public class Mieter {
 
@@ -27,30 +29,33 @@ public class Mieter {
     private List<Dokument> dokument = new ArrayList<>();
 
     @Column(nullable = false, length = 100)
-    @NotBlank(message = "Name cannot be blank")
-    @Size(max = 100, message = "Name cannot exceed 100 characters")
+    @NotBlank(message = "Illegal Name")
+    @NotNull(message = "Illegal Name")
+    @Size(max = 100, message = "Illegal Name")
+    @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Illegal Name")
     private String name;
 
     @Column(nullable = false, length = 100)
-    @NotBlank(message = "Vorname cannot be blank")
-    @Size(max = 100, message = "Vorname cannot exceed 100 characters")
+    @NotBlank(message = "Illegal Vorname")
+    @NotNull(message = "Illegal Vorname")
+    @Size(max = 100, message = "Illegal Vorname")
+    @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Illegal Vorname")
     private String vorname;
 
     @Column(nullable = false)
-    @NotBlank(message = "Telefonnummer cannot be blank")
-    @Pattern(regexp = "^(\\+\\d{1,3}[- ]?)?\\d{10}$", message = "Invalid Telefonnummer format")
-    private String telefonnummer; // can start with 0 or +
+    @NotBlank(message = "Illegal Telefonnummer")
+    @NotNull(message = "Illegal Telefonnummer")
+    @Pattern(regexp = "^\\d{6,12}$", message = "Illegal Telefonnummer")
+    private String telefonnummer; // can start with 0
 
     @Column(nullable = false)
     @Positive(message = "Einkommen must be positive")
     private double einkommen;
 
-    @Column(nullable = false)
-    @NotNull(message = "Mietbeginn cannot be null")
+    @Column(nullable = true)
     private LocalDate mietbeginn;
 
-    @Column(nullable = false)
-    @NotNull(message = "Mietende cannot be null")
+    @Column(nullable = true)
     private LocalDate mietende;
 
     @Column(nullable = false)
@@ -94,7 +99,8 @@ public class Mieter {
     /**
      * Default constructor for JPA.
      */
-    public Mieter() {}
+    public Mieter() {
+    }
 
     /**
      * Returns the ID of the tenant.
@@ -103,6 +109,15 @@ public class Mieter {
      */
     public Long getMieter_id() {
         return mieter_id;
+    }
+
+    /**
+     * Set the ID of the tenant.
+     *
+     * @param mieter_id the tenant's ID
+     */
+    public void setMieter_id(Long mieter_id) {
+        this.mieter_id = mieter_id;
     }
 
     /**
@@ -157,9 +172,9 @@ public class Mieter {
      * @throws IllegalArgumentException if the name is null, empty, or exceeds 100 characters
      */
     public void setName(String name) {
-        if (name == null || name.isEmpty() || name.length() > 100) {
-            throw new IllegalArgumentException("Name cannot be null, empty, or exceed 100 characters");
-        }
+        if (name == null || name.isEmpty()) throw new IllegalArgumentException("Name cannot be null or empty");
+        if (name.length() > 100) throw new IllegalArgumentException("Name cannot exceed 100 characters");
+        if (!name.matches("^[a-zA-Z\\s]+$")) throw new IllegalArgumentException("Name must contain only letters");
         this.name = name;
     }
 
@@ -179,9 +194,9 @@ public class Mieter {
      * @throws IllegalArgumentException if the first name is null, empty, or exceeds 100 characters
      */
     public void setVorname(String vorname) {
-        if (vorname == null || vorname.isEmpty() || vorname.length() > 100) {
-            throw new IllegalArgumentException("Vorname cannot be null, empty, or exceed 100 characters");
-        }
+        if (vorname == null || vorname.isEmpty()) throw new IllegalArgumentException("Vorname cannot be null or empty");
+        if (vorname.length() > 100) throw new IllegalArgumentException("Vorname cannot exceed 100 characters");
+        if (!vorname.matches("^[a-zA-Z\\s]+$")) throw new IllegalArgumentException("Vorname must contain only letters");
         this.vorname = vorname;
     }
 
@@ -201,9 +216,7 @@ public class Mieter {
      * @throws IllegalArgumentException if the phone number format is invalid
      */
     public void setTelefonnummer(String telefonnummer) {
-        if (!telefonnummer.matches("^(\\+\\d{1,3}[- ]?)?\\d{10}$")) {
-            throw new IllegalArgumentException("Invalid Telefonnummer format");
-        }
+        if (telefonnummer == null || !telefonnummer.matches("^\\d{6,12}$")) throw new IllegalArgumentException("Invalid Telefonnummer format");
         this.telefonnummer = telefonnummer;
     }
 
@@ -224,9 +237,7 @@ public class Mieter {
      * @throws IllegalArgumentException if the income is negative
      */
     public void setEinkommen(double einkommen) {
-        if (einkommen <= 0) {
-            throw new IllegalArgumentException("Einkommen must be positive");
-        }
+        if (einkommen <= 0) throw new IllegalArgumentException("Einkommen must be positive");
         this.einkommen = einkommen;
     }
 
@@ -247,9 +258,7 @@ public class Mieter {
      * @throws IllegalArgumentException if the start date is after the end date
      */
     public void setMietbeginn(LocalDate mietbeginn) {
-        if (mietende != null && mietbeginn.isAfter(mietende)) {
-            throw new IllegalArgumentException("Mietbeginn must be before Mietende");
-        }
+        if (mietende != null && mietbeginn != null && (mietbeginn.isAfter(mietende) || mietbeginn.isEqual(mietende))) throw new IllegalArgumentException("Mietbeginn must be before Mietende");
         this.mietbeginn = mietbeginn;
     }
 
@@ -270,9 +279,7 @@ public class Mieter {
      * @throws IllegalArgumentException if the end date is before the start date
      */
     public void setMietende(LocalDate mietende) {
-        if (mietbeginn != null && mietende.isBefore(mietbeginn)) {
-            throw new IllegalArgumentException("Mietende must be after Mietbeginn");
-        }
+        if (mietbeginn != null && mietende != null && (mietende.isBefore(mietbeginn) || mietende.isEqual(mietbeginn))) throw new IllegalArgumentException("Mietbeginn must be before Mietende");
         this.mietende = mietende;
     }
 
@@ -292,9 +299,7 @@ public class Mieter {
      * @throws IllegalArgumentException if the security deposit is not positive
      */
     public void setKaution(double kaution) {
-        if (kaution <= 0) {
-            throw new IllegalArgumentException("Kaution must be positive");
-        }
+        if (kaution <= 0) throw new IllegalArgumentException("Kaution must be positive");
         this.kaution = kaution;
     }
 
@@ -314,9 +319,7 @@ public class Mieter {
      * @throws IllegalArgumentException if the number of residents is less than 1
      */
     public void setAnzahlBewohner(int anzahlBewohner) {
-        if (anzahlBewohner < 1) {
-            throw new IllegalArgumentException("AnzahlBewohner must be at least 1");
-        }
+        if (anzahlBewohner < 1) throw new IllegalArgumentException("AnzahlBewohner must be at least 1");
         this.anzahlBewohner = anzahlBewohner;
     }
 

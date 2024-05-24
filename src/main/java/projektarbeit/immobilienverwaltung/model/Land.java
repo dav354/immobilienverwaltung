@@ -5,6 +5,9 @@ package projektarbeit.immobilienverwaltung.model;
  */
 public enum Land {
     // List of countries with ISO 3166-1 alpha-2 codes and their names
+
+    //TODO add missing Countries to succeed tests
+
     AF("Afghanistan"),
     EG("Ägypten"),
     AL("Albanien"),
