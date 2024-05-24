@@ -1,33 +1,41 @@
 package projektarbeit.immobilienverwaltung.ui.layout;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.sidenav.SideNav;
-import com.vaadin.flow.component.sidenav.SideNavItem;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.AfterNavigationEvent;
+import com.vaadin.flow.router.AfterNavigationObserver;
+import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.theme.lumo.Lumo;
-import projektarbeit.immobilienverwaltung.service.MieterService;
 import projektarbeit.immobilienverwaltung.ui.views.DokumentListView;
 import projektarbeit.immobilienverwaltung.ui.views.MieterListView;
 import projektarbeit.immobilienverwaltung.ui.views.WohnungListView;
 import projektarbeit.immobilienverwaltung.ui.views.ZaehlerstandListView;
 
-public class MainLayout extends AppLayout {
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainLayout extends AppLayout implements AfterNavigationObserver {
 
     private boolean isDarkMode = true; // Dark mode enabled by default
+    private final List<RouterLink> navLinks = new ArrayList<>();
 
-    public MainLayout(MieterService mieterService) {
+    public MainLayout() {
         createHeader();
-        createDrawer(mieterService);
+        createDrawer();
         createFooter();
         enableDarkMode();
     }
 
+    @SuppressWarnings("removal")
     private void createHeader() {
         DrawerToggle toggle = new DrawerToggle();
-        Span title = new Span("Immobilienverwaltung");
+        Label title = new Label("Immobilienverwaltung");
         Div header = new Div(toggle, title);
         header.getStyle().set("padding", "10px");
         header.getStyle().set("display", "flex");
@@ -58,36 +66,49 @@ public class MainLayout extends AppLayout {
         isDarkMode = !isDarkMode;
     }
 
-    private void createDrawer(MieterService mieterService) {
-        SideNav sideNav = new SideNav();
+    private void createDrawer() {
+        VerticalLayout layout = new VerticalLayout();
+        layout.add(new Span("Navigation"));
+        layout.add(createNavigationLink("Wohnungen", WohnungListView.class));
+        layout.add(createNavigationLink("Mieter", MieterListView.class));
+        layout.add(createNavigationLink("Zählerstand", ZaehlerstandListView.class));
+        layout.add(createNavigationLink("Dokumente", DokumentListView.class));
+        layout.setWidthFull();
+        layout.setSizeFull();
+        layout.getStyle().set("background-color", "var(--lumo-contrast-10pct)");
+        layout.getStyle().set("padding", "10px");
+        addToDrawer(layout);
+    }
 
-        long wohnungCount = mieterService.getWohnungCount();
-        long mieterCount = mieterService.getMieterCount();
-        long zaehlerstandCount = mieterService.getZaehlerstandCount();
-        long dokumentCount = mieterService.getDokumentCount();
+    private RouterLink createNavigationLink(String text, Class<? extends Component> navigationTarget) {
+        RouterLink link = new RouterLink();
+        link.setText(text);
+        link.setRoute(navigationTarget);
+        link.getStyle().set("display", "block");
+        link.getStyle().set("padding", "10px");
+        link.getStyle().set("margin", "5px 0");
+        link.getStyle().set("border", "1px solid var(--lumo-contrast-20pct)");
+        link.getStyle().set("border-radius", "5px");
+        link.getStyle().set("text-decoration", "none");
+        link.getStyle().set("color", "var(--lumo-body-text-color)");
+        link.getStyle().set("background-color", "var(--lumo-contrast-5pct)");
+        link.getStyle().set("width", "90%");
+        navLinks.add(link); // Füge den Link zur Liste hinzu
+        return link;
+    }
 
-        SideNavItem wohnungItem = new SideNavItem("Wohnungen", WohnungListView.class);
-        Span wohnungCounter = new Span(String.valueOf(wohnungCount));
-        wohnungCounter.getElement().getThemeList().add("badge contrast pill");
-        wohnungItem.setSuffixComponent(wohnungCounter);
-
-        SideNavItem mieterItem = new SideNavItem("Mieter", MieterListView.class);
-        Span mieterCounter = new Span(String.valueOf(mieterCount));
-        mieterCounter.getElement().getThemeList().add("badge contrast pill");
-        mieterItem.setSuffixComponent(mieterCounter);
-
-        SideNavItem zaehlerstandItem = new SideNavItem("Zählerstand", ZaehlerstandListView.class);
-        Span zaehlerstandCounter = new Span(String.valueOf(zaehlerstandCount));
-        zaehlerstandCounter.getElement().getThemeList().add("badge contrast pill");
-        zaehlerstandItem.setSuffixComponent(zaehlerstandCounter);
-
-        SideNavItem dokumentItem = new SideNavItem("Dokumente", DokumentListView.class);
-        Span dokumentCounter = new Span(String.valueOf(dokumentCount));
-        dokumentCounter.getElement().getThemeList().add("badge contrast pill");
-        dokumentItem.setSuffixComponent(dokumentCounter);
-
-        sideNav.addItem(wohnungItem, mieterItem, zaehlerstandItem, dokumentItem);
-
-        addToDrawer(sideNav);
+    @Override
+    public void afterNavigation(AfterNavigationEvent event) {
+        String currentRoute = event.getLocation().getFirstSegment();
+        navLinks.forEach(link -> {
+            if (link.getHref().equals(currentRoute)) {
+                link.getStyle().set("background-color", "var(--lumo-primary-color-10pct)");
+                link.getStyle().set("color", "var(--lumo-body-text-color)");
+            } else {
+                link.getStyle().set("background-color", "var(--lumo-contrast-5pct)");
+                link.getStyle().set("color", "var(--lumo-body-text-color)");
+            }
+        });
     }
 }
+
