@@ -95,6 +95,11 @@ public class WohnungService {
         // Setze die Adresse der Wohnung
         wohnung.setAdresse(adresse);
 
+        Mieter mieter = wohnung.getMieter();
+        if (mieter != null) {
+            mieterRepository.save(mieter); // Save the Mieter entity if it's not null
+        }
+
         return wohnungRepository.save(wohnung);
     }
 

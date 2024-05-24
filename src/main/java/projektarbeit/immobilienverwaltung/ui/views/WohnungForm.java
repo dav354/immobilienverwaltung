@@ -57,6 +57,7 @@ public class WohnungForm extends FormLayout {
 
         mieterComboBox.setItems(mieters);
         mieterComboBox.setItemLabelGenerator(Mieter::getFullName);
+        mieterComboBox.setClearButtonVisible(true); // Allow clearing the selection
 
         add(land,
                 postleitzahl,
@@ -89,7 +90,7 @@ public class WohnungForm extends FormLayout {
             if (wohnung.getMieter() != null) {
                 mieterComboBox.setValue(wohnung.getMieter());
             }else{
-                clearFields();
+                mieterComboBox.clear();
             }
         }
 
@@ -136,6 +137,7 @@ public class WohnungForm extends FormLayout {
     private void validateAndSave() {
         try{
             binder.writeBean(wohnung);
+            wohnung.setMieter(mieterComboBox.getValue()); // Ensure Mieter is set from ComboBox
             fireEvent(new WohnungForm.SaveEvent(this, wohnung));
         }catch (ValidationException e){
             e.printStackTrace();
@@ -183,107 +185,4 @@ public class WohnungForm extends FormLayout {
     public <T extends  ComponentEvent<?>> Registration addListener(Class<T> eventType, ComponentEventListener<T> listener){
         return getEventBus().addListener(eventType, listener);
     }
-
-    /*
-    private final WohnungService wohnungService;
-    private final AdresseService adresseService;
-    private final MieterService mieterService;
-    private final Binder<Wohnung> binder = new Binder<>(Wohnung.class);
-    private Wohnung wohnung;
-
-    TextField strasse = new TextField("Strasse");
-    TextField hausnummer = new TextField("Hausnummer");
-    IntegerField gesamtQuadratmeter = new IntegerField("Gesamt Quadratmeter");
-    IntegerField baujahr = new IntegerField("Baujahr");
-    IntegerField anzahlBaeder = new IntegerField("Anzahl Baeder");
-    IntegerField anzahlSchlafzimmer = new IntegerField("Anzahl Schlafzimmer");
-    Checkbox hatBalkon = new Checkbox("Hat Balkon");
-    Checkbox hatTerrasse = new Checkbox("Hat Terrasse");
-    Checkbox hatGarten = new Checkbox("Hat Garten");
-    Checkbox hatKlimaanlage = new Checkbox("Hat Klimaanlage");
-    ComboBox<Land> land = new ComboBox<>("Land");
-    TextField postleitzahl = new TextField("Postleitzahl");
-    TextField stadt = new TextField("Stadt");
-    ComboBox<Mieter> mieterComboBox = new ComboBox<>("Mieter");
-
-    private final Div errorMessage = new Div();
-
-    public WohnungForm(WohnungService wohnungService, AdresseService adresseService, MieterService mieterService) {
-        this.wohnungService = wohnungService;
-        this.adresseService = adresseService;
-        this.mieterService = mieterService;
-
-        land.setItems(Land.values()); // Populate ComboBox with Enum values
-        land.setItemLabelGenerator(Land::getName);
-
-        mieterComboBox.setItems(mieterService.findAllMieter());
-        mieterComboBox.setItemLabelGenerator(Mieter::getFullName);
-
-        add(createFormLayout(), createButtonLayout(), errorMessage);
-        binder.bindInstanceFields(this);
-        errorMessage.setVisible(false);
-
-        getElement().getStyle().set("background-color", "var(--lumo-base-color)");
-        getElement().getStyle().set("color", "var(--lumo-body-text-color)");
-
-        addShortcutListener(this, ()  -> close(), Key.ESCAPE);
-    }
-
-    public void setWohnung(Wohnung wohnung) {
-        this.wohnung = wohnung;
-        if (wohnung.getAdresse() != null && wohnung.getAdresse().getPostleitzahlObj() != null) {
-            land.setItems(Land.values()); // Ensure items are set before setting value
-            land.setValue(wohnung.getAdresse().getPostleitzahlObj().getLand());
-            postleitzahl.setValue(wohnung.getAdresse().getPostleitzahlObj().getPostleitzahl());
-            stadt.setValue(wohnung.getAdresse().getPostleitzahlObj().getStadt());
-            strasse.setValue(wohnung.getAdresse().getStrasse());
-            hausnummer.setValue(wohnung.getAdresse().getHausnummer());
-        }
-        if (wohnung.getMieter() != null) {
-            mieterComboBox.setValue(wohnung.getMieter());
-        }
-        binder.readBean(wohnung);
-    }
-
-    private FormLayout createFormLayout() {
-        FormLayout formLayout = new FormLayout();
-        formLayout.add(strasse, hausnummer, postleitzahl, stadt, land, gesamtQuadratmeter, baujahr, anzahlBaeder, anzahlSchlafzimmer, hatBalkon, hatTerrasse, hatGarten, hatKlimaanlage, mieterComboBox);
-        return formLayout;
-    }
-
-    private HorizontalLayout createButtonLayout() {
-        Button saveButton = new Button("Save", event -> save());
-        Button cancelButton = new Button("Cancel", event -> cancel());
-        return new HorizontalLayout(saveButton, cancelButton);
-    }
-
-    private void save() {
-        try {
-            // Create or update the address
-            Postleitzahl plz = new Postleitzahl(postleitzahl.getValue(), stadt.getValue(), land.getValue());
-            Adresse adresse = new Adresse(plz, strasse.getValue(), hausnummer.getValue());
-
-            // Save the address first
-            adresseService.save(adresse);
-
-            wohnung.setAdresse(adresse);
-            wohnung.setMieter(mieterComboBox.getValue()); // Set the selected tenant
-            binder.writeBean(wohnung);
-            wohnungService.save(wohnung);
-            Notification.show("Wohnung saved", 3000, Notification.Position.BOTTOM_END)
-                    .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-            close();
-        } catch (ValidationException e) {
-            errorMessage.setText("Error: " + e.getMessage());
-            errorMessage.setVisible(true);
-        }
-    }
-
-    private void cancel() {
-        Notification.show("Edit cancelled", 3000, Notification.Position.BOTTOM_END)
-                .addThemeVariants(NotificationVariant.LUMO_CONTRAST);
-        close();
-    }
-
-     */
 }
