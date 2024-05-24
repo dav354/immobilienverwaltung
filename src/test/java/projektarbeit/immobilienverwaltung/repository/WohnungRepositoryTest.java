@@ -117,4 +117,45 @@ public class WohnungRepositoryTest {
         assertThat(wohnungen).hasSize(2);
         assertThat(wohnungen).extracting(Wohnung::getAdresse).containsExactlyInAnyOrder(adr1, adr2);
     }
+
+
+    @Test
+    public void testFindByAdresseIds() {
+        Postleitzahl plz = new Postleitzahl("07111", "Stuttgart", DE);
+        postleitzahlRepository.save(plz);
+
+        Adresse adr1 = new Adresse(plz, "Teststrasse", "11");
+        Adresse adr2 = new Adresse(plz, "AndereStrasse", "12");
+        adresseRepository.save(adr1);
+        adresseRepository.save(adr2);
+
+        Wohnung w1 = new Wohnung(adr1, 200, 1900, 2, 2, true, true, true, true);
+        Wohnung w2 = new Wohnung(adr2, 150, 1950, 1, 1, false, false, true, false);
+        wohnungRepository.save(w1);
+        wohnungRepository.save(w2);
+
+        List<Long> adresseIds = List.of(adr1.getAdresse_id(), adr2.getAdresse_id());
+
+        List<Wohnung> wohnungen = wohnungRepository.findByAdresseIds(adresseIds);
+        assertThat(wohnungen).hasSize(2);
+        assertThat(wohnungen).extracting(Wohnung::getAdresse).containsExactlyInAnyOrder(adr1, adr2);
+    }
+
+    @Test
+    public void testFindByAdresseIds_EmptyResult() {
+        Postleitzahl plz = new Postleitzahl("07111", "Stuttgart", DE);
+        postleitzahlRepository.save(plz);
+
+        Adresse adr1 = new Adresse(plz, "Teststrasse", "11");
+        adresseRepository.save(adr1);
+
+        Wohnung w1 = new Wohnung(adr1, 200, 1900, 2, 2, true, true, true, true);
+        wohnungRepository.save(w1);
+
+        List<Long> adresseIds = List.of(999L); // Non-existing address ID
+
+        List<Wohnung> wohnungen = wohnungRepository.findByAdresseIds(adresseIds);
+        assertThat(wohnungen).isEmpty();
+    }
+
 }

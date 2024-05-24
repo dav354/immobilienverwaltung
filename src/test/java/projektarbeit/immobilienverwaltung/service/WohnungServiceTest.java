@@ -149,4 +149,48 @@ class WohnungServiceTest {
         assertEquals(1, dokumente.size());
         assertEquals(wohnung, dokumente.get(0).getWohnung());
     }
+
+    @Test
+    void testFindAllWohnungen_NoFilter() {
+        when(wohnungRepository.findAll()).thenReturn(Collections.singletonList(wohnung));
+
+        List<Wohnung> wohnungen = wohnungService.findAllWohnungen(null);
+        assertNotNull(wohnungen);
+        assertFalse(wohnungen.isEmpty());
+        assertEquals(1, wohnungen.size());
+        assertEquals("Teststrasse", wohnungen.get(0).getAdresse().getStrasse());
+
+        wohnungen = wohnungService.findAllWohnungen("");
+        assertNotNull(wohnungen);
+        assertFalse(wohnungen.isEmpty());
+        assertEquals(1, wohnungen.size());
+        assertEquals("Teststrasse", wohnungen.get(0).getAdresse().getStrasse());
+    }
+
+    @Test
+    void testFindAllWohnungen_WithFilter() {
+        Adresse matchingAdresse = new Adresse(postleitzahl, "MatchingStrasse", "22");
+        matchingAdresse.setAdresse_id(2L);
+        Wohnung matchingWohnung = new Wohnung(matchingAdresse, 250, 2000, 3, 2, true, false, true, false);
+        matchingWohnung.setWohnungId(2L);
+
+        when(adresseRepository.search("MatchingStrasse")).thenReturn(Collections.singletonList(matchingAdresse));
+        when(wohnungRepository.findByAdresseIds(Collections.singletonList(2L))).thenReturn(Collections.singletonList(matchingWohnung));
+
+        List<Wohnung> wohnungen = wohnungService.findAllWohnungen("MatchingStrasse");
+        assertNotNull(wohnungen);
+        assertFalse(wohnungen.isEmpty());
+        assertEquals(1, wohnungen.size());
+        assertEquals("MatchingStrasse", wohnungen.get(0).getAdresse().getStrasse());
+    }
+
+    @Test
+    void testFindAllWohnungen_NoMatchingFilter() {
+        when(adresseRepository.search("NonExistingStrasse")).thenReturn(Collections.emptyList());
+        when(wohnungRepository.findByAdresseIds(Collections.emptyList())).thenReturn(Collections.emptyList());
+
+        List<Wohnung> wohnungen = wohnungService.findAllWohnungen("NonExistingStrasse");
+        assertNotNull(wohnungen);
+        assertTrue(wohnungen.isEmpty());
+    }
 }

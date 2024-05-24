@@ -13,4 +13,6 @@ public interface WohnungRepository extends JpaRepository<Wohnung, Long> {
 
     @Query("SELECT w FROM Wohnung w WHERE w.adresse.adresse_id IN :adresseIds")
     List<Wohnung> findByAdresseIds(@Param("adresseIds") List<Long> adresseIds);
+
+    List<Wohnung> findByMieterIsNull();
 }

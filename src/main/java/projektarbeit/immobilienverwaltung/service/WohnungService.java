@@ -16,6 +16,7 @@ import projektarbeit.immobilienverwaltung.repository.ZaehlerstandRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class WohnungService {
@@ -63,6 +64,15 @@ public class WohnungService {
      */
     public List<Wohnung> findAllWohnungen() {
         return wohnungRepository.findAll();
+    }
+
+    /**
+     * Retrieves all Mieter entities.
+     *
+     * @return a list of all Mieter entities
+     */
+    public List<Mieter> findAllMieter() {
+        return mieterRepository.findAll();
     }
 
     /**
@@ -128,5 +138,31 @@ public class WohnungService {
      */
     public List<Dokument> findDokumenteByWohnung(Wohnung wohnung) {
         return dokumentRepository.findByWohnung(wohnung);
+    }
+
+    /**
+     * Service method to find all Wohnungen (apartments) based on a given string filter.
+     * If the filter string is null or empty, it returns all Wohnungen.
+     * If the filter string is provided, it first searches for all matching Adressen (addresses),
+     * extracts their IDs, and then finds all Wohnungen associated with those address IDs.
+     *
+     * @param stringFilter The filter string to search for matching Adressen. If null or empty, all Wohnungen are returned.
+     * @return A list of Wohnungen that match the given filter string. If no filter is provided, returns all Wohnungen.
+     */
+    public List<Wohnung> findAllWohnungen(String stringFilter) {
+        if (stringFilter == null || stringFilter.isEmpty()) {
+            return wohnungRepository.findAll();
+        } else {
+            // Find all addresses that contain the filter text
+            List<Adresse> matchingAddresses = adresseRepository.search(stringFilter);
+
+            // Extract the IDs of the matching addresses
+            List<Long> matchingAddressIds = matchingAddresses.stream()
+                    .map(Adresse::getAdresse_id)
+                    .collect(Collectors.toList());
+
+            // Find all Wohnungen that have one of these addresses
+            return wohnungRepository.findByAdresseIds(matchingAddressIds);
+        }
     }
 }

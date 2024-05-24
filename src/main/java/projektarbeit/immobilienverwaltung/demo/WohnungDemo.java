@@ -85,7 +85,7 @@ public class WohnungDemo implements CommandLineRunner {
             Adresse adr6 = new Adresse(plz6, "Lolgasse", "69");
             adresseService.save(adr6);
 
-            Adresse adr7 = new Adresse(plz7, "strasse no 3", "333");
+            Adresse adr7 = new Adresse(plz7, "strasseb", "333");
             adresseService.save(adr7);
 
             Adresse adr8 = new Adresse(plz8, "Königsstraße", "1");

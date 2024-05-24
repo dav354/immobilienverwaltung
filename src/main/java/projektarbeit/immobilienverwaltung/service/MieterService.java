@@ -7,17 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import projektarbeit.immobilienverwaltung.demo.AssignMieterToWohnungDemo;
-import projektarbeit.immobilienverwaltung.model.Dokument;
-import projektarbeit.immobilienverwaltung.model.Mieter;
-import projektarbeit.immobilienverwaltung.model.Wohnung;
-import projektarbeit.immobilienverwaltung.model.Zaehlerstand;
-import projektarbeit.immobilienverwaltung.repository.DokumentRepository;
-import projektarbeit.immobilienverwaltung.repository.MieterRepository;
-import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
-import projektarbeit.immobilienverwaltung.repository.ZaehlerstandRepository;
+import projektarbeit.immobilienverwaltung.model.*;
+import projektarbeit.immobilienverwaltung.repository.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MieterService {
@@ -62,6 +57,14 @@ public class MieterService {
      */
     public long getMieterCount() {
         return mieterRepository.count();
+    }
+
+    /**
+     * Returns a List of all Wohnungen
+     *
+     * @return List of all Wohnungen
+     */    public List<Wohnung> findAllWohnungen() {
+        return wohnungRepository.findAll();
     }
 
     /**
