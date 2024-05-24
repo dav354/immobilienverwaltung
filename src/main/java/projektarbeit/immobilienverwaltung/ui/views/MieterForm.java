@@ -146,36 +146,37 @@ public class MieterForm extends FormLayout {
     }
 
     // Events für die Buttons Speichern, Löschen und Schließen
-    public static abstract class ContactFormEvent extends ComponentEvent<MieterForm> {
+    public static abstract class MieterFormEvent extends ComponentEvent<MieterForm> {
         private final Mieter mieter;
 
-        //Konstruktor für das ContactFormEvent
-        protected ContactFormEvent(MieterForm source, Mieter mieter) {
+        //Konstruktor für das MieterFormEvent
+        protected MieterFormEvent(MieterForm source, Mieter mieter) {
             super(source, false);
             this.mieter = mieter;
         }
 
+        //Event um die Mieter in das Form zu lesen
         public Mieter getContact() {
             return mieter;
         }
     }
 
     //Ereignis, das ausgelöst wird, wenn ein Mieter gespeichert wird
-    public static class SaveEvent extends ContactFormEvent {
+    public static class SaveEvent extends MieterFormEvent {
         SaveEvent(MieterForm source, Mieter mieter) {
             super(source, mieter);
         }
     }
 
     //Ereignis, das ausgelöst wird, wenn ein Mieter gelöscht wird
-    public static class DeleteEvent extends ContactFormEvent {
+    public static class DeleteEvent extends MieterFormEvent {
         DeleteEvent(MieterForm source, Mieter mieter) {
             super(source, mieter);
         }
     }
 
     //Ereignis, das ausgelöst wird, wenn das Formular geschlossen wird
-    public static class CloseEvent extends ContactFormEvent {
+    public static class CloseEvent extends MieterFormEvent {
         CloseEvent(MieterForm source) {
             super(source, null);
         }

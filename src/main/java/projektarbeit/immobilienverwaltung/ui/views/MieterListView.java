@@ -3,19 +3,19 @@ package projektarbeit.immobilienverwaltung.ui.views;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
 import projektarbeit.immobilienverwaltung.model.Mieter;
-import projektarbeit.immobilienverwaltung.service.MieterService;
+import projektarbeit.immobilienverwaltung.service.MService;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
+
+import java.util.stream.Collectors;
 
 @Route(value = "mieter", layout = MainLayout.class)
 @PageTitle("Mieter")
@@ -23,13 +23,13 @@ import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 public class MieterListView extends VerticalLayout {
 
     //Einzelnen Bestandteile der Seite
-    private final MieterService mieterService;
+    private final MService mieterService;
     Grid<Mieter> grid = new Grid<>(Mieter.class);
     TextField filterText = new TextField();
     MieterForm form;
 
     //Der Aufbau der Seite mit Überschrift, Eingabe und der Tabelle
-    public MieterListView(MieterService mieterService) {
+    public MieterListView(MService mieterService) {
         this.mieterService = mieterService;
 
         HorizontalLayout header = new HorizontalLayout(new H1("Mieter Übersicht"));
@@ -72,8 +72,8 @@ public class MieterListView extends VerticalLayout {
 
     //Einstellungen des Forms für die Erstellung/Bearbeitung der Mieter
     private void configureForm() {
-        form = new MieterForm(mieterService);
-        form.setWidth("400em");
+        form = new MieterForm(mieterService.findAllWohnungen());
+        form.setWidth("200em");
         //Wartet darauf das die Knöpfe gedrückt werden und führt dann die passende Methode aus
         form.addListener(MieterForm.SaveEvent.class, this::saveMieter);
         form.addListener(MieterForm.DeleteEvent.class, this::deleteMieter);
@@ -99,13 +99,8 @@ public class MieterListView extends VerticalLayout {
         grid.setSizeFull();
         //Hier bei getFirst muss man noch änderen da kein Mieter zu den Wohnungen zugeordnet ist
         grid.setColumns("name", "vorname", "telefonnummer", "einkommen", "mietbeginn", "mietende", "kaution", "anzahlBewohner");
-
-        // Adding column for the complete address using getFormattedAddress with HTML support
-        grid.addColumn(new ComponentRenderer<>(mieter -> {
-            Span span = new Span();
-            span.getElement().setProperty("innerHTML", mieter.getFormattedWohnung());
-            return span;
-        })).setHeader("Mietobjekt");
+        // Adding column for the complete address using getFormattedAddress
+        grid.addColumn(Mieter::getFormattedWohnung).setHeader("Mietobjekt");
 
         //Automatische Größe und Sotieren zulassen
         grid.getColumns().forEach(col -> col.setAutoWidth(true).setSortable(true));
