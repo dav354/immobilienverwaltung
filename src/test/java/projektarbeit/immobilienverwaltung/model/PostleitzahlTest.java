@@ -48,7 +48,7 @@ class PostleitzahlTest {
 
     @Test
     public void testLetterInPostleitzahl() {
-        postleitzahl = new Postleitzahl("1234A", "Berlin", Land.DE);
+        postleitzahl = new Postleitzahl("12A34", "Berlin", Land.DE);
         Set<ConstraintViolation<Postleitzahl>> violations = validator.validate(postleitzahl);
         assertFalse(violations.isEmpty(), "Postleitzahl with letters should have violations");
         assertEquals("Postleitzahl must contain only numbers", violations.iterator().next().getMessage());

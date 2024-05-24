@@ -105,11 +105,10 @@ public class WohnungService {
             mieterRepository.save(m); // Save the updated Mieter with null Wohnung reference
         }
 
-        // Remove Zaehlerstand references to the Wohnung
+        // Delete Zaehlerstand references to the Wohnung
         List<Zaehlerstand> zaehlerstaende = zaehlerstandRepository.findByWohnung(wohnung);
-        for (Zaehlerstand z : zaehlerstaende) {
-            z.setWohnung(null);
-            zaehlerstandRepository.save(z); // Save the updated Zaehlerstand with null Wohnung reference
+        for (Zaehlerstand zaehlerstand : zaehlerstaende) {
+            zaehlerstandRepository.delete(zaehlerstand); // Delete the Zaehlerstand
         }
 
         // Delete the Wohnung and its associated Adresse

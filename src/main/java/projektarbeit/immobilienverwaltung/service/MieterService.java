@@ -22,8 +22,6 @@ import java.util.List;
 @Service
 public class MieterService {
 
-    private static final Logger logger = LoggerFactory.getLogger(AssignMieterToWohnungDemo.class);
-
     private final WohnungRepository wohnungRepository;
     private final MieterRepository mieterRepository;
     private final ZaehlerstandRepository zaehlerstandRepository;
@@ -114,28 +112,23 @@ public class MieterService {
      * @param mieter the Mieter entity to delete
      */
     public void deleteMieter(Mieter mieter) {
-        if (mieter == null) {
-            logger.error("deleteMieter: Mieter is null.");
-            return;
-        }
+        if (mieter == null) throw new NullPointerException("Mieter is null");
 
-        // Set the mieter field to null for all associated Dokumente
+        // Clone the lists to ensure they are mutable
         List<Dokument> dokumente = new ArrayList<>(mieter.getDokument());
         for (Dokument dokument : dokumente) {
             dokument.setMieter(null);
             dokumentRepository.save(dokument);
         }
 
-        // Set the mieter field to null for all associated Wohnungen
         List<Wohnung> wohnungen = new ArrayList<>(mieter.getWohnung());
         for (Wohnung wohnung : wohnungen) {
-            wohnung.setMieter(null);
+            wohnung.setMieter(null); // Check inside this method for any collection operation errors
             wohnungRepository.save(wohnung); // Save the updated Wohnung entity
         }
 
         mieterRepository.delete(mieter); // Delete the Mieter entity
     }
-
 
     /**
      * Saves the given tenant (Mieter) to the repository.
@@ -144,10 +137,7 @@ public class MieterService {
      * @param mieter The tenant to be saved. Must not be null.
      */
     public void saveMieter(Mieter mieter) {
-        if (mieter == null) {
-            logger.error("saveMieter: Mieter is null.");
-            return;
-        }
+        if (mieter == null) throw new NullPointerException("Mieter is null");
         mieterRepository.save(mieter);
     }
 
@@ -158,11 +148,7 @@ public class MieterService {
      */
     @Transactional
     public void saveWohnungToMieter(Mieter mieter, List<Wohnung> wohnungen) {
-        if (mieter == null || wohnungen == null || wohnungen.isEmpty()) {
-            logger.error("saveWohnungToMieter: Mieter or Wohnung is NULL.");
-            return;
-        }
-
+        if (mieter == null || wohnungen == null || wohnungen.isEmpty()) throw new NullPointerException("saveWohnungToMieter: Mieter or Wohnung is NULL.");
         wohnungen.forEach(wohnung -> {
             mieter.getWohnung().add(wohnung);  // Assuming Mieter has a collection of Wohnungen
             wohnung.setMieter(mieter);
@@ -180,7 +166,7 @@ public class MieterService {
     @Transactional
     public void removeWohnungFromMieter(Mieter mieter, List<Wohnung> wohnungen) {
         if (mieter == null || wohnungen == null) {
-            logger.error("removeWohnungFromMieter: Mieter or Wohnung is NULL.");
+
             return;
         }
 

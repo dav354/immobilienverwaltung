@@ -50,7 +50,6 @@ public class Adresse {
         this.hausnummer = hausnummer;
     }
 
-
     /**
      * Default constructor for JPA.
      */
@@ -151,7 +150,7 @@ public class Adresse {
     @Override
     public String toString() {
         return String.format("Adresse['%s', " +
-                        "Hausnummer='%s'," +
+                        "Hausnummer='%s', " +
                         "Strasse='%s']",
                 getPostleitzahlObj(),
                 getHausnummer(),

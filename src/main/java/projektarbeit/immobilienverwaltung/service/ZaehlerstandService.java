@@ -29,6 +29,7 @@ public class ZaehlerstandService {
      * @return the saved or updated Zaehlerstand entity
      */
     public Zaehlerstand saveOrUpdateZaehlerstand(Zaehlerstand zaehlerstand) {
+        if (zaehlerstand == null) throw new NullPointerException("Zaehlerstand is null");
         return zaehlerstandRepository.save(zaehlerstand);
     }
 

@@ -17,7 +17,7 @@ public class Postleitzahl {
     @Id
     @Column(nullable = false)
     @NotNull(message = "Postleitzahl cannot be blank")
-    @Pattern(regexp = "^\\d{4,10}+$", message = "Postleitzahl must contain only numbers")
+    @Pattern(regexp = "^\\d{4,10}$", message = "Postleitzahl must contain only numbers")
     private String postleitzahl; // String, da PLZ mit 0 beginnen kann
 
     @Column(nullable = false, length = 100)

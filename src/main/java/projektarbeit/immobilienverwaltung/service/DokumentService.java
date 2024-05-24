@@ -40,6 +40,7 @@ public class DokumentService {
      */
     @Transactional
     public void deleteDokumenteByWohnung(Wohnung wohnung) {
+        if (wohnung == null) throw new NullPointerException("Wohnung is null");
         List<Dokument> dokumente = dokumentRepository.findByWohnung(wohnung);
         for (Dokument dokument : dokumente) {
             dokument.setWohnung(null);

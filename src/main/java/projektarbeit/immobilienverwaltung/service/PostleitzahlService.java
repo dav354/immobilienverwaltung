@@ -1,5 +1,6 @@
 package projektarbeit.immobilienverwaltung.service;
 
+import com.github.javaparser.Position;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +33,9 @@ public class PostleitzahlService {
      */
     @Transactional
     public void deletePostleitzahlIfUnused(Postleitzahl postleitzahl) {
+        if (postleitzahl == null) {
+            throw new IllegalArgumentException("Postleitzahl cannot be null");
+        }
         long count = adresseRepository.countByPostleitzahl(postleitzahl);
         if (count == 0) {
             postleitzahlRepository.delete(postleitzahl);
@@ -46,6 +50,9 @@ public class PostleitzahlService {
      */
     @Transactional
     public Postleitzahl save(Postleitzahl postleitzahl) {
+        if (postleitzahl == null) throw new IllegalArgumentException("Postleitzahl is null");
         return postleitzahlRepository.save(postleitzahl);
     }
+
+
 }
