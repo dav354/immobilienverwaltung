@@ -39,7 +39,7 @@ public class MieterRepositoryTest {
         Wohnung w = new Wohnung(adr, 200, 1900, 2, 2, true, true, true, true);
         wohnungRepository.save(w);
 
-        Mieter mieter = new Mieter("Mustermann", "Max", "+491234567890", 3000, LocalDate.of(2022, 1, 1), LocalDate.of(2024, 1, 1), 500, 1);
+        Mieter mieter = new Mieter("Mustermann", "Max", "491234567890", 3000, LocalDate.of(2022, 1, 1), LocalDate.of(2024, 1, 1), 500, 1);
         mieterRepository.save(mieter);
 
         Mieter found = mieterRepository.findById(mieter.getMieter_id()).orElse(null);

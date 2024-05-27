@@ -2,7 +2,6 @@ package projektarbeit.immobilienverwaltung.demo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -21,18 +20,28 @@ public class DokumentDemo implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(DokumentDemo.class);
 
-    @Autowired
-    private DokumentRepository dokumentRepository;
+    private final DemoModeConfig demoModeConfig;
+    private final DokumentRepository dokumentRepository;
+    private final WohnungRepository wohnungRepository;
+    private final MieterRepository mieterRepository;
 
-    @Autowired
-    private WohnungRepository wohnungRepository;
-
-    @Autowired
-    private MieterRepository mieterRepository;
+    public DokumentDemo(DemoModeConfig demoModeConfig,
+                        DokumentRepository dokumentRepository,
+                        WohnungRepository wohnungRepository,
+                        MieterRepository mieterRepository) {
+        this.demoModeConfig = demoModeConfig;
+        this.dokumentRepository = dokumentRepository;
+        this.wohnungRepository = wohnungRepository;
+        this.mieterRepository = mieterRepository;
+    }
 
     @Override
     public void run(String... args) throws Exception {
-        loadDokumentData();
+        if (demoModeConfig.isDemoMode()) {
+            loadDokumentData();
+        } else {
+            logger.info("Demo mode is OFF. Skipping loading of Dokument data.");
+        }
     }
 
     private void loadDokumentData() {

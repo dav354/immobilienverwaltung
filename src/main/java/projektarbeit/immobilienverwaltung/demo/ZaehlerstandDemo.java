@@ -2,7 +2,6 @@ package projektarbeit.immobilienverwaltung.demo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -11,7 +10,6 @@ import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
 import projektarbeit.immobilienverwaltung.repository.ZaehlerstandRepository;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -21,15 +19,25 @@ public class ZaehlerstandDemo implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(ZaehlerstandDemo.class);
 
-    @Autowired
-    private ZaehlerstandRepository zaehlerstandRepository;
+    private final DemoModeConfig demoModeConfig;
+    private final ZaehlerstandRepository zaehlerstandRepository;
+    private final WohnungRepository wohnungRepository;
 
-    @Autowired
-    private WohnungRepository wohnungRepository;
+    public ZaehlerstandDemo(DemoModeConfig demoModeConfig,
+                            ZaehlerstandRepository zaehlerstandRepository,
+                            WohnungRepository wohnungRepository) {
+        this.demoModeConfig = demoModeConfig;
+        this.zaehlerstandRepository = zaehlerstandRepository;
+        this.wohnungRepository = wohnungRepository;
+    }
 
     @Override
     public void run(String... args) throws Exception {
-        loadZaehlerstandData();
+        if (demoModeConfig.isDemoMode()) {
+            loadZaehlerstandData();
+        } else {
+            logger.info("Demo mode is OFF. Skipping loading of Zaehlerstand data.");
+        }
     }
 
     private void loadZaehlerstandData() {

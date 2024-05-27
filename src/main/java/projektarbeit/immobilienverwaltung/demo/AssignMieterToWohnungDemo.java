@@ -2,11 +2,9 @@ package projektarbeit.immobilienverwaltung.demo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.repository.MieterRepository;
@@ -22,21 +20,30 @@ public class AssignMieterToWohnungDemo implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(AssignMieterToWohnungDemo.class);
 
-    @Autowired
-    private MieterRepository mieterRepository;
+    private final DemoModeConfig demoModeConfig;
+    private final MieterRepository mieterRepository;
+    private final WohnungRepository wohnungRepository;
+    private final MieterService mieterService;
 
-    @Autowired
-    private WohnungRepository wohnungRepository;
-
-    @Autowired
-    private MieterService mieterService;
+    public AssignMieterToWohnungDemo(DemoModeConfig demoModeConfig,
+                                     MieterRepository mieterRepository,
+                                     WohnungRepository wohnungRepository,
+                                     MieterService mieterService) {
+        this.demoModeConfig = demoModeConfig;
+        this.mieterRepository = mieterRepository;
+        this.wohnungRepository = wohnungRepository;
+        this.mieterService = mieterService;
+    }
 
     @Override
     public void run(String... args) throws Exception {
-        assignMieterToWohnungDemo();
+        if (demoModeConfig.isDemoMode()){
+            assignMieterToWohnungDemo();
+        } else {
+            logger.info("Demo mode is OFF. Skip Mieter to Wohnung assignment.");
+        }
     }
 
-    @Transactional
     public void assignMieterToWohnungDemo() {
         if (mieterRepository.count() > 0 && wohnungRepository.count() > 0) { // Only load if data exists
             logger.info("Assigning Mieter data to Wohnung...");
@@ -44,7 +51,7 @@ public class AssignMieterToWohnungDemo implements CommandLineRunner {
             // Load existing Wohnungen
             List<Wohnung> wohnungen = wohnungRepository.findAll();
 
-            // Load wxisting Mieter
+            // Load existing Mieter
             List<Mieter> mieter = mieterRepository.findAll();
 
             if (wohnungen.size() >= 3 && mieter.size() >= 2) {

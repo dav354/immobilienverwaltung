@@ -1,21 +1,15 @@
 package projektarbeit.immobilienverwaltung.demo;
 
-import ch.qos.logback.classic.LoggerContext;
-import org.assertj.core.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.repository.MieterRepository;
 import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
-
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -24,18 +18,27 @@ public class MieterDemo implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(MieterDemo.class);
 
-    @Autowired
-    private MieterRepository mieterRepository;
+    private final DemoModeConfig demoModeConfig;
+    private final MieterRepository mieterRepository;
+    private final WohnungRepository wohnungRepository;
 
-    @Autowired
-    private WohnungRepository wohnungRepository;
+    public MieterDemo(DemoModeConfig demoModeConfig,
+                      MieterRepository mieterRepository,
+                      WohnungRepository wohnungRepository) {
+        this.demoModeConfig = demoModeConfig;
+        this.mieterRepository = mieterRepository;
+        this.wohnungRepository = wohnungRepository;
+    }
 
     @Override
     public void run(String... args) throws Exception {
-        loadMieterData();
+        if (demoModeConfig.isDemoMode()) {
+            loadMieterData();
+        } else {
+            logger.info("Demo mode is OFF. Skipping loading of Mieter data.");
+        }
     }
 
-    @Transactional
     public void loadMieterData() {
         if (mieterRepository.count() == 0) { // Only load if no data exists
             logger.info("Loading Mieter data...");

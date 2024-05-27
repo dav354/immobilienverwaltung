@@ -21,12 +21,17 @@ public class WohnungDemo implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(MieterDemo.class);
 
+    private final DemoModeConfig demoModeConfig;
     private final WohnungService wohnungService;
     private final AdresseService adresseService;
     private final PostleitzahlService postleitzahlService;
 
     @Autowired
-    public WohnungDemo(WohnungService wohnungService, AdresseService adresseService, PostleitzahlService postleitzahlService) {
+    public WohnungDemo(DemoModeConfig demoModeConfig,
+                       WohnungService wohnungService,
+                       AdresseService adresseService,
+                       PostleitzahlService postleitzahlService) {
+        this.demoModeConfig = demoModeConfig;
         this.wohnungService = wohnungService;
         this.adresseService = adresseService;
         this.postleitzahlService = postleitzahlService;
@@ -34,7 +39,11 @@ public class WohnungDemo implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        loadWohnungData();
+        if (demoModeConfig.isDemoMode()) {
+            loadWohnungData();
+        } else {
+            logger.info("Demo mode is OFF. Skipping loading of Wohnung data.");
+        }
     }
 
     private void loadWohnungData() {
