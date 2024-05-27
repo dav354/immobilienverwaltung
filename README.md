@@ -217,7 +217,7 @@ Diese Anwendung ermöglicht die Verwaltung von Immobilien und deren Mietern.
 
 <a id="database"></a>
 
-## Database Design
+## database
 
 <details>
 <summary>Click to expand for Database Design</summary>
@@ -283,9 +283,9 @@ erDiagram
 
 </details>
 
-<a id="dedatabasev_setup"></a>
+<a id="dev_setup"></a>
 
-## Dev Env Setup
+## dev_setup
 
 **Voraussetzungen:**
 
@@ -298,6 +298,8 @@ erDiagram
 1. Spring Boot auswählen
 2. Modify Options: Add VM Options
 3. Dort `-Dspring.profiles.active=dev` eingeben, um das Entwicklungsprofil auszuwählen
+4. Modify Options: Add Environment Variable
+5. Dort `demo_mode=true` eingeben, dass die Demodaten geladen werden
 
 **Setup:** Database Connection
 
