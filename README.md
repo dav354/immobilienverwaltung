@@ -30,8 +30,7 @@ Diese Anwendung ermöglicht die Verwaltung von Immobilien und deren Mietern.
   - [Grundfunktionalität](#grundfunktionalität)
   - [Priorität 2](#priorität-2)
   - [Priorität 3](#priorität-3)
-- [Planung](#planung)
-- [Erste Schritte](#erste-schritte)
+- [Install](#install)
 - [Mockups](#mockups)
 - [Database](#database)
 - [Dev Setup](#dev_setup)
@@ -42,13 +41,11 @@ Diese Anwendung ermöglicht die Verwaltung von Immobilien und deren Mietern.
 
 - **Java 21**
 - **Backend**: Spring Boot
-  - **Komponenten**: Includes Spring Data JPA, Spring Web, Spring Dev Tools, and Spring Security.
+  - **Komponenten**: Spring Data JPA, Spring Web, Spring Dev Tools, und Spring Security
 - **Database**: H2, PostgreSQL
   - H2 zur Entwicklung, fürs deployment Postgres
 - **Frontend**: Vaadin
-  - **Details**: Enables the development of reactive user interfaces entirely in Java.
 - **Build-Tool**: Maven
-  - **Nutzung**: Manages dependencies and simplifies the build process.
 - **Tests**: JUnit
 - **Deployment**: Docker
 
@@ -58,7 +55,7 @@ Diese Anwendung ermöglicht die Verwaltung von Immobilien und deren Mietern.
 
 <a id="grundfunktionalität"></a>
 
-### Grundfunktionalität
+### [x] Grundfunktionalität
 
 - **Immobilienverwaltung**: Erstellen, Ansehen und Verwalten von Immobiliendetails und -zusammenfassungen.
   - Adresse
@@ -78,10 +75,11 @@ Diese Anwendung ermöglicht die Verwaltung von Immobilien und deren Mietern.
 - **Dashboard**:
   - Anzahl der Immobilien
   - Einnahmen
+- Such- und Filterfunktionen
 
 <a id="priorität-2"></a>
 
-### Priorität 2
+### [ ] Priorität 2
 
 - Dauer des Mietverhältnisses, Benachrichtigung bei Beendigung
 - Benutzerrollen: Admin/Benutzer/Verwalter
@@ -90,96 +88,20 @@ Diese Anwendung ermöglicht die Verwaltung von Immobilien und deren Mietern.
 
 <a id="priorität-3"></a>
 
-### Priorität 3
+### [ ] Priorität 3
 
 - Erstellung eines Exposés aus den Informationen als PDF
 - Automatisches Erstellen von Mietverträgen mit Mieterdaten
 - E-Mail-Support
-- Such- und Filterfunktionen
 
-<a id="planung"></a>
+<a id="install"></a>
 
-## Planung
+## Install
 
-<a id="erste-schritte"></a>
-
-### Erste Schritte
-
-#### Schritt 1: Definition des Projektumfangs und der Anforderungen
-
-- [x] **Anforderungen sammeln**: Zusammenarbeit mit Stakeholdern (Immobilienverwalter, Makler usw.), um detaillierte
-      funktionale und nicht-funktionale Anforderungen zu definieren.
-- [x] **Projektumfang definieren**: Den Projektumfang klar abgrenzen, um Feature-Creep zu vermeiden und sicherzustellen,
-      dass alle Beteiligten die gleichen Erwartungen haben.
-
-#### Schritt 2: Entwicklungsumgebung einrichten
-
-- [x] **Werkzeuge installieren**: Sicherstellen, dass alle Entwickler Java, IDE (wie IntelliJ IDEA oder Eclipse) und
-      notwendige Plugins/Tools (für Vaadin, Spring usw.) installiert haben.
-- [x] **Versionskontrolle einrichten**: Ein Git-Repository initialisieren und Strategien für das Branch-Management
-      definieren (z.B. Git Flow).
-
-#### Schritt 3: Systemarchitektur entwerfen
-
-- [x] **Architektur definieren**: Entscheidung über die Anwendungsarchitektur (z.B. geschichtete Architektur,
-      Microservices) basierend auf den Projektanforderungen.
-- [x] **Technologiestapel wählen**: Auswahl für Backend, Frontend, Datenbank und andere Dienste wie Nachrichtenbroker
-      oder externe APIs bestätigen.
-
-#### Schritt 4: Beginnen mit dem Datenmodell
-
-- [x] **Entity-Definition**: Definition von Entity-Klassen, die Geschäftsobjekte wie `Eigentum`, `Mieter`
-      und `Mietvertrag` widerspiegeln.
-- [x] **Beziehungsmapping**: Kartierung der Beziehungen zwischen Entitäten (z.B. eins-zu-viele zwischen `Eigentum`
-      und `Mietvertrag`).
-
-#### Schritt 5: Repositories einrichten
-
-- [ ] **Repository-Schnittstellen erstellen**: Entwicklung von Schnittstellen für Ihre Repositories mit Spring Data JPA,
-      um alle Datenbankoperationen zu abstrahieren und zu kapseln.
-- [ ] **Benutzerdefinierte Abfragen definieren**: Bei Bedarf benutzerdefinierte Abfragen mit den Abfragemethoden von
-      Spring Data JPA oder der Annotation @Query definieren.
-
-#### Schritt 6: Geschäftslogik entwickeln (Service Layer)
-
-- [ ] **Service-Implementierung**: Entwicklung von Service-Klassen, die Geschäftslogik enthalten und mit Repositories
-      interagieren, um Daten zu abzurufen und zu manipulieren.
-- [ ] **Service-API definieren**: Klar definieren, welche Geschäftsoperationen Ihre Service-Schicht anderen Teilen der
-      Anwendung anbietet.
-
-#### Schritt 7: Sicherheit implementieren
-
-- [ ] **Spring Security konfigurieren**: Einrichten von Authentifizierung (z.B. JWT, OAuth2) und
-      Autorisierungsmechanismen, um Ihre Anwendung zu sichern.
-- [ ] **Benutzerrollen und Berechtigungen**: Definition unterschiedlicher Rollen (z.B. Admin, Benutzer, Verwalter) und
-      Konfiguration von Zugriffskontrollen basierend auf diesen Rollen.
-
-#### Schritt 8: Vaadin-Ansichten erstellen
-
-- [ ] **UI-Design**: Skizzieren oder Prototypen des UI-Designs (Erwägung der Verwendung von Tools wie Figma oder Adobe
-      XD für Mockups).
-- [ ] **Vaadin-Komponenten entwickeln**: Entwicklung responsiver UI-Komponenten mit Vaadin, die sicherstellen, dass sie
-      mit den Backend-Services verbunden sind.
-
-#### Schritt 9: Testing
-
-- [ ] **Unit Testing**: Schreiben von Unit-Tests sowohl für das Backend (Services, Repositories) als auch für
-      Frontend-Komponenten.
-- [ ] **Integrationstests**: Entwicklung von Integrationstests, die kritische Workflows und Interaktionen zwischen
-      Komponenten abdecken.
-
-#### Schritt 10: Bereitstellungsvorbereitung
-
-- [ ] **Dockerisierung**: Containerisierung Ihrer Anwendung mit Docker zur einfachen Bereitstellung und Skalierung.
-- [ ] **Continuous Integration einrichten**: Konfigurieren von CI-Pipelines (mit Jenkins, GitHub Actions usw.) für
-      automatisiertes Testing und Deployment.
-
-#### Schritt 11: Start und iterative Verbesserung
-
-- [ ] **In Produktion gehen**: Verwenden eines Dienstes wie AWS, Azure oder DigitalOcean für die Bereitstellung.
-- [ ] **Überwachung und Optimierung**: Implementierung von Überwachungstools zur Leistungs- und Nutzungskontrolle.
-- [ ] **Feedback-Schleife**: Einrichten eines Prozesses zur Sammlung von Nutzerfeedback und zur kontinuierlichen
-      Verbesserung der Anwendung basierend auf diesem Feedback.
+**Voraussetzungen:**
+- Docker & Docker Compose muss [installiert](https://docs.docker.com/engine/install/) sein
+- dann die [Docker compose](docker-compose.yml) herunterladen und anpassen
+- dann `docker compose up -d`
 
 <a id="mockups"></a>
 
@@ -224,7 +146,7 @@ Diese Anwendung ermöglicht die Verwaltung von Immobilien und deren Mietern.
 
 ```mermaid
 erDiagram
-    ADRESSE ||--|| WOHNUNG : "gehört zu"
+    ADRESSE ||--|| WOHNUNG : "gehoert zu"
     ADRESSE {
         string WohnungID PK
         int Postleitzahl FK
@@ -232,7 +154,7 @@ erDiagram
         string Strasse
         string Hausnummer
     }
-    POSTLEITZAHL ||--|{ ADRESSE : "gehört zu"
+    POSTLEITZAHL ||--|{ ADRESSE : "gehoert zu"
     POSTLEITZAHL {
         int Postleitzahl PK
         string Stadt
@@ -264,7 +186,7 @@ erDiagram
         int Kaution
         int AnzahlBewohner
     }
-    WOHNUNG ||--o{ DOKUMENT : "enthält"
+    WOHNUNG ||--o{ DOKUMENT : "enthaelt"
     DOKUMENT {
         string DokumentID PK
         string WohnungId FK
@@ -305,7 +227,3 @@ erDiagram
 
 - Automatisch: Intellij schlägt die Verbindung vor: Nur die H2 verbinden, config wird automatisch übernommen. Die Postgres mit `-` heraus löschen
 - Manuell: Auf der rechten Seite unter dem Database reiter die Verbindung zur H2 manuell hinzufügen.
-
-## Lizenz
-
-Dieses Projekt ist unter der MIT-Lizenz lizenziert - Details finden Sie in der LICENSE-Datei.
