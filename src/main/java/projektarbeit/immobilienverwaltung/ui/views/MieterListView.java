@@ -147,6 +147,9 @@ public class MieterListView extends VerticalLayout {
     //Mieter hinzufügen
     private void addMieter() {
         grid.asSingleSelect().clear();
-        editMieter(new Mieter());
+        Mieter neuerMieter = new Mieter();
+        form.setMieter(neuerMieter); // Call setMieter with a new Mieter object
+        form.loeschen.setVisible(false); // Ensure the delete button is hidden
+        editMieter(neuerMieter);
     }
 }

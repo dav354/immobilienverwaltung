@@ -76,10 +76,12 @@ public class MieterForm extends FormLayout {
             this.mieter = mieter;
             binder.readBean(mieter);
             wohnungMultiSelectComboBox.setValue(mieter.getWohnung().stream().collect(Collectors.toSet()));
+            loeschen.setVisible(mieter.getMieter_id() != null);
         } else {
             this.mieter = new Mieter();
             binder.readBean(this.mieter);
             wohnungMultiSelectComboBox.clear();
+            loeschen.setVisible(false);
         }
     }
 

@@ -15,9 +15,13 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.validator.IntegerRangeValidator;
+import com.vaadin.flow.data.validator.RegexpValidator;
+import com.vaadin.flow.data.validator.StringLengthValidator;
 import com.vaadin.flow.shared.Registration;
 import projektarbeit.immobilienverwaltung.model.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -92,6 +96,10 @@ public class WohnungForm extends FormLayout {
             }else{
                 mieterComboBox.clear();
             }
+            // show delete button if wohnung exists
+            loeschen.setVisible(wohnung.getWohnung_id() != null);
+        } else {
+            clearFields();
         }
 
         binder.readBean(wohnung);

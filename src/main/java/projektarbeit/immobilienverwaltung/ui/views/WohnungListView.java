@@ -149,7 +149,11 @@ public class WohnungListView extends VerticalLayout {
     private void addWohnung() {
         grid.asSingleSelect().clear();
         Wohnung neueWohnung = new Wohnung();
-        form.clearFields(); // Sicherstellen, dass Felder geleert werden
+        form.setWohnung(neueWohnung);
+        // Ensure the delete button is hidden
+        form.loeschen.setVisible(false);
+        // Sicherstellen, dass Felder geleert werden
+        form.clearFields();
         editWohnung(neueWohnung);
     }
 
