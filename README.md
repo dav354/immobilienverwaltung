@@ -1,12 +1,10 @@
-<div style="text-align: center;">
+<div align="center">
 
 ![Java Version](https://img.shields.io/badge/java-v21-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
 <img src="assets/artwork.webp" width="60%" alt="artwork"/>
-
-_Erstellt mit DALL-E_
-
+<p><em>Erstellt mit DALL-E</em></p>
 </div>
 
 # Immobilienverwaltung
@@ -19,7 +17,7 @@ Diese Anwendung ermöglicht die Verwaltung von Immobilien und deren Mietern.
 >
 > Under heavy development
 
-<div style="text-align: center;">
+<div align="center">
     <img src="assets/progproj.gif" width="30%" alt="project"/>
 </div>
 
@@ -110,27 +108,27 @@ Diese Anwendung ermöglicht die Verwaltung von Immobilien und deren Mietern.
 <details>
 <summary>Click to expand for Screenshots</summary>
 
-<div style="text-align: center;">
+<div align="center">
     <img src="assets/dashboard-mockup.png" alt="dashboard-mockup" width="70%"/>
     <br/>Dashboard
 </div>
 
-<div style="text-align: center;">
+<div align="center">
     <img src="assets/immobiliem-mockup.png" alt="immoblien-mockup" width="70%"/>
     <br/>Immo Management
 </div>
 
-<div style="text-align: center;">
+<div align="center">
     <img src="assets/add-immobilien-mockup.png" alt="add-immobilien-mockup" width="70%"/>
     <br/>Neu Hinzufügen
 </div>
 
-<div style="text-align: center;">
+<div align="center">
     <img src="assets/mieter-mockup.png" alt="mieter-mockup" width="70%"/>
     <br/>Miete Hinzufügen
 </div>
 
-<div style="text-align: center;">
+<div align="center">
     <img src="assets/add-mieter-mockup.png" alt="add-mieter-mockup" width="70%"/>
     <br/>Neu Hinzufügen
 </div>
@@ -139,7 +137,7 @@ Diese Anwendung ermöglicht die Verwaltung von Immobilien und deren Mietern.
 
 <a id="database"></a>
 
-## database
+## Database
 
 <details>
 <summary>Click to expand for Database Design</summary>
@@ -207,7 +205,7 @@ erDiagram
 
 <a id="dev_setup"></a>
 
-## dev_setup
+## dev Setup
 
 **Voraussetzungen:**
 
