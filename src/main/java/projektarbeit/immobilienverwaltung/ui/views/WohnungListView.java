@@ -1,6 +1,7 @@
 package projektarbeit.immobilienverwaltung.ui.views;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
@@ -109,10 +110,10 @@ public class WohnungListView extends VerticalLayout {
         grid.addColumn(Wohnung::getAnzahlBaeder).setHeader("Bäder");
         grid.addColumn(Wohnung::getAnzahlSchlafzimmer).setHeader("Schlafzimmer");
 
-        grid.addComponentColumn(wohnung -> createIcon(wohnung.isHatBalkon())).setHeader("Balkon");
-        grid.addComponentColumn(wohnung -> createIcon(wohnung.isHatTerrasse())).setHeader("Terrasse");
-        grid.addComponentColumn(wohnung -> createIcon(wohnung.isHatGarten())).setHeader("Garten");
-        grid.addComponentColumn(wohnung -> createIcon(wohnung.isHatKlimaanlage())).setHeader("Klimaanlage");
+        grid.addComponentColumn(wohnung -> createIcon(wohnung.isHatBalkon())).setHeader("Balkon").setTextAlign(ColumnTextAlign.CENTER);
+        grid.addComponentColumn(wohnung -> createIcon(wohnung.isHatTerrasse())).setHeader("Terrasse").setTextAlign(ColumnTextAlign.CENTER);
+        grid.addComponentColumn(wohnung -> createIcon(wohnung.isHatGarten())).setHeader("Garten").setTextAlign(ColumnTextAlign.CENTER);
+        grid.addComponentColumn(wohnung -> createIcon(wohnung.isHatKlimaanlage())).setHeader("Klimaanlage").setTextAlign(ColumnTextAlign.CENTER);
 
         grid.getColumns().forEach(col -> col.setAutoWidth(true).setSortable(true));
 

@@ -66,11 +66,6 @@ body {
     width: 100%;
 }
 
-/* Centering columns and adjusting icon size */
-.centered-column {
-    text-align: center;
-}
-
 .v-icon {
     font-size: 12px; /* Smaller icon size */
 }
