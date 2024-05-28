@@ -1,18 +1,14 @@
 package projektarbeit.immobilienverwaltung.service;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import projektarbeit.immobilienverwaltung.demo.AssignMieterToWohnungDemo;
 import projektarbeit.immobilienverwaltung.model.*;
 import projektarbeit.immobilienverwaltung.repository.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class MieterService {
@@ -151,7 +147,7 @@ public class MieterService {
      */
     @Transactional
     public void saveWohnungToMieter(Mieter mieter, List<Wohnung> wohnungen) {
-        if (mieter == null || wohnungen == null || wohnungen.isEmpty()) throw new NullPointerException("saveWohnungToMieter: Mieter or Wohnung is NULL.");
+        if (mieter == null ) throw new NullPointerException("saveWohnungToMieter: Mieter is NULL.");
         wohnungen.forEach(wohnung -> {
             mieter.getWohnung().add(wohnung);  // Assuming Mieter has a collection of Wohnungen
             wohnung.setMieter(mieter);
