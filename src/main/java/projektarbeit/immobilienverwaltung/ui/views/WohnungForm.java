@@ -43,9 +43,9 @@ public class WohnungForm extends FormLayout {
     Checkbox hatGarten = new Checkbox("Hat Garten");
     Checkbox hatKlimaanlage = new Checkbox("Hat Klimaanlage");
 
-    Button speichern = new Button("Save");
-    Button loeschen = new Button("Delete");
-    Button schliessen = new Button("Cancel");
+    Button speichern = new Button("Speichern");
+    Button loeschen = new Button("Löschen");
+    Button schliessen = new Button("Schließen");
     private Wohnung wohnung;
 
     public WohnungForm(List<Mieter> mieters) {
