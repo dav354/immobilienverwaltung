@@ -160,7 +160,7 @@ public class WohnungListView extends VerticalLayout {
 
     private Icon createIcon(boolean value) {
         Icon icon = value ? VaadinIcon.CHECK.create() : VaadinIcon.CLOSE.create();
-        icon.addClassName("v-icon"); // Ensure the icon gets the correct class
+        icon.setSize("14px");
         return icon;
     }
 }

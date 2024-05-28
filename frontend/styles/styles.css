@@ -66,13 +66,8 @@ body {
     width: 100%;
 }
 
-.v-icon {
-    font-size: 12px; /* Smaller icon size */
-}
-
 .navigation-link:active,
 .navigation-link:focus {
     background-color: var(--lumo-primary-color-10pct);
     color: var(--lumo-primary-color);
 }
-

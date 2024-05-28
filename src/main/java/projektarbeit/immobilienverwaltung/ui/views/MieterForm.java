@@ -61,6 +61,10 @@ public class MieterForm extends FormLayout {
 
         binder.bindInstanceFields(this);
 
+        // Enable clear button for date pickers
+        mietbeginn.setClearButtonVisible(true);
+        mietende.setClearButtonVisible(true);
+
         wohnungMultiSelectComboBox.setItems(availableWohnungen);
         wohnungMultiSelectComboBox.setItemLabelGenerator(Wohnung::getFormattedAddress);
 
