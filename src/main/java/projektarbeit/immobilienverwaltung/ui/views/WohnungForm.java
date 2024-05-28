@@ -137,7 +137,15 @@ public class WohnungForm extends FormLayout {
     private void validateAndSave() {
         try{
             binder.writeBean(wohnung);
-            wohnung.setMieter(mieterComboBox.getValue()); // Ensure Mieter is set from ComboBox
+
+            // Create and set Adresse and Postleitzahl
+            Postleitzahl postleitzahlObj = new Postleitzahl(postleitzahl.getValue(), stadt.getValue(), land.getValue());
+            Adresse adresse = new Adresse(postleitzahlObj, strasse.getValue(), hausnummer.getValue());
+            wohnung.setAdresse(adresse);
+
+            // Ensure Mieter is set from ComboBox
+            wohnung.setMieter(mieterComboBox.getValue());
+
             fireEvent(new WohnungForm.SaveEvent(this, wohnung));
         }catch (ValidationException e){
             e.printStackTrace();

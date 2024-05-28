@@ -3,16 +3,8 @@ package projektarbeit.immobilienverwaltung.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import projektarbeit.immobilienverwaltung.model.Adresse;
-import projektarbeit.immobilienverwaltung.model.Dokument;
-import projektarbeit.immobilienverwaltung.model.Mieter;
-import projektarbeit.immobilienverwaltung.model.Wohnung;
-import projektarbeit.immobilienverwaltung.model.Zaehlerstand;
-import projektarbeit.immobilienverwaltung.repository.AdresseRepository;
-import projektarbeit.immobilienverwaltung.repository.DokumentRepository;
-import projektarbeit.immobilienverwaltung.repository.MieterRepository;
-import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
-import projektarbeit.immobilienverwaltung.repository.ZaehlerstandRepository;
+import projektarbeit.immobilienverwaltung.model.*;
+import projektarbeit.immobilienverwaltung.repository.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +20,7 @@ public class WohnungService {
     private final AdresseRepository adresseRepository;
     private final PostleitzahlService postleitzahlService;
     private final DokumentService dokumentService;
+    private final PostleitzahlRepository postleitzahlRepository;
 
     /**
      * Constructs a new WohnungService with the specified repositories and services.
@@ -39,6 +32,7 @@ public class WohnungService {
      * @param adresseRepository the repository for Adresse entities
      * @param postleitzahlService the service for managing Postleitzahl entities
      * @param dokumentService the service for managing Dokument entities
+     * @param postleitzahlRepository the repository for Postleitzahl entities
      */
     @Autowired
     public WohnungService(WohnungRepository wohnungRepository,
@@ -47,7 +41,8 @@ public class WohnungService {
                           ZaehlerstandRepository zaehlerstandRepository,
                           AdresseRepository adresseRepository,
                           PostleitzahlService postleitzahlService,
-                          DokumentService dokumentService) {
+                          DokumentService dokumentService,
+                          PostleitzahlRepository postleitzahlRepository) {
         this.wohnungRepository = wohnungRepository;
         this.dokumentRepository = dokumentRepository;
         this.mieterRepository = mieterRepository;
@@ -55,6 +50,7 @@ public class WohnungService {
         this.adresseRepository = adresseRepository;
         this.postleitzahlService = postleitzahlService;
         this.dokumentService = dokumentService;
+        this.postleitzahlRepository = postleitzahlRepository;
     }
 
     /**
@@ -84,22 +80,36 @@ public class WohnungService {
     @Transactional
     public Wohnung save(Wohnung wohnung) {
         Adresse adresse = wohnung.getAdresse();
+        Postleitzahl postleitzahl = adresse.getPostleitzahlObj();
 
-        // Überprüfen, ob die Adresse bereits existiert
+        // Save or fetch Postleitzahl
+        if (!postleitzahlRepository.existsById(postleitzahl.getPostleitzahl())) {
+            postleitzahl = postleitzahlRepository.save(postleitzahl);
+        } else {
+            postleitzahl = postleitzahlRepository.findById(postleitzahl.getPostleitzahl())
+                    .orElseThrow(() -> new RuntimeException("Postleitzahl nicht gefunden"));
+        }
+
+        // Save or fetch Adresse
         if (adresse.getAdresse_id() == null || !adresseRepository.existsById(adresse.getAdresse_id())) {
+            adresse.setPostleitzahlObj(postleitzahl);
             adresse = adresseRepository.save(adresse);
         } else {
-            adresse = adresseRepository.findById(adresse.getAdresse_id()).orElseThrow(() -> new RuntimeException("Adresse nicht gefunden"));
+            adresse = adresseRepository.findById(adresse.getAdresse_id())
+                    .orElseThrow(() -> new RuntimeException("Adresse nicht gefunden"));
+            adresse.setPostleitzahlObj(postleitzahl);
         }
 
-        // Setze die Adresse der Wohnung
+        // Set the address to the Wohnung
         wohnung.setAdresse(adresse);
 
+        // Save the Mieter entity if it's not null
         Mieter mieter = wohnung.getMieter();
         if (mieter != null) {
-            mieterRepository.save(mieter); // Save the Mieter entity if it's not null
+            mieterRepository.save(mieter);
         }
 
+        // Save the Wohnung entity
         return wohnungRepository.save(wohnung);
     }
 
