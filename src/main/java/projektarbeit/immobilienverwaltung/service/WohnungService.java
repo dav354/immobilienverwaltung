@@ -86,18 +86,26 @@ public class WohnungService {
         if (!postleitzahlRepository.existsById(postleitzahl.getPostleitzahl())) {
             postleitzahl = postleitzahlRepository.save(postleitzahl);
         } else {
-            postleitzahl = postleitzahlRepository.findById(postleitzahl.getPostleitzahl())
+            Postleitzahl existingPostleitzahl = postleitzahlRepository.findById(postleitzahl.getPostleitzahl())
                     .orElseThrow(() -> new RuntimeException("Postleitzahl nicht gefunden"));
+            existingPostleitzahl.setStadt(postleitzahl.getStadt());
+            existingPostleitzahl.setLand(postleitzahl.getLand());
+            postleitzahl = postleitzahlRepository.save(existingPostleitzahl);
         }
+
+        // Update Adresse with the saved postleitzahl
+        adresse.setPostleitzahlObj(postleitzahl);
 
         // Save or fetch Adresse
         if (adresse.getAdresse_id() == null || !adresseRepository.existsById(adresse.getAdresse_id())) {
-            adresse.setPostleitzahlObj(postleitzahl);
             adresse = adresseRepository.save(adresse);
         } else {
-            adresse = adresseRepository.findById(adresse.getAdresse_id())
+            Adresse existingAdresse = adresseRepository.findById(adresse.getAdresse_id())
                     .orElseThrow(() -> new RuntimeException("Adresse nicht gefunden"));
-            adresse.setPostleitzahlObj(postleitzahl);
+            existingAdresse.setPostleitzahlObj(postleitzahl);
+            existingAdresse.setStrasse(adresse.getStrasse());
+            existingAdresse.setHausnummer(adresse.getHausnummer());
+            adresse = adresseRepository.save(existingAdresse);
         }
 
         // Set the address to the Wohnung

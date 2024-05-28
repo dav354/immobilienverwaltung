@@ -85,6 +85,7 @@ public class WohnungListView extends VerticalLayout {
         updateList();
         closeEditor();
     }
+
     //Mieter löschen
     private void deleteWohnung(WohnungForm.DeleteEvent event) {
         wohnungService.delete(event.getWohnung());

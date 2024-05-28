@@ -1,6 +1,5 @@
 package projektarbeit.immobilienverwaltung.ui.views;
 
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
@@ -15,18 +14,11 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.data.validator.IntegerRangeValidator;
-import com.vaadin.flow.data.validator.RegexpValidator;
-import com.vaadin.flow.data.validator.StringLengthValidator;
+
 import com.vaadin.flow.shared.Registration;
 import projektarbeit.immobilienverwaltung.model.*;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-
-import static com.vaadin.flow.component.Shortcuts.addShortcutListener;
 
 public class WohnungForm extends FormLayout {
 

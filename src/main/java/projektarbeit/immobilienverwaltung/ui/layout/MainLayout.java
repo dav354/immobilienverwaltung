@@ -5,7 +5,6 @@ import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.AfterNavigationEvent;
@@ -32,10 +31,9 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
         enableDarkMode();
     }
 
-    @SuppressWarnings("removal")
     private void createHeader() {
         DrawerToggle toggle = new DrawerToggle();
-        Label title = new Label("Immobilienverwaltung");
+        Div title = new Div("Immobilienverwaltung");
         Div header = new Div(toggle, title);
         header.getStyle().set("padding", "10px");
         header.getStyle().set("display", "flex");
@@ -111,4 +109,3 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
         });
     }
 }
-
