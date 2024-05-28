@@ -1,5 +1,6 @@
 package projektarbeit.immobilienverwaltung.ui.views;
 
+import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
@@ -107,8 +108,8 @@ public class WohnungListView extends VerticalLayout {
 
         grid.addColumn(Wohnung::getGesamtQuadratmeter).setHeader("m²");
         grid.addColumn(Wohnung::getBaujahr).setHeader("Baujahr");
-        grid.addColumn(Wohnung::getAnzahlBaeder).setHeader("Bäder");
-        grid.addColumn(Wohnung::getAnzahlSchlafzimmer).setHeader("Schlafzimmer");
+        grid.addColumn(Wohnung::getAnzahlBaeder).setHeader("Bäder").setTextAlign(ColumnTextAlign.CENTER);
+        grid.addColumn(Wohnung::getAnzahlSchlafzimmer).setHeader(new Html("<div>Schlaf-<br>zimmer</div>")).setTextAlign(ColumnTextAlign.CENTER);
 
         grid.addComponentColumn(wohnung -> createIcon(wohnung.isHatBalkon())).setHeader("Balkon").setTextAlign(ColumnTextAlign.CENTER);
         grid.addComponentColumn(wohnung -> createIcon(wohnung.isHatTerrasse())).setHeader("Terrasse").setTextAlign(ColumnTextAlign.CENTER);

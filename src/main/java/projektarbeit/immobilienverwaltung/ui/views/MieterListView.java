@@ -1,6 +1,8 @@
 package projektarbeit.immobilienverwaltung.ui.views;
 
+import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Span;
@@ -16,8 +18,6 @@ import com.vaadin.flow.spring.annotation.UIScope;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.service.MieterService;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
-
-import java.util.stream.Collectors;
 
 @Route(value = "mieter", layout = MainLayout.class)
 @PageTitle("Mieter")
@@ -99,14 +99,20 @@ public class MieterListView extends VerticalLayout {
     private void configureGrid() {
         grid.addClassNames("mieter-grid");
         grid.setSizeFull();
+
         //Hier bei getFirst muss man noch änderen da kein Mieter zu den Wohnungen zugeordnet ist
-        grid.setColumns("name", "vorname", "telefonnummer", "einkommen", "mietbeginn", "mietende", "kaution", "anzahlBewohner");
+        grid.setColumns("name", "vorname", "telefonnummer", "einkommen", "mietbeginn", "mietende", "kaution");
+
+        // Add column with line break in header
+        grid.addColumn(Mieter::getAnzahlBewohner).setHeader(new Html("<div>Anzahl  <br>Bewohner</div>")).setTextAlign(ColumnTextAlign.CENTER);
+
         // Adding column for the complete address using getFormattedAddress with HTML support
         grid.addColumn(new ComponentRenderer<>(mieter -> {
             Span span = new Span();
             span.getElement().setProperty("innerHTML", mieter.getFormattedWohnung());
             return span;
         })).setHeader("Mietobjekt");
+
         //Automatische Größe und Sotieren zulassen
         grid.getColumns().forEach(col -> col.setAutoWidth(true).setSortable(true));
         grid.asSingleSelect().addValueChangeListener(e -> editMieter(e.getValue()));
