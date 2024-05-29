@@ -15,9 +15,13 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
+import com.vaadin.flow.data.renderer.NumberRenderer;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.service.MieterService;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
+
+import java.text.NumberFormat;
+import java.util.Locale;
 
 @Route(value = "mieter", layout = MainLayout.class)
 @PageTitle("Mieter")
@@ -101,10 +105,28 @@ public class MieterListView extends VerticalLayout {
         grid.setSizeFull();
 
         //Hier bei getFirst muss man noch änderen da kein Mieter zu den Wohnungen zugeordnet ist
-        grid.setColumns("name", "vorname", "telefonnummer", "einkommen", "mietbeginn", "mietende", "kaution");
+        grid.setColumns("name", "vorname", "telefonnummer", "mietbeginn", "mietende");
+
+        // Einkommen-Spalte mit Formatierung hinzufügen
+        grid.addColumn(new NumberRenderer<>(
+                        Mieter::getEinkommen,
+                        NumberFormat.getCurrencyInstance(Locale.GERMANY)))
+                .setHeader("Einkommen")
+                .setAutoWidth(true)
+                .setSortable(true)
+                .setTextAlign(ColumnTextAlign.CENTER);
+
+        // Kaution-Spalte mit Formatierung hinzufügen
+        grid.addColumn(new NumberRenderer<>(
+                        Mieter::getKaution,
+                        NumberFormat.getCurrencyInstance(Locale.GERMANY)))
+                .setHeader("Kaution")
+                .setAutoWidth(true)
+                .setSortable(true)
+                .setTextAlign(ColumnTextAlign.CENTER);
 
         // Add column with line break in header
-        grid.addColumn(Mieter::getAnzahlBewohner).setHeader(new Html("<div>Anzahl  <br>Bewohner</div>")).setTextAlign(ColumnTextAlign.CENTER);
+        grid.addColumn(Mieter::getAnzahlBewohner).setHeader(new Html("<div>Anzahl<br>Bewohner</div>")).setTextAlign(ColumnTextAlign.CENTER);
 
         // Adding column for the complete address using getFormattedAddress with HTML support
         grid.addColumn(new ComponentRenderer<>(mieter -> {

@@ -100,6 +100,12 @@ public class WohnungDemo implements CommandLineRunner {
             Adresse adr8 = new Adresse(plz8, "Königsstraße", "1");
             adresseService.save(adr8);
 
+            Adresse adr9 = new Adresse(plz8, "Königsstraße", "2");
+            adresseService.save(adr9);
+
+            Adresse adr10 = new Adresse(plz8, "Königsstraße", "1");
+            adresseService.save(adr10);
+
             // Create Wohnung
             Wohnung w1 = new Wohnung(adr1, 200, 1900, 2, 2, true, true, true, true);
             wohnungService.save(w1);
@@ -125,6 +131,11 @@ public class WohnungDemo implements CommandLineRunner {
             Wohnung w8 = new Wohnung(adr8, 55, 2008, 2, 2, false, true, false, true);
             wohnungService.save(w8);
 
+            Wohnung w9 = new Wohnung(adr9, 55, 2008, 2, 2, false, true, false, true);
+            wohnungService.save(w9);
+
+            Wohnung w10 = new Wohnung(adr10, 55, 2008, 2, 2, false, true, false, true);
+            wohnungService.save(w10);
 
             logger.info("Wohnung data loaded.");
         } else {
