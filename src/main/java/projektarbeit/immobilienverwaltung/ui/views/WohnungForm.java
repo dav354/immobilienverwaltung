@@ -24,6 +24,7 @@ import projektarbeit.immobilienverwaltung.model.Land;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.ui.components.ConfirmationDialog;
+import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -171,6 +172,9 @@ public class WohnungForm extends FormLayout {
                 // Ensure Mieter is set from ComboBox
                 wohnung.setMieter(mieterComboBox.getValue());
                 fireEvent(new SaveEvent(this, wohnung));
+                NotificationPopup.showSuccessNotification("Wohnung erfolgreich gespeichert.");
+            } else {
+                NotificationPopup.showErrorNotification("Fehler beim Speichern der Wohnung.");
             }
         }
     }
@@ -178,7 +182,10 @@ public class WohnungForm extends FormLayout {
     private void showDeleteConfirmationDialog() {
         ConfirmationDialog confirmationDialog = new ConfirmationDialog(
                 "Are you sure you want to delete this Wohnung?",
-                () -> fireEvent(new DeleteEvent(this, wohnung))
+                () -> {
+                    fireEvent(new DeleteEvent(this, wohnung));
+                    NotificationPopup.showSuccessNotification("Wohnung erfolgreich gelöscht.");
+                }
         );
         confirmationDialog.open();
     }

@@ -31,6 +31,7 @@ import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.service.MieterService;
 import projektarbeit.immobilienverwaltung.ui.components.ConfirmationDialog;
+import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -180,6 +181,9 @@ public class MieterForm extends FormLayout {
             refreshAvailableWohnungen();
 
             fireEvent(new SaveEvent(this, mieter));
+            NotificationPopup.showSuccessNotification("Mieter erfolgreich gespeichert.");
+        } else {
+            NotificationPopup.showErrorNotification("Fehler beim Speichern des Mieters.");
         }
     }
 
@@ -217,7 +221,10 @@ public class MieterForm extends FormLayout {
     private void showDeleteConfirmationDialog() {
         ConfirmationDialog confirmationDialog = new ConfirmationDialog(
                 "Are you sure you want to delete this Mieter?",
-                () -> fireEvent(new DeleteEvent(this, mieter))
+                () -> {
+                    fireEvent(new DeleteEvent(this, mieter));
+                    NotificationPopup.showSuccessNotification("Mieter erfolgreich gelöscht.");
+                }
         );
         confirmationDialog.open();
     }
