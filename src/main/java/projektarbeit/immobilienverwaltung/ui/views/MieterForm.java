@@ -30,6 +30,7 @@ import projektarbeit.immobilienverwaltung.demo.AssignMieterToWohnungDemo;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.service.MieterService;
+import projektarbeit.immobilienverwaltung.ui.components.ConfirmationDialog;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -214,20 +215,10 @@ public class MieterForm extends FormLayout {
     }
 
     private void showDeleteConfirmationDialog() {
-        Dialog confirmationDialog = new Dialog();
-        confirmationDialog.add(new Text("Are you sure you want to delete this Mieter?"));
-
-        Button confirmButton = new Button("Delete", event -> {
-            confirmationDialog.close();
-            fireEvent(new DeleteEvent(this, mieter));
-        });
-        confirmButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
-
-        Button cancelButton = new Button("Cancel", event -> confirmationDialog.close());
-        cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-
-        HorizontalLayout buttons = new HorizontalLayout(confirmButton, cancelButton);
-        confirmationDialog.add(buttons);
+        ConfirmationDialog confirmationDialog = new ConfirmationDialog(
+                "Are you sure you want to delete this Mieter?",
+                () -> fireEvent(new DeleteEvent(this, mieter))
+        );
         confirmationDialog.open();
     }
 

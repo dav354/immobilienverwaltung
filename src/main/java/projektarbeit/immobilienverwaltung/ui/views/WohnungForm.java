@@ -23,6 +23,7 @@ import com.vaadin.flow.shared.Registration;
 import projektarbeit.immobilienverwaltung.model.Land;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
+import projektarbeit.immobilienverwaltung.ui.components.ConfirmationDialog;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -175,20 +176,10 @@ public class WohnungForm extends FormLayout {
     }
 
     private void showDeleteConfirmationDialog() {
-        Dialog confirmationDialog = new Dialog();
-        confirmationDialog.add(new Text("Are you sure you want to delete this Wohnung?"));
-
-        Button confirmButton = new Button("Delete", event -> {
-            confirmationDialog.close();
-            fireEvent(new DeleteEvent(this, wohnung));
-        });
-        confirmButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
-
-        Button cancelButton = new Button("Cancel", event -> confirmationDialog.close());
-        cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-
-        HorizontalLayout buttons = new HorizontalLayout(confirmButton, cancelButton);
-        confirmationDialog.add(buttons);
+        ConfirmationDialog confirmationDialog = new ConfirmationDialog(
+                "Are you sure you want to delete this Wohnung?",
+                () -> fireEvent(new DeleteEvent(this, wohnung))
+        );
         confirmationDialog.open();
     }
 
