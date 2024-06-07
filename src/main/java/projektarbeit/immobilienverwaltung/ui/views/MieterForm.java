@@ -12,11 +12,15 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.binder.ValidationResult;
-import com.vaadin.flow.data.validator.*;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.binder.Setter;
+import com.vaadin.flow.data.binder.ValidationResult;
+import com.vaadin.flow.data.validator.DateRangeValidator;
+import com.vaadin.flow.data.validator.DoubleRangeValidator;
+import com.vaadin.flow.data.validator.IntegerRangeValidator;
+import com.vaadin.flow.data.validator.RegexpValidator;
+import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.shared.Registration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,14 +37,10 @@ import java.util.stream.Collectors;
 
 public class MieterForm extends FormLayout {
 
-    private final MieterService mieterService;
-    private List<Wohnung> availableWohnungen;
-    private Mieter mieter;
     private static final Logger logger = LoggerFactory.getLogger(AssignMieterToWohnungDemo.class);
-
+    private final MieterService mieterService;
     //Datenbindung und Validierung zwischen UI-Komponenten und einem Java-Bean-Objekt zu erstellen
     Binder<Mieter> binder = new BeanValidationBinder<>(Mieter.class);
-
     // Die einzelnen Daten mit ihren Feldern
     TextField name = new TextField("Name");
     TextField vorname = new TextField("Vorname");
@@ -51,11 +51,12 @@ public class MieterForm extends FormLayout {
     NumberField kaution = new NumberField("Kaution");
     IntegerField anzahlBewohner = new IntegerField("Anzahl Bewohner");
     MultiSelectComboBox<Wohnung> wohnungMultiSelectComboBox = new MultiSelectComboBox<>("Wohnung");
-
     // Die 3 Knöpfe zum Speichern, Löschen und Schließen des Forms
     Button speichern = new Button("Speichern");
     Button loeschen = new Button("Löschen");
     Button schliessen = new Button("Schließen");
+    private List<Wohnung> availableWohnungen;
+    private Mieter mieter;
 
     //Erstellung des Forms
     public MieterForm(MieterService mieterService) {
@@ -80,38 +81,15 @@ public class MieterForm extends FormLayout {
     }
 
     private void configureValidation() {
-        // Name validation
-        binder.forField(name)
-                .asRequired("Name is required")
-                .withValidator(new RegexpValidator("Name darf nur Buchstaben enthalten", "^[a-zA-Z\\s]+$"))
-                .withValidator(new StringLengthValidator("Name must be between 1 and 50 characters", 1,50))
-                .bind(Mieter::getName, Mieter::setName);
-
-        // Vorname validation
-        binder.forField(vorname)
-                .asRequired("Vorname is required")
-                .withValidator(new StringLengthValidator("Vorname must be between 1 and 50 characters", 1, 50))
-                .withValidator(new RegexpValidator("Vorname darf nur Buchstaben enthalten", "^[a-zA-Z\\s]+$"))
-                .bind(Mieter::getVorname, Mieter::setVorname);
-
-        // Telefonnummer validation
-        binder.forField(telefonnummer)
-                .asRequired("Telefonnummer is required")
-                .withValidator(new RegexpValidator("Telefonnummer must contain 6-12 numbers, no +,-", "^\\d{6,12}$"))
-                .bind(Mieter::getTelefonnummer, Mieter::setTelefonnummer);
-
-        // Einkommen validation
-        binder.forField(einkommen)
-                .asRequired("Einkommen is required")
-                .withValidator(new DoubleRangeValidator("Einkommen must be a positive number", 0.01, Double.MAX_VALUE))
-                .bind(Mieter::getEinkommen, Mieter::setEinkommen);
-
-        // Mietbeginn validation
+        configureTextField(name, "^[a-zA-Z\\s]{1,50}$", "Name darf nur Buchstaben und Leerzeichen enthalten, 1-50 Zeichen", Mieter::getName, Mieter::setName);
+        configureTextField(vorname, "^[a-zA-Z\\s]{1,50}$", "Vorname darf nur Buchstaben und Leerzeichen enthalten, 1-50 Zeichen", Mieter::getVorname, Mieter::setVorname);
+        configureTextField(telefonnummer, "^\\d{6,12}$", "Telefonnummer must contain 6-12 numbers, no +,-", Mieter::getTelefonnummer, Mieter::setTelefonnummer);
+        configureNumberField(einkommen, "Einkommen must be a positive number", 0.01, Double.MAX_VALUE, Mieter::getEinkommen, Mieter::setEinkommen);
+        configureNumberField(kaution, "Kaution must be a positive number", 0.01, Double.MAX_VALUE, Mieter::getKaution, Mieter::setKaution);
+        configureIntegerField(anzahlBewohner, "Anzahl Bewohner must be a positive integer", 1, Integer.MAX_VALUE, Mieter::getAnzahlBewohner, Mieter::setAnzahlBewohner);
         binder.forField(mietbeginn)
                 .withValidator(new DateRangeValidator("Mietbeginn must be a past or present date", LocalDate.of(1900, 1, 1), LocalDate.now()))
                 .bind(Mieter::getMietbeginn, Mieter::setMietbeginn);
-
-        // Mietende validation
         binder.forField(mietende)
                 .withValidator((value, context) -> {
                     if (value == null || mietbeginn.getValue() == null) {
@@ -120,18 +98,29 @@ public class MieterForm extends FormLayout {
                     return value.isAfter(mietbeginn.getValue()) ? ValidationResult.ok() : ValidationResult.error("Mietende must be after Mietbeginn");
                 })
                 .bind(Mieter::getMietende, Mieter::setMietende);
+    }
 
-        // Kaution validation
-        binder.forField(kaution)
-                .asRequired("Kaution is required")
-                .withValidator(new DoubleRangeValidator("Kaution must be a positive number", 0.01, Double.MAX_VALUE))
-                .bind(Mieter::getKaution, Mieter::setKaution);
+    private void configureTextField(TextField field, String regex, String errorMessage, ValueProvider<Mieter, String> getter, Setter<Mieter, String> setter) {
+        binder.forField(field)
+                .asRequired(errorMessage)
+                .withValidator(new RegexpValidator(errorMessage, regex, true))
+                .bind(getter, setter);
+    }
 
-        // Anzahl Bewohner validation
-        binder.forField(anzahlBewohner)
-                .asRequired("Anzahl der Bewohner is required")
-                .withValidator(new IntegerRangeValidator("Anzahl Bewohner must be a positive integer", 1, Integer.MAX_VALUE))
-                .bind(Mieter::getAnzahlBewohner, Mieter::setAnzahlBewohner);
+    private void configureNumberField(NumberField field, String errorMessage, double min, double max, ValueProvider<Mieter, Double> getter, Setter<Mieter, Double> setter) {
+        field.setClearButtonVisible(true);
+        binder.forField(field)
+                .asRequired(errorMessage)
+                .withValidator(new DoubleRangeValidator(errorMessage, min, max))
+                .bind(getter, setter);
+    }
+
+    private void configureIntegerField(IntegerField field, String errorMessage, int min, int max, ValueProvider<Mieter, Integer> getter, Setter<Mieter, Integer> setter) {
+        field.setClearButtonVisible(true);
+        binder.forField(field)
+                .asRequired(errorMessage)
+                .withValidator(new IntegerRangeValidator(errorMessage, min, max))
+                .bind(getter, setter);
     }
 
     // Bind the Mieter to the binder
@@ -166,12 +155,9 @@ public class MieterForm extends FormLayout {
         return new HorizontalLayout(speichern, loeschen, schliessen);
     }
 
-    @SuppressWarnings("CallToPrintStackTrace")
     // Validates the inputs in the form and saves the data if valid
     private void validateAndSave() {
-        try {
-            binder.writeBean(mieter);
-
+        if (binder.writeBeanIfValid(mieter)) {
             // Get the current and selected Wohnungen
             List<Wohnung> currentWohnungen = new ArrayList<>(mieter.getWohnung());
             List<Wohnung> selectedWohnungen = new ArrayList<>(wohnungMultiSelectComboBox.getValue());
@@ -191,8 +177,6 @@ public class MieterForm extends FormLayout {
             refreshAvailableWohnungen();
 
             fireEvent(new SaveEvent(this, mieter));
-        } catch (ValidationException e) {
-            e.printStackTrace();
         }
     }
 

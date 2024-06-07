@@ -50,11 +50,11 @@ public class DokumentListView extends VerticalLayout {
         grid.removeAllColumns();
         grid.addColumn(Dokument::getDokumententyp).setHeader("Dokumententyp").setSortable(true);
         grid.addColumn(Dokument::getDateipfad).setHeader("Dateipfad").setSortable(true);
-        grid.addColumn(dokument -> dokument.getWohnung() != null ? dokument.getWohnung().getAdresse().getStrasse() : "N/A")
+        grid.addColumn(dokument -> dokument.getWohnung() != null ? dokument.getWohnung().getStrasse() : "N/A")
                 .setHeader("Strasse").setSortable(true);
-        grid.addColumn(dokument -> dokument.getWohnung() != null ? dokument.getWohnung().getAdresse().getHausnummer() : "N/A")
+        grid.addColumn(dokument -> dokument.getWohnung() != null ? dokument.getWohnung().getHausnummer() : "N/A")
                 .setHeader("Hausnummer").setSortable(true);
-        grid.addColumn(dokument -> dokument.getWohnung() != null ? dokument.getWohnung().getAdresse().getPostleitzahlObj().getPostleitzahl() : "N/A")
+        grid.addColumn(dokument -> dokument.getWohnung() != null ? dokument.getWohnung().getPostleitzahl() : "N/A")
                 .setHeader("Postleitzahl").setSortable(true);
         grid.addColumn(dokument -> dokument.getMieter() != null ? dokument.getMieter().getName() + ", " + dokument.getMieter().getVorname() : "N/A")
                 .setHeader("Mieter").setSortable(true);

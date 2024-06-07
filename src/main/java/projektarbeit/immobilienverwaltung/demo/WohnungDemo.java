@@ -6,35 +6,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import projektarbeit.immobilienverwaltung.model.Adresse;
-import projektarbeit.immobilienverwaltung.model.Postleitzahl;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
-import projektarbeit.immobilienverwaltung.service.AdresseService;
-import projektarbeit.immobilienverwaltung.service.PostleitzahlService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
-
-import static projektarbeit.immobilienverwaltung.model.Land.*;
+import projektarbeit.immobilienverwaltung.model.Land;
 
 @Component
 @Order(1)
 public class WohnungDemo implements CommandLineRunner {
 
-    private static final Logger logger = LoggerFactory.getLogger(MieterDemo.class);
+    private static final Logger logger = LoggerFactory.getLogger(WohnungDemo.class);
 
     private final DemoModeConfig demoModeConfig;
     private final WohnungService wohnungService;
-    private final AdresseService adresseService;
-    private final PostleitzahlService postleitzahlService;
 
     @Autowired
-    public WohnungDemo(DemoModeConfig demoModeConfig,
-                       WohnungService wohnungService,
-                       AdresseService adresseService,
-                       PostleitzahlService postleitzahlService) {
+    public WohnungDemo(DemoModeConfig demoModeConfig, WohnungService wohnungService) {
         this.demoModeConfig = demoModeConfig;
         this.wohnungService = wohnungService;
-        this.adresseService = adresseService;
-        this.postleitzahlService = postleitzahlService;
     }
 
     @Override
@@ -50,91 +38,35 @@ public class WohnungDemo implements CommandLineRunner {
         if (wohnungService.findAllWohnungen().isEmpty()) { // Only load if no data exists
             logger.info("Loading Wohnung data...");
 
-            // Create Postleitzahl
-            Postleitzahl plz1 = new Postleitzahl("07111", "Stuttgart", DE);
-            postleitzahlService.save(plz1);
-
-            Postleitzahl plz2 = new Postleitzahl("338474", "Würzburg", DE);
-            postleitzahlService.save(plz2);
-
-            Postleitzahl plz3 = new Postleitzahl("12345", "Bern", CH);
-            postleitzahlService.save(plz3);
-
-            Postleitzahl plz4 = new Postleitzahl("54321", "Hamburg", DE);
-            postleitzahlService.save(plz4);
-
-            Postleitzahl plz5 = new Postleitzahl("9876", "Oberhausen", DE);
-            postleitzahlService.save(plz5);
-
-            Postleitzahl plz6 = new Postleitzahl("77777", "Berlin", DE);
-            postleitzahlService.save(plz6);
-
-            Postleitzahl plz7 = new Postleitzahl("88888", "Zürich", CH);
-            postleitzahlService.save(plz7);
-
-            Postleitzahl plz8 = new Postleitzahl("54555", "Altona", DE);
-            postleitzahlService.save(plz8);
-
-            // Create Adresse
-            Adresse adr1 = new Adresse(plz1, "Teststrasse", "11");
-            adresseService.save(adr1);
-
-            Adresse adr2 = new Adresse(plz2, "Alphastreet", "420a");
-            adresseService.save(adr2);
-
-            Adresse adr3 = new Adresse(plz3, "Beispielweg", "22");
-            adresseService.save(adr3);
-
-            Adresse adr4 = new Adresse(plz4, "Musterallee", "33b");
-            adresseService.save(adr4);
-
-            Adresse adr5 = new Adresse(plz5, "Betastreet", "1111");
-            adresseService.save(adr5);
-
-            Adresse adr6 = new Adresse(plz6, "Lolgasse", "69");
-            adresseService.save(adr6);
-
-            Adresse adr7 = new Adresse(plz7, "strasseb", "333");
-            adresseService.save(adr7);
-
-            Adresse adr8 = new Adresse(plz8, "Königsstraße", "1");
-            adresseService.save(adr8);
-
-            Adresse adr9 = new Adresse(plz8, "Königsstraße", "2");
-            adresseService.save(adr9);
-
-            Adresse adr10 = new Adresse(plz8, "Königsstraße", "1");
-            adresseService.save(adr10);
-
-            // Create Wohnung
-            Wohnung w1 = new Wohnung(adr1, 200, 1900, 2, 2, true, true, true, true);
+            // Create Wohnungen with their corresponding attributes directly
+            Wohnung w1 = new Wohnung("Teststrasse", "11", "07111", "Stuttgart", Land.DE, 200, 1900, 2, 2, true, true, true, true);
             wohnungService.save(w1);
 
-            Wohnung w2 = new Wohnung(adr2, 50, 2000, 1, 1, false, false, false, false);
+            Wohnung w2 = new Wohnung("Alphastreet", "420a", "338474", "Würzburg", Land.DE, 50, 2000, 1, 1, false, false, false, false);
             wohnungService.save(w2);
 
-            Wohnung w3 = new Wohnung(adr3, 120, 1985, 1, 3, true, false, true, false);
+            Wohnung w3 = new Wohnung("Beispielweg", "22", "12345", "Bern", Land.CH, 120, 1985, 1, 3, true, false, true, false);
             wohnungService.save(w3);
 
-            Wohnung w4 = new Wohnung(adr4, 85, 1995, 2, 2, false, true, false, true);
+            Wohnung w4 = new Wohnung("Musterallee", "33b", "54321", "Hamburg", Land.DE, 85, 1995, 2, 2, false, true, false, true);
             wohnungService.save(w4);
 
-            Wohnung w5 = new Wohnung(adr5, 222, 1967, 2, 2, true, true, true, true);
+            Wohnung w5 = new Wohnung("Betastreet", "1111", "9876", "Oberhausen", Land.DE, 222, 1967, 2, 2, true, true, true, true);
             wohnungService.save(w5);
 
-            Wohnung w6 = new Wohnung(adr6, 35, 1943, 1, 1, false, false, false, false);
+            Wohnung w6 = new Wohnung("Lolgasse", "69", "77777", "Berlin", Land.DE, 35, 1943, 1, 1, false, false, false, false);
             wohnungService.save(w6);
 
-            Wohnung w7 = new Wohnung(adr7, 44, 1877, 1, 3, true, false, true, false);
+            Wohnung w7 = new Wohnung("strasseb", "333", "88888", "Zürich", Land.CH, 44, 1877, 1, 3, true, false, true, false);
             wohnungService.save(w7);
 
-            Wohnung w8 = new Wohnung(adr8, 55, 2008, 2, 2, false, true, false, true);
+            Wohnung w8 = new Wohnung("Königsstraße", "1", "54555", "Altona", Land.DE, 55, 2008, 2, 2, false, true, false, true);
             wohnungService.save(w8);
 
-            Wohnung w9 = new Wohnung(adr9, 55, 2008, 2, 2, false, true, false, true);
+            Wohnung w9 = new Wohnung("Königsstraße", "2", "54555", "Altona", Land.DE, 55, 2008, 2, 2, false, true, false, true);
             wohnungService.save(w9);
 
-            Wohnung w10 = new Wohnung(adr10, 55, 2008, 2, 2, false, true, false, true);
+            Wohnung w10 = new Wohnung("Königsstraße", "1", "54555", "Altona", Land.DE, 55, 2008, 2, 2, false, true, false, true);
             wohnungService.save(w10);
 
             logger.info("Wohnung data loaded.");

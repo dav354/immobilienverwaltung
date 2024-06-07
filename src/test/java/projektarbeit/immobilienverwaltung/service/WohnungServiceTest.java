@@ -7,17 +7,14 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.transaction.annotation.Transactional;
 import projektarbeit.immobilienverwaltung.model.*;
-import projektarbeit.immobilienverwaltung.repository.AdresseRepository;
-import projektarbeit.immobilienverwaltung.repository.DokumentRepository;
-import projektarbeit.immobilienverwaltung.repository.MieterRepository;
-import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
-import projektarbeit.immobilienverwaltung.repository.ZaehlerstandRepository;
+import projektarbeit.immobilienverwaltung.repository.*;
 
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static projektarbeit.immobilienverwaltung.model.Land.*;
 
 class WohnungServiceTest {
 
@@ -34,31 +31,19 @@ class WohnungServiceTest {
     private ZaehlerstandRepository zaehlerstandRepository;
 
     @Mock
-    private AdresseRepository adresseRepository;
-
-    @Mock
-    private PostleitzahlService postleitzahlService;
-
-    @Mock
     private DokumentService dokumentService;
 
     @InjectMocks
     private WohnungService wohnungService;
 
     private Wohnung wohnung;
-    private Adresse adresse;
-    private Postleitzahl postleitzahl;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        postleitzahl = new Postleitzahl("07111", "Stuttgart", Land.DE);
-        adresse = new Adresse(postleitzahl, "Teststrasse", "11");
-        adresse.setAdresse_id(1L);
-
-        wohnung = new Wohnung(adresse, 200, 1900, 2, 2, true, true, true, true);
-        wohnung.setWohnungId(1L);
+        wohnung = new Wohnung("07111", "Stuttgart", "83783", "Teststrasse", DE, 200, 1900, 2, 2, true, true, true, true);
+        wohnung.setWohnung_id(1L);
     }
 
     @Test
@@ -70,47 +55,26 @@ class WohnungServiceTest {
         assertNotNull(wohnungen);
         assertFalse(wohnungen.isEmpty());
         assertEquals(1, wohnungen.size());
-        assertEquals("Teststrasse", wohnungen.get(0).getAdresse().getStrasse());
+        assertEquals("Teststrasse", wohnungen.getFirst().getStrasse());
     }
 
     @Test
     @Transactional
-    void testSaveWohnung_NewAdresse() {
-        when(adresseRepository.existsById(adresse.getAdresse_id())).thenReturn(false);
-        when(adresseRepository.save(any(Adresse.class))).thenReturn(adresse);
+    void testSaveWohnung() {
         when(wohnungRepository.save(any(Wohnung.class))).thenReturn(wohnung);
 
         Wohnung savedWohnung = wohnungService.save(wohnung);
 
         assertNotNull(savedWohnung);
-        assertEquals("Teststrasse", savedWohnung.getAdresse().getStrasse());
-        verify(adresseRepository, times(1)).save(adresse);
-        verify(wohnungRepository, times(1)).save(wohnung);
-    }
-
-    @Test
-    @Transactional
-    void testSaveWohnung_ExistingAdresse() {
-        when(adresseRepository.existsById(adresse.getAdresse_id())).thenReturn(true);
-        when(adresseRepository.findById(adresse.getAdresse_id())).thenReturn(Optional.of(adresse));
-        when(wohnungRepository.save(any(Wohnung.class))).thenReturn(wohnung);
-
-        Wohnung savedWohnung = wohnungService.save(wohnung);
-
-        assertNotNull(savedWohnung);
-        assertEquals("Teststrasse", savedWohnung.getAdresse().getStrasse());
-        verify(adresseRepository, never()).save(adresse);
+        assertEquals("Teststrasse", savedWohnung.getStrasse());
         verify(wohnungRepository, times(1)).save(wohnung);
     }
 
     @Test
     @Transactional
     void testDeleteWohnung() {
-        Wohnung wohnung = new Wohnung();
-        Adresse adresse = new Adresse();
-        Postleitzahl postleitzahl = new Postleitzahl();
-        wohnung.setAdresse(adresse);
-        adresse.setPostleitzahlObj(postleitzahl);
+        Wohnung wohnung = new Wohnung("07111", "Stuttgart", "86768", "Teststrasse", DE, 200, 1900, 2, 2, true, true, true, true);
+        wohnung.setWohnung_id(1L);
 
         Mieter mieter = new Mieter();
         mieter.setWohnung(new ArrayList<>(Collections.singletonList(wohnung)));
@@ -131,8 +95,6 @@ class WohnungServiceTest {
         verify(mieterRepository, times(1)).save(mieter);
         verify(zaehlerstandRepository, times(1)).delete(zaehlerstand);
         verify(wohnungRepository, times(1)).delete(wohnung);
-        verify(adresseRepository, times(1)).delete(adresse);
-        verify(postleitzahlService, times(1)).deletePostleitzahlIfUnused(postleitzahl);
     }
 
     @Test
@@ -147,7 +109,7 @@ class WohnungServiceTest {
         assertNotNull(dokumente);
         assertFalse(dokumente.isEmpty());
         assertEquals(1, dokumente.size());
-        assertEquals(wohnung, dokumente.get(0).getWohnung());
+        assertEquals(wohnung, dokumente.getFirst().getWohnung());
     }
 
     @Test
@@ -158,36 +120,32 @@ class WohnungServiceTest {
         assertNotNull(wohnungen);
         assertFalse(wohnungen.isEmpty());
         assertEquals(1, wohnungen.size());
-        assertEquals("Teststrasse", wohnungen.get(0).getAdresse().getStrasse());
+        assertEquals("Teststrasse", wohnungen.getFirst().getStrasse());
 
         wohnungen = wohnungService.findAllWohnungen("");
         assertNotNull(wohnungen);
         assertFalse(wohnungen.isEmpty());
         assertEquals(1, wohnungen.size());
-        assertEquals("Teststrasse", wohnungen.get(0).getAdresse().getStrasse());
+        assertEquals("Teststrasse", wohnungen.getFirst().getStrasse());
     }
 
     @Test
     void testFindAllWohnungen_WithFilter() {
-        Adresse matchingAdresse = new Adresse(postleitzahl, "MatchingStrasse", "22");
-        matchingAdresse.setAdresse_id(2L);
-        Wohnung matchingWohnung = new Wohnung(matchingAdresse, 250, 2000, 3, 2, true, false, true, false);
-        matchingWohnung.setWohnungId(2L);
+        Wohnung matchingWohnung = new Wohnung("07111", "MatchingStadt", "87482", "MatchingStrasse", DE, 250, 2000, 3, 2, true, false, true, false);
+        matchingWohnung.setWohnung_id(2L);
 
-        when(adresseRepository.search("MatchingStrasse")).thenReturn(Collections.singletonList(matchingAdresse));
-        when(wohnungRepository.findByAdresseIds(Collections.singletonList(2L))).thenReturn(Collections.singletonList(matchingWohnung));
+        when(wohnungRepository.findAll()).thenReturn(Collections.singletonList(matchingWohnung));
 
         List<Wohnung> wohnungen = wohnungService.findAllWohnungen("MatchingStrasse");
         assertNotNull(wohnungen);
         assertFalse(wohnungen.isEmpty());
         assertEquals(1, wohnungen.size());
-        assertEquals("MatchingStrasse", wohnungen.get(0).getAdresse().getStrasse());
+        assertEquals("MatchingStrasse", wohnungen.getFirst().getStrasse());
     }
 
     @Test
     void testFindAllWohnungen_NoMatchingFilter() {
-        when(adresseRepository.search("NonExistingStrasse")).thenReturn(Collections.emptyList());
-        when(wohnungRepository.findByAdresseIds(Collections.emptyList())).thenReturn(Collections.emptyList());
+        when(wohnungRepository.findAll()).thenReturn(Collections.emptyList());
 
         List<Wohnung> wohnungen = wohnungService.findAllWohnungen("NonExistingStrasse");
         assertNotNull(wohnungen);

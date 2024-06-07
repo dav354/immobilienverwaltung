@@ -11,8 +11,10 @@ import java.util.List;
 @Repository
 public interface WohnungRepository extends JpaRepository<Wohnung, Long> {
 
-    @Query("SELECT w FROM Wohnung w WHERE w.adresse.adresse_id IN :adresseIds")
-    List<Wohnung> findByAdresseIds(@Param("adresseIds") List<Long> adresseIds);
-
     List<Wohnung> findByMieterIsNull();
+
+    @Query("SELECT w FROM Wohnung w " +
+            "WHERE lower(w.strasse) LIKE lower(concat('%', :searchTerm, '%')) " +
+            "OR lower(w.hausnummer) LIKE lower(concat('%', :searchTerm, '%'))")
+    List<Wohnung> search(@Param("searchTerm") String searchTerm);
 }

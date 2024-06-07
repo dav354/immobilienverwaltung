@@ -3,16 +3,13 @@ package projektarbeit.immobilienverwaltung.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.jdbc.Sql;
 import projektarbeit.immobilienverwaltung.model.Dokument;
-import projektarbeit.immobilienverwaltung.model.Postleitzahl;
-import projektarbeit.immobilienverwaltung.model.Adresse;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static projektarbeit.immobilienverwaltung.model.Land.DE;
+import static projektarbeit.immobilienverwaltung.model.Land.*;
 
 @DataJpaTest
 public class DokumentRepositoryTest {
@@ -23,24 +20,10 @@ public class DokumentRepositoryTest {
     @Autowired
     private WohnungRepository wohnungRepository;
 
-    @Autowired
-    private AdresseRepository adresseRepository;
-
-    @Autowired
-    private PostleitzahlRepository postleitzahlRepository;
-
     @Test
     public void testFindByWohnung() {
-        // Create and save a Postleitzahl
-        Postleitzahl plz = new Postleitzahl("07111", "Stuttgart", DE);
-        postleitzahlRepository.save(plz);
-
-        // Create and save an Adresse
-        Adresse adr = new Adresse(plz, "Teststrasse", "11");
-        adresseRepository.save(adr);
-
         // Create and save a Wohnung
-        Wohnung wohnung = new Wohnung(adr, 200, 1900, 2, 2, true, true, true, true);
+        Wohnung wohnung = new Wohnung("07111", "Stuttgart", "7777", "Teststrasse", DE, 200, 1900, 2, 2, true, true, true, true);
         wohnungRepository.save(wohnung);
 
         // Create and save Dokumente
@@ -59,16 +42,8 @@ public class DokumentRepositoryTest {
 
     @Test
     public void testSaveAndFindDokument() {
-        // Create and save a Postleitzahl
-        Postleitzahl plz = new Postleitzahl("07111", "Stuttgart", DE);
-        postleitzahlRepository.save(plz);
-
-        // Create and save an Adresse
-        Adresse adr = new Adresse(plz, "Teststrasse", "11");
-        adresseRepository.save(adr);
-
         // Create and save a Wohnung
-        Wohnung wohnung = new Wohnung(adr, 200, 1900, 2, 2, true, true, true, true);
+        Wohnung wohnung = new Wohnung("07111", "Stuttgart", "022222", "Teststrasse", DE, 200, 1900, 2, 2, true, true, true, true);
         wohnungRepository.save(wohnung);
 
         // Create and save a Dokument

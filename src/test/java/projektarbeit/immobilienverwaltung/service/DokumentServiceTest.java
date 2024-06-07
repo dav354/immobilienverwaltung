@@ -34,7 +34,7 @@ class DokumentServiceTest {
         MockitoAnnotations.openMocks(this);
 
         wohnung = new Wohnung();
-        wohnung.setWohnungId(1L);
+        wohnung.setWohnung_id(1L);
 
         dokument1 = new Dokument();
         dokument1.setDokument_id(1L);

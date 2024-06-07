@@ -6,13 +6,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import projektarbeit.immobilienverwaltung.model.Land;
-import projektarbeit.immobilienverwaltung.model.Postleitzahl;
-import projektarbeit.immobilienverwaltung.repository.AdresseRepository;
-import projektarbeit.immobilienverwaltung.repository.PostleitzahlRepository;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-
+/*
 class PostleitzahlServiceTest {
 
     @Mock
@@ -115,3 +113,5 @@ class PostleitzahlServiceTest {
         });
     }
 }
+
+ */

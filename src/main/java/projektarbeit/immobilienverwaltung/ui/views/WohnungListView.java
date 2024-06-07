@@ -20,6 +20,8 @@ import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 
+import java.time.LocalDate;
+
 @Route(value = "wohnungen", layout = MainLayout.class)
 @PageTitle("Wohnungen")
 @UIScope
@@ -98,10 +100,10 @@ public class WohnungListView extends VerticalLayout {
 
         grid.removeAllColumns();
 
-        grid.addColumn(wohnung -> wohnung.getAdresse().getPostleitzahlObj().getLand().name()).setHeader("Land");
-        grid.addColumn(wohnung -> wohnung.getAdresse().getPostleitzahlObj().getPostleitzahl()).setHeader("PLZ");
-        grid.addColumn(wohnung -> wohnung.getAdresse().getPostleitzahlObj().getStadt()).setHeader("Stadt");
-        grid.addColumn(wohnung -> wohnung.getAdresse().getStrasse() + " " + wohnung.getAdresse().getHausnummer()).setHeader("Adresse");
+        grid.addColumn(wohnung -> wohnung.getLand().name()).setHeader("Land");
+        grid.addColumn(Wohnung::getPostleitzahl).setHeader("PLZ");
+        grid.addColumn(Wohnung::getStadt).setHeader("Stadt");
+        grid.addColumn(wohnung -> wohnung.getStrasse() + " " + wohnung.getHausnummer()).setHeader("Adresse");
         grid.addColumn(wohnung -> {
             Mieter mieter = wohnung.getMieter();
             return (mieter != null) ? mieter.getFullName() : "Kein Mieter";
@@ -115,7 +117,7 @@ public class WohnungListView extends VerticalLayout {
         grid.addComponentColumn(wohnung -> createIcon(wohnung.isHatBalkon())).setHeader("Balkon").setTextAlign(ColumnTextAlign.CENTER);
         grid.addComponentColumn(wohnung -> createIcon(wohnung.isHatTerrasse())).setHeader("Terrasse").setTextAlign(ColumnTextAlign.CENTER);
         grid.addComponentColumn(wohnung -> createIcon(wohnung.isHatGarten())).setHeader("Garten").setTextAlign(ColumnTextAlign.CENTER);
-        grid.addComponentColumn(wohnung -> createIcon(wohnung.isHatKlimaanlage())).setHeader("Klimaanlage").setTextAlign(ColumnTextAlign.CENTER);
+        grid.addComponentColumn(wohnung -> createIcon(wohnung.isHatKlimaanlage())).setHeader(new Html("<div>Klima-<br>anlage</div>")).setTextAlign(ColumnTextAlign.CENTER);
 
         grid.getColumns().forEach(col -> col.setAutoWidth(true).setSortable(true));
 
@@ -150,12 +152,12 @@ public class WohnungListView extends VerticalLayout {
     private void addWohnung() {
         grid.asSingleSelect().clear();
         Wohnung neueWohnung = new Wohnung();
+
+        form.clearFields(); // Ensure fields are cleared before setting the new Wohnung
         form.setWohnung(neueWohnung);
-        // Ensure the delete button is hidden
-        form.loeschen.setVisible(false);
-        // Sicherstellen, dass Felder geleert werden
-        form.clearFields();
-        editWohnung(neueWohnung);
+        form.loeschen.setVisible(false); // Ensure the delete button is hidden
+        form.setVisible(true); // Show the form
+        addClassName("editing");
     }
 
     private Icon createIcon(boolean value) {
