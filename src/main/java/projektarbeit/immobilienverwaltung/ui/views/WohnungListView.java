@@ -22,6 +22,7 @@ import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 
 import java.util.List;
 
+@SuppressWarnings("SpellCheckingInspection")
 @Route(value = "wohnungen", layout = MainLayout.class)
 @PageTitle("Wohnungen")
 @UIScope

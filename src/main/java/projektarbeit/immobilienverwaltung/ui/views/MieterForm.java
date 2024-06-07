@@ -22,9 +22,6 @@ import com.vaadin.flow.data.validator.IntegerRangeValidator;
 import com.vaadin.flow.data.validator.RegexpValidator;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.shared.Registration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import projektarbeit.immobilienverwaltung.demo.AssignMieterToWohnungDemo;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.service.MieterService;
@@ -37,9 +34,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class MieterForm extends FormLayout {
 
-    private static final Logger logger = LoggerFactory.getLogger(AssignMieterToWohnungDemo.class);
     private final MieterService mieterService;
     //Datenbindung und Validierung zwischen UI-Komponenten und einem Java-Bean-Objekt zu erstellen
     Binder<Mieter> binder = new BeanValidationBinder<>(Mieter.class);
@@ -91,8 +88,8 @@ public class MieterForm extends FormLayout {
         configureTextField(name, "^[a-zA-Z\\s]{1,50}$", "Name darf nur Buchstaben und Leerzeichen enthalten, 1-50 Zeichen", Mieter::getName, Mieter::setName);
         configureTextField(vorname, "^[a-zA-Z\\s]{1,50}$", "Vorname darf nur Buchstaben und Leerzeichen enthalten, 1-50 Zeichen", Mieter::getVorname, Mieter::setVorname);
         configureTextField(telefonnummer, "^\\d{6,12}$", "Telefonnummer must contain 6-12 numbers, no +,-", Mieter::getTelefonnummer, Mieter::setTelefonnummer);
-        configureNumberField(einkommen, "Einkommen must be a positive number", 0.01, Double.MAX_VALUE, Mieter::getEinkommen, Mieter::setEinkommen);
-        configureNumberField(kaution, "Kaution must be a positive number", 0.01, Double.MAX_VALUE, Mieter::getKaution, Mieter::setKaution);
+        configureNumberField(einkommen, "Einkommen must be a positive number", 1, Double.MAX_VALUE, Mieter::getEinkommen, Mieter::setEinkommen);
+        configureNumberField(kaution, "Kaution must be a positive number", 1, Double.MAX_VALUE, Mieter::getKaution, Mieter::setKaution);
         configureIntegerField(anzahlBewohner, "Anzahl Bewohner must be a positive integer", 1, Integer.MAX_VALUE, Mieter::getAnzahlBewohner, Mieter::setAnzahlBewohner);
         binder.forField(mietbeginn)
                 .withValidator(new DateRangeValidator("Mietbeginn must be a past or present date", LocalDate.of(1900, 1, 1), LocalDate.now()))
@@ -133,6 +130,7 @@ public class MieterForm extends FormLayout {
      * @param getter       The getter method for the field value.
      * @param setter       The setter method for the field value.
      */
+    @SuppressWarnings("SameParameterValue")
     private void configureNumberField(NumberField field, String errorMessage, double min, double max, ValueProvider<Mieter, Double> getter, Setter<Mieter, Double> setter) {
         field.setClearButtonVisible(true);
         binder.forField(field)
@@ -151,6 +149,7 @@ public class MieterForm extends FormLayout {
      * @param getter       The getter method for the field value.
      * @param setter       The setter method for the field value.
      */
+    @SuppressWarnings("SameParameterValue")
     private void configureIntegerField(IntegerField field, String errorMessage, int min, int max, ValueProvider<Mieter, Integer> getter, Setter<Mieter, Integer> setter) {
         field.setClearButtonVisible(true);
         binder.forField(field)

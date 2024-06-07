@@ -15,6 +15,7 @@ import projektarbeit.immobilienverwaltung.repository.ZaehlerstandRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("SpellCheckingInspection")
 @Service
 public class MieterService {
 

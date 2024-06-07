@@ -92,25 +92,25 @@ public class AssignMieterToWohnungDemo implements CommandLineRunner {
                 Wohnung wohnung6 = wohnungen.get(5);
 
                 // Assign Wohnungen to Mieter
-                List<Wohnung> wohnungsListe1 = new ArrayList<>();
-                wohnungsListe1.add(wohnung1);
-                wohnungsListe1.add(wohnung2);
-                wohnungsListe1.add(wohnung3);
+                List<Wohnung> wohnungListe1 = new ArrayList<>();
+                wohnungListe1.add(wohnung1);
+                wohnungListe1.add(wohnung2);
+                wohnungListe1.add(wohnung3);
 
-                List<Wohnung> wohnungsListe2 = new ArrayList<>();
-                wohnungsListe2.add(wohnung4);
+                List<Wohnung> wohnungListe2 = new ArrayList<>();
+                wohnungListe2.add(wohnung4);
 
-                List<Wohnung> wohnungsListe3 = new ArrayList<>();
-                wohnungsListe3.add(wohnung5);
+                List<Wohnung> wohnungListe3 = new ArrayList<>();
+                wohnungListe3.add(wohnung5);
 
-                List<Wohnung> wohnungsListe4 = new ArrayList<>();
-                wohnungsListe4.add(wohnung6);
+                List<Wohnung> wohnungListe4 = new ArrayList<>();
+                wohnungListe4.add(wohnung6);
 
                 // Save the updated entities
-                mieterService.saveWohnungToMieter(mieter1, wohnungsListe1);
-                mieterService.saveWohnungToMieter(mieter2, wohnungsListe2);
-                mieterService.saveWohnungToMieter(mieter3, wohnungsListe3);
-                mieterService.saveWohnungToMieter(mieter4, wohnungsListe4);
+                mieterService.saveWohnungToMieter(mieter1, wohnungListe1);
+                mieterService.saveWohnungToMieter(mieter2, wohnungListe2);
+                mieterService.saveWohnungToMieter(mieter3, wohnungListe3);
+                mieterService.saveWohnungToMieter(mieter4, wohnungListe4);
 
                 logger.info("Mieter data assigned to Wohnungen.");
             } else {

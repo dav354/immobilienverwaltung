@@ -12,6 +12,7 @@ import jakarta.validation.Payload;
  * Custom annotation for validating the rental period of a tenant (Mieter).
  * Ensures that the rental start date (mietbeginn) is before the rental end date (mietende).
  */
+@SuppressWarnings("SpellCheckingInspection")
 @Target(TYPE) // Annotation can be applied to types (classes)
 @Retention(RUNTIME) // Annotation is available at runtime
 @Constraint(validatedBy = MietPeriodValidator.class) // Specifies the validator class

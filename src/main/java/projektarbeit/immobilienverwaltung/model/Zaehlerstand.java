@@ -10,6 +10,7 @@ import java.time.LocalDate;
  * Represents a meter reading (Zaehlerstand) entity associated with a property (Wohnung).
  * This entity is mapped to the database table 'zaehlerstand'.
  */
+@SuppressWarnings("SpellCheckingInspection")
 @Entity
 @Table(name = "zaehlerstand")
 public class Zaehlerstand {

@@ -87,10 +87,10 @@ public class MieterDemo implements CommandLineRunner {
                 Mieter mieter6 = new Mieter("Schneider", "Laura", "9876543211", 4200, LocalDate.of(2023, 7, 1), LocalDate.of(2024, 7, 1), 1300, 3);
                 mieterRepository.save(mieter6);
 
-                Mieter mieter7 = new Mieter("Matts", "John", "0123456789", 3000, LocalDate.of(2023, 1, 1), LocalDate.of(2024, 1, 1), 1000, 2);
+                Mieter mieter7 = new Mieter("Matt", "John", "0123456789", 3000, LocalDate.of(2023, 1, 1), LocalDate.of(2024, 1, 1), 1000, 2);
                 mieterRepository.save(mieter7);
 
-                Mieter mieter8 = new Mieter("Matts", "Jane", "9876543210", 4000, LocalDate.of(2023, 6, 1), LocalDate.of(2024, 6, 1), 1200, 3);
+                Mieter mieter8 = new Mieter("Matt", "Jane", "9876543210", 4000, LocalDate.of(2023, 6, 1), LocalDate.of(2024, 6, 1), 1200, 3);
                 mieterRepository.save(mieter8);
 
                 Mieter mieter9 = new Mieter("Musterfrau", "Max", "1234567890", 2500, LocalDate.of(2022, 5, 1), LocalDate.of(2023, 5, 1), 900, 1);

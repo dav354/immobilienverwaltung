@@ -85,7 +85,7 @@ public class DokumentDemo implements CommandLineRunner {
                 Dokument dokument3 = new Dokument(wohnungen.get(2), null, "Eigentumsnachweis", "/path/to/eigentumsnachweis1.pdf");
                 dokumentRepository.save(dokument3);
 
-                Dokument dokument4 = new Dokument(null, mieter.get(2), "Kündigung", "/path/to/kuendigung1.pdf");
+                Dokument dokument4 = new Dokument(null, mieter.get(2), "Kündigung", "/path/to/kündigung1.pdf");
                 dokumentRepository.save(dokument4);
 
                 Dokument dokument5 = new Dokument(wohnungen.get(3), mieter.get(3), "Nebenkostenabrechnung", "/path/to/nebenkosten1.pdf");

@@ -52,10 +52,10 @@ public class Mieter {
     @Positive(message = "Einkommen must be positive")
     private double einkommen;
 
-    @Column(nullable = true)
+    @Column()
     private LocalDate mietbeginn;
 
-    @Column(nullable = true)
+    @Column()
     private LocalDate mietende;
 
     @Column(nullable = false)

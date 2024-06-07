@@ -6,6 +6,7 @@ import projektarbeit.immobilienverwaltung.model.Zaehlerstand;
 
 import java.util.List;
 
+@SuppressWarnings("SpellCheckingInspection")
 public interface ZaehlerstandRepository extends JpaRepository<Zaehlerstand, Long> {
     List<Zaehlerstand> findByWohnung(Wohnung wohnung);
 }

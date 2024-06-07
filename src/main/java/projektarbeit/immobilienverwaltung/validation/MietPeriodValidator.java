@@ -8,6 +8,7 @@ import projektarbeit.immobilienverwaltung.model.Mieter;
  * Validator class for validating the rental period of a tenant (Mieter).
  * Ensures that the rental start date (mietbeginn) is before the rental end date (mietende).
  */
+@SuppressWarnings("SpellCheckingInspection")
 public class MietPeriodValidator implements ConstraintValidator<ValidMietPeriod, Mieter> {
 
     /**

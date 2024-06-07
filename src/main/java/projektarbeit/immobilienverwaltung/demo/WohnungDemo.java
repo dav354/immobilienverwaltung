@@ -14,6 +14,7 @@ import projektarbeit.immobilienverwaltung.model.Land;
  * Initializes the Wohnung data for demo purposes.
  * This class runs as a command line runner when the application starts if the demo mode is enabled.
  */
+@SuppressWarnings("SpellCheckingInspection")
 @Component
 @Order(1)
 public class WohnungDemo implements CommandLineRunner {
@@ -62,7 +63,7 @@ public class WohnungDemo implements CommandLineRunner {
             Wohnung w1 = new Wohnung("Teststrasse", "11", "07111", "Stuttgart", Land.DE, 200, 1900, 2, 2, true, true, true, true, null, null);
             wohnungService.save(w1);
 
-            Wohnung w2 = new Wohnung("Alphastreet", "420a", "338474", "Würzburg", Land.DE, 50, 2000, 1, 1, false, false, false, false, null, null);
+            Wohnung w2 = new Wohnung("Alphastrasse", "420a", "338474", "Würzburg", Land.DE, 50, 2000, 1, 1, false, false, false, false, null, null);
             wohnungService.save(w2);
 
             Wohnung w3 = new Wohnung("Beispielweg", "22", "12345", "Bern", Land.CH, 120, 1985, 1, 3, true, false, true, false, null, null);
@@ -71,7 +72,7 @@ public class WohnungDemo implements CommandLineRunner {
             Wohnung w4 = new Wohnung("Musterallee", "33b", "54321", "Hamburg", Land.DE, 85, 1995, 2, 2, false, true, false, true, null, null);
             wohnungService.save(w4);
 
-            Wohnung w5 = new Wohnung("Betastreet", "1111", "9876", "Oberhausen", Land.DE, 222, 1967, 2, 2, true, true, true, true, null, null);
+            Wohnung w5 = new Wohnung("Betastrasse", "1111", "9876", "Oberhausen", Land.DE, 222, 1967, 2, 2, true, true, true, true, null, null);
             wohnungService.save(w5);
 
             Wohnung w6 = new Wohnung("Lolgasse", "69", "77777", "Berlin", Land.DE, 35, 1943, 1, 1, false, false, false, false, null, null);

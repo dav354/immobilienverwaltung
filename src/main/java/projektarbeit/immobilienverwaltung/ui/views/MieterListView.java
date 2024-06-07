@@ -135,7 +135,7 @@ public class MieterListView extends VerticalLayout {
             return span;
         })).setHeader("Mietobjekt");
 
-        //Automatische Größe und Sotieren zulassen
+        //Automatische Größe und Sortieren zulassen
         grid.getColumns().forEach(col -> col.setAutoWidth(true).setSortable(true));
         grid.asSingleSelect().addValueChangeListener(e -> editMieter(e.getValue()));
     }

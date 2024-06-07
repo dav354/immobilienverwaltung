@@ -12,6 +12,7 @@ import java.util.List;
  * Represents a property (Wohnung) entity with details about the property such as address, size, number of rooms, and amenities.
  * This entity is mapped to the database table 'wohnung'.
  */
+@SuppressWarnings("SpellCheckingInspection")
 @Entity
 @Table(name = "wohnung")
 public class Wohnung {
@@ -85,11 +86,11 @@ public class Wohnung {
     @Transient
     private boolean isHeader = false;
 
-    @Column(nullable = true)
+    @Column()
     @Pattern(regexp = "^[0-9]*$", message = "Illegal Stockwerk")
     private String stockwerk;
 
-    @Column(nullable = true)
+    @Column()
     @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Illegal Wohnungsnummer")
     private String wohnungsnummer;
 

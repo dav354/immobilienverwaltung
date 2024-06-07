@@ -18,6 +18,7 @@ import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 
 import java.util.List;
 
+@SuppressWarnings("SpellCheckingInspection")
 @Route(value = "zaehlerstand", layout = MainLayout.class)
 @PageTitle("Zaehlerstand")
 @UIScope

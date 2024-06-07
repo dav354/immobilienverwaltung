@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("SpellCheckingInspection")
 @Service
 public class WohnungService {
 
@@ -70,11 +71,11 @@ public class WohnungService {
             if (wohnungenForAddress.size() > 1) {
                 // If there are multiple Wohnungen at the same address, create a header node
                 Wohnung addressNode = new Wohnung();
-                addressNode.setStrasse(wohnungenForAddress.get(0).getStrasse());
-                addressNode.setHausnummer(wohnungenForAddress.get(0).getHausnummer());
-                addressNode.setPostleitzahl(wohnungenForAddress.get(0).getPostleitzahl());
-                addressNode.setStadt(wohnungenForAddress.get(0).getStadt());
-                addressNode.setLand(wohnungenForAddress.get(0).getLand());
+                addressNode.setStrasse(wohnungenForAddress.getFirst().getStrasse());
+                addressNode.setHausnummer(wohnungenForAddress.getFirst().getHausnummer());
+                addressNode.setPostleitzahl(wohnungenForAddress.getFirst().getPostleitzahl());
+                addressNode.setStadt(wohnungenForAddress.getFirst().getStadt());
+                addressNode.setLand(wohnungenForAddress.getFirst().getLand());
                 addressNode.setHeader(true);
                 addressNode.setSubWohnungen(new ArrayList<>(wohnungenForAddress));
                 wohnungsWithHierarchy.add(addressNode);

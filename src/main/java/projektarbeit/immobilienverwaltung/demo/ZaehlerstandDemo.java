@@ -17,6 +17,7 @@ import java.util.List;
  * Initializes the Zaehlerstand (meter reading) data for demo purposes.
  * This class runs as a command line runner when the application starts if the demo mode is enabled.
  */
+@SuppressWarnings("SpellCheckingInspection")
 @Component
 @Order(3)
 public class ZaehlerstandDemo implements CommandLineRunner {

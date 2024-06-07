@@ -27,6 +27,7 @@ import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
 import java.time.LocalDate;
 import java.util.List;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class WohnungForm extends FormLayout {
 
     Binder<Wohnung> binder = new BeanValidationBinder<>(Wohnung.class);
