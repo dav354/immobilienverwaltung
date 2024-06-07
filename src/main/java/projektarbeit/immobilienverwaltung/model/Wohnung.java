@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 import projektarbeit.immobilienverwaltung.validation.ValidYear;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -78,6 +79,20 @@ public class Wohnung {
 
     private boolean hatKlimaanlage;
 
+    @Transient
+    private List<Wohnung> subWohnungen = new ArrayList<>();
+
+    @Transient
+    private boolean isHeader = false;
+
+    @Column(nullable = true)
+    @Pattern(regexp = "^[0-9]*$", message = "Illegal Stockwerk")
+    private String stockwerk;
+
+    @Column(nullable = true)
+    @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Illegal Wohnungsnummer")
+    private String wohnungsnummer;
+
     /**
      * Default constructor for JPA.
      */
@@ -100,6 +115,8 @@ public class Wohnung {
      * @param hatTerrasse        Whether the property has a terrace.
      * @param hatGarten          Whether the property has a garden.
      * @param hatKlimaanlage     Whether the property has air conditioning.
+     * @param stockwerk          The floor on which the property is located.
+     * @param wohnungsnummer     The apartment number of the property.
      */
     public Wohnung(String strasse,
                    String hausnummer,
@@ -113,7 +130,9 @@ public class Wohnung {
                    boolean hatBalkon,
                    boolean hatTerrasse,
                    boolean hatGarten,
-                   boolean hatKlimaanlage) {
+                   boolean hatKlimaanlage,
+                   String stockwerk,
+                   String wohnungsnummer) {
         this.strasse = strasse;
         this.hausnummer = hausnummer;
         this.postleitzahl = postleitzahl;
@@ -127,6 +146,8 @@ public class Wohnung {
         this.hatTerrasse = hatTerrasse;
         this.hatGarten = hatGarten;
         this.hatKlimaanlage = hatKlimaanlage;
+        this.stockwerk = stockwerk;
+        this.wohnungsnummer = wohnungsnummer;
     }
 
     // Getter und Setter für alle Felder
@@ -204,7 +225,7 @@ public class Wohnung {
     }
 
     public int getGesamtQuadratmeter() {
-        return gesamtQuadratmeter;
+        return isHeader ? 0 : gesamtQuadratmeter;
     }
 
     public void setGesamtQuadratmeter(int gesamtQuadratmeter) {
@@ -212,7 +233,7 @@ public class Wohnung {
     }
 
     public int getBaujahr() {
-        return baujahr;
+        return isHeader ? 0 : baujahr;
     }
 
     public void setBaujahr(int baujahr) {
@@ -223,7 +244,7 @@ public class Wohnung {
     }
 
     public int getAnzahlBaeder() {
-        return anzahlBaeder;
+        return isHeader ? 0 : anzahlBaeder;
     }
 
     public void setAnzahlBaeder(int anzahlBaeder) {
@@ -234,7 +255,7 @@ public class Wohnung {
     }
 
     public int getAnzahlSchlafzimmer() {
-        return anzahlSchlafzimmer;
+        return isHeader ? 0 : anzahlSchlafzimmer;
     }
 
     public void setAnzahlSchlafzimmer(int anzahlSchlafzimmer) {
@@ -245,7 +266,7 @@ public class Wohnung {
     }
 
     public boolean isHatBalkon() {
-        return hatBalkon;
+        return !isHeader && hatBalkon;
     }
 
     public void setHatBalkon(boolean hatBalkon) {
@@ -253,7 +274,7 @@ public class Wohnung {
     }
 
     public boolean isHatTerrasse() {
-        return hatTerrasse;
+        return !isHeader && hatTerrasse;
     }
 
     public void setHatTerrasse(boolean hatTerrasse) {
@@ -261,7 +282,7 @@ public class Wohnung {
     }
 
     public boolean isHatGarten() {
-        return hatGarten;
+        return !isHeader && hatGarten;
     }
 
     public void setHatGarten(boolean hatGarten) {
@@ -269,11 +290,47 @@ public class Wohnung {
     }
 
     public boolean isHatKlimaanlage() {
-        return hatKlimaanlage;
+        return !isHeader && hatKlimaanlage;
     }
 
     public void setHatKlimaanlage(boolean hatKlimaanlage) {
         this.hatKlimaanlage = hatKlimaanlage;
+    }
+
+    public String getStockwerk() {
+        return stockwerk;
+    }
+
+    public void setStockwerk(String stockwerk) {
+        this.stockwerk = stockwerk;
+    }
+
+    public String getWohnungsnummer() {
+        return wohnungsnummer;
+    }
+
+    public void setWohnungsnummer(String wohnungsnummer) {
+        this.wohnungsnummer = wohnungsnummer;
+    }
+
+    public List<Wohnung> getSubWohnungen() {
+        return subWohnungen;
+    }
+
+    public void setSubWohnungen(List<Wohnung> subWohnungen) {
+        this.subWohnungen = subWohnungen;
+    }
+
+    public boolean isHeader() {
+        return isHeader;
+    }
+
+    public void setHeader(boolean header) {
+        isHeader = header;
+    }
+
+    public String getStrasseMitHausnummer() {
+        return isHeader ? strasse : strasse + " " + hausnummer;
     }
 
     /**
@@ -285,12 +342,14 @@ public class Wohnung {
      * @return A formatted string representing the address of the Wohnung, or "Keine Adresse" if the address or postal code object is null.
      */
     public String getFormattedAddress() {
-        return String.format("%s %s %s %s %s",
+        return String.format("%s %s %s %s %s %s %s",
                 land.name(),
                 postleitzahl,
                 stadt,
                 strasse,
-                hausnummer);
+                hausnummer,
+                stockwerk != null ? "Stockwerk: " + stockwerk : "",
+                wohnungsnummer != null ? "Wohnungsnummer: " + wohnungsnummer : "");
     }
 
     /**
@@ -315,6 +374,8 @@ public class Wohnung {
                 "', hatTerrasse='" + hatTerrasse +
                 "', hatGarten='" + hatGarten +
                 "', hatKlimaanlage='" + hatKlimaanlage +
+                "', stockwerk='" + stockwerk +
+                "', wohnungsnummer='" + wohnungsnummer +
                 "', mieter='" + (mieter != null ? mieter.getFullName() : "keinen") +
                 "']";
     }

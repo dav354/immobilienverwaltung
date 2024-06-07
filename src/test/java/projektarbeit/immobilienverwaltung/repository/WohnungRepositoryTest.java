@@ -3,7 +3,6 @@ package projektarbeit.immobilienverwaltung.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import projektarbeit.immobilienverwaltung.model.Land;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 
 import java.util.List;
@@ -19,8 +18,8 @@ public class WohnungRepositoryTest {
 
     @Test
     public void testFindByMieterIsNull() {
-        Wohnung w1 = new Wohnung("Teststraße", "11", "83248", "Teststadt", DE, 200, 2000, 2, 2, false, false, false, false);
-        Wohnung w2 = new Wohnung("Teststraße", "11", "83248", "Teststadt", DE, 200, 2000, 2, 2, false, false, false, false);
+        Wohnung w1 = new Wohnung("Teststraße", "11", "83248", "Teststadt", DE, 200, 2000, 2, 2, false, false, false, false, null, null);
+        Wohnung w2 = new Wohnung("Teststraße", "11", "83248", "Teststadt", DE, 200, 2000, 2, 2, false, false, false, false, null, null);
 
         wohnungRepository.save(w1);
         wohnungRepository.save(w2);
@@ -32,8 +31,8 @@ public class WohnungRepositoryTest {
 
     @Test
     public void testSearchWohnungen() {
-        Wohnung w1 = new Wohnung("Teststraße", "11", "83248", "Teststadt", DE, 200, 2000, 2, 2, false, false, false, false);
-        Wohnung w2 = new Wohnung("AndereStrasse", "11", "83248", "Teststadt", DE, 200, 2000, 2, 2, false, false, false, false);
+        Wohnung w1 = new Wohnung("Teststraße", "11", "83248", "Teststadt", DE, 200, 2000, 2, 2, false, false, false, false, null, null);
+        Wohnung w2 = new Wohnung("AndereStrasse", "11", "83248", "Teststadt", DE, 200, 2000, 2, 2, false, false, false, false, null, null);
         wohnungRepository.save(w1);
         wohnungRepository.save(w2);
 
@@ -52,8 +51,8 @@ public class WohnungRepositoryTest {
 
     @Test
     public void testSearchWohnungen_NoMatches() {
-        Wohnung w1 = new Wohnung("Teststraße", "11", "83248", "Teststadt", DE, 200, 2000, 2, 2, false, false, false, false);
-        Wohnung w2 = new Wohnung("AndereStrasse", "11", "83248", "Teststadt", DE, 200, 2000, 2, 2, false, false, false, false);
+        Wohnung w1 = new Wohnung("Teststraße", "11", "83248", "Teststadt", DE, 200, 2000, 2, 2, false, false, false, false, null, null);
+        Wohnung w2 = new Wohnung("AndereStrasse", "11", "83248", "Teststadt", DE, 200, 2000, 2, 2, false, false, false, false, null, null);
         wohnungRepository.save(w1);
         wohnungRepository.save(w2);
 

@@ -24,7 +24,7 @@ public class ZaehlerstandRepositoryTest {
     @Test
     public void testSaveAndFindZaehlerstand() {
         // Create and save a Wohnung
-        Wohnung wohnung = new Wohnung("07111", "Stuttgart", "9473", "Teststrasse", DE, 200, 1900, 2, 2, true, true, true, true);
+        Wohnung wohnung = new Wohnung("07111", "Stuttgart", "9473", "Teststrasse", DE, 200, 1900, 2, 2, true, true, true, true, null, null);
         wohnungRepository.save(wohnung);
 
         // Create and save a Zaehlerstand
@@ -43,7 +43,7 @@ public class ZaehlerstandRepositoryTest {
     @Test
     public void testFindByWohnung() {
         // Create and save a Wohnung
-        Wohnung wohnung = new Wohnung("07111", "Stuttgart", "34321", "Teststrasse", DE, 200, 1900, 2, 2, true, true, true, true);
+        Wohnung wohnung = new Wohnung("07111", "Stuttgart", "34321", "Teststrasse", DE, 200, 1900, 2, 2, true, true, true, true, null, null);
         wohnungRepository.save(wohnung);
 
         // Create and save Zaehlerstaende
@@ -63,7 +63,7 @@ public class ZaehlerstandRepositoryTest {
     @Test
     public void testDeleteZaehlerstand() {
         // Create and save a Wohnung
-        Wohnung wohnung = new Wohnung("07111", "Stuttgart", "91829", "Teststrasse", DE, 200, 1900, 2, 2, true, true, true, true);
+        Wohnung wohnung = new Wohnung("07111", "Stuttgart", "91829", "Teststrasse", DE, 200, 1900, 2, 2, true, true, true, true, null, null);
         wohnungRepository.save(wohnung);
 
         // Create and save a Zaehlerstand

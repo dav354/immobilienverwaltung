@@ -4,8 +4,13 @@ package projektarbeit.immobilienverwaltung.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import projektarbeit.immobilienverwaltung.model.*;
-import projektarbeit.immobilienverwaltung.repository.*;
+import projektarbeit.immobilienverwaltung.model.Dokument;
+import projektarbeit.immobilienverwaltung.model.Mieter;
+import projektarbeit.immobilienverwaltung.model.Wohnung;
+import projektarbeit.immobilienverwaltung.repository.DokumentRepository;
+import projektarbeit.immobilienverwaltung.repository.MieterRepository;
+import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
+import projektarbeit.immobilienverwaltung.repository.ZaehlerstandRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +26,10 @@ public class MieterService {
     /**
      * Constructs a new MieterService with the given repositories.
      *
-     * @param wohnungRepository the repository for Wohnung entities
-     * @param mieterRepository the repository for Mieter entities
+     * @param wohnungRepository      the repository for Wohnung entities
+     * @param mieterRepository       the repository for Mieter entities
      * @param zaehlerstandRepository the repository for Zaehlerstand entities
-     * @param dokumentRepository the repository for Dokument entities
+     * @param dokumentRepository     the repository for Dokument entities
      */
     @Autowired
     public MieterService(WohnungRepository wohnungRepository,
@@ -59,7 +64,8 @@ public class MieterService {
      * Returns a List of all Wohnungen
      *
      * @return List of all Wohnungen
-     */    public List<Wohnung> findAllWohnungen() {
+     */
+    public List<Wohnung> findAllWohnungen() {
         return wohnungRepository.findAll();
     }
 
@@ -101,7 +107,7 @@ public class MieterService {
      *
      * @return a list of all Mieter entities
      */
-    public List<Mieter> findAllMieter(){
+    public List<Mieter> findAllMieter() {
         return findAllMieter(null);
     }
 
@@ -142,12 +148,13 @@ public class MieterService {
 
     /**
      * Assigns a list of Wohnungen to a Mieter and saves the changes.
-     * @param mieter The Mieter to assign the Wohnungen to.
+     *
+     * @param mieter    The Mieter to assign the Wohnungen to.
      * @param wohnungen The list of Wohnungen to assign.
      */
     @Transactional
     public void saveWohnungToMieter(Mieter mieter, List<Wohnung> wohnungen) {
-        if (mieter == null ) throw new NullPointerException("saveWohnungToMieter: Mieter is NULL.");
+        if (mieter == null) throw new NullPointerException("saveWohnungToMieter: Mieter is NULL.");
         wohnungen.forEach(wohnung -> {
             mieter.getWohnung().add(wohnung);  // Assuming Mieter has a collection of Wohnungen
             wohnung.setMieter(mieter);
@@ -159,7 +166,8 @@ public class MieterService {
 
     /**
      * Removes a list of Wohnungen from a Mieter and updates the entities in the database.
-     * @param mieter The Mieter from which the Wohnungen will be removed.
+     *
+     * @param mieter    The Mieter from which the Wohnungen will be removed.
      * @param wohnungen The list of Wohnungen to remove.
      */
     @Transactional
@@ -180,6 +188,7 @@ public class MieterService {
 
     /**
      * Gets all Wohnungen where Mieter is NULL, so the wohnung is free
+     *
      * @return List of all available Wohnungen
      */
     @Transactional(readOnly = true)

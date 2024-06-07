@@ -23,7 +23,7 @@ public class MieterRepositoryTest {
     @Test
     public void testSaveAndFindMieter() {
         // Create and save a Wohnung
-        Wohnung w = new Wohnung("07111", "Stuttgart", "01111", "Teststrasse", DE, 200, 1900, 2, 2, true, true, true, true);
+        Wohnung w = new Wohnung("07111", "Stuttgart", "01111", "Teststrasse", DE, 200, 1900, 2, 2, true, true, true, true, null, null);
         wohnungRepository.save(w);
 
         // Create and save a Mieter

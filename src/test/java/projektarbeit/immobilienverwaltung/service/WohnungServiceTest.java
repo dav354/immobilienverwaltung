@@ -42,7 +42,7 @@ class WohnungServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        wohnung = new Wohnung("07111", "Stuttgart", "83783", "Teststrasse", DE, 200, 1900, 2, 2, true, true, true, true);
+        wohnung = new Wohnung("07111", "Stuttgart", "83783", "Teststrasse", DE, 200, 1900, 2, 2, true, true, true, true, null, null);
         wohnung.setWohnung_id(1L);
     }
 
@@ -73,7 +73,7 @@ class WohnungServiceTest {
     @Test
     @Transactional
     void testDeleteWohnung() {
-        Wohnung wohnung = new Wohnung("07111", "Stuttgart", "86768", "Teststrasse", DE, 200, 1900, 2, 2, true, true, true, true);
+        Wohnung wohnung = new Wohnung("07111", "Stuttgart", "86768", "Teststrasse", DE, 200, 1900, 2, 2, true, true, true, true, null, null);
         wohnung.setWohnung_id(1L);
 
         Mieter mieter = new Mieter();
@@ -131,7 +131,7 @@ class WohnungServiceTest {
 
     @Test
     void testFindAllWohnungen_WithFilter() {
-        Wohnung matchingWohnung = new Wohnung("07111", "MatchingStadt", "87482", "MatchingStrasse", DE, 250, 2000, 3, 2, true, false, true, false);
+        Wohnung matchingWohnung = new Wohnung("07111", "MatchingStadt", "87482", "MatchingStrasse", DE, 250, 2000, 3, 2, true, false, true, false, null, null);
         matchingWohnung.setWohnung_id(2L);
 
         when(wohnungRepository.findAll()).thenReturn(Collections.singletonList(matchingWohnung));

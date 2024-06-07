@@ -3,12 +3,10 @@ package projektarbeit.immobilienverwaltung.ui.views;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
@@ -43,6 +41,8 @@ public class WohnungForm extends FormLayout {
     IntegerField anzahlBaeder = new IntegerField("Anzahl Baeder");
     IntegerField anzahlSchlafzimmer = new IntegerField("Anzahl Schlafzimmer");
     ComboBox<Mieter> mieterComboBox = new ComboBox<>("Mieter");
+    TextField stockwerk = new TextField("Stockwerk");
+    TextField wohnungsnummer = new TextField("Wohnungsnummer");
     Checkbox hatBalkon = new Checkbox("Hat Balkon");
     Checkbox hatTerrasse = new Checkbox("Hat Terrasse");
     Checkbox hatGarten = new Checkbox("Hat Garten");
@@ -64,15 +64,17 @@ public class WohnungForm extends FormLayout {
         mieterComboBox.setItemLabelGenerator(Mieter::getFullName);
         mieterComboBox.setClearButtonVisible(true); // Allow clearing the selection
 
-        add(land, postleitzahl, stadt, strasse, hausnummer, gesamtQuadratmeter, baujahr, anzahlBaeder, anzahlSchlafzimmer, mieterComboBox, hatBalkon, hatTerrasse, hatGarten, hatKlimaanlage, createButtonsLayout());
+        add(land, postleitzahl, stadt, strasse, hausnummer, stockwerk, wohnungsnummer, gesamtQuadratmeter, baujahr, anzahlBaeder, anzahlSchlafzimmer, mieterComboBox, hatBalkon, hatTerrasse, hatGarten, hatKlimaanlage, createButtonsLayout());
         configureValidation();
     }
 
     private void configureValidation() {
-        configureTextField(postleitzahl, "^\\d{4,10}$", "Postleitzahl must be 4 to 10 digits long", Wohnung::getPostleitzahl, Wohnung::setPostleitzahl);
-        configureTextField(stadt, "^[\\p{L}\\s]+$", "Stadt must contain only letters", Wohnung::getStadt, Wohnung::setStadt);
-        configureTextField(strasse, "^[\\p{L}\\s]+$", "Strasse must contain only letters", Wohnung::getStrasse, Wohnung::setStrasse);
-        configureTextField(hausnummer, "^\\d+[a-zA-Z]?$", "Hausnummer must be numeric with an optional letter", Wohnung::getHausnummer, Wohnung::setHausnummer);
+        configureTextField(postleitzahl, "^\\d{4,10}$", "Postleitzahl must be 4 to 10 digits long", "Postleitzahl is required", Wohnung::getPostleitzahl, Wohnung::setPostleitzahl);
+        configureTextField(stadt, "^[\\p{L}\\s]+$", "Stadt must contain only letters", "Stadt is required", Wohnung::getStadt, Wohnung::setStadt);
+        configureTextField(strasse, "^[\\p{L}\\s]+$", "Strasse must contain only letters","Strasse is required", Wohnung::getStrasse, Wohnung::setStrasse);
+        configureTextField(hausnummer, "^\\d+[a-zA-Z]?$", "Hausnummer must be numeric with an optional letter","Hausnummer is required", Wohnung::getHausnummer, Wohnung::setHausnummer);
+        configureTextField(stockwerk, "^[0-9]*$", "Stockwerk must contain only numbers", Wohnung::getStockwerk, Wohnung::setStockwerk);
+        configureTextField(wohnungsnummer, "^[a-zA-Z0-9]*$", "Wohnungsnummer must contain only letters and numbers", Wohnung::getWohnungsnummer, Wohnung::setWohnungsnummer);
 
         configureIntegerField(gesamtQuadratmeter, "Gesamt Quadratmeter must be positive", 1, Integer.MAX_VALUE, Wohnung::getGesamtQuadratmeter, Wohnung::setGesamtQuadratmeter);
         configureIntegerField(baujahr, "Baujahr must be a valid year between 1000 and " + LocalDate.now().getYear(), 1000, LocalDate.now().getYear(), Wohnung::getBaujahr, Wohnung::setBaujahr);
@@ -86,13 +88,22 @@ public class WohnungForm extends FormLayout {
         binder.addStatusChangeListener(event -> speichern.setEnabled(binder.isValid()));
     }
 
-    private void configureTextField(TextField field, String regex, String errorMessage, ValueProvider<Wohnung, String> getter, Setter<Wohnung, String> setter) {
+    // Required Felder
+    private void configureTextField(TextField field, String regex, String errorMessage, String requiredMessage, ValueProvider<Wohnung, String> getter, Setter<Wohnung, String> setter) {
         binder.forField(field)
-                .asRequired(errorMessage)
+                .asRequired(requiredMessage)
                 .withValidator(new RegexpValidator(errorMessage, regex, true))
                 .bind(getter, setter);
     }
 
+    // NOT required Felder
+    private void configureTextField(TextField field, String regex, String errorMessage, ValueProvider<Wohnung, String> getter, Setter<Wohnung, String> setter) {
+        binder.forField(field)
+                .withValidator(new RegexpValidator(errorMessage, regex, true))
+                .bind(getter, setter);
+    }
+
+    // Required Felder
     private void configureIntegerField(IntegerField field, String errorMessage, int min, int max, ValueProvider<Wohnung, Integer> getter, Setter<Wohnung, Integer> setter) {
         field.setClearButtonVisible(true);
         binder.forField(field)
@@ -116,6 +127,8 @@ public class WohnungForm extends FormLayout {
             baujahr.setValue(wohnung.getBaujahr() != 0 ? wohnung.getBaujahr() : null);
             anzahlBaeder.setValue(wohnung.getAnzahlBaeder() != 0 ? wohnung.getAnzahlBaeder() : null);
             anzahlSchlafzimmer.setValue(wohnung.getAnzahlSchlafzimmer() != 0 ? wohnung.getAnzahlSchlafzimmer() : null);
+            stockwerk.setValue(wohnung.getStockwerk() != null ? wohnung.getStockwerk() : "");
+            wohnungsnummer.setValue(wohnung.getWohnungsnummer() != null ? wohnung.getWohnungsnummer() : "");
 
             if (wohnung.getMieter() != null) {
                 mieterComboBox.setValue(wohnung.getMieter());
@@ -147,6 +160,8 @@ public class WohnungForm extends FormLayout {
         hatTerrasse.setValue(false);
         hatGarten.setValue(false);
         hatKlimaanlage.setValue(false);
+        stockwerk.clear();
+        wohnungsnummer.clear();
     }
 
     private HorizontalLayout createButtonsLayout() {

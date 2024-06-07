@@ -6,7 +6,10 @@ import org.springframework.transaction.annotation.Transactional;
 import projektarbeit.immobilienverwaltung.model.*;
 import projektarbeit.immobilienverwaltung.repository.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class WohnungService {
@@ -43,6 +46,32 @@ public class WohnungService {
      */
     public List<Mieter> findAllMieter() {
         return mieterRepository.findAll();
+    }
+
+    public List<Wohnung> findWohnungenWithHierarchy(String filter) {
+        List<Wohnung> wohnungen = findAllWohnungen(filter);
+
+        Map<String, List<Wohnung>> groupedWohnungen = wohnungen.stream()
+                .collect(Collectors.groupingBy(wohnung -> wohnung.getStrasse() + " " + wohnung.getHausnummer()));
+
+        List<Wohnung> wohnungsWithHierarchy = new ArrayList<>();
+        groupedWohnungen.forEach((address, wohnungenForAddress) -> {
+            if (wohnungenForAddress.size() > 1) {
+                Wohnung addressNode = new Wohnung();
+                addressNode.setStrasse(wohnungenForAddress.get(0).getStrasse());
+                addressNode.setHausnummer(wohnungenForAddress.get(0).getHausnummer());
+                addressNode.setPostleitzahl(wohnungenForAddress.get(0).getPostleitzahl());
+                addressNode.setStadt(wohnungenForAddress.get(0).getStadt());
+                addressNode.setLand(wohnungenForAddress.get(0).getLand());
+                addressNode.setHeader(true);
+                addressNode.setSubWohnungen(new ArrayList<>(wohnungenForAddress));
+                wohnungsWithHierarchy.add(addressNode);
+            } else {
+                wohnungsWithHierarchy.addAll(wohnungenForAddress);
+            }
+        });
+
+        return wohnungsWithHierarchy;
     }
 
     /**

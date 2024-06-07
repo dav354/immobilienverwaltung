@@ -23,7 +23,7 @@ public class DokumentRepositoryTest {
     @Test
     public void testFindByWohnung() {
         // Create and save a Wohnung
-        Wohnung wohnung = new Wohnung("07111", "Stuttgart", "7777", "Teststrasse", DE, 200, 1900, 2, 2, true, true, true, true);
+        Wohnung wohnung = new Wohnung("07111", "Stuttgart", "7777", "Teststrasse", DE, 200, 1900, 2, 2, true, true, true, true, null, null);
         wohnungRepository.save(wohnung);
 
         // Create and save Dokumente
@@ -43,7 +43,7 @@ public class DokumentRepositoryTest {
     @Test
     public void testSaveAndFindDokument() {
         // Create and save a Wohnung
-        Wohnung wohnung = new Wohnung("07111", "Stuttgart", "022222", "Teststrasse", DE, 200, 1900, 2, 2, true, true, true, true);
+        Wohnung wohnung = new Wohnung("07111", "Stuttgart", "022222", "Teststrasse", DE, 200, 1900, 2, 2, true, true, true, true, null, null);
         wohnungRepository.save(wohnung);
 
         // Create and save a Dokument

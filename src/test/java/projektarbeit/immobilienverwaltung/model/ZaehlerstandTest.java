@@ -27,7 +27,7 @@ class ZaehlerstandTest {
     public void setUp() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
-        wohnung = new Wohnung("Teststraße", "11", "83248", "Teststadt", Land.DE, 200, 2000, 2, 2, false, false, false, false);
+        wohnung = new Wohnung("Teststraße", "11", "83248", "Teststadt", Land.DE, 200, 2000, 2, 2, false, false, false, false, null, null);
         testZaehlerstand = new Zaehlerstand(wohnung, LocalDate.of(2024, 1, 1), 1234);
 
     }
