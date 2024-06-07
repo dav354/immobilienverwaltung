@@ -3,12 +3,10 @@ package projektarbeit.immobilienverwaltung.ui.views;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
@@ -159,9 +157,14 @@ public class MieterForm extends FormLayout {
         return new HorizontalLayout(speichern, loeschen, schliessen);
     }
 
-    // Validates the inputs in the form and saves the data if valid
     private void validateAndSave() {
         if (binder.writeBeanIfValid(mieter)) {
+            // Check for duplicate Mieters
+            if (isDuplicateMieter(mieter)) {
+                NotificationPopup.showErrorNotification("Ein Mieter mit dem gleichen Namen und Telefonnummer existiert bereits.");
+                return;
+            }
+
             // Get the current and selected Wohnungen
             List<Wohnung> currentWohnungen = new ArrayList<>(mieter.getWohnung());
             List<Wohnung> selectedWohnungen = new ArrayList<>(wohnungMultiSelectComboBox.getValue());
@@ -185,6 +188,16 @@ public class MieterForm extends FormLayout {
         } else {
             NotificationPopup.showErrorNotification("Fehler beim Speichern des Mieters.");
         }
+    }
+
+    private boolean isDuplicateMieter(Mieter mieter) {
+        List<Mieter> existingMieters = mieterService.findAllMieter();
+        return existingMieters.stream().anyMatch(existingMieter ->
+                existingMieter.getName().equalsIgnoreCase(mieter.getName()) &&
+                        existingMieter.getVorname().equalsIgnoreCase(mieter.getVorname()) &&
+                        existingMieter.getTelefonnummer().equals(mieter.getTelefonnummer()) &&
+                        !existingMieter.getMieter_id().equals(mieter.getMieter_id())
+        );
     }
 
     // Refreshes the available Wohnungen list and updates the MultiSelectComboBox items
