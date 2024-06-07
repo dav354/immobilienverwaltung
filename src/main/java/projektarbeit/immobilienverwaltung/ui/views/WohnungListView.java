@@ -58,21 +58,32 @@ public class WohnungListView extends VerticalLayout {
         removeClassName("editing");
     }
 
+    /**
+     * Updates the columns in the TreeGrid to display Wohnung (apartment) details.
+     * Sets up hierarchical and standard columns, including custom components and formatting.
+     */
     private void updateGridColumns() {
         treeGrid.removeAllColumns();
 
+        // Hierarchical column for the land (country) of the Wohnung
         treeGrid.addHierarchyColumn(wohnung -> wohnung.getLand().name()).setHeader("Land");
 
+        // Column for the postal code (PLZ)
         treeGrid.addColumn(Wohnung::getPostleitzahl).setHeader("PLZ");
 
+        // Column for the city (Stadt)
         treeGrid.addColumn(Wohnung::getStadt).setHeader("Stadt");
 
+        // Column for the street and house number
         treeGrid.addColumn(Wohnung::getStrasseMitHausnummer).setHeader("Adresse").setAutoWidth(true);
 
+        // Column for the floor (Stockwerk)
         treeGrid.addColumn(Wohnung::getStockwerk).setHeader(new Html("<div>Stock-<br>werk</div>")).setTextAlign(ColumnTextAlign.CENTER);
 
+        // Column for the apartment number (Wohnungsnummer)
         treeGrid.addColumn(Wohnung::getWohnungsnummer).setHeader(new Html("<div>Wohnungs-<br>nummer</div>")).setTextAlign(ColumnTextAlign.CENTER);
 
+        // Column for the tenant (Mieter), showing "Kein Mieter" if none
         treeGrid.addColumn(wohnung -> {
             if (wohnung.isHeader()) {
                 return "";
@@ -82,33 +93,46 @@ public class WohnungListView extends VerticalLayout {
             }
         }).setHeader("Mieter");
 
+        // Column for the total square meters (GesamtQuadratmeter)
         treeGrid.addColumn(wohnung -> wohnung.isHeader() ? "" : Integer.toString(wohnung.getGesamtQuadratmeter())).setHeader("m²");
 
+        // Column for the year of construction (Baujahr)
         treeGrid.addColumn(wohnung -> wohnung.isHeader() ? "" : Integer.toString(wohnung.getBaujahr())).setHeader("Baujahr");
 
+        // Column for the number of bathrooms (Bäder)
         treeGrid.addColumn(wohnung -> wohnung.isHeader() ? "" : Integer.toString(wohnung.getAnzahlBaeder()))
                 .setHeader("Bäder").setTextAlign(ColumnTextAlign.CENTER);
 
+        // Column for the number of bedrooms (Schlafzimmer)
         treeGrid.addColumn(wohnung -> wohnung.isHeader() ? "" : Integer.toString(wohnung.getAnzahlSchlafzimmer()))
                 .setHeader(new Html("<div>Schlaf-<br>zimmer</div>"))
                 .setTextAlign(ColumnTextAlign.CENTER);
 
+        // Column for the balcony availability (Balkon)
         treeGrid.addComponentColumn(wohnung -> wohnung.isHeader() ? createEmptyIcon() : createIcon(wohnung.isHatBalkon()))
                 .setHeader("Balkon").setTextAlign(ColumnTextAlign.CENTER);
 
+        // Column for the terrace availability (Terrasse)
         treeGrid.addComponentColumn(wohnung -> wohnung.isHeader() ? createEmptyIcon() : createIcon(wohnung.isHatTerrasse()))
                 .setHeader("Terrasse").setTextAlign(ColumnTextAlign.CENTER);
 
+        // Column for the garden availability (Garten)
         treeGrid.addComponentColumn(wohnung -> wohnung.isHeader() ? createEmptyIcon() : createIcon(wohnung.isHatGarten()))
                 .setHeader("Garten").setTextAlign(ColumnTextAlign.CENTER);
 
+        // Column for the air conditioning availability (Klimaanlage)
         treeGrid.addComponentColumn(wohnung -> wohnung.isHeader() ? createEmptyIcon() : createIcon(wohnung.isHatKlimaanlage()))
                 .setHeader(new Html("<div>Klima-<br>anlage</div>"))
                 .setTextAlign(ColumnTextAlign.CENTER);
 
+        // Make all columns auto-width and sortable
         treeGrid.getColumns().forEach(col -> col.setAutoWidth(true).setSortable(true));
     }
 
+    /**
+     * Updates the list of Wohnungen (apartments) in the TreeGrid.
+     * Fetches the hierarchical list of Wohnungen and expands the headers.
+     */
     private void updateList() {
         List<Wohnung> wohnungen = wohnungService.findWohnungenWithHierarchy(filterText.getValue());
         treeGrid.setItems(wohnungen, Wohnung::getSubWohnungen);
@@ -116,14 +140,20 @@ public class WohnungListView extends VerticalLayout {
         updateGridColumns();
     }
 
+    /**
+     * Configures the TreeGrid for displaying Wohnungen (apartments).
+     * Sets class names, size, columns, and value change listeners.
+     */
     private void configureTreeGrid() {
         treeGrid.addClassNames("wohnung-grid");
         treeGrid.setSizeFull();
 
         updateGridColumns();
 
+        // Add a value change listener to handle the selection of a Wohnung
         treeGrid.asSingleSelect().addValueChangeListener(event -> editWohnung(event.getValue()));
     }
+
 
     private Component getContent() {
         HorizontalLayout content = new HorizontalLayout(treeGrid, form);
@@ -200,10 +230,15 @@ public class WohnungListView extends VerticalLayout {
         return icon;
     }
 
+    /**
+     * Creates an empty, invisible icon for use in the TreeGrid.
+     * This is used to maintain consistent column alignment when no icon is needed.
+     *
+     * @return an empty, invisible Icon instance.
+     */
     private Icon createEmptyIcon() {
         Icon icon = new Icon();
         icon.setVisible(false);
         return icon;
     }
-
 }

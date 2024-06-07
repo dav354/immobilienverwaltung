@@ -14,6 +14,10 @@ import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
 
 import java.util.List;
 
+/**
+ * Initializes the Dokument data for demo purposes.
+ * This class runs as a command line runner when the application starts if the demo mode is enabled.
+ */
 @Component
 @Order(5)
 public class DokumentDemo implements CommandLineRunner {
@@ -25,6 +29,14 @@ public class DokumentDemo implements CommandLineRunner {
     private final WohnungRepository wohnungRepository;
     private final MieterRepository mieterRepository;
 
+    /**
+     * Constructor for DokumentDemo.
+     *
+     * @param demoModeConfig    The demo mode configuration.
+     * @param dokumentRepository The repository for managing Dokument entities.
+     * @param wohnungRepository  The repository for managing Wohnung entities.
+     * @param mieterRepository   The repository for managing Mieter entities.
+     */
     public DokumentDemo(DemoModeConfig demoModeConfig,
                         DokumentRepository dokumentRepository,
                         WohnungRepository wohnungRepository,
@@ -35,6 +47,12 @@ public class DokumentDemo implements CommandLineRunner {
         this.mieterRepository = mieterRepository;
     }
 
+    /**
+     * Runs the initialization of Dokument data if demo mode is enabled.
+     *
+     * @param args Command line arguments.
+     * @throws Exception if an error occurs during the operation.
+     */
     @Override
     public void run(String... args) throws Exception {
         if (demoModeConfig.isDemoMode()) {
@@ -44,6 +62,10 @@ public class DokumentDemo implements CommandLineRunner {
         }
     }
 
+    /**
+     * Loads Dokument data for demo purposes.
+     * This method checks if there are no existing Dokument entries before loading the data.
+     */
     private void loadDokumentData() {
         if (dokumentRepository.count() == 0) { // Only load if no data exists
             logger.info("Loading Dokument data...");
@@ -52,7 +74,7 @@ public class DokumentDemo implements CommandLineRunner {
             List<Wohnung> wohnungen = wohnungRepository.findAll();
             List<Mieter> mieter = mieterRepository.findAll();
 
-            // Create Dokument
+            // Create Dokument entries if there are Wohnungen and Mieter available
             if (!wohnungen.isEmpty() && !mieter.isEmpty()) {
                 Dokument dokument1 = new Dokument(wohnungen.get(0), mieter.get(0), "Mietvertrag", "/path/to/mietvertrag1.pdf");
                 dokumentRepository.save(dokument1);

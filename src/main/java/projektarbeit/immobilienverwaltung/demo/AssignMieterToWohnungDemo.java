@@ -14,6 +14,10 @@ import projektarbeit.immobilienverwaltung.service.MieterService;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Assigns Mieter (tenants) to Wohnungen (apartments) in demo mode.
+ * This class runs as a command line runner when the application starts.
+ */
 @Component
 @Order(10)
 public class AssignMieterToWohnungDemo implements CommandLineRunner {
@@ -25,6 +29,14 @@ public class AssignMieterToWohnungDemo implements CommandLineRunner {
     private final WohnungRepository wohnungRepository;
     private final MieterService mieterService;
 
+    /**
+     * Constructor for AssignMieterToWohnungDemo.
+     *
+     * @param demoModeConfig    The demo mode configuration.
+     * @param mieterRepository  The repository for managing Mieter entities.
+     * @param wohnungRepository The repository for managing Wohnung entities.
+     * @param mieterService     The service for managing Mieter-related operations.
+     */
     public AssignMieterToWohnungDemo(DemoModeConfig demoModeConfig,
                                      MieterRepository mieterRepository,
                                      WohnungRepository wohnungRepository,
@@ -35,6 +47,12 @@ public class AssignMieterToWohnungDemo implements CommandLineRunner {
         this.mieterService = mieterService;
     }
 
+    /**
+     * Runs the assignment of Mieter to Wohnungen if demo mode is enabled.
+     *
+     * @param args Command line arguments.
+     * @throws Exception if an error occurs during the operation.
+     */
     @Override
     public void run(String... args) throws Exception {
         if (demoModeConfig.isDemoMode()){
@@ -44,8 +62,13 @@ public class AssignMieterToWohnungDemo implements CommandLineRunner {
         }
     }
 
+    /**
+     * Assigns Mieter to Wohnungen in demo mode.
+     * This method checks if there are enough Mieter and Wohnungen available before assigning.
+     */
     public void assignMieterToWohnungDemo() {
-        if (mieterRepository.count() > 0 && wohnungRepository.count() > 0) { // Only load if data exists
+        // Check if there are any Mieter and Wohnungen in the database
+        if (mieterRepository.count() > 0 && wohnungRepository.count() > 0) {
             logger.info("Assigning Mieter data to Wohnung...");
 
             // Load existing Wohnungen
@@ -54,6 +77,7 @@ public class AssignMieterToWohnungDemo implements CommandLineRunner {
             // Load existing Mieter
             List<Mieter> mieter = mieterRepository.findAll();
 
+            // Check if there are at least 3 Wohnungen and 2 Mieter
             if (wohnungen.size() >= 3 && mieter.size() >= 2) {
                 Mieter mieter1 = mieter.get(0);
                 Mieter mieter2 = mieter.get(1);
@@ -67,6 +91,7 @@ public class AssignMieterToWohnungDemo implements CommandLineRunner {
                 Wohnung wohnung5 = wohnungen.get(4);
                 Wohnung wohnung6 = wohnungen.get(5);
 
+                // Assign Wohnungen to Mieter
                 List<Wohnung> wohnungsListe1 = new ArrayList<>();
                 wohnungsListe1.add(wohnung1);
                 wohnungsListe1.add(wohnung2);

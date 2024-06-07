@@ -48,15 +48,27 @@ public class WohnungService {
         return mieterRepository.findAll();
     }
 
+    /**
+     * Finds Wohnungen (apartments) and groups them into a hierarchical structure based on their address.
+     * If there are multiple Wohnungen at the same address, a header node is created with the address details
+     * and the individual Wohnungen as its children.
+     *
+     * @param filter The filter string to apply when searching for Wohnungen.
+     * @return A list of Wohnungen, some of which may be header nodes grouping multiple Wohnungen at the same address.
+     */
     public List<Wohnung> findWohnungenWithHierarchy(String filter) {
+        // Retrieve all Wohnungen based on the filter
         List<Wohnung> wohnungen = findAllWohnungen(filter);
 
+        // Group Wohnungen by their address (strasse + hausnummer)
         Map<String, List<Wohnung>> groupedWohnungen = wohnungen.stream()
                 .collect(Collectors.groupingBy(wohnung -> wohnung.getStrasse() + " " + wohnung.getHausnummer()));
 
         List<Wohnung> wohnungsWithHierarchy = new ArrayList<>();
+        // Iterate over each group of Wohnungen
         groupedWohnungen.forEach((address, wohnungenForAddress) -> {
             if (wohnungenForAddress.size() > 1) {
+                // If there are multiple Wohnungen at the same address, create a header node
                 Wohnung addressNode = new Wohnung();
                 addressNode.setStrasse(wohnungenForAddress.get(0).getStrasse());
                 addressNode.setHausnummer(wohnungenForAddress.get(0).getHausnummer());
@@ -67,6 +79,7 @@ public class WohnungService {
                 addressNode.setSubWohnungen(new ArrayList<>(wohnungenForAddress));
                 wohnungsWithHierarchy.add(addressNode);
             } else {
+                // If there is only one Wohnung at the address, add it directly to the list
                 wohnungsWithHierarchy.addAll(wohnungenForAddress);
             }
         });

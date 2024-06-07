@@ -82,6 +82,11 @@ public class MieterForm extends FormLayout {
         configureValidation();
     }
 
+    /**
+     * Configures the validation for the fields in the form.
+     * Sets up regex validators for text fields, range validators for number fields,
+     * and custom validators for date fields.
+     */
     private void configureValidation() {
         configureTextField(name, "^[a-zA-Z\\s]{1,50}$", "Name darf nur Buchstaben und Leerzeichen enthalten, 1-50 Zeichen", Mieter::getName, Mieter::setName);
         configureTextField(vorname, "^[a-zA-Z\\s]{1,50}$", "Vorname darf nur Buchstaben und Leerzeichen enthalten, 1-50 Zeichen", Mieter::getVorname, Mieter::setVorname);
@@ -102,6 +107,15 @@ public class MieterForm extends FormLayout {
                 .bind(Mieter::getMietende, Mieter::setMietende);
     }
 
+    /**
+     * Configures a text field with a regex validator.
+     *
+     * @param field        The text field to configure.
+     * @param regex        The regex pattern for validation.
+     * @param errorMessage The error message to display if validation fails.
+     * @param getter       The getter method for the field value.
+     * @param setter       The setter method for the field value.
+     */
     private void configureTextField(TextField field, String regex, String errorMessage, ValueProvider<Mieter, String> getter, Setter<Mieter, String> setter) {
         binder.forField(field)
                 .asRequired(errorMessage)
@@ -109,6 +123,16 @@ public class MieterForm extends FormLayout {
                 .bind(getter, setter);
     }
 
+    /**
+     * Configures a number field with a range validator.
+     *
+     * @param field        The number field to configure.
+     * @param errorMessage The error message to display if validation fails.
+     * @param min          The minimum valid value.
+     * @param max          The maximum valid value.
+     * @param getter       The getter method for the field value.
+     * @param setter       The setter method for the field value.
+     */
     private void configureNumberField(NumberField field, String errorMessage, double min, double max, ValueProvider<Mieter, Double> getter, Setter<Mieter, Double> setter) {
         field.setClearButtonVisible(true);
         binder.forField(field)
@@ -117,6 +141,16 @@ public class MieterForm extends FormLayout {
                 .bind(getter, setter);
     }
 
+    /**
+     * Configures an integer field with a range validator.
+     *
+     * @param field        The integer field to configure.
+     * @param errorMessage The error message to display if validation fails.
+     * @param min          The minimum valid value.
+     * @param max          The maximum valid value.
+     * @param getter       The getter method for the field value.
+     * @param setter       The setter method for the field value.
+     */
     private void configureIntegerField(IntegerField field, String errorMessage, int min, int max, ValueProvider<Mieter, Integer> getter, Setter<Mieter, Integer> setter) {
         field.setClearButtonVisible(true);
         binder.forField(field)
@@ -124,6 +158,7 @@ public class MieterForm extends FormLayout {
                 .withValidator(new IntegerRangeValidator(errorMessage, min, max))
                 .bind(getter, setter);
     }
+
 
     // Bind the Mieter to the binder
     public void setMieter(Mieter mieter) {
@@ -157,6 +192,11 @@ public class MieterForm extends FormLayout {
         return new HorizontalLayout(speichern, loeschen, schliessen);
     }
 
+    /**
+     * Validates the form inputs and saves the Mieter (tenant) if the inputs are valid.
+     * Checks for duplicate Mieters and manages the assignment and removal of Wohnungen (apartments).
+     * Shows appropriate notifications based on the success or failure of the operation.
+     */
     private void validateAndSave() {
         if (binder.writeBeanIfValid(mieter)) {
             // Check for duplicate Mieters
@@ -190,6 +230,12 @@ public class MieterForm extends FormLayout {
         }
     }
 
+    /**
+     * Checks if a Mieter with the same name and phone number already exists in the system.
+     *
+     * @param mieter The Mieter to check for duplicates.
+     * @return true if a duplicate Mieter exists, false otherwise.
+     */
     private boolean isDuplicateMieter(Mieter mieter) {
         List<Mieter> existingMieters = mieterService.findAllMieter();
         return existingMieters.stream().anyMatch(existingMieter ->
@@ -200,7 +246,10 @@ public class MieterForm extends FormLayout {
         );
     }
 
-    // Refreshes the available Wohnungen list and updates the MultiSelectComboBox items
+    /**
+     * Refreshes the list of available Wohnungen (apartments) and updates the items in the MultiSelectComboBox.
+     * If no Wohnungen are available, sets a placeholder message in the ComboBox.
+     */
     private void refreshAvailableWohnungen() {
         availableWohnungen = mieterService.findAvailableWohnungen();
         if (availableWohnungen.isEmpty()) {

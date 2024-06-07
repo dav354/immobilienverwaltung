@@ -10,6 +10,10 @@ import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.model.Land;
 
+/**
+ * Initializes the Wohnung data for demo purposes.
+ * This class runs as a command line runner when the application starts if the demo mode is enabled.
+ */
 @Component
 @Order(1)
 public class WohnungDemo implements CommandLineRunner {
@@ -19,12 +23,24 @@ public class WohnungDemo implements CommandLineRunner {
     private final DemoModeConfig demoModeConfig;
     private final WohnungService wohnungService;
 
+    /**
+     * Constructor for WohnungDemo.
+     *
+     * @param demoModeConfig The demo mode configuration.
+     * @param wohnungService The service for managing Wohnung entities.
+     */
     @Autowired
     public WohnungDemo(DemoModeConfig demoModeConfig, WohnungService wohnungService) {
         this.demoModeConfig = demoModeConfig;
         this.wohnungService = wohnungService;
     }
 
+    /**
+     * Runs the initialization of Wohnung data if demo mode is enabled.
+     *
+     * @param args Command line arguments.
+     * @throws Exception if an error occurs during the operation.
+     */
     @Override
     public void run(String... args) throws Exception {
         if (demoModeConfig.isDemoMode()) {
@@ -34,6 +50,10 @@ public class WohnungDemo implements CommandLineRunner {
         }
     }
 
+    /**
+     * Loads Wohnung data for demo purposes.
+     * This method checks if there are no existing Wohnung entries before loading the data.
+     */
     private void loadWohnungData() {
         if (wohnungService.findAllWohnungen().isEmpty()) { // Only load if no data exists
             logger.info("Loading Wohnung data...");
