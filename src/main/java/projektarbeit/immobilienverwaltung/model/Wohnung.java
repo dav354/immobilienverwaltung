@@ -12,7 +12,7 @@ import java.util.List;
  * Represents a property (Wohnung) entity with details about the property such as address, size, number of rooms, and amenities.
  * This entity is mapped to the database table 'wohnung'.
  */
-@SuppressWarnings("SpellCheckingInspection")
+@SuppressWarnings({"SpellCheckingInspection", "unused"})
 @Entity
 @Table(name = "wohnung")
 public class Wohnung {

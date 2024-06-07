@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
  * Represents a tenant entity with details about the tenant and their rental agreement.
  * This entity is mapped to the database table 'mieter'.
  */
+@SuppressWarnings("unused")
 @Entity
 @ValidMietPeriod
 @Table(name = "mieter")
