@@ -3,10 +3,12 @@ package projektarbeit.immobilienverwaltung.ui.views;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
@@ -145,7 +147,7 @@ public class MieterForm extends FormLayout {
         schliessen.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
 
         speichern.addClickListener(event -> validateAndSave());
-        loeschen.addClickListener(event -> fireEvent(new DeleteEvent(this, mieter)));
+        loeschen.addClickListener(event -> showDeleteConfirmationDialog());
         schliessen.addClickListener(event -> fireEvent(new CloseEvent(this)));
 
         speichern.addClickShortcut(Key.ENTER);
@@ -209,6 +211,24 @@ public class MieterForm extends FormLayout {
         public Mieter getContact() {
             return mieter;
         }
+    }
+
+    private void showDeleteConfirmationDialog() {
+        Dialog confirmationDialog = new Dialog();
+        confirmationDialog.add(new Text("Are you sure you want to delete this Mieter?"));
+
+        Button confirmButton = new Button("Delete", event -> {
+            confirmationDialog.close();
+            fireEvent(new DeleteEvent(this, mieter));
+        });
+        confirmButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+
+        Button cancelButton = new Button("Cancel", event -> confirmationDialog.close());
+        cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+
+        HorizontalLayout buttons = new HorizontalLayout(confirmButton, cancelButton);
+        confirmationDialog.add(buttons);
+        confirmationDialog.open();
     }
 
     //Ereignis, das ausgelöst wird, wenn ein Mieter gespeichert wird
