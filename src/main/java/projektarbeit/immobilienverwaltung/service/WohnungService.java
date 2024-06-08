@@ -18,16 +18,19 @@ public class WohnungService {
     private final WohnungRepository wohnungRepository;
     private final DokumentRepository dokumentRepository;
     private final MieterRepository mieterRepository;
+    private final  MietvertragRepository mietvertragRepository;
     private final ZaehlerstandRepository zaehlerstandRepository;
 
     @Autowired
     public WohnungService(WohnungRepository wohnungRepository,
                           DokumentRepository dokumentRepository,
                           MieterRepository mieterRepository,
+                          MietvertragRepository mietvertragRepository,
                           ZaehlerstandRepository zaehlerstandRepository) {
         this.wohnungRepository = wohnungRepository;
         this.dokumentRepository = dokumentRepository;
         this.mieterRepository = mieterRepository;
+        this.mietvertragRepository = mietvertragRepository;
         this.zaehlerstandRepository = zaehlerstandRepository;
     }
 
@@ -89,24 +92,6 @@ public class WohnungService {
     }
 
     /**
-     * Saves a Wohnung entity.
-     *
-     * @param wohnung the Wohnung entity to save
-     * @return the saved Wohnung entity
-     */
-    @Transactional
-    public Wohnung save(Wohnung wohnung) {
-        // Save or fetch Mieter entity if it's not null
-        Mieter mieter = wohnung.getMieter();
-        if (mieter != null) {
-            mieterRepository.save(mieter);
-        }
-
-        // Save the Wohnung entity
-        return wohnungRepository.save(wohnung);
-    }
-
-    /**
      * Deletes a Wohnung entity and its associated details. Also removes references to the Wohnung from related entities.
      *
      * @param wohnung the Wohnung entity to delete
@@ -116,14 +101,9 @@ public class WohnungService {
         // Delete documents associated with the Wohnung
         dokumentRepository.deleteAll(dokumentRepository.findByWohnung(wohnung));
 
-        // Remove Mieter references to the Wohnung
-        List<Mieter> mieter = mieterRepository.findAll();
-        for (Mieter m : mieter) {
-            if (m.getWohnung().equals(wohnung)) {
-                m.setWohnung(null);
-                mieterRepository.save(m); // Save the updated Mieter with null Wohnung reference
-            }
-        }
+        // Delete Mietverträge associated with the Wohnung
+        Mietvertrag mietvertrag = mietvertragRepository.findByWohnung(wohnung);
+        mietvertragRepository.delete(mietvertrag);
 
         // Delete Zaehlerstand references to the Wohnung
         zaehlerstandRepository.deleteAll(zaehlerstandRepository.findByWohnung(wohnung));
@@ -156,5 +136,54 @@ public class WohnungService {
         } else {
             return wohnungRepository.search(stringFilter);
         }
+    }
+
+    /**
+     * Gets all Wohnungen that do not have an associated Mietvertrag.
+     *
+     * @return List of Wohnungen with no Mietvertrag
+     */
+    @Transactional(readOnly = true)
+    public List<Wohnung> findWohnungenWithoutMietvertrag() {
+        // Get all Wohnungen
+        List<Wohnung> allWohnungen = wohnungRepository.findAll();
+
+        // Get all Wohnungen with a Mietvertrag
+        List<Wohnung> wohnungenWithMietvertrag = mietvertragRepository.findAll().stream()
+                .map(Mietvertrag::getWohnung)
+                .toList();
+
+        // Filter out Wohnungen that have a Mietvertrag
+        return allWohnungen.stream()
+                .filter(wohnung -> !wohnungenWithMietvertrag.contains(wohnung))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Saves a Wohnung (apartment) entity to the database.
+     * This method is transactional, ensuring that all operations
+     * within the transaction are completed successfully or none are.
+     *
+     * @param wohnung the Wohnung entity to save
+     * @return the saved Wohnung entity
+     */
+    @Transactional
+    public Wohnung save(Wohnung wohnung) {
+        return wohnungRepository.save(wohnung);
+    }
+
+    /**
+     * Gets all Wohnungen where there is no active Mietvertrag, meaning the Wohnung is available.
+     * This method is transactional and read-only.
+     *
+     * @return List of all available Wohnungen
+     */
+    @Transactional(readOnly = true)
+    public List<Wohnung> findAvailableWohnungen() {
+        return mietvertragRepository.findAll().stream()
+                .filter(mietvertrag -> mietvertrag.getMieter() == null)
+                .map(Mietvertrag::getWohnung)
+                .distinct()
+                .collect(Collectors.toList());
     }
 }

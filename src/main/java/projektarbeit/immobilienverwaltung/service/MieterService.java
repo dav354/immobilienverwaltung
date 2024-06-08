@@ -1,16 +1,13 @@
 package projektarbeit.immobilienverwaltung.service;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import projektarbeit.immobilienverwaltung.model.Dokument;
 import projektarbeit.immobilienverwaltung.model.Mieter;
+import projektarbeit.immobilienverwaltung.model.Mietvertrag;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
-import projektarbeit.immobilienverwaltung.repository.DokumentRepository;
-import projektarbeit.immobilienverwaltung.repository.MieterRepository;
-import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
-import projektarbeit.immobilienverwaltung.repository.ZaehlerstandRepository;
+import projektarbeit.immobilienverwaltung.repository.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +20,7 @@ public class MieterService {
     private final MieterRepository mieterRepository;
     private final ZaehlerstandRepository zaehlerstandRepository;
     private final DokumentRepository dokumentRepository;
+    private final MietvertragRepository mietvertragRepository;
 
     /**
      * Constructs a new MieterService with the given repositories.
@@ -31,16 +29,19 @@ public class MieterService {
      * @param mieterRepository       the repository for Mieter entities
      * @param zaehlerstandRepository the repository for Zaehlerstand entities
      * @param dokumentRepository     the repository for Dokument entities
+     * @param mietvertragRepository  the repository for Mietvertrag entities
      */
     @Autowired
     public MieterService(WohnungRepository wohnungRepository,
                          MieterRepository mieterRepository,
                          ZaehlerstandRepository zaehlerstandRepository,
-                         DokumentRepository dokumentRepository) {
+                         DokumentRepository dokumentRepository,
+                         MietvertragRepository mietvertragRepository) {
         this.wohnungRepository = wohnungRepository;
         this.mieterRepository = mieterRepository;
         this.zaehlerstandRepository = zaehlerstandRepository;
         this.dokumentRepository = dokumentRepository;
+        this.mietvertragRepository = mietvertragRepository;
     }
 
     /**
@@ -96,11 +97,7 @@ public class MieterService {
      * @return a list of matching Mieter entities
      */
     public List<Mieter> findAllMieter(String stringFilter) {
-        if (stringFilter == null || stringFilter.isEmpty()) {
-            return mieterRepository.findAll();
-        } else {
-            return mieterRepository.search(stringFilter);
-        }
+        return stringFilter == null || stringFilter.isEmpty() ? mieterRepository.findAll() : mieterRepository.search(stringFilter);
     }
 
     /**
@@ -117,23 +114,20 @@ public class MieterService {
      *
      * @param mieter the Mieter entity to delete
      */
+    @Transactional
     public void deleteMieter(Mieter mieter) {
         if (mieter == null) throw new NullPointerException("Mieter is null");
 
-        // Clone the lists to ensure they are mutable
+        List<Mietvertrag> mietvertraege = mietvertragRepository.findByMieter_MieterId(mieter.getMieter_id());
+        mietvertragRepository.deleteAll(mietvertraege);
+
         List<Dokument> dokumente = new ArrayList<>(mieter.getDokument());
         for (Dokument dokument : dokumente) {
             dokument.setMieter(null);
             dokumentRepository.save(dokument);
         }
 
-        List<Wohnung> wohnungen = new ArrayList<>(mieter.getWohnung());
-        for (Wohnung wohnung : wohnungen) {
-            wohnung.setMieter(null); // Check inside this method for any collection operation errors
-            wohnungRepository.save(wohnung); // Save the updated Wohnung entity
-        }
-
-        mieterRepository.delete(mieter); // Delete the Mieter entity
+        mieterRepository.delete(mieter);
     }
 
     /**
@@ -148,52 +142,31 @@ public class MieterService {
     }
 
     /**
-     * Assigns a list of Wohnungen to a Mieter and saves the changes.
+     * Checks if an email already exists in the repository.
      *
-     * @param mieter    The Mieter to assign the Wohnungen to.
-     * @param wohnungen The list of Wohnungen to assign.
+     * @param email the email to check.
+     * @return true if the email exists, false otherwise.
      */
-    @Transactional
-    public void saveWohnungToMieter(Mieter mieter, List<Wohnung> wohnungen) {
-        if (mieter == null) throw new NullPointerException("saveWohnungToMieter: Mieter is NULL.");
-        wohnungen.forEach(wohnung -> {
-            mieter.getWohnung().add(wohnung);  // Assuming Mieter has a collection of Wohnungen
-            wohnung.setMieter(mieter);
-        });
-
-        mieterRepository.save(mieter);
-        wohnungRepository.saveAll(wohnungen);  // Efficiently save all Wohnungen at once
+    public boolean emailExists(String email) {
+        return mieterRepository.existsByEmail(email);
     }
 
     /**
-     * Removes a list of Wohnungen from a Mieter and updates the entities in the database.
+     * Save Mietvertrag.
      *
-     * @param mieter    The Mieter from which the Wohnungen will be removed.
-     * @param wohnungen The list of Wohnungen to remove.
+     * @param mietvertrag the Mietvertrag to save
+     * @return the saved Mietvertrag
      */
-    @Transactional
-    public void removeWohnungFromMieter(Mieter mieter, List<Wohnung> wohnungen) {
-        if (mieter == null || wohnungen == null) {
-
-            return;
-        }
-
-        wohnungen.forEach(wohnung -> {
-            mieter.getWohnung().remove(wohnung);  // Remove the Wohnung from the Mieter's collection
-            wohnung.setMieter(null);  // Clear the Mieter reference from the Wohnung
-        });
-
-        mieterRepository.save(mieter);
-        wohnungRepository.saveAll(wohnungen);  // Efficiently save all Wohnungen at once
+    public Mietvertrag saveMietvertrag(Mietvertrag mietvertrag) {
+        return mietvertragRepository.save(mietvertrag);
     }
 
     /**
-     * Gets all Wohnungen where Mieter is NULL, so the wohnung is free
+     * Delete Mietvertrag.
      *
-     * @return List of all available Wohnungen
+     * @param mietvertrag the Mietvertrag to delete
      */
-    @Transactional(readOnly = true)
-    public List<Wohnung> findAvailableWohnungen() {
-        return wohnungRepository.findByMieterIsNull();
+    public void deleteMietvertrag(Mietvertrag mietvertrag) {
+        mietvertragRepository.delete(mietvertrag);
     }
 }

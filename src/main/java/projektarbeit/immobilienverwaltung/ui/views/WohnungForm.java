@@ -8,6 +8,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -20,7 +21,9 @@ import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.shared.Registration;
 import projektarbeit.immobilienverwaltung.model.Land;
 import projektarbeit.immobilienverwaltung.model.Mieter;
+import projektarbeit.immobilienverwaltung.model.Mietvertrag;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
+import projektarbeit.immobilienverwaltung.service.MietvertragService;
 import projektarbeit.immobilienverwaltung.ui.components.ConfirmationDialog;
 import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
 
@@ -31,7 +34,6 @@ import java.util.List;
 public class WohnungForm extends FormLayout {
 
     Binder<Wohnung> binder = new BeanValidationBinder<>(Wohnung.class);
-
     ComboBox<Land> land = new ComboBox<>("Land");
     TextField postleitzahl = new TextField("Postleitzahl");
     TextField stadt = new TextField("Stadt");
@@ -41,31 +43,29 @@ public class WohnungForm extends FormLayout {
     IntegerField baujahr = new IntegerField("Baujahr");
     IntegerField anzahlBaeder = new IntegerField("Anzahl Baeder");
     IntegerField anzahlSchlafzimmer = new IntegerField("Anzahl Schlafzimmer");
-    ComboBox<Mieter> mieterComboBox = new ComboBox<>("Mieter");
     TextField stockwerk = new TextField("Stockwerk");
     TextField wohnungsnummer = new TextField("Wohnungsnummer");
     Checkbox hatBalkon = new Checkbox("Hat Balkon");
     Checkbox hatTerrasse = new Checkbox("Hat Terrasse");
     Checkbox hatGarten = new Checkbox("Hat Garten");
     Checkbox hatKlimaanlage = new Checkbox("Hat Klimaanlage");
-
     Button speichern = new Button("Speichern");
     Button loeschen = new Button("Löschen");
     Button schliessen = new Button("Schließen");
-    private Wohnung wohnung;
+    Span mieterSpan = new Span();
 
-    public WohnungForm(List<Mieter> mieters) {
+    private Wohnung wohnung;
+    private final MietvertragService mietvertragService;
+
+    public WohnungForm(List<Mieter> mieters, MietvertragService mietvertragService) {
+        this.mietvertragService = mietvertragService;
         addClassName("wohnung-form");
         binder.bindInstanceFields(this);
 
         land.setItems(Land.values()); // Populate ComboBox with Enum values
         land.setItemLabelGenerator(Land::getName);
 
-        mieterComboBox.setItems(mieters);
-        mieterComboBox.setItemLabelGenerator(Mieter::getFullName);
-        mieterComboBox.setClearButtonVisible(true); // Allow clearing the selection
-
-        add(land, postleitzahl, stadt, strasse, hausnummer, stockwerk, wohnungsnummer, gesamtQuadratmeter, baujahr, anzahlBaeder, anzahlSchlafzimmer, mieterComboBox, hatBalkon, hatTerrasse, hatGarten, hatKlimaanlage, createButtonsLayout());
+        add(land, postleitzahl, stadt, strasse, hausnummer, stockwerk, wohnungsnummer, gesamtQuadratmeter, baujahr, anzahlBaeder, anzahlSchlafzimmer, mieterSpan, hatBalkon, hatTerrasse, hatGarten, hatKlimaanlage, createButtonsLayout());
         configureValidation();
     }
 
@@ -92,9 +92,14 @@ public class WohnungForm extends FormLayout {
         configureIntegerField(anzahlSchlafzimmer, "Anzahl Schlafzimmer must be zero or positive", 0, Integer.MAX_VALUE, Wohnung::getAnzahlSchlafzimmer, Wohnung::setAnzahlSchlafzimmer);
 
         // Required land field
-        binder.forField(land)
-                .asRequired("Land is required")
-                .bind(Wohnung::getLand, Wohnung::setLand);
+        binder.forField(land).asRequired("Land is required").bind(Wohnung::getLand, Wohnung::setLand);
+
+        Mietvertrag mietvertrag = mietvertragService.findByWohnung(wohnung);
+        if (mietvertrag != null && mietvertrag.getMieter() != null) {
+            mieterSpan.setText(mietvertrag.getMieter().getFullName());
+        } else {
+            mieterSpan.setText("Kein Mieter");
+        }
 
         // Enable the save button only if the binder is valid
         binder.addStatusChangeListener(event -> speichern.setEnabled(binder.isValid()));
@@ -174,12 +179,6 @@ public class WohnungForm extends FormLayout {
             stockwerk.setValue(wohnung.getStockwerk() != null ? wohnung.getStockwerk() : "");
             wohnungsnummer.setValue(wohnung.getWohnungsnummer() != null ? wohnung.getWohnungsnummer() : "");
 
-            if (wohnung.getMieter() != null) {
-                mieterComboBox.setValue(wohnung.getMieter());
-            } else {
-                mieterComboBox.clear();
-            }
-
             // Show delete button if wohnung exists
             loeschen.setVisible(wohnung.getWohnung_id() != null);
         } else {
@@ -188,7 +187,6 @@ public class WohnungForm extends FormLayout {
 
         binder.readBean(wohnung);
     }
-
 
     void clearFields() {
         land.clear();
@@ -200,13 +198,13 @@ public class WohnungForm extends FormLayout {
         baujahr.clear();
         anzahlBaeder.clear();
         anzahlSchlafzimmer.clear();
-        mieterComboBox.clear();
         hatBalkon.setValue(false);
         hatTerrasse.setValue(false);
         hatGarten.setValue(false);
         hatKlimaanlage.setValue(false);
         stockwerk.clear();
         wohnungsnummer.clear();
+        mieterSpan.setText("");
     }
 
     private HorizontalLayout createButtonsLayout() {
@@ -234,10 +232,9 @@ public class WohnungForm extends FormLayout {
         if (wohnung != null) {
             // Trigger validation manually
             if (binder.writeBeanIfValid(wohnung)) {
-                // Ensure Mieter is set from ComboBox
-                wohnung.setMieter(mieterComboBox.getValue());
                 // Fire the save event with the validated Wohnung
                 fireEvent(new SaveEvent(this, wohnung));
+
                 // Show success notification
                 NotificationPopup.showSuccessNotification("Wohnung erfolgreich gespeichert.");
             } else {

@@ -69,40 +69,40 @@ public class MieterDemo implements CommandLineRunner {
 
             // Create Mieter entries if there are Wohnungen available
             if (!wohnungen.isEmpty()) {
-                Mieter mieter1 = new Mieter("Doe", "John", "0123456789", 3000, LocalDate.of(2023, 1, 1), LocalDate.of(2024, 1, 1), 1000, 2);
+                Mieter mieter1 = new Mieter("Doe", "John", "0123456789", "john@doe.com", 3000);
                 mieterRepository.save(mieter1);
 
-                Mieter mieter2 = new Mieter("Doe", "Jane", "9876543210", 4000, LocalDate.of(2023, 6, 1), LocalDate.of(2024, 6, 1), 1200, 3);
+                Mieter mieter2 = new Mieter("Doe", "Jane", "9876543210","jane@doe.com", 4000);
                 mieterRepository.save(mieter2);
 
-                Mieter mieter3 = new Mieter("Mustermann", "Max", "1234567890", 2500, LocalDate.of(2022, 5, 1), LocalDate.of(2023, 5, 1), 900, 1);
+                Mieter mieter3 = new Mieter("Mustermann", "Max", "1234567890","max.mustermann@web.de", 2500);
                 mieterRepository.save(mieter3);
 
-                Mieter mieter4 = new Mieter("Mustermann", "Erika", "0987654321", 2800, LocalDate.of(2023, 3, 1), LocalDate.of(2024, 3, 1), 1000, 2);
+                Mieter mieter4 = new Mieter("Mustermann", "Erika", "0987654321", "erika.musterfrau@gmx.de",2800);
                 mieterRepository.save(mieter4);
 
-                Mieter mieter5 = new Mieter("Schmidt", "Peter", "0123456788", 3200, LocalDate.of(2022, 2, 1), LocalDate.of(2023, 2, 1), 1100, 2);
+                Mieter mieter5 = new Mieter("Schmidt", "Peter", "0123456788", "peter.schmitt83@gmail.com", 3200);
                 mieterRepository.save(mieter5);
 
-                Mieter mieter6 = new Mieter("Schneider", "Laura", "9876543211", 4200, LocalDate.of(2023, 7, 1), LocalDate.of(2024, 7, 1), 1300, 3);
+                Mieter mieter6 = new Mieter("Schneider", "Laura", "9876543211","laura.schneider03@icloud.com", 4200);
                 mieterRepository.save(mieter6);
 
-                Mieter mieter7 = new Mieter("Matt", "John", "0123456789", 3000, LocalDate.of(2023, 1, 1), LocalDate.of(2024, 1, 1), 1000, 2);
+                Mieter mieter7 = new Mieter("Matt", "John", "0123456789","jomat@tuta.de", 3000);
                 mieterRepository.save(mieter7);
 
-                Mieter mieter8 = new Mieter("Matt", "Jane", "9876543210", 4000, LocalDate.of(2023, 6, 1), LocalDate.of(2024, 6, 1), 1200, 3);
+                Mieter mieter8 = new Mieter("Matt", "Jane", "9876543210", "jamat@tuta.de",4000);
                 mieterRepository.save(mieter8);
 
-                Mieter mieter9 = new Mieter("Musterfrau", "Max", "1234567890", 2500, LocalDate.of(2022, 5, 1), LocalDate.of(2023, 5, 1), 900, 1);
+                Mieter mieter9 = new Mieter("Musterfrau", "Max", "1234567890","MaxMusterfrau@gmail.com", 2500);
                 mieterRepository.save(mieter9);
 
-                Mieter mieter10 = new Mieter("Musterfrau", "Erika", "0987654321", 2800, LocalDate.of(2023, 3, 1), LocalDate.of(2024, 3, 1), 1000, 2);
+                Mieter mieter10 = new Mieter("Musterfrau", "Erika", "0987654321", "erika@musterfrau.de", 2800);
                 mieterRepository.save(mieter10);
 
-                Mieter mieter11 = new Mieter("Becker", "Lukas", "0123456788", 3200, LocalDate.of(2022, 2, 1), LocalDate.of(2023, 2, 1), 1100, 2);
+                Mieter mieter11 = new Mieter("Becker", "Lukas", "0123456788", "becker.lukas@gmail.com", 3200);
                 mieterRepository.save(mieter11);
 
-                Mieter mieter12 = new Mieter("Schneider", "Moritz", "9876543211", 4200, LocalDate.of(2023, 7, 1), LocalDate.of(2024, 7, 1), 1300, 3);
+                Mieter mieter12 = new Mieter("Schneider", "Moritz", "9876543211","moritz.schneider@mailbox.org", 4200);
                 mieterRepository.save(mieter12);
 
                 logger.info("Mieter data loaded.");

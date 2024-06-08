@@ -11,12 +11,14 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.treegrid.TreeGrid;
+import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
+import projektarbeit.immobilienverwaltung.service.MietvertragService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 
@@ -29,12 +31,14 @@ import java.util.List;
 public class WohnungListView extends VerticalLayout {
 
     private final WohnungService wohnungService;
+    private final MietvertragService mietvertragService;
     TreeGrid<Wohnung> treeGrid = new TreeGrid<>(Wohnung.class);
     TextField filterText = new TextField();
     WohnungForm form;
 
-    public WohnungListView(WohnungService wohnungService) {
+    public WohnungListView(WohnungService wohnungService, MietvertragService mietvertragService) {
         this.wohnungService = wohnungService;
+        this.mietvertragService = mietvertragService;
         addClassName("list-view");
         setSizeFull();
 
@@ -84,15 +88,14 @@ public class WohnungListView extends VerticalLayout {
         // Column for the apartment number (Wohnungsnummer)
         treeGrid.addColumn(Wohnung::getWohnungsnummer).setHeader(new Html("<div>Wohnungs-<br>nummer</div>")).setTextAlign(ColumnTextAlign.CENTER);
 
-        // Column for the tenant (Mieter), showing "Kein Mieter" if none
-        treeGrid.addColumn(wohnung -> {
+        treeGrid.addColumn(new TextRenderer<>(wohnung -> {
             if (wohnung.isHeader()) {
                 return "";
             } else {
-                Mieter mieter = wohnung.getMieter();
+                Mieter mieter = mietvertragService.findMieterByWohnung(wohnung); // Assuming you have a service to find Mieter by Wohnung
                 return (mieter != null) ? mieter.getFullName() : "Kein Mieter";
             }
-        }).setHeader("Mieter");
+        })).setHeader("Mieter");
 
         // Column for the total square meters (GesamtQuadratmeter)
         treeGrid.addColumn(wohnung -> wohnung.isHeader() ? "" : Integer.toString(wohnung.getGesamtQuadratmeter())).setHeader("m²");
@@ -155,7 +158,6 @@ public class WohnungListView extends VerticalLayout {
         treeGrid.asSingleSelect().addValueChangeListener(event -> editWohnung(event.getValue()));
     }
 
-
     private Component getContent() {
         HorizontalLayout content = new HorizontalLayout(treeGrid, form);
         content.setFlexGrow(2, treeGrid);
@@ -166,7 +168,7 @@ public class WohnungListView extends VerticalLayout {
     }
 
     private void configureForm() {
-        form = new WohnungForm(wohnungService.findAllMieter());
+        form = new WohnungForm(wohnungService.findAllMieter(), mietvertragService);
         form.setWidth("200em");
 
         //Wartet darauf das die Knöpfe gedrückt werden und führt dann die passende Methode aus
