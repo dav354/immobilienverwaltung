@@ -86,9 +86,9 @@ Dokumente können Mietern oder Wohnungen zugeordnet werden und enthalten Attribu
 #### 5. Zählerstand-Verwaltung
 
 Zählerstände sind Wohnungen zugeordnet und enthalten das Ablesedatum und den Ablesewert. Beide Felder müssen gesetzt sein, wobei der Ablesewert positiv sein muss.
-Beziehungen und Integrität
+#### 6. Beziehungen und Integrität
 
-Die Anwendung stellt sicher, dass die Beziehungen zwischen Mietern, Mietverträgen, Wohnungen, Dokumenten und Zählerständen korrekt gehandhabt werden. Durch die Nutzung von Foreign Keys und spezifischen Validierungen wird die Datenintegrität gewährleistet. Beispielsweise:
+Die Anwendung stellt sicher, dass die Beziehungen zwischen Mietern, Mietverträgen, Wohnungen, Dokumenten und Zählerständen korrekt gehandhabt werden. Beispielsweise:
 
 - Ein Mietvertrag muss einem existierenden Mieter und einer existierenden Wohnung zugeordnet sein.
 - Dokumente können entweder Mietern oder Wohnungen zugeordnet sein, nicht jedoch beiden gleichzeitig.
