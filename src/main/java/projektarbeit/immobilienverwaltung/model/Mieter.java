@@ -2,28 +2,22 @@ package projektarbeit.immobilienverwaltung.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import projektarbeit.immobilienverwaltung.validation.ValidMietPeriod;
+import projektarbeit.immobilienverwaltung.validation.UniqueEmail;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Represents a tenant entity with details about the tenant and their rental agreement.
  * This entity is mapped to the database table 'mieter'.
  */
+@SuppressWarnings({"unused", "SpellCheckingInspection"})
 @Entity
-@ValidMietPeriod
-@Table(name = "mieter")
 public class Mieter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long mieter_id;
-
-    @OneToMany(mappedBy = "mieter", fetch = FetchType.EAGER)
-    private List<Wohnung> wohnung = new ArrayList<>();
+    private Long mieterId;
 
     @OneToMany(mappedBy = "mieter", fetch = FetchType.EAGER)
     private List<Dokument> dokument = new ArrayList<>();
@@ -48,52 +42,40 @@ public class Mieter {
     @Pattern(regexp = "^\\d{6,12}$", message = "Illegal Telefonnummer")
     private String telefonnummer; // can start with 0
 
+    @OneToMany(mappedBy = "mieter", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Mietvertrag> mietvertraege = new ArrayList<>();
+
+    @Column(nullable = false)
+    @Email(message = "Email should be valid")
+    @NotNull
+    //@UniqueEmail TODO: kp warum das mit derValidation nicht geht, bekomme immer eine Nullpointer Exception
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Illegal Mail")
+    private String email;
+
     @Column(nullable = false)
     @Positive(message = "Einkommen must be positive")
     private double einkommen;
 
-    @Column(nullable = true)
-    private LocalDate mietbeginn;
-
-    @Column(nullable = true)
-    private LocalDate mietende;
-
-    @Column(nullable = false)
-    @Positive(message = "Kaution must be positive")
-    private double kaution;
-
-    @Column(nullable = false)
-    @Min(value = 1, message = "AnzahlBewohner must be at least 1")
-    private int anzahlBewohner;
-
     /**
-     * Constructs a new Mieter (tenant) with the specified details.
+     * Constructs a new Mieter with the specified details.
      *
      * @param name           Last name of the tenant.
      * @param vorname        First name of the tenant.
      * @param telefonnummer  Contact number of the tenant.
+     * @param email Mail of the tenant
      * @param einkommen      Monthly income of the tenant.
-     * @param mietbeginn     The start date of the tenancy.
-     * @param mietende       The end date of the tenancy.
-     * @param kaution        Deposit amount paid by the tenant.
-     * @param anzahlBewohner Number of inhabitants living in the rented property.
      */
     public Mieter(String name,
                   String vorname,
                   String telefonnummer,
-                  double einkommen,
-                  LocalDate mietbeginn,
-                  LocalDate mietende,
-                  double kaution,
-                  int anzahlBewohner) {
+                  String email,
+                  double einkommen
+    ) {
         this.name = name;
         this.vorname = vorname;
         this.telefonnummer = telefonnummer;
+        this.email = email;
         this.einkommen = einkommen;
-        this.mietbeginn = mietbeginn;
-        this.mietende = mietende;
-        this.kaution = kaution;
-        this.anzahlBewohner = anzahlBewohner;
     }
 
     /**
@@ -108,7 +90,7 @@ public class Mieter {
      * @return the tenant's ID
      */
     public Long getMieter_id() {
-        return mieter_id;
+        return mieterId;
     }
 
     /**
@@ -117,29 +99,12 @@ public class Mieter {
      * @param mieter_id the tenant's ID
      */
     public void setMieter_id(Long mieter_id) {
-        this.mieter_id = mieter_id;
+        this.mieterId = mieter_id;
     }
 
-    /**
-     * Returns the list of properties (Wohnungen) associated with the tenant.
-     *
-     * @return the list of properties
-     */
-    public List<Wohnung> getWohnung() {
-        return wohnung;
-    }
 
     /**
-     * Sets the list of properties (Wohnungen) for the tenant.
-     *
-     * @param wohnung the list of properties to set
-     */
-    public void setWohnung(List<Wohnung> wohnung) {
-        this.wohnung = wohnung;
-    }
-
-    /**
-     * Returns the list of documents (Dokumente) associated with the tenant.
+     * Returns the list of documents associated with the tenant.
      *
      * @return the list of documents
      */
@@ -148,7 +113,7 @@ public class Mieter {
     }
 
     /**
-     * Sets the list of documents (Dokumente) for the tenant.
+     * Sets the list of documents for the tenant.
      *
      * @param dokument the list of documents to set
      */
@@ -221,6 +186,26 @@ public class Mieter {
     }
 
     /**
+     * Gets the email address of the Mieter.
+     *
+     * @return the email address of the Mieter.
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * Sets the email address of the Mieter.
+     *
+     * @param email the email address to set.
+     * @throws IllegalArgumentException if the mail format is invalid
+     */
+    public void setEmail(String email) {
+        if (email == null || !email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) throw new IllegalArgumentException("Invalid email format");
+        this.email = email;
+    }
+
+    /**
      * Returns the income of the tenant.
      *
      * @return the tenant's income
@@ -241,86 +226,12 @@ public class Mieter {
         this.einkommen = einkommen;
     }
 
-    /**
-     * Returns the start date of the tenancy.
-     *
-     * @return the start date of the tenancy
-     */
-    public LocalDate getMietbeginn() {
-        return mietbeginn;
+    public List<Mietvertrag> getMietvertraege() {
+        return mietvertraege;
     }
 
-    /**
-     * Sets the start date of the tenancy.
-     * The start date must be before the end date, if it is set.
-     *
-     * @param mietbeginn the start date to set
-     * @throws IllegalArgumentException if the start date is after the end date
-     */
-    public void setMietbeginn(LocalDate mietbeginn) {
-        if (mietende != null && mietbeginn != null && (mietbeginn.isAfter(mietende) || mietbeginn.isEqual(mietende))) throw new IllegalArgumentException("Mietbeginn must be before Mietende");
-        this.mietbeginn = mietbeginn;
-    }
-
-    /**
-     * Returns the end date of the tenancy.
-     *
-     * @return the end date of the tenancy
-     */
-    public LocalDate getMietende() {
-        return mietende;
-    }
-
-    /**
-     * Sets the end date of the tenancy.
-     * The end date must be after the start date.
-     *
-     * @param mietende the end date to set
-     * @throws IllegalArgumentException if the end date is before the start date
-     */
-    public void setMietende(LocalDate mietende) {
-        if (mietbeginn != null && mietende != null && (mietende.isBefore(mietbeginn) || mietende.isEqual(mietbeginn))) throw new IllegalArgumentException("Mietbeginn must be before Mietende");
-        this.mietende = mietende;
-    }
-
-    /**
-     * Returns the security deposit amount.
-     *
-     * @return the security deposit amount
-     */
-    public double getKaution() {
-        return kaution;
-    }
-
-    /**
-     * Sets the security deposit amount.
-     *
-     * @param kaution the security deposit amount to set
-     * @throws IllegalArgumentException if the security deposit is not positive
-     */
-    public void setKaution(double kaution) {
-        if (kaution <= 0) throw new IllegalArgumentException("Kaution must be positive");
-        this.kaution = kaution;
-    }
-
-    /**
-     * Returns the number of residents.
-     *
-     * @return the number of residents
-     */
-    public int getAnzahlBewohner() {
-        return anzahlBewohner;
-    }
-
-    /**
-     * Sets the number of residents.
-     *
-     * @param anzahlBewohner the number of residents to set
-     * @throws IllegalArgumentException if the number of residents is less than 1
-     */
-    public void setAnzahlBewohner(int anzahlBewohner) {
-        if (anzahlBewohner < 1) throw new IllegalArgumentException("AnzahlBewohner must be at least 1");
-        this.anzahlBewohner = anzahlBewohner;
+    public void setMietvertraege(List<Mietvertrag> mietvertraege) {
+        this.mietvertraege = mietvertraege;
     }
 
     /**
@@ -333,23 +244,6 @@ public class Mieter {
     }
 
     /**
-     * Returns a formatted string of all the apartments associated with the tenant.
-     * If no apartments are associated, it returns "Keine Wohnung".
-     * Each apartment's address is formatted and separated by a line break.
-     *
-     * @return A formatted string of the tenant's apartments or "Keine Wohnung" if none are associated.
-     */
-    public String getFormattedWohnung() {
-        if (wohnung.isEmpty()) {
-            return "Keine Wohnung";
-        } else {
-            return wohnung.stream()
-                    .map(Wohnung::getFormattedAddress)
-                    .collect(Collectors.joining("<br>"));
-        }
-    }
-
-    /**
      * Returns a string representation of this Mieter.
      *
      * @return a string representation of this Mieter.
@@ -357,13 +251,12 @@ public class Mieter {
     @Override
     public String toString() {
         return "Mieter[" +
-                "mieter_id='" + mieter_id +
+                "mieter_id='" + mieterId +
                 "', name='" + name +
                 "', vorname='" + vorname +
                 "', telefonnummer='" + telefonnummer +
+                "', email='" + email +
                 "', einkommen='" + einkommen +
-                "', mietbeginn='" + mietbeginn +
-                "', wohnungen='" + getFormattedWohnung() +
                 "']";
     }
 }

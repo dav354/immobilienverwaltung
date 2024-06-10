@@ -8,49 +8,30 @@ import projektarbeit.immobilienverwaltung.repository.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("SpellCheckingInspection")
 @Service
 public class WohnungService {
 
     private final WohnungRepository wohnungRepository;
     private final DokumentRepository dokumentRepository;
     private final MieterRepository mieterRepository;
+    private final  MietvertragRepository mietvertragRepository;
     private final ZaehlerstandRepository zaehlerstandRepository;
-    private final AdresseRepository adresseRepository;
-    private final PostleitzahlService postleitzahlService;
-    private final DokumentService dokumentService;
-    private final PostleitzahlRepository postleitzahlRepository;
 
-    /**
-     * Constructs a new WohnungService with the specified repositories and services.
-     *
-     * @param wohnungRepository the repository for Wohnung entities
-     * @param dokumentRepository the repository for Dokument entities
-     * @param mieterRepository the repository for Mieter entities
-     * @param zaehlerstandRepository the repository for Zaehlerstand entities
-     * @param adresseRepository the repository for Adresse entities
-     * @param postleitzahlService the service for managing Postleitzahl entities
-     * @param dokumentService the service for managing Dokument entities
-     * @param postleitzahlRepository the repository for Postleitzahl entities
-     */
     @Autowired
     public WohnungService(WohnungRepository wohnungRepository,
                           DokumentRepository dokumentRepository,
                           MieterRepository mieterRepository,
-                          ZaehlerstandRepository zaehlerstandRepository,
-                          AdresseRepository adresseRepository,
-                          PostleitzahlService postleitzahlService,
-                          DokumentService dokumentService,
-                          PostleitzahlRepository postleitzahlRepository) {
+                          MietvertragRepository mietvertragRepository,
+                          ZaehlerstandRepository zaehlerstandRepository) {
         this.wohnungRepository = wohnungRepository;
         this.dokumentRepository = dokumentRepository;
         this.mieterRepository = mieterRepository;
+        this.mietvertragRepository = mietvertragRepository;
         this.zaehlerstandRepository = zaehlerstandRepository;
-        this.adresseRepository = adresseRepository;
-        this.postleitzahlService = postleitzahlService;
-        this.dokumentService = dokumentService;
-        this.postleitzahlRepository = postleitzahlRepository;
     }
 
     /**
@@ -72,77 +53,63 @@ public class WohnungService {
     }
 
     /**
-     * Saves a Wohnung entity. If the associated Adresse does not exist, it is created.
+     * Finds Wohnungen (apartments) and groups them into a hierarchical structure based on their address.
+     * If there are multiple Wohnungen at the same address, a header node is created with the address details
+     * and the individual Wohnungen as its children.
      *
-     * @param wohnung the Wohnung entity to save
-     * @return the saved Wohnung entity
+     * @param filter The filter string to apply when searching for Wohnungen.
+     * @return A list of Wohnungen, some of which may be header nodes grouping multiple Wohnungen at the same address.
      */
-    @Transactional
-    public Wohnung save(Wohnung wohnung) {
-        Adresse adresse = wohnung.getAdresse();
-        Postleitzahl postleitzahl = adresse.getPostleitzahlObj();
+    public List<Wohnung> findWohnungenWithHierarchy(String filter) {
+        // Retrieve all Wohnungen based on the filter
+        List<Wohnung> wohnungen = findAllWohnungen(filter);
 
-        // Save or fetch Postleitzahl
-        if (!postleitzahlRepository.existsById(postleitzahl.getPostleitzahl())) {
-            postleitzahl = postleitzahlRepository.save(postleitzahl);
-        } else {
-            postleitzahl = postleitzahlRepository.findById(postleitzahl.getPostleitzahl())
-                    .orElseThrow(() -> new RuntimeException("Postleitzahl nicht gefunden"));
-        }
+        // Group Wohnungen by their address (strasse + hausnummer)
+        Map<String, List<Wohnung>> groupedWohnungen = wohnungen.stream()
+                .collect(Collectors.groupingBy(wohnung -> wohnung.getStrasse() + " " + wohnung.getHausnummer()));
 
-        // Save or fetch Adresse
-        if (adresse.getAdresse_id() == null || !adresseRepository.existsById(adresse.getAdresse_id())) {
-            adresse.setPostleitzahlObj(postleitzahl);
-            adresse = adresseRepository.save(adresse);
-        } else {
-            adresse = adresseRepository.findById(adresse.getAdresse_id())
-                    .orElseThrow(() -> new RuntimeException("Adresse nicht gefunden"));
-            adresse.setPostleitzahlObj(postleitzahl);
-        }
+        List<Wohnung> wohnungsWithHierarchy = new ArrayList<>();
+        // Iterate over each group of Wohnungen
+        groupedWohnungen.forEach((address, wohnungenForAddress) -> {
+            if (wohnungenForAddress.size() > 1) {
+                // If there are multiple Wohnungen at the same address, create a header node
+                Wohnung addressNode = new Wohnung();
+                addressNode.setStrasse(wohnungenForAddress.getFirst().getStrasse());
+                addressNode.setHausnummer(wohnungenForAddress.getFirst().getHausnummer());
+                addressNode.setPostleitzahl(wohnungenForAddress.getFirst().getPostleitzahl());
+                addressNode.setStadt(wohnungenForAddress.getFirst().getStadt());
+                addressNode.setLand(wohnungenForAddress.getFirst().getLand());
+                addressNode.setHeader(true);
+                addressNode.setSubWohnungen(new ArrayList<>(wohnungenForAddress));
+                wohnungsWithHierarchy.add(addressNode);
+            } else {
+                // If there is only one Wohnung at the address, add it directly to the list
+                wohnungsWithHierarchy.addAll(wohnungenForAddress);
+            }
+        });
 
-        // Set the address to the Wohnung
-        wohnung.setAdresse(adresse);
-
-        // Save the Mieter entity if it's not null
-        Mieter mieter = wohnung.getMieter();
-        if (mieter != null) {
-            mieterRepository.save(mieter);
-        }
-
-        // Save the Wohnung entity
-        return wohnungRepository.save(wohnung);
+        return wohnungsWithHierarchy;
     }
 
     /**
-     * Deletes a Wohnung entity and its associated Adresse. Also removes references to the Wohnung from related entities.
+     * Deletes a Wohnung entity and its associated details. Also removes references to the Wohnung from related entities.
      *
      * @param wohnung the Wohnung entity to delete
      */
     @Transactional
     public void delete(Wohnung wohnung) {
         // Delete documents associated with the Wohnung
-        dokumentService.deleteDokumenteByWohnung(wohnung);
+        dokumentRepository.deleteAll(dokumentRepository.findByWohnung(wohnung));
 
-        // Remove Mieter references to the Wohnung
-        List<Mieter> mieter = mieterRepository.findAllWithWohnungen();
-        for (Mieter m : mieter) {
-            m.setWohnung(new ArrayList<>());
-            mieterRepository.save(m); // Save the updated Mieter with null Wohnung reference
-        }
+        // Delete Mietverträge associated with the Wohnung
+        Mietvertrag mietvertrag = mietvertragRepository.findByWohnung(wohnung);
+        mietvertragRepository.delete(mietvertrag);
 
         // Delete Zaehlerstand references to the Wohnung
-        List<Zaehlerstand> zaehlerstaende = zaehlerstandRepository.findByWohnung(wohnung);
-        for (Zaehlerstand zaehlerstand : zaehlerstaende) {
-            zaehlerstandRepository.delete(zaehlerstand); // Delete the Zaehlerstand
-        }
+        zaehlerstandRepository.deleteAll(zaehlerstandRepository.findByWohnung(wohnung));
 
-        // Delete the Wohnung and its associated Adresse
-        Adresse adresse = wohnung.getAdresse();
+        // Delete the Wohnung entity
         wohnungRepository.delete(wohnung);
-        adresseRepository.delete(adresse);
-
-        // Delete the Postleitzahl if it is no longer used
-        postleitzahlService.deletePostleitzahlIfUnused(adresse.getPostleitzahlObj());
     }
 
     /**
@@ -158,26 +125,65 @@ public class WohnungService {
     /**
      * Service method to find all Wohnungen (apartments) based on a given string filter.
      * If the filter string is null or empty, it returns all Wohnungen.
-     * If the filter string is provided, it first searches for all matching Adressen (addresses),
-     * extracts their IDs, and then finds all Wohnungen associated with those address IDs.
+     * If the filter string is provided, it first searches for all matching Wohnungen.
      *
-     * @param stringFilter The filter string to search for matching Adressen. If null or empty, all Wohnungen are returned.
+     * @param stringFilter The filter string to search for matching Wohnungen. If null or empty, all Wohnungen are returned.
      * @return A list of Wohnungen that match the given filter string. If no filter is provided, returns all Wohnungen.
      */
     public List<Wohnung> findAllWohnungen(String stringFilter) {
         if (stringFilter == null || stringFilter.isEmpty()) {
             return wohnungRepository.findAll();
         } else {
-            // Find all addresses that contain the filter text
-            List<Adresse> matchingAddresses = adresseRepository.search(stringFilter);
-
-            // Extract the IDs of the matching addresses
-            List<Long> matchingAddressIds = matchingAddresses.stream()
-                    .map(Adresse::getAdresse_id)
-                    .collect(Collectors.toList());
-
-            // Find all Wohnungen that have one of these addresses
-            return wohnungRepository.findByAdresseIds(matchingAddressIds);
+            return wohnungRepository.search(stringFilter);
         }
+    }
+
+    /**
+     * Gets all Wohnungen that do not have an associated Mietvertrag.
+     *
+     * @return List of Wohnungen with no Mietvertrag
+     */
+    @Transactional(readOnly = true)
+    public List<Wohnung> findWohnungenWithoutMietvertrag() {
+        // Get all Wohnungen
+        List<Wohnung> allWohnungen = wohnungRepository.findAll();
+
+        // Get all Wohnungen with a Mietvertrag
+        List<Wohnung> wohnungenWithMietvertrag = mietvertragRepository.findAll().stream()
+                .map(Mietvertrag::getWohnung)
+                .toList();
+
+        // Filter out Wohnungen that have a Mietvertrag
+        return allWohnungen.stream()
+                .filter(wohnung -> !wohnungenWithMietvertrag.contains(wohnung))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Saves a Wohnung (apartment) entity to the database.
+     * This method is transactional, ensuring that all operations
+     * within the transaction are completed successfully or none are.
+     *
+     * @param wohnung the Wohnung entity to save
+     * @return the saved Wohnung entity
+     */
+    @Transactional
+    public Wohnung save(Wohnung wohnung) {
+        return wohnungRepository.save(wohnung);
+    }
+
+    /**
+     * Gets all Wohnungen where there is no active Mietvertrag, meaning the Wohnung is available.
+     * This method is transactional and read-only.
+     *
+     * @return List of all available Wohnungen
+     */
+    @Transactional(readOnly = true)
+    public List<Wohnung> findAvailableWohnungen() {
+        return mietvertragRepository.findAll().stream()
+                .filter(mietvertrag -> mietvertrag.getMieter() == null)
+                .map(Mietvertrag::getWohnung)
+                .distinct()
+                .collect(Collectors.toList());
     }
 }

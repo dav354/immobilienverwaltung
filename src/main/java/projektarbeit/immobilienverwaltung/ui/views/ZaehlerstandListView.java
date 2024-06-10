@@ -18,6 +18,7 @@ import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 
 import java.util.List;
 
+@SuppressWarnings("SpellCheckingInspection")
 @Route(value = "zaehlerstand", layout = MainLayout.class)
 @PageTitle("Zaehlerstand")
 @UIScope
@@ -50,11 +51,11 @@ public class ZaehlerstandListView extends VerticalLayout {
         grid.removeAllColumns();
         grid.addColumn(Zaehlerstand::getAblesedatum).setHeader("Ablesedatum").setSortable(true);
         grid.addColumn(Zaehlerstand::getAblesewert).setHeader("Ablesewert").setSortable(true);
-        grid.addColumn(zaehlerstand -> zaehlerstand.getWohnung().getAdresse().getStrasse())
+        grid.addColumn(zaehlerstand -> zaehlerstand.getWohnung().getStrasse())
                 .setHeader("Strasse").setSortable(true);
-        grid.addColumn(zaehlerstand -> zaehlerstand.getWohnung().getAdresse().getHausnummer())
+        grid.addColumn(zaehlerstand -> zaehlerstand.getWohnung().getHausnummer())
                 .setHeader("Hausnummer").setSortable(true);
-        grid.addColumn(zaehlerstand -> zaehlerstand.getWohnung().getAdresse().getPostleitzahlObj().getPostleitzahl())
+        grid.addColumn(zaehlerstand -> zaehlerstand.getWohnung().getPostleitzahl())
                 .setHeader("Postleitzahl").setSortable(true);
 
         grid.setSizeFull();

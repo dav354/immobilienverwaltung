@@ -8,12 +8,17 @@ import projektarbeit.immobilienverwaltung.model.Mieter;
 import java.util.List;
 
 public interface MieterRepository extends JpaRepository<Mieter, Long> {
-    @Query("SELECT m FROM Mieter m LEFT JOIN FETCH m.wohnung")
-    List<Mieter> findAllWithWohnungen();
-
     //Query um die Mieter zu suchen mit dem Suchbegriff
     @Query("select c from Mieter c " +
             "where lower(c.name) like lower(concat('%', :searchTerm, '%')) " +
             "or lower(c.vorname) like lower(concat('%', :searchTerm, '%'))")
     List<Mieter> search(@Param("searchTerm") String searchTerm);
+
+    /**
+     * Checks if a Mieter with the given email exists.
+     *
+     * @param email the email to check.
+     * @return true if a Mieter with the email exists, false otherwise.
+     */
+    boolean existsByEmail(String email);
 }

@@ -25,9 +25,6 @@ Diese Anwendung ermöglicht die Verwaltung von Immobilien und deren Mietern.
 
 - [Frameworks](#frameworks)
 - [Funktionen](#funktionen)
-  - [Grundfunktionalität](#grundfunktionalität)
-  - [Priorität 2](#priorität-2)
-  - [Priorität 3](#priorität-3)
 - [Install](#install)
 - [Mockups](#mockups)
 - [Database](#database)
@@ -51,46 +48,50 @@ Diese Anwendung ermöglicht die Verwaltung von Immobilien und deren Mietern.
 
 ## Funktionen
 
-<a id="grundfunktionalität"></a>
+#### 1. Mieter-Verwaltung
 
-### [x] Grundfunktionalität
+Die Mieter-Verwaltung ermöglicht es, Mieter zu erstellen, zu aktualisieren und zu löschen. Jeder Mieter hat mehrere Attribute, darunter Name, Vorname, Telefonnummer, E-Mail und Einkommen. Diese Attribute unterliegen strikten Validierungsregeln:
 
-- **Immobilienverwaltung**: Erstellen, Ansehen und Verwalten von Immobiliendetails und -zusammenfassungen.
-  - Adresse
-  - Immobilientyp
-  - Fotos / Dokumente
-  - Anzahl der Häuser/Wohnungen
-  - Namen zuweisen
-  - Quadratmeter
-  - Stockwerk
-- **Mieterverwaltung**: Einrichten von Mietverhältnissen.
-  - Telefonnummer
-  - Einnahmen/Ausgaben
-  - Verträge erstellen
-  - Zählerstände
-  - Dokumente
-  - Vertragserstellung (Übergabeprotokoll usw.)
-- **Dashboard**:
-  - Anzahl der Immobilien
-  - Einnahmen
-- Such- und Filterfunktionen
+- Name und Vorname: Dürfen nur Buchstaben und Leerzeichen enthalten und müssen zwischen 1 und 100 Zeichen lang sein.
+- Telefonnummer: Muss zwischen 6 und 12 Ziffern enthalten.
+- E-Mail: Muss ein gültiges E-Mail-Format haben und eindeutig sein.
+- Einkommen: Muss ein positiver Wert sein.
 
-<a id="priorität-2"></a>
+Zusätzlich können Mietern Dokumente und Mietverträge zugeordnet werden.
+#### 2. Mietvertrag-Verwaltung
 
-### [ ] Priorität 2
+Mietverträge verknüpfen Mieter mit Wohnungen und enthalten Informationen wie Mietbeginn, Mietende, Miete, Kaution und die Anzahl der Bewohner. Die Validierungen stellen sicher, dass:
 
-- Dauer des Mietverhältnisses, Benachrichtigung bei Beendigung
-- Benutzerrollen: Admin/Benutzer/Verwalter
-- Mietdetails:
-  - Karte mit Standort der Immobilie anzeigen
+- Mietbeginn: Nicht in der Zukunft liegt.
+- Mietende: Nach dem Mietbeginn liegt, falls gesetzt.
+- Miete und Kaution: Positive Werte sind.
+- Anzahl der Bewohner: Mindestens 1 beträgt.
 
-<a id="priorität-3"></a>
+Mietverträge können erstellt, aktualisiert und gelöscht werden, wobei die Beziehungen zu Mietern und Wohnungen berücksichtigt werden.
+#### 3. Wohnung-Verwaltung
 
-### [ ] Priorität 3
+Wohnungen werden mit verschiedenen Attributen verwaltet, darunter Straße, Hausnummer, Postleitzahl, Stadt, Land, Gesamtquadratmeter, Baujahr, Anzahl der Bäder, Schlafzimmer sowie Ausstattungsmerkmale wie Balkon, Terrasse, Garten und Klimaanlage. Die Validierungen umfassen:
 
-- Erstellung eines Exposés aus den Informationen als PDF
-- Automatisches Erstellen von Mietverträgen mit Mieterdaten
-- E-Mail-Support
+- Straße, Hausnummer, Stadt: Dürfen nicht leer sein und müssen bestimmten Mustern entsprechen.
+- Postleitzahl: Muss zwischen 4 und 10 Ziffern enthalten.
+- Gesamtquadratmeter: Muss mindestens 1 betragen.
+- Baujahr: Muss eine vierstellige Jahreszahl sein und darf nicht in der Zukunft liegen.
+- Anzahl der Bäder: Muss positiv sein.
+- Anzahl der Schlafzimmer: Muss null oder positiv sein.
+
+Wohnungen können ebenfalls Dokumente und Zählerstände zugeordnet werden.
+#### 4. Dokumenten-Verwaltung
+
+Dokumente können Mietern oder Wohnungen zugeordnet werden und enthalten Attribute wie Dokumenttyp und Dateipfad. Beide Felder dürfen nicht leer sein und müssen bestimmten Validierungen entsprechen.
+#### 5. Zählerstand-Verwaltung
+
+Zählerstände sind Wohnungen zugeordnet und enthalten das Ablesedatum und den Ablesewert. Beide Felder müssen gesetzt sein, wobei der Ablesewert positiv sein muss.
+#### 6. Beziehungen und Integrität
+
+Die Anwendung stellt sicher, dass die Beziehungen zwischen Mietern, Mietverträgen, Wohnungen, Dokumenten und Zählerständen korrekt gehandhabt werden. Beispielsweise:
+
+- Ein Mietvertrag muss einem existierenden Mieter und einer existierenden Wohnung zugeordnet sein.
+- Dokumente können entweder Mietern oder Wohnungen zugeordnet sein, nicht jedoch beiden gleichzeitig.
 
 <a id="install"></a>
 
@@ -144,61 +145,62 @@ Diese Anwendung ermöglicht die Verwaltung von Immobilien und deren Mietern.
 
 ```mermaid
 erDiagram
-    ADRESSE ||--|| WOHNUNG : "gehoert zu"
-    ADRESSE {
-        string WohnungID PK
-        int Postleitzahl FK
-        string Stadt
-        string Strasse
-        string Hausnummer
-    }
-    POSTLEITZAHL ||--|{ ADRESSE : "gehoert zu"
-    POSTLEITZAHL {
-        int Postleitzahl PK
-        string Stadt
-        string Land
-    }
-    WOHNUNG ||--o| MIETER : "hat"
-    WOHNUNG {
-        string WohnungId PK
-        int GesamtQuadratmeter
-        int Baujahr
-        int AnzahlBaeder
-        int AnzahlSchlafzimmer
-        boolean Balkon
-        boolean Terrasse
-        boolean Garten
-        boolean Klimaanlage
-    }
-    MIETER ||--o| DOKUMENT : "unterzeichnet"
-    MIETER {
-        string MieterID PK
-        string WohnungId FK
-        string Name
-        string Vorname
-        long Telefonnummer
-        int Einkommen
-        int Ausgaben
-        date Mietbeginn
-        date Mietende
-        int Kaution
-        int AnzahlBewohner
-    }
-    WOHNUNG ||--o{ DOKUMENT : "enthaelt"
-    DOKUMENT {
-        string DokumentID PK
-        string WohnungId FK
-        string MieterID FK
-        string Dokumenttyp
-        string Dateipfad
-    }
-    WOHNUNG ||--|{ ZAEHLERSTAND : "aufgezeichnet"
-    ZAEHLERSTAND {
-        string ZaehlerstandID PK
-        string WohnungId FK
-        date Ablesedatum
-        string Messwert
-    }
+  Mieter {
+    Long mieterId PK
+    String name
+    String vorname
+    String telefonnummer
+    String email
+    double einkommen
+  }
+  Mietvertrag {
+    Long mietvertrag_id PK
+    Long mieterId FK
+    Long wohnung_id FK
+    LocalDate mietbeginn
+    LocalDate mietende
+    double kaution
+    double miete
+    int anzahlBewohner
+  }
+  Wohnung {
+    Long wohnung_id PK
+    String strasse
+    String hausnummer
+    String postleitzahl
+    String stadt
+    String land
+    int gesamtQuadratmeter
+    int baujahr
+    int anzahlBaeder
+    int anzahlSchlafzimmer
+    boolean hatBalkon
+    boolean hatTerrasse
+    boolean hatGarten
+    boolean hatKlimaanlage
+    String stockwerk
+    String wohnungsnummer
+  }
+  Dokument {
+    Long dokument_id PK
+    Long wohnung_id FK
+    Long mieter_id FK
+    String dokumententyp
+    String dateipfad
+  }
+  Zaehlerstand {
+    Long zaehlerstandId PK
+    Long wohnung_id FK
+    LocalDate ablesedatum
+    double ablesewert
+  }
+
+  Mieter ||--o{ Dokument : "hat"
+  Mieter ||--o{ Mietvertrag : "hat"
+  Wohnung ||--o{ Mietvertrag : "hat"
+  Wohnung ||--o{ Dokument : "hat"
+  Wohnung ||--o{ Zaehlerstand : "hat"
+
 ```
 
 </details>

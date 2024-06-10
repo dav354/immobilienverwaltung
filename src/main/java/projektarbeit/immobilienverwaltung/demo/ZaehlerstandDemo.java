@@ -13,6 +13,11 @@ import projektarbeit.immobilienverwaltung.repository.ZaehlerstandRepository;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Initializes the Zaehlerstand (meter reading) data for demo purposes.
+ * This class runs as a command line runner when the application starts if the demo mode is enabled.
+ */
+@SuppressWarnings("SpellCheckingInspection")
 @Component
 @Order(3)
 public class ZaehlerstandDemo implements CommandLineRunner {
@@ -23,6 +28,13 @@ public class ZaehlerstandDemo implements CommandLineRunner {
     private final ZaehlerstandRepository zaehlerstandRepository;
     private final WohnungRepository wohnungRepository;
 
+    /**
+     * Constructor for ZaehlerstandDemo.
+     *
+     * @param demoModeConfig       The demo mode configuration.
+     * @param zaehlerstandRepository The repository for managing Zaehlerstand entities.
+     * @param wohnungRepository    The repository for managing Wohnung entities.
+     */
     public ZaehlerstandDemo(DemoModeConfig demoModeConfig,
                             ZaehlerstandRepository zaehlerstandRepository,
                             WohnungRepository wohnungRepository) {
@@ -31,6 +43,12 @@ public class ZaehlerstandDemo implements CommandLineRunner {
         this.wohnungRepository = wohnungRepository;
     }
 
+    /**
+     * Runs the initialization of Zaehlerstand data if demo mode is enabled.
+     *
+     * @param args Command line arguments.
+     * @throws Exception if an error occurs during the operation.
+     */
     @Override
     public void run(String... args) throws Exception {
         if (demoModeConfig.isDemoMode()) {
@@ -40,12 +58,18 @@ public class ZaehlerstandDemo implements CommandLineRunner {
         }
     }
 
+    /**
+     * Loads Zaehlerstand data for demo purposes.
+     * This method checks if there are no existing Zaehlerstand entries before loading the data.
+     */
     private void loadZaehlerstandData() {
         if (zaehlerstandRepository.count() == 0) { // Only load if no data exists
+            logger.info("Loading Zaehlerstand data...");
+
             // Load existing Wohnungen
             List<Wohnung> wohnungen = wohnungRepository.findAll();
 
-            // Create Zaehlerstand
+            // Create Zaehlerstand entries if there are Wohnungen available
             if (!wohnungen.isEmpty()) {
                 Zaehlerstand zaehlerstand1 = new Zaehlerstand(wohnungen.get(0), LocalDate.of(2023, 1, 1), 100.0);
                 zaehlerstandRepository.save(zaehlerstand1);

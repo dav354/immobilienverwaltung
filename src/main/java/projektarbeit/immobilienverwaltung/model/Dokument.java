@@ -16,12 +16,12 @@ public class Dokument {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long dokument_id;
 
-    @ManyToOne(optional = true)
-    @JoinColumn(name = "wohnung_id", nullable = true)
+    @ManyToOne()
+    @JoinColumn(name = "wohnung_id")
     private Wohnung wohnung;
 
-    @ManyToOne(optional = true)
-    @JoinColumn(name = "mieter_id", nullable = true)
+    @ManyToOne()
+    @JoinColumn(name = "mieter_id")
     private Mieter mieter;
 
     @Column(nullable = false)

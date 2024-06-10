@@ -5,12 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import projektarbeit.immobilienverwaltung.model.Adresse;
 import projektarbeit.immobilienverwaltung.model.Land;
-import projektarbeit.immobilienverwaltung.model.Postleitzahl;
-import projektarbeit.immobilienverwaltung.repository.AdresseRepository;
-import projektarbeit.immobilienverwaltung.repository.PostleitzahlRepository;
-
+/*
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -132,3 +128,5 @@ class AdresseServiceTest {
         assertEquals(expected, adresse.toString());
     }
 }
+
+ */
