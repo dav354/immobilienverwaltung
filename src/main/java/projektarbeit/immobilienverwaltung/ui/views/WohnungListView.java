@@ -16,6 +16,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
+import jakarta.annotation.security.PermitAll;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.service.MietvertragService;
@@ -25,6 +26,7 @@ import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 import java.util.List;
 
 @SuppressWarnings("SpellCheckingInspection")
+@PermitAll
 @Route(value = "wohnungen", layout = MainLayout.class)
 @PageTitle("Wohnungen")
 @UIScope
