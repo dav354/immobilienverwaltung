@@ -1,0 +1,22 @@
+/* frontend/styles/shared-styles.css */
+
+.login-layout {
+    background-color: var(--lumo-base-color);
+    color: var(--lumo-body-text-color);
+    height: 100vh;
+}
+
+.login-title {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: var(--lumo-primary-text-color);
+}
+
+.login-view {
+    width: 300px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: var(--lumo-base-color);
+    border-radius: 8px;
+    color: var(--lumo-body-text-color);
+}

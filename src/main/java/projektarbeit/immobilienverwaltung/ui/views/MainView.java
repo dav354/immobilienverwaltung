@@ -10,7 +10,7 @@ import jakarta.annotation.security.PermitAll;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 
 @PermitAll
-@Route(value = "", layout = MainLayout.class)
+@Route(value = "/", layout = MainLayout.class)
 @UIScope
 @PageTitle("Home")
 public class MainView extends VerticalLayout {
