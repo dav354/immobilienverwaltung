@@ -19,6 +19,7 @@ import com.vaadin.flow.data.validator.IntegerRangeValidator;
 import com.vaadin.flow.data.validator.RegexpValidator;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.shared.Registration;
+import jakarta.annotation.security.PermitAll;
 import projektarbeit.immobilienverwaltung.model.Land;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Mietvertrag;
@@ -31,6 +32,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @SuppressWarnings("SpellCheckingInspection")
+@PermitAll
 public class WohnungForm extends FormLayout {
 
     Binder<Wohnung> binder = new BeanValidationBinder<>(Wohnung.class);
