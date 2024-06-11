@@ -4,6 +4,10 @@
     background-color: var(--lumo-base-color);
     color: var(--lumo-body-text-color);
     height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .login-title {
@@ -13,10 +17,25 @@
 }
 
 .login-view {
-    width: 300px;
+    width: 100%;
+    max-width: 400px;
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: var(--lumo-base-color);
+    background-color: var(--lumo-base-color); /* Dark background for the form */
     border-radius: 8px;
     color: var(--lumo-body-text-color);
+}
+
+.login-view vaadin-login-form {
+    --lumo-base-color: var(--lumo-shade);
+    --lumo-primary-text-color: var(--lumo-primary-contrast-color);
+    --lumo-primary-color-50pct: rgba(255, 255, 255, 0.5);
+    --lumo-primary-color-10pct: rgba(255, 255, 255, 0.1);
+    --lumo-tint-5pct: rgba(255, 255, 255, 0.05);
+    --lumo-tint-10pct: rgba(255, 255, 255, 0.1);
+}
+
+/* Additional global styles */
+body {
+    background-color: var(--lumo-base-color) !important;
 }
