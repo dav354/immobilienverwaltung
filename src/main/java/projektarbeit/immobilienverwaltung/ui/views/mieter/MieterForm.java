@@ -1,4 +1,4 @@
-package projektarbeit.immobilienverwaltung.ui.views;
+package projektarbeit.immobilienverwaltung.ui.views.mieter;
 
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;

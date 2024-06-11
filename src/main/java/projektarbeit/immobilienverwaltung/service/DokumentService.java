@@ -1,6 +1,7 @@
 package projektarbeit.immobilienverwaltung.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import projektarbeit.immobilienverwaltung.model.Dokument;
@@ -50,5 +51,16 @@ public class DokumentService {
                 dokumentRepository.save(dokument);
             }
         }
+    }
+
+    /**
+     * Finds and returns a list of Dokument entities associated with a given Wohnung.
+     *
+     * @param wohnung     The Wohnung entity for which to find associated Dokumente.
+     * @param pageRequest
+     * @return A list of Dokument entities associated with the specified Wohnung.
+     */
+    public List<Dokument> findDokumenteByWohnung(Wohnung wohnung) {
+        return dokumentRepository.findByWohnung(wohnung);
     }
 }

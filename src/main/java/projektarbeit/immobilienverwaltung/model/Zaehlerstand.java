@@ -32,19 +32,26 @@ public class Zaehlerstand {
     @Positive(message = "Ablesewert cannot be null")
     private double ablesewert;
 
+    @Column(nullable = false)
+    @NotNull(message = "Name cannot be null")
+    private String name;
+
     /**
      * Constructs a new Zaehlerstand instance with specified details.
      *
      * @param wohnung      The property (Wohnung) to which the reading belongs.
      * @param ablesedatum  The date when the meter reading was taken.
      * @param ablesewert   The value of the meter reading.
+     * @param name  The Name of the meter
      */
     public Zaehlerstand(Wohnung wohnung,
                         LocalDate ablesedatum,
-                        double ablesewert) {
+                        double ablesewert,
+                        String name) {
         this.wohnung = wohnung;
         this.ablesedatum = ablesedatum;
         this.ablesewert = ablesewert;
+        this.name = name;
     }
 
     /**
@@ -130,6 +137,14 @@ public class Zaehlerstand {
     public void setAblesewert(double ablesewert) {
         if (ablesewert <= 0) throw new IllegalArgumentException("Ablesewert must be positive");
         this.ablesewert = ablesewert;
+    }
+
+    public @NotNull(message = "Name cannot be null") String getName() {
+        return name;
+    }
+
+    public void setName(@NotNull(message = "Name cannot be null") String name) {
+        this.name = name;
     }
 
     /**

@@ -13,10 +13,8 @@ import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.theme.lumo.Lumo;
 import projektarbeit.immobilienverwaltung.Security.SecurityService;
-import projektarbeit.immobilienverwaltung.ui.views.DokumentListView;
-import projektarbeit.immobilienverwaltung.ui.views.MieterListView;
-import projektarbeit.immobilienverwaltung.ui.views.WohnungListView;
-import projektarbeit.immobilienverwaltung.ui.views.ZaehlerstandListView;
+import projektarbeit.immobilienverwaltung.ui.views.mieter.MieterListView;
+import projektarbeit.immobilienverwaltung.ui.views.wohnung.WohnungListView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,8 +78,6 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
         layout.add(new Span("Navigation"));
         layout.add(createNavigationLink("Wohnungen", WohnungListView.class));
         layout.add(createNavigationLink("Mieter", MieterListView.class));
-        layout.add(createNavigationLink("Zählerstand", ZaehlerstandListView.class));
-        layout.add(createNavigationLink("Dokumente", DokumentListView.class));
         layout.setWidthFull();
         layout.setSizeFull();
         layout.getStyle().set("background-color", "var(--lumo-contrast-10pct)");

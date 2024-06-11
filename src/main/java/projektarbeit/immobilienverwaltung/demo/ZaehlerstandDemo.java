@@ -71,16 +71,16 @@ public class ZaehlerstandDemo implements CommandLineRunner {
 
             // Create Zaehlerstand entries if there are Wohnungen available
             if (!wohnungen.isEmpty()) {
-                Zaehlerstand zaehlerstand1 = new Zaehlerstand(wohnungen.get(0), LocalDate.of(2023, 1, 1), 100.0);
+                Zaehlerstand zaehlerstand1 = new Zaehlerstand(wohnungen.get(0), LocalDate.of(2023, 1, 1), 100.0, "Strom");
                 zaehlerstandRepository.save(zaehlerstand1);
 
-                Zaehlerstand zaehlerstand2 = new Zaehlerstand(wohnungen.get(1), LocalDate.of(2023, 6, 1), 200.0);
+                Zaehlerstand zaehlerstand2 = new Zaehlerstand(wohnungen.get(1), LocalDate.of(2023, 6, 1), 200.0, "Wasser");
                 zaehlerstandRepository.save(zaehlerstand2);
 
-                Zaehlerstand zaehlerstand3 = new Zaehlerstand(wohnungen.get(2), LocalDate.of(2023, 11, 1), 300.0);
+                Zaehlerstand zaehlerstand3 = new Zaehlerstand(wohnungen.get(2), LocalDate.of(2023, 11, 1), 300.0, "Gas");
                 zaehlerstandRepository.save(zaehlerstand3);
 
-                Zaehlerstand zaehlerstand4 = new Zaehlerstand(wohnungen.get(3), LocalDate.of(2023, 12, 1), 400.0);
+                Zaehlerstand zaehlerstand4 = new Zaehlerstand(wohnungen.get(3), LocalDate.of(2023, 12, 1), 400.0, "Strom");
                 zaehlerstandRepository.save(zaehlerstand4);
 
                 logger.info("Zaehlerstand data loaded.");

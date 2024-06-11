@@ -1,4 +1,4 @@
-package projektarbeit.immobilienverwaltung.ui.views;
+package projektarbeit.immobilienverwaltung.ui.views.wohnung;
 
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
@@ -215,6 +215,9 @@ public class WohnungListView extends VerticalLayout {
             form.setWohnung(wohnung);
             form.setVisible(true);
             addClassName("editing");
+
+            // Navigate to the detailed view
+            getUI().ifPresent(ui -> ui.navigate(WohnungDetailsView.class, wohnung.getWohnung_id()));
         }
     }
 
