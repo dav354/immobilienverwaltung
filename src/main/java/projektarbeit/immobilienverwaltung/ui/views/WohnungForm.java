@@ -30,7 +30,6 @@ import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
 
 import java.time.LocalDate;
 import java.util.List;
-
 @SuppressWarnings("SpellCheckingInspection")
 @PermitAll
 public class WohnungForm extends FormLayout {
@@ -59,12 +58,18 @@ public class WohnungForm extends FormLayout {
     private Wohnung wohnung;
     private final MietvertragService mietvertragService;
 
+    /**
+     * Konstruktor für die WohnungForm.
+     *
+     * @param mieters eine Liste von Mietern
+     * @param mietvertragService der MietvertragService für Mietverträge
+     */
     public WohnungForm(List<Mieter> mieters, MietvertragService mietvertragService) {
         this.mietvertragService = mietvertragService;
         addClassName("wohnung-form");
         binder.bindInstanceFields(this);
 
-        land.setItems(Land.values()); // Populate ComboBox with Enum values
+        land.setItems(Land.values()); // Befüllt ComboBox mit Enum-Werten
         land.setItemLabelGenerator(Land::getName);
 
         add(land, postleitzahl, stadt, strasse, hausnummer, stockwerk, wohnungsnummer, gesamtQuadratmeter, baujahr, anzahlBaeder, anzahlSchlafzimmer, mieterSpan, hatBalkon, hatTerrasse, hatGarten, hatKlimaanlage, createButtonsLayout());
@@ -72,29 +77,29 @@ public class WohnungForm extends FormLayout {
     }
 
     /**
-     * Configures the validation for the fields in the form.
-     * Sets up regex validators for text fields, range validators for integer fields,
-     * and a custom validator for the land field.
+     * Konfiguriert die Validierung der Felder im Formular.
+     * Setzt Regex-Validatoren für Textfelder, Bereichsvalidatoren für Integer-Felder
+     * und einen benutzerdefinierten Validator für das Land-Feld.
      */
     private void configureValidation() {
-        // Required text fields with regex validation
-        configureTextField(postleitzahl, "^\\d{4,10}$", "Postleitzahl must be 4 to 10 digits long", "Postleitzahl is required", Wohnung::getPostleitzahl, Wohnung::setPostleitzahl);
-        configureTextField(stadt, "^[\\p{L}\\s]+$", "Stadt must contain only letters", "Stadt is required", Wohnung::getStadt, Wohnung::setStadt);
-        configureTextField(strasse, "^[\\p{L}\\s]+$", "Strasse must contain only letters", "Strasse is required", Wohnung::getStrasse, Wohnung::setStrasse);
-        configureTextField(hausnummer, "^\\d+[a-zA-Z]?$", "Hausnummer must be numeric with an optional letter", "Hausnummer is required", Wohnung::getHausnummer, Wohnung::setHausnummer);
+        // Erforderliche Textfelder mit Regex-Validierung
+        configureTextField(postleitzahl, "^\\d{4,10}$", "Postleitzahl muss 4 bis 10 Ziffern lang sein", "Postleitzahl ist erforderlich", Wohnung::getPostleitzahl, Wohnung::setPostleitzahl);
+        configureTextField(stadt, "^[\\p{L}\\s]+$", "Stadt darf nur Buchstaben enthalten", "Stadt ist erforderlich", Wohnung::getStadt, Wohnung::setStadt);
+        configureTextField(strasse, "^[\\p{L}\\s]+$", "Strasse darf nur Buchstaben enthalten", "Strasse ist erforderlich", Wohnung::getStrasse, Wohnung::setStrasse);
+        configureTextField(hausnummer, "^\\d+[a-zA-Z]?$", "Hausnummer muss numerisch sein mit optionalem Buchstaben", "Hausnummer ist erforderlich", Wohnung::getHausnummer, Wohnung::setHausnummer);
 
-        // Optional text fields with regex validation
-        configureTextField(stockwerk, "^[0-9]*$", "Stockwerk must contain only numbers", Wohnung::getStockwerk, Wohnung::setStockwerk);
-        configureTextField(wohnungsnummer, "^[a-zA-Z0-9]*$", "Wohnungsnummer must contain only letters and numbers", Wohnung::getWohnungsnummer, Wohnung::setWohnungsnummer);
+        // Optionale Textfelder mit Regex-Validierung
+        configureTextField(stockwerk, "^[0-9]*$", "Stockwerk darf nur Zahlen enthalten", Wohnung::getStockwerk, Wohnung::setStockwerk);
+        configureTextField(wohnungsnummer, "^[a-zA-Z0-9]*$", "Wohnungsnummer darf nur Buchstaben und Zahlen enthalten", Wohnung::getWohnungsnummer, Wohnung::setWohnungsnummer);
 
-        // Required integer fields with range validation
-        configureIntegerField(gesamtQuadratmeter, "Gesamt Quadratmeter must be positive", 1, Integer.MAX_VALUE, Wohnung::getGesamtQuadratmeter, Wohnung::setGesamtQuadratmeter);
-        configureIntegerField(baujahr, "Baujahr must be a valid year between 1000 and " + LocalDate.now().getYear(), 1000, LocalDate.now().getYear(), Wohnung::getBaujahr, Wohnung::setBaujahr);
-        configureIntegerField(anzahlBaeder, "Anzahl Baeder must be positive", 1, Integer.MAX_VALUE, Wohnung::getAnzahlBaeder, Wohnung::setAnzahlBaeder);
-        configureIntegerField(anzahlSchlafzimmer, "Anzahl Schlafzimmer must be zero or positive", 0, Integer.MAX_VALUE, Wohnung::getAnzahlSchlafzimmer, Wohnung::setAnzahlSchlafzimmer);
+        // Erforderliche Integer-Felder mit Bereichsvalidierung
+        configureIntegerField(gesamtQuadratmeter, "Gesamt Quadratmeter muss positiv sein", 1, Integer.MAX_VALUE, Wohnung::getGesamtQuadratmeter, Wohnung::setGesamtQuadratmeter);
+        configureIntegerField(baujahr, "Baujahr muss ein gültiges Jahr zwischen 1000 und " + LocalDate.now().getYear(), 1000, LocalDate.now().getYear(), Wohnung::getBaujahr, Wohnung::setBaujahr);
+        configureIntegerField(anzahlBaeder, "Anzahl Baeder muss positiv sein", 1, Integer.MAX_VALUE, Wohnung::getAnzahlBaeder, Wohnung::setAnzahlBaeder);
+        configureIntegerField(anzahlSchlafzimmer, "Anzahl Schlafzimmer muss null oder positiv sein", 0, Integer.MAX_VALUE, Wohnung::getAnzahlSchlafzimmer, Wohnung::setAnzahlSchlafzimmer);
 
-        // Required land field
-        binder.forField(land).asRequired("Land is required").bind(Wohnung::getLand, Wohnung::setLand);
+        // Erforderliches Land-Feld
+        binder.forField(land).asRequired("Land ist erforderlich").bind(Wohnung::getLand, Wohnung::setLand);
 
         Mietvertrag mietvertrag = mietvertragService.findByWohnung(wohnung);
         if (mietvertrag != null && mietvertrag.getMieter() != null) {
@@ -103,19 +108,19 @@ public class WohnungForm extends FormLayout {
             mieterSpan.setText("Kein Mieter");
         }
 
-        // Enable the save button only if the binder is valid
+        // Aktiviert die Speichern-Schaltfläche nur, wenn der Binder gültig ist
         binder.addStatusChangeListener(event -> speichern.setEnabled(binder.isValid()));
     }
 
     /**
-     * Configures a required text field with a regex validator.
+     * Konfiguriert ein erforderliches Textfeld mit einem Regex-Validator.
      *
-     * @param field           The text field to configure.
-     * @param regex           The regex pattern for validation.
-     * @param errorMessage    The error message to display if validation fails.
-     * @param requiredMessage The error message to display if the field is empty.
-     * @param getter          The getter method for the field value.
-     * @param setter          The setter method for the field value.
+     * @param field           Das zu konfigurierende Textfeld.
+     * @param regex           Das Regex-Muster zur Validierung.
+     * @param errorMessage    Die Fehlermeldung, die bei fehlerhafter Validierung angezeigt wird.
+     * @param requiredMessage Die Fehlermeldung, die angezeigt wird, wenn das Feld leer ist.
+     * @param getter          Die Getter-Methode für den Feldwert.
+     * @param setter          Die Setter-Methode für den Feldwert.
      */
     private void configureTextField(TextField field, String regex, String errorMessage, String requiredMessage, ValueProvider<Wohnung, String> getter, Setter<Wohnung, String> setter) {
         binder.forField(field)
@@ -125,13 +130,13 @@ public class WohnungForm extends FormLayout {
     }
 
     /**
-     * Configures an optional text field with a regex validator.
+     * Konfiguriert ein optionales Textfeld mit einem Regex-Validator.
      *
-     * @param field        The text field to configure.
-     * @param regex        The regex pattern for validation.
-     * @param errorMessage The error message to display if validation fails.
-     * @param getter       The getter method for the field value.
-     * @param setter       The setter method for the field value.
+     * @param field        Das zu konfigurierende Textfeld.
+     * @param regex        Das Regex-Muster zur Validierung.
+     * @param errorMessage Die Fehlermeldung, die bei fehlerhafter Validierung angezeigt wird.
+     * @param getter       Die Getter-Methode für den Feldwert.
+     * @param setter       Die Setter-Methode für den Feldwert.
      */
     private void configureTextField(TextField field, String regex, String errorMessage, ValueProvider<Wohnung, String> getter, Setter<Wohnung, String> setter) {
         binder.forField(field)
@@ -140,14 +145,14 @@ public class WohnungForm extends FormLayout {
     }
 
     /**
-     * Configures a required integer field with a range validator.
+     * Konfiguriert ein erforderliches Integer-Feld mit einem Bereichsvalidator.
      *
-     * @param field        The integer field to configure.
-     * @param errorMessage The error message to display if validation fails.
-     * @param min          The minimum valid value.
-     * @param max          The maximum valid value.
-     * @param getter       The getter method for the field value.
-     * @param setter       The setter method for the field value.
+     * @param field        Das zu konfigurierende Integer-Feld.
+     * @param errorMessage Die Fehlermeldung, die bei fehlerhafter Validierung angezeigt wird.
+     * @param min          Der minimale gültige Wert.
+     * @param max          Der maximale gültige Wert.
+     * @param getter       Die Getter-Methode für den Feldwert.
+     * @param setter       Die Setter-Methode für den Feldwert.
      */
     private void configureIntegerField(IntegerField field, String errorMessage, int min, int max, ValueProvider<Wohnung, Integer> getter, Setter<Wohnung, Integer> setter) {
         field.setClearButtonVisible(true);
@@ -158,17 +163,17 @@ public class WohnungForm extends FormLayout {
     }
 
     /**
-     * Sets the Wohnung (apartment) to the form and populates the fields with its data.
-     * Clears the fields if the Wohnung is null.
+     * Setzt die Wohnung (Wohnung) im Formular und befüllt die Felder mit ihren Daten.
+     * Leert die Felder, wenn die Wohnung null ist.
      *
-     * @param wohnung The Wohnung to set.
+     * @param wohnung Die zu setzende Wohnung.
      */
     public void setWohnung(Wohnung wohnung) {
         this.wohnung = wohnung;
         binder.setBean(wohnung);
 
         if (wohnung != null) {
-            // Set values or clear fields if wohnung is null
+            // Setzt Werte oder leert Felder, wenn wohnung null ist
             land.setValue(wohnung.getLand() != null ? wohnung.getLand() : null);
             postleitzahl.setValue(wohnung.getPostleitzahl() != null ? wohnung.getPostleitzahl() : "");
             stadt.setValue(wohnung.getStadt() != null ? wohnung.getStadt() : "");
@@ -181,7 +186,7 @@ public class WohnungForm extends FormLayout {
             stockwerk.setValue(wohnung.getStockwerk() != null ? wohnung.getStockwerk() : "");
             wohnungsnummer.setValue(wohnung.getWohnungsnummer() != null ? wohnung.getWohnungsnummer() : "");
 
-            // Show delete button if wohnung exists
+            // Zeigt Löschen-Schaltfläche an, wenn wohnung existiert
             loeschen.setVisible(wohnung.getWohnung_id() != null);
         } else {
             clearFields();
@@ -190,6 +195,9 @@ public class WohnungForm extends FormLayout {
         binder.readBean(wohnung);
     }
 
+    /**
+     * Leert alle Felder des Formulars.
+     */
     void clearFields() {
         land.clear();
         postleitzahl.clear();
@@ -209,6 +217,11 @@ public class WohnungForm extends FormLayout {
         mieterSpan.setText("");
     }
 
+    /**
+     * Erstellt das Layout der Schaltflächen für das Formular.
+     *
+     * @return das Layout der Schaltflächen
+     */
     private HorizontalLayout createButtonsLayout() {
         speichern.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         loeschen.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -226,44 +239,52 @@ public class WohnungForm extends FormLayout {
     }
 
     /**
-     * Validates the form inputs and saves the Wohnung (apartment) if the inputs are valid.
-     * Ensures the Mieter (tenant) is set from the ComboBox and triggers a SaveEvent if successful.
-     * Shows appropriate notifications based on the success or failure of the operation.
+     * Validiert die Formulareingaben und speichert die Wohnung, wenn die Eingaben gültig sind.
+     * Stellt sicher, dass der Mieter aus der ComboBox gesetzt wird und löst ein SaveEvent aus, wenn erfolgreich.
+     * Zeigt entsprechende Benachrichtigungen basierend auf dem Erfolg oder Misserfolg der Operation an.
      */
     private void validateAndSave() {
         if (wohnung != null) {
-            // Trigger validation manually
+            // Validierung manuell auslösen
             if (binder.writeBeanIfValid(wohnung)) {
-                // Fire the save event with the validated Wohnung
+                // Speichern-Ereignis mit der validierten Wohnung auslösen
                 fireEvent(new SaveEvent(this, wohnung));
 
-                // Show success notification
+                // Erfolgsbenachrichtigung anzeigen
                 NotificationPopup.showSuccessNotification("Wohnung erfolgreich gespeichert.");
             } else {
-                // Show error notification if validation fails
+                // Fehlermeldung anzeigen, wenn die Validierung fehlschlägt
                 NotificationPopup.showErrorNotification("Fehler beim Speichern der Wohnung.");
             }
         }
     }
 
     /**
-     * Displays a confirmation dialog to confirm the deletion of the Wohnung (apartment).
-     * If confirmed, triggers a DeleteEvent and shows a success notification.
+     * Zeigt einen Bestätigungsdialog zur Bestätigung der Löschung der Wohnung an.
+     * Bei Bestätigung wird ein DeleteEvent ausgelöst und eine Erfolgsbenachrichtigung angezeigt.
      */
     private void showDeleteConfirmationDialog() {
         ConfirmationDialog confirmationDialog = new ConfirmationDialog(
-                "Are you sure you want to delete this Wohnung?",
+                "Möchten Sie diese Wohnung wirklich löschen?",
                 () -> {
-                    // Fire the delete event if confirmed
+                    // Löschen-Ereignis bei Bestätigung auslösen
                     fireEvent(new DeleteEvent(this, wohnung));
-                    // Show success notification
+                    // Erfolgsbenachrichtigung anzeigen
                     NotificationPopup.showSuccessNotification("Wohnung erfolgreich gelöscht.");
                 }
         );
-        // Open the confirmation dialog
+        // Bestätigungsdialog öffnen
         confirmationDialog.open();
     }
 
+    /**
+     * Fügt einen Listener für das angegebene Ereignis hinzu.
+     *
+     * @param eventType der Typ des Ereignisses
+     * @param listener der Listener für das Ereignis
+     * @param <T> der Typ des Ereignisses
+     * @return eine Registrierung des Ereignis-Listeners
+     */
     public <T extends ComponentEvent<?>> Registration addListener(Class<T> eventType, ComponentEventListener<T> listener) {
         return getEventBus().addListener(eventType, listener);
     }
