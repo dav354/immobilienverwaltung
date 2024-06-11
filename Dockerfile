@@ -8,6 +8,8 @@ ENV SPRING_PROFILES_ACTIVE=prod \
     DB_NAME=immobilenverwaltung \
     DB_USER=myuser \
     DB_PASSWORD=mypassword \
+    ADMIN=admin \
+    ADMIN_PW=1234 \
     DEMO_MODE=TRUE
 
 # Optionale Umgebungsvariablen für Port-Konfigurationen

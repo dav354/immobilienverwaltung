@@ -102,6 +102,17 @@ Die Anwendung stellt sicher, dass die Beziehungen zwischen Mietern, Mietverträg
 - dann die [Docker compose](docker-compose.yml) herunterladen und anpassen
 - dann `docker compose up -d`
 
+|  Variable   | Werte                                 | Default              |
+|:-----------:|---------------------------------------|----------------------|
+|   DB_HOST   | Hostname/IP der Datenbank             | db                   |
+|   DB_PORT   | Port von Postgres                     | 5432                 |
+|   DB_NAME   | Namen der Datenbank                   | immobilienverwaltung |
+|   DB_USER   | Username der Datenbank                | myuser               |
+| DB_PASSWORD | Passwort der Datenbank                | mypassword           |
+|    ADMIN    | Admin User Name                       | admin                |
+|  ADMIN_PW   | Admin Password                        | 1234                 |
+|  DEMO_MODE  | enable loading demo data (true/false) | true                 |
+
 <a id="mockups"></a>
 
 ### Mockups
