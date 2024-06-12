@@ -13,6 +13,7 @@ import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.theme.lumo.Lumo;
 import projektarbeit.immobilienverwaltung.Security.SecurityService;
+import projektarbeit.immobilienverwaltung.ui.views.MainView;
 import projektarbeit.immobilienverwaltung.ui.views.mieter.MieterListView;
 import projektarbeit.immobilienverwaltung.ui.views.wohnung.WohnungListView;
 
@@ -76,6 +77,7 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
     private void createDrawer() {
         VerticalLayout layout = new VerticalLayout();
         layout.add(new Span("Navigation"));
+        layout.add(createNavigationLink("Home", MainView.class));
         layout.add(createNavigationLink("Wohnungen", WohnungListView.class));
         layout.add(createNavigationLink("Mieter", MieterListView.class));
         layout.setWidthFull();
