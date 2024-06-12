@@ -30,6 +30,7 @@ import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
 
 import java.time.LocalDate;
 import java.util.List;
+
 @SuppressWarnings("SpellCheckingInspection")
 @PermitAll
 public class WohnungForm extends FormLayout {
@@ -94,7 +95,7 @@ public class WohnungForm extends FormLayout {
 
         // Erforderliche Integer-Felder mit Bereichsvalidierung
         configureIntegerField(gesamtQuadratmeter, "Gesamt Quadratmeter muss positiv sein", 1, Integer.MAX_VALUE, Wohnung::getGesamtQuadratmeter, Wohnung::setGesamtQuadratmeter);
-        configureIntegerField(baujahr, "Baujahr muss ein gültiges Jahr zwischen 1000 und " + LocalDate.now().getYear(), 1000, LocalDate.now().getYear(), Wohnung::getBaujahr, Wohnung::setBaujahr);
+        configureIntegerField(baujahr, "Baujahr muss ein gültiges Jahr zwischen 1000 und " + LocalDate.now().getYear() + "sein", 1000, LocalDate.now().getYear(), Wohnung::getBaujahr, Wohnung::setBaujahr);
         configureIntegerField(anzahlBaeder, "Anzahl Baeder muss positiv sein", 1, Integer.MAX_VALUE, Wohnung::getAnzahlBaeder, Wohnung::setAnzahlBaeder);
         configureIntegerField(anzahlSchlafzimmer, "Anzahl Schlafzimmer muss null oder positiv sein", 0, Integer.MAX_VALUE, Wohnung::getAnzahlSchlafzimmer, Wohnung::setAnzahlSchlafzimmer);
 
