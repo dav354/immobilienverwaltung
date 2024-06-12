@@ -17,9 +17,7 @@ services:
       - DB_NAME=immobilienverwaltung
       - DB_USER=myuser
       - DB_PASSWORD=mypassword
-      - DEMO_MODE=false
-      - ADMIN=admin
-      - ADMIN_PW=1234
+      - DEMO_MODE=true
 
   db:
     image: docker.io/postgres:16-alpine
