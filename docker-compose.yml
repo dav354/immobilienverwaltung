@@ -1,7 +1,7 @@
 ---
 services:
   immobilienverwaltung:
-    image: ghcr.io/dav354/immobilienverwaltung:latest
+    image: ghcr.io/dav354/immobilienverwaltung:0.2
     restart: unless-stopped
     container_name: immobilienverwaltung
     depends_on:
