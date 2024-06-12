@@ -18,6 +18,8 @@ services:
       - DB_USER=myuser
       - DB_PASSWORD=mypassword
       - DEMO_MODE=false
+      - ADMIN=admin
+      - ADMIN_PW=1234
 
   db:
     image: docker.io/postgres:16-alpine
