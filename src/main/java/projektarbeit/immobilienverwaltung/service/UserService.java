@@ -1,5 +1,6 @@
 package projektarbeit.immobilienverwaltung.service;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -8,11 +9,8 @@ import projektarbeit.immobilienverwaltung.model.User;
 import projektarbeit.immobilienverwaltung.repository.RoleRepository;
 import projektarbeit.immobilienverwaltung.repository.UserRepository;
 
-import jakarta.annotation.PostConstruct;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 @Service
@@ -44,6 +42,11 @@ public class UserService {
 
     public void saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+    }
+
+    public void updatePassword(User user, String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
 
@@ -107,33 +110,3 @@ public class UserService {
         }
     }
 }
-
-
-
-/*
-@PostConstruct
-    public void init() {
-        if (roleRepository.findByName("ADMIN").isEmpty()) {
-            Role adminRole = new Role();
-            adminRole.setName("ADMIN");
-            roleRepository.save(adminRole);
-        }
-
-        if (roleRepository.findByName("USER").isEmpty()) {
-            Role userRole = new Role();
-            userRole.setName("USER");
-            roleRepository.save(userRole);
-        }
-
-        if (userRepository.findByUsername("admin").isEmpty()) {
-            User admin = new User();
-            admin.setUsername("admin");
-            admin.setPassword(passwordEncoder.encode("adminpassword"));
-            Set<Role> roles = new HashSet<>();
-            roles.add(roleRepository.findByName("ADMIN").get());
-            roles.add(roleRepository.findByName("USER").get());
-            admin.setRoles(roles);
-            userRepository.save(admin);
-        }
-    }
- */
