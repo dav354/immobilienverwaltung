@@ -1,50 +1,60 @@
-package projektarbeit.immobilienverwaltung.Security;
+package projektarbeit.immobilienverwaltung.security;
 
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import projektarbeit.immobilienverwaltung.model.User;
+import projektarbeit.immobilienverwaltung.repository.UserRepository;
 import projektarbeit.immobilienverwaltung.ui.views.Login.LoginView;
 
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig extends VaadinWebSecurity {
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         setLoginView(http, LoginView.class);
-        // Set up a custom success handler to redirect to the default URL after login
         SimpleUrlAuthenticationSuccessHandler successHandler = new SimpleUrlAuthenticationSuccessHandler();
         successHandler.setDefaultTargetUrl("/");
 
         http.authorizeHttpRequests(auth ->
-                auth.requestMatchers(
-                                AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/styles/**")).permitAll()
+                auth.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/styles/**")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/images/**")).permitAll());
+
         super.configure(http);
     }
 
     @Bean
-    public UserDetailsService users() {
-        UserDetails user = User.builder()
-                .username("user")
-                // Passwort = password
-                .password("{bcrypt}$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW")
-                .roles("USER")
-                .build();
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password("{bcrypt}$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmNSJZ.0FxO/BTk76klW")
-                .roles("USER", "ADMIN")
-                .build();
-        return new InMemoryUserDetailsManager(user, admin);
+    public UserDetailsService userDetailsService() {
+        return username -> {
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+            return org.springframework.security.core.userdetails.User.withUsername(user.getUsername())
+                    .password(user.getPassword())
+                    .authorities(user.getRoles().stream().map(role -> "ROLE_" + role.getName()).toArray(String[]::new))
+                    .accountExpired(false)
+                    .accountLocked(false)
+                    .credentialsExpired(false)
+                    .disabled(false)
+                    .build();
+        };
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
