@@ -2,6 +2,7 @@ package projektarbeit.immobilienverwaltung.ui.views.Login;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Anchor;
@@ -133,6 +134,8 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
                 user.getRoles().stream().map(Role::getName).collect(Collectors.joining(", "))
         ))).setHeader("Roles");
         userGrid.addColumn(new ComponentRenderer<>(user -> {
+            HorizontalLayout actions = new HorizontalLayout();
+
             Button deleteButton = new Button("Delete");
             deleteButton.addClickListener(e -> {
                 boolean deleted = userService.deleteUser(user);
@@ -143,7 +146,15 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
                     Notification.show("Cannot delete the last admin", 3000, Notification.Position.MIDDLE);
                 }
             });
-            return deleteButton;
+
+            Button updatePasswordButton = new Button("Change Password");
+            updatePasswordButton.addClickListener(e -> {
+                // Open dialog to change password
+                openChangePasswordDialog(user);
+            });
+
+            actions.add(deleteButton, updatePasswordButton);
+            return actions;
         })).setHeader("Actions");
         add(userGrid);
 
@@ -154,6 +165,32 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
     private void updateUserGrid() {
         List<User> users = userService.findAllUsers();
         userGrid.setItems(users);
+    }
+
+    private void openChangePasswordDialog(User user) {
+        Dialog dialog = new Dialog();
+        dialog.setWidth("400px");
+
+        VerticalLayout dialogLayout = new VerticalLayout();
+        dialogLayout.setPadding(false);
+        dialogLayout.setSpacing(false);
+
+        PasswordField newPasswordField = new PasswordField("New Password");
+        Button changeButton = new Button("Change", event -> {
+            String newPassword = newPasswordField.getValue();
+            try {
+                userService.validatePassword(newPassword, user.getUsername());
+                userService.updatePassword(user, newPassword);
+                Notification.show("Password changed successfully for user: " + user.getUsername());
+                dialog.close();
+            } catch (IllegalArgumentException ex) {
+                Notification.show(ex.getMessage());
+            }
+        });
+
+        dialogLayout.add(newPasswordField, changeButton);
+        dialog.add(dialogLayout);
+        dialog.open();
     }
 
     @Override
