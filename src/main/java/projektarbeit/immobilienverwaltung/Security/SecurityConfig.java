@@ -1,4 +1,4 @@
-package projektarbeit.immobilienverwaltung.security;
+package projektarbeit.immobilienverwaltung.Security;
 
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +17,9 @@ import projektarbeit.immobilienverwaltung.model.User;
 import projektarbeit.immobilienverwaltung.repository.UserRepository;
 import projektarbeit.immobilienverwaltung.ui.views.Login.LoginView;
 
+/**
+ * Sicherheitskonfiguration für die Anwendung.
+ */
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig extends VaadinWebSecurity {
@@ -24,6 +27,12 @@ public class SecurityConfig extends VaadinWebSecurity {
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Konfiguriert die HTTP-Sicherheitsanforderungen für die Anwendung.
+     *
+     * @param http das HttpSecurity-Objekt zum Konfigurieren der Sicherheitsanforderungen.
+     * @throws Exception wenn ein Fehler bei der Konfiguration auftritt.
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         setLoginView(http, LoginView.class);
@@ -37,6 +46,11 @@ public class SecurityConfig extends VaadinWebSecurity {
         super.configure(http);
     }
 
+    /**
+     * Stellt den UserDetailsService als Bean bereit.
+     *
+     * @return der UserDetailsService.
+     */
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> {
@@ -53,6 +67,11 @@ public class SecurityConfig extends VaadinWebSecurity {
         };
     }
 
+    /**
+     * Stellt den PasswordEncoder als Bean bereit.
+     *
+     * @return der PasswordEncoder.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
