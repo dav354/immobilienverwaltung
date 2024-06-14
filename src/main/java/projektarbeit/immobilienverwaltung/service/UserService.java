@@ -40,8 +40,9 @@ public class UserService {
         }
     }
 
-    public void saveUser(User user) {
+    public void saveUser(User user, User createdByAdmin) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setCreatedByAdmin(createdByAdmin);
         userRepository.save(user);
     }
 
@@ -56,6 +57,10 @@ public class UserService {
 
     public List<User> findAllUsers() {
         return userRepository.findAll();
+    }
+
+    public List<User> findUsersCreatedByAdmin(User admin) {
+        return userRepository.findByCreatedByAdmin(admin);
     }
 
     public boolean deleteUser(User user) {
@@ -104,9 +109,6 @@ public class UserService {
         }
         if (!Pattern.matches(".*[@#$%^&+=!].*", password)) {
             throw new IllegalArgumentException("Password must contain at least one special character (@#$%^&+=!)");
-        }
-        if (password.toLowerCase().contains(username.toLowerCase())) {
-            throw new IllegalArgumentException("Password cannot contain the username");
         }
     }
 }
