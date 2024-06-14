@@ -1,8 +1,6 @@
 package projektarbeit.immobilienverwaltung.model;
 
-
 import jakarta.persistence.*;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,6 +26,9 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
+    @ManyToOne
+    @JoinColumn(name = "created_by_admin_id")
+    private User createdByAdmin;
 
     public Long getId() {
         return id;
@@ -61,4 +62,11 @@ public class User {
         this.roles = roles;
     }
 
+    public User getCreatedByAdmin() {
+        return createdByAdmin;
+    }
+
+    public void setCreatedByAdmin(User createdByAdmin) {
+        this.createdByAdmin = createdByAdmin;
+    }
 }
