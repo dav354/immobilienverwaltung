@@ -7,11 +7,14 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.theme.lumo.Lumo;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import projektarbeit.immobilienverwaltung.service.SecurityService;
 import projektarbeit.immobilienverwaltung.ui.views.MainView;
 import projektarbeit.immobilienverwaltung.ui.views.mieter.MieterListView;
@@ -35,15 +38,23 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
     }
 
     private void createHeader() {
+        String currentUsername = getCurrentUsername();
         DrawerToggle toggle = new DrawerToggle();
         Div title = new Div();
-        title.setText("Immobilienverwaltung");
-        Div header = new Div(toggle, title);
+        title.setText("Immobilienverwaltung - "+ currentUsername);
+
+
+        HorizontalLayout header = new HorizontalLayout(toggle, title);
+        header.setWidthFull();
+        header.setAlignItems(FlexComponent.Alignment.CENTER);
+        header.setSpacing(false);
         header.getStyle().set("padding", "10px");
-        header.getStyle().set("display", "flex");
-        header.getStyle().set("alignItems", "center");
-        header.getStyle().set("gap", "10px");
         addToNavbar(header);
+    }
+
+    private String getCurrentUsername() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userDetails.getUsername();
     }
 
     private void enableDarkMode() {
