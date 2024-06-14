@@ -1,4 +1,4 @@
-package projektarbeit.immobilienverwaltung.Security;
+package projektarbeit.immobilienverwaltung.security;
 
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
