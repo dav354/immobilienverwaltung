@@ -26,13 +26,14 @@ import projektarbeit.immobilienverwaltung.model.User;
 import projektarbeit.immobilienverwaltung.repository.RoleRepository;
 import projektarbeit.immobilienverwaltung.service.SecurityService;
 import projektarbeit.immobilienverwaltung.service.UserService;
+import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Route("admin")
+@Route(value = "admin", layout = MainLayout.class)
 @PermitAll
 @Secured("ROLE_ADMIN")
 public class AdminView extends VerticalLayout implements BeforeEnterObserver {
@@ -52,19 +53,20 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
             throw new IllegalArgumentException("userService, roleRepository, and securityService cannot be null");
         }
 
-        // Create the header with the back to home button
-        Anchor backToHome = new Anchor("/", "Back to Home");
-        backToHome.getStyle().set("margin-right", "auto");
+        // Create the header with change own password button
+        Button changeOwnPasswordButton = new Button("Change Own Password", event -> openChangePasswordDialog(getCurrentAdmin()));
+        changeOwnPasswordButton.getStyle().set("margin-left", "auto");
 
-        HorizontalLayout headerLayout = new HorizontalLayout(backToHome);
+        HorizontalLayout headerLayout = new HorizontalLayout(changeOwnPasswordButton);
         headerLayout.setWidthFull();
-        headerLayout.setJustifyContentMode(JustifyContentMode.START);
+        headerLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);
 
         // Add header to the layout
         add(headerLayout);
 
         // Create the title
-        Label titleLabel = new Label("Admin Panel");
+        User currentAdmin = getCurrentAdmin();
+        Label titleLabel = new Label("Admin Panel - " + currentAdmin.getUsername());
         titleLabel.getStyle().set("font-size", "24px").set("font-weight", "bold");
         titleLabel.getStyle().set("text-align", "center");
         titleLabel.setWidthFull();
@@ -105,12 +107,13 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
                 User newUser = new User();
                 newUser.setUsername(username);
                 newUser.setPassword(password);
+                newUser.setCreatedByAdmin(currentAdmin);
 
                 Set<Role> userRoles = new HashSet<>();
                 userRoles.add(selectedRole);
                 newUser.setRoles(userRoles);
 
-                userService.saveUser(newUser);
+                userService.saveUser(newUser, currentAdmin);
                 updateUserGrid();
                 Notification.show("User added successfully");
 
@@ -148,6 +151,7 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
             });
 
             Button updatePasswordButton = new Button("Change Password");
+            updatePasswordButton.setEnabled(user.getRoles().stream().noneMatch(role -> role.getName().equals("ADMIN")));
             updatePasswordButton.addClickListener(e -> {
                 // Open dialog to change password
                 openChangePasswordDialog(user);
@@ -162,8 +166,16 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
         updateUserGrid();
     }
 
+    private User getCurrentAdmin() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userService.findByUsername(userDetails.getUsername()).orElseThrow(() ->
+                new IllegalStateException("Admin user not found"));
+    }
+
     private void updateUserGrid() {
-        List<User> users = userService.findAllUsers();
+        User currentAdmin = getCurrentAdmin();
+        List<User> users = userService.findUsersCreatedByAdmin(currentAdmin);
+        users.add(currentAdmin); // Add the current admin to the list
         userGrid.setItems(users);
     }
 
