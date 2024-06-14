@@ -33,6 +33,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Diese Klasse stellt die Admin-Ansicht dar, die es einem Administrator ermöglicht, Benutzer zu verwalten.
+ * Die Klasse erlaubt das Hinzufügen, Löschen und Ändern von Passwörtern für Benutzer, die vom aktuellen Administrator erstellt wurden.
+ */
+
 @Route(value = "admin", layout = MainLayout.class)
 @PermitAll
 @Secured("ROLE_ADMIN")
@@ -42,6 +47,14 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
     private final RoleRepository roleRepository;
     private final SecurityService securityService;
     private Grid<User> userGrid;
+
+    /**
+     * Konstruktor für die AdminView-Klasse.
+     *
+     * @param userService      der UserService zur Verwaltung der Benutzer
+     * @param roleRepository   das RoleRepository zur Verwaltung der Rollen
+     * @param securityService  der SecurityService zur Handhabung der Sicherheitsfunktionen
+     */
 
     @Autowired
     public AdminView(UserService userService, RoleRepository roleRepository, SecurityService securityService) {
@@ -53,7 +66,7 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
             throw new IllegalArgumentException("userService, roleRepository, and securityService cannot be null");
         }
 
-        // Create the header with change own password button
+        // Erstellen des Headers mit dem Button zum Ändern des eigenen Passworts
         Button changeOwnPasswordButton = new Button("Change Own Password", event -> openChangePasswordDialog(getCurrentAdmin()));
         changeOwnPasswordButton.getStyle().set("margin-left", "auto");
 
@@ -61,10 +74,10 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
         headerLayout.setWidthFull();
         headerLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);
 
-        // Add header to the layout
+        // Header zum Layout hinzufügen
         add(headerLayout);
 
-        // Create the title
+        // Erstellen des Titels
         User currentAdmin = getCurrentAdmin();
         Label titleLabel = new Label("Admin Panel - " + currentAdmin.getUsername());
         titleLabel.getStyle().set("font-size", "24px").set("font-weight", "bold");
@@ -76,7 +89,7 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
         titleLayout.setJustifyContentMode(JustifyContentMode.CENTER);
         titleLayout.setDefaultVerticalComponentAlignment(Alignment.CENTER);
 
-        // Add title to the layout
+        // Titel zum Layout hinzufügen
         add(titleLayout);
 
         FormLayout formLayout = new FormLayout();
@@ -117,7 +130,7 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
                 updateUserGrid();
                 Notification.show("User added successfully");
 
-                // Clear the fields
+                // Felder leeren
                 usernameField.clear();
                 passwordField.clear();
                 roleComboBox.clear();
@@ -129,7 +142,7 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
         formLayout.add(usernameField, passwordField, roleComboBox, addButton);
         add(formLayout);
 
-        // Create the user grid
+        // Erstellen des Benutzergrids
         userGrid = new Grid<>(User.class);
         userGrid.setColumns(); // Clear existing columns
         userGrid.addColumn(User::getUsername).setHeader("Username");
@@ -153,7 +166,7 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
             Button updatePasswordButton = new Button("Change Password");
             updatePasswordButton.setEnabled(user.getRoles().stream().noneMatch(role -> role.getName().equals("ADMIN")));
             updatePasswordButton.addClickListener(e -> {
-                // Open dialog to change password
+                // Dialog zum Ändern des Passworts öffnen
                 openChangePasswordDialog(user);
             });
 
@@ -162,16 +175,24 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
         })).setHeader("Actions");
         add(userGrid);
 
-        // Load users into the grid
+        // Benutzer in das Grid laden
         updateUserGrid();
     }
 
+    /**
+     * Holt den aktuellen angemeldeten Admin-Benutzer.
+     *
+     * @return der aktuelle Admin-Benutzer
+     */
     private User getCurrentAdmin() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userService.findByUsername(userDetails.getUsername()).orElseThrow(() ->
                 new IllegalStateException("Admin user not found"));
     }
 
+    /**
+     * Aktualisiert das Benutzergrid mit den vom aktuellen Admin erstellten Benutzern.
+     */
     private void updateUserGrid() {
         User currentAdmin = getCurrentAdmin();
         List<User> users = userService.findUsersCreatedByAdmin(currentAdmin);
@@ -179,6 +200,11 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
         userGrid.setItems(users);
     }
 
+    /**
+     * Öffnet einen Dialog zum Ändern des Passworts eines Benutzers.
+     *
+     * @param user der Benutzer, dessen Passwort geändert werden soll
+     */
     private void openChangePasswordDialog(User user) {
         Dialog dialog = new Dialog();
         dialog.setWidth("400px");
@@ -205,6 +231,11 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
         dialog.open();
     }
 
+    /**
+     * Methode, die vor dem Betreten der Ansicht ausgeführt wird, um zu überprüfen, ob der Benutzer ein Admin ist.
+     *
+     * @param event das BeforeEnterEvent
+     */
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
