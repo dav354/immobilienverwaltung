@@ -1,11 +1,10 @@
 package projektarbeit.immobilienverwaltung.ui.views;
 
-import com.vaadin.flow.component.charts.Chart;
-import com.vaadin.flow.component.charts.model.*;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -52,8 +51,13 @@ public class MainView extends VerticalLayout {
         long totalMieter = dashboardController.getTotalMieter();
         Div mieterDiv = createMieterDiv(totalMieter);
 
-        // Adding components to layout
-        add(mieteinnahmenDiv, immobilienDiv, mieterDiv);
+        // Creating a HorizontalLayout to place the Divs side by side
+        HorizontalLayout statsLayout = new HorizontalLayout(mieteinnahmenDiv, immobilienDiv, mieterDiv);
+        statsLayout.setWidthFull();
+        statsLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);
+
+        // Adding the HorizontalLayout to the main layout
+        add(statsLayout);
     }
 
     private Div createMieteinnahmenDiv(double mieteinnahmen) {
@@ -74,7 +78,8 @@ public class MainView extends VerticalLayout {
                 .set("flex-direction", "column")
                 .set("align-items", "center")
                 .set("justify-content", "center")
-                .set("height", "200px");  // Adjust the height as needed
+                .set("width", "100%")
+                .set("padding", "20px");
 
         return container;
     }
@@ -102,7 +107,8 @@ public class MainView extends VerticalLayout {
                 .set("flex-direction", "column")
                 .set("align-items", "center")
                 .set("justify-content", "center")
-                .set("height", "200px");  // Adjust the height as needed
+                .set("width", "100%")
+                .set("padding", "20px");
 
         return container;
     }
@@ -125,7 +131,8 @@ public class MainView extends VerticalLayout {
                 .set("flex-direction", "column")
                 .set("align-items", "center")
                 .set("justify-content", "center")
-                .set("height", "200px");  // Adjust the height as needed
+                .set("width", "100%")
+                .set("padding", "20px");
 
         return container;
     }
