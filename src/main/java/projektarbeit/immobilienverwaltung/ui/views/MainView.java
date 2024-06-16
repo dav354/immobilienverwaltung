@@ -20,6 +20,10 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * Die MainView-Klasse stellt die Startseite der Anwendung dar und zeigt aktuelle Statistiken
+ * zu Mieteinnahmen, Immobilien und Mietern an.
+ */
 @PermitAll
 @Route(value = "", layout = MainLayout.class)
 @PageTitle("Home")
@@ -29,11 +33,19 @@ public class MainView extends VerticalLayout {
 
     private final DashboardController dashboardController;
 
+    /**
+     * Konstruktor für die MainView-Klasse.
+     *
+     * @param dashboardController der Controller, der die Daten für die Statistiken bereitstellt.
+     */
     @Autowired
     public MainView(DashboardController dashboardController) {
         this.dashboardController = dashboardController;
     }
 
+    /**
+     * Initialisiert die Ansicht nach der Konstruktion.
+     */
     @PostConstruct
     public void init() {
         add(new H1("Willkommen zur Immobilienverwaltung"));
@@ -51,20 +63,26 @@ public class MainView extends VerticalLayout {
         long totalMieter = dashboardController.getTotalMieter();
         Div mieterDiv = createMieterDiv(totalMieter);
 
-        // Creating a HorizontalLayout to place the Divs side by side
+        // Erstellen eines HorizontalLayout zur Platzierung der Divs nebeneinander
         HorizontalLayout statsLayout = new HorizontalLayout(mieteinnahmenDiv, immobilienDiv, mieterDiv);
         statsLayout.setWidthFull();
         statsLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);
 
-        // Adding the HorizontalLayout to the main layout
+        // Hinzufügen des HorizontalLayout zum Hauptlayout
         add(statsLayout);
     }
 
+    /**
+     * Erstellt ein Div-Element zur Anzeige der Mieteinnahmen.
+     *
+     * @param mieteinnahmen die Gesamtsumme der Mieteinnahmen.
+     * @return ein Div-Element, das die Mieteinnahmen anzeigt.
+     */
     private Div createMieteinnahmenDiv(double mieteinnahmen) {
         H2 title = new H2("Mieteinnahmen");
         title.getStyle().set("text-align", "center");
 
-        // Format the number with thousand separators
+        // Formatieren der Zahl mit Tausendertrennzeichen
         NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.GERMANY);
         String formattedMieteinnahmen = "€ " + numberFormat.format(mieteinnahmen);
 
@@ -84,11 +102,17 @@ public class MainView extends VerticalLayout {
         return container;
     }
 
+    /**
+     * Erstellt ein Div-Element zur Anzeige der Immobilienstatistik.
+     *
+     * @param stats eine Karte, die die Gesamtzahl der Immobilien und die Anzahl der vermieteten Immobilien enthält.
+     * @return ein Div-Element, das die Immobilienstatistik anzeigt.
+     */
     private Div createImmobilienDiv(Map<String, Long> stats) {
         H2 title = new H2("Immobilienstatistik");
         title.getStyle().set("text-align", "center");
 
-        // Format the numbers with thousand separators
+        // Formatieren der Zahlen mit Tausendertrennzeichen
         NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.GERMANY);
         String total = "Gesamt: " + numberFormat.format(stats.get("total"));
         String vermietet = "Vermietet: " + numberFormat.format(stats.get("vermietet"));
@@ -113,11 +137,17 @@ public class MainView extends VerticalLayout {
         return container;
     }
 
+    /**
+     * Erstellt ein Div-Element zur Anzeige der Anzahl der Mieter.
+     *
+     * @param totalMieter die Gesamtzahl der Mieter.
+     * @return ein Div-Element, das die Anzahl der Mieter anzeigt.
+     */
     private Div createMieterDiv(long totalMieter) {
         H2 title = new H2("Anzahl der Mieter");
         title.getStyle().set("text-align", "center");
 
-        // Format the number with thousand separators
+        // Formatieren der Zahlen mit Tausendertrennzeichen
         NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.GERMANY);
         String formattedTotalMieter = numberFormat.format(totalMieter);
 
