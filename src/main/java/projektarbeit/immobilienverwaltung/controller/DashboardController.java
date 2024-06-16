@@ -12,6 +12,10 @@ import projektarbeit.immobilienverwaltung.service.WohnungService;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Der DashboardController stellt REST-APIs zur Verfügung, die statistische Informationen
+ * für das Dashboard der Immobilienverwaltungsanwendung liefern.
+ */
 @RestController
 @RequestMapping("/api/dashboard")
 public class DashboardController {
@@ -25,6 +29,11 @@ public class DashboardController {
     @Autowired
     private MietvertragService mietvertragService;
 
+    /**
+     * API-Endpunkt zum Abrufen der gesamten Mieteinnahmen.
+     *
+     * @return die Gesamtsumme der Mieteinnahmen.
+     */
     @GetMapping("/mieteinnahmen")
     public double getMieteinnahmen() {
         return mietvertragService.findAll().stream()
@@ -32,6 +41,11 @@ public class DashboardController {
                 .sum();
     }
 
+    /**
+     * API-Endpunkt zum Abrufen von Statistiken über Immobilien.
+     *
+     * @return eine Map mit der Gesamtzahl der Immobilien und der Anzahl der vermieteten Immobilien.
+     */
     @GetMapping("/immobilien")
     public Map<String, Long> getImmobilienStats() {
         Map<String, Long> stats = new HashMap<>();
@@ -44,6 +58,11 @@ public class DashboardController {
         return stats;
     }
 
+    /**
+     * API-Endpunkt zum Abrufen der Gesamtzahl der Mieter.
+     *
+     * @return die Gesamtzahl der Mieter.
+     */
     @GetMapping("/mieter")
     public long getTotalMieter() {
         return mieterService.getMieterCount();
