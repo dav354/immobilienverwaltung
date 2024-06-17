@@ -4,6 +4,7 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
@@ -48,8 +49,14 @@ public class MainView extends VerticalLayout {
      */
     @PostConstruct
     public void init() {
-        add(new H1("Willkommen zur Immobilienverwaltung"));
-        add(new Paragraph("Hier sind Ihre aktuellen Statistiken:"));
+        HorizontalLayout titleLayout = new HorizontalLayout();
+        titleLayout.setWidthFull();
+        titleLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+
+        H2 title = new H2("Hier sind Ihre aktuellen Statistiken");
+        titleLayout.add(title);
+
+        add(titleLayout);
 
         // Mieteinnahmen Anzeige
         double mieteinnahmen = dashboardController.getMieteinnahmen();
@@ -109,7 +116,7 @@ public class MainView extends VerticalLayout {
      * @return ein Div-Element, das die Immobilienstatistik anzeigt.
      */
     private Div createImmobilienDiv(Map<String, Long> stats) {
-        H2 title = new H2("Immobilienstatistik");
+        H2 title = new H2("Immobilien");
         title.getStyle().set("text-align", "center");
 
         // Formatieren der Zahlen mit Tausendertrennzeichen
