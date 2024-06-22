@@ -32,6 +32,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+/**
+ * Diese Klasse repräsentiert die Ansicht zur Verwaltung von Mietern.
+ * Sie zeigt eine Liste der Mieter in einer Grid-Komponente an und ermöglicht deren Bearbeitung.
+ */
 @SuppressWarnings("SpellCheckingInspection")
 @PermitAll
 @Route(value = "mieter", layout = MainLayout.class)
@@ -72,6 +76,10 @@ public class MieterListView extends VerticalLayout {
 
     }
 
+    /**
+     * Schließt den Editor für die Mieterform und zeigt die Liste an.
+     * Wird aufgerufen, wenn die Bearbeitung eines Mieters abgeschlossen ist.
+     */
     private void closeEditor() {
         form.setMieter(null);
         form.setVisible(false);
@@ -80,10 +88,19 @@ public class MieterListView extends VerticalLayout {
         removeClassName("editing");
     }
 
+    /**
+     * Aktualisiert die angezeigte Liste der Mieter in der Grid-Komponente basierend auf dem aktuellen Filtertext.
+     * Verwendet den Mieter-Service, um alle Mieter zu laden, die dem Filtertext entsprechen.
+     */
     private void updateList() {
         grid.setItems(mieterService.findAllMieter(filterText.getValue()));
     }
 
+    /**
+     * Erstellt den Hauptinhalt der Mieterlistenansicht, der aus der Grid-Komponente und dem Mieter-Formular besteht.
+     *
+     * @return Eine HorizontalLayout-Komponente mit der Grid und dem Mieter-Formular.
+     */
     private Component getContent() {
         HorizontalLayout content = new HorizontalLayout(grid, form);
         content.setFlexGrow(2, grid);
@@ -92,6 +109,11 @@ public class MieterListView extends VerticalLayout {
         return content;
     }
 
+    /**
+     * Konfiguriert das Mieter-Formular für die Bearbeitung von Mieterdaten.
+     * Setzt die Breite auf 100 % und setzt es initial auf unsichtbar.
+     * Fügt Listener für Speichern, Löschen und Schließen hinzu, um entsprechende Aktionen auszuführen.
+     */
     private void configureForm() {
         form = new MieterForm(mieterService, mietvertragService, wohnungService, dokumentService);
         form.setWidth("100%");
@@ -108,41 +130,77 @@ public class MieterListView extends VerticalLayout {
         form.addListener(MieterForm.CloseEvent.class, event -> closeEditor());
     }
 
+    /**
+     * Speichert den Mieter, der im SaveEvent übergeben wird, über den Mieter-Service.
+     * Aktualisiert anschließend die angezeigte Liste der Mieter und schließt den Editor.
+     *
+     * @param event Das SaveEvent, das den zu speichernden Mieter enthält.
+     */
     private void saveMieter(MieterForm.SaveEvent event) {
         mieterService.saveMieter(event.getContact());
         updateList();
         closeEditor();
     }
 
+    /**
+     * Löscht den Mieter, der im DeleteEvent übergeben wird, über den Mieter-Service.
+     * Aktualisiert anschließend die angezeigte Liste der Mieter und schließt den Editor.
+     *
+     * @param event Das DeleteEvent, das den zu löschenden Mieter enthält.
+     */
     private void deleteMieter(MieterForm.DeleteEvent event) {
         mieterService.deleteMieter(event.getContact());
         updateList();
         closeEditor();
     }
 
+    /**
+     * Konfiguriert die Grid-Komponente für die Anzeige der Mieterdaten.
+     * Setzt Klassenattribute, Spalten, und Spaltenrenderer für spezifische Mieter- und Mietvertragsdaten.
+     * Fügt Listener hinzu, um Mieter für die Bearbeitung auszuwählen.
+     */
     private void configureGrid() {
         grid.addClassNames("mieter-grid");
         grid.setSizeFull();
 
+        // Standard-Mieterdaten-Spalten
         grid.setColumns("name", "vorname", "telefonnummer", "email");
 
+        // Spalte für das Einkommen mit Währungsformatierung
         grid.addColumn(new ComponentRenderer<>(item -> {
             Double einkommen = item.getEinkommen();
             String formattedEinkommen = NumberFormat.getCurrencyInstance(Locale.GERMANY).format(einkommen);
             return new Span(formattedEinkommen);
         })).setHeader("Einkommen").setSortable(true);
 
+        // Zusätzliche Mietvertrags-Spalten hinzufügen
         addMietvertragColumn(Mietvertrag::getMiete, "Miete", true);
         addMietvertragColumn(Mietvertrag::getKaution, "Kaution", true);
         addMietvertragColumn(Mietvertrag::getAnzahlBewohner, "Anzahl<br>Bewohner", false);
-        addMietvertragColumn(Mietvertrag::getMietbeginn, "Mietbeginn", false, true);
+        addMietvertragColumn(Mietvertrag::getMietbeginn);
         addMietvertragColumn(Mietvertrag::getMietende, "Mietende", false, true, true);
         addMietvertragColumn(mietvertrag -> mietvertrag.getWohnung().getFormattedAddress(), "Mietobjekt", false);
 
+        // Automatische Breitenanpassung und Sortierbarkeit für alle Spalten
         grid.getColumns().forEach(col -> col.setAutoWidth(true).setSortable(true));
+
+        // Listener für die Auswahl eines Mieters zum Bearbeiten hinzufügen
         grid.asSingleSelect().addValueChangeListener(e -> editMieter(e.getValue()));
     }
 
+    /**
+     * Fügt eine neue Spalte zur Grid-Komponente hinzu, die Mietvertragsdaten darstellt.
+     * Die Spalte wird basierend auf dem ValueProvider für den angegebenen Mieter erstellt.
+     * Die Darstellung der Spalte kann je nach Parametern formatiert werden: Währung, Datum und besondere Fälle wie "Unbefristet".
+     *
+     * @param valueProvider Der ValueProvider, der den Wert aus einem Mietvertrag extrahiert.
+     * @param headerHtml    Der Header der Spalte als HTML-String.
+     * @param isCurrency    Gibt an, ob der Wert als Währung formatiert werden soll.
+     * @param isDate        Gibt an, ob der Wert ein Datum ist und entsprechend formatiert werden soll.
+     * @param isMietende    Gibt an, ob der Wert das Mietende darstellt und besondere Behandlung erfordert.
+     *                      Wenn true und der Wert ist null, wird "Unbefristet" angezeigt.
+     *                      Dieser Parameter wird ignoriert, wenn isDate false ist.
+     */
     private <T> void addMietvertragColumn(ValueProvider<Mietvertrag, T> valueProvider, String headerHtml, boolean isCurrency, boolean isDate, boolean isMietende) {
         grid.addColumn(new ComponentRenderer<>(mieter -> {
                     List<Mietvertrag> mietvertraege = mietvertragService.findByMieter(mieter.getMieter_id());
@@ -170,14 +228,36 @@ public class MieterListView extends VerticalLayout {
                 .setTextAlign(ColumnTextAlign.CENTER);
     }
 
-    private <T> void addMietvertragColumn(ValueProvider<Mietvertrag, T> valueProvider, String headerHtml, boolean isCurrency, boolean isDate) {
-        addMietvertragColumn(valueProvider, headerHtml, isCurrency, isDate, false);
+    /**
+     * Fügt eine neue Spalte zur Grid-Komponente hinzu, die Mietvertragsdaten darstellt.
+     * Die Spalte wird basierend auf dem ValueProvider für den angegebenen Mieter erstellt.
+     * Die Darstellung der Spalte kann je nach Parametern formatiert werden: Währung und Datum.
+     *
+     * @param valueProvider Der ValueProvider, der den Wert aus einem Mietvertrag extrahiert.
+     */
+    private <T> void addMietvertragColumn(ValueProvider<Mietvertrag, T> valueProvider) {
+        addMietvertragColumn(valueProvider, "Mietbeginn", false, true, false);
     }
 
+    /**
+     * Fügt eine neue Spalte zur Grid-Komponente hinzu, die Mietvertragsdaten darstellt.
+     * Die Spalte wird basierend auf dem ValueProvider für den angegebenen Mieter erstellt.
+     * Die Darstellung der Spalte kann je nach Parametern formatiert werden: Währung.
+     *
+     * @param valueProvider Der ValueProvider, der den Wert aus einem Mietvertrag extrahiert.
+     * @param headerHtml    Der Header der Spalte als HTML-String.
+     * @param isCurrency    Gibt an, ob der Wert als Währung formatiert werden soll.
+     */
     private <T> void addMietvertragColumn(ValueProvider<Mietvertrag, T> valueProvider, String headerHtml, boolean isCurrency) {
         addMietvertragColumn(valueProvider, headerHtml, isCurrency, false, false);
     }
 
+    /**
+     * Öffnet den Editor für die Bearbeitung eines Mieters.
+     * Wenn der übergebene Mieter null ist, wird der Editor geschlossen.
+     *
+     * @param mieter Der Mieter, der bearbeitet werden soll. Kann null sein.
+     */
     private void editMieter(Mieter mieter) {
         if (mieter == null) {
             closeEditor();
@@ -191,6 +271,11 @@ public class MieterListView extends VerticalLayout {
         }
     }
 
+    /**
+     * Erstellt und gibt die Toolbar-Komponente zurück, die Filter- und Hinzufügen-Buttons enthält.
+     *
+     * @return Die horizontal angeordnete Toolbar-Komponente.
+     */
     private HorizontalLayout getToolbar() {
         filterText.setPlaceholder("Filter nach Name");
         filterText.setClearButtonVisible(true);
@@ -205,6 +290,10 @@ public class MieterListView extends VerticalLayout {
         return toolbar;
     }
 
+    /**
+     * Öffnet den Editor für das Hinzufügen eines neuen Mieters.
+     * Setzt die Grid-Auswahl zurück und zeigt den Editor an.
+     */
     private void addMieter() {
         grid.asSingleSelect().clear();
         Mieter neuerMieter = new Mieter();
@@ -215,4 +304,5 @@ public class MieterListView extends VerticalLayout {
         toolbar.setVisible(false);
         addClassName("editing");
     }
+
 }
