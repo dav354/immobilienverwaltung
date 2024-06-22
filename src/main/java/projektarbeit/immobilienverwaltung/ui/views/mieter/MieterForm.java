@@ -1,14 +1,15 @@
 package projektarbeit.immobilienverwaltung.ui.views.mieter;
 
-import com.vaadin.flow.component.ComponentEvent;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -22,9 +23,11 @@ import com.vaadin.flow.data.validator.RegexpValidator;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.shared.Registration;
 import jakarta.annotation.security.PermitAll;
+import projektarbeit.immobilienverwaltung.model.Dokument;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Mietvertrag;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
+import projektarbeit.immobilienverwaltung.service.DokumentService;
 import projektarbeit.immobilienverwaltung.service.MieterService;
 import projektarbeit.immobilienverwaltung.service.MietvertragService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
@@ -42,6 +45,7 @@ public class MieterForm extends FormLayout {
 
     private final MietvertragService mietvertragService;
     private final MieterService mieterService;
+    private final DokumentService dokumentService;
     private List<Wohnung> availableWohnungen;
     private Mieter mieter;
     private final WohnungService wohnungsService;
@@ -63,6 +67,8 @@ public class MieterForm extends FormLayout {
     IntegerField anzahlBewohner = new IntegerField("Anzahl Bewohner");
     MultiSelectComboBox<Wohnung> wohnungMultiSelectComboBox = new MultiSelectComboBox<>("Wohnung");
 
+    // Grid for Dokumente
+    Grid<Dokument> dokumentGrid = new Grid<>(Dokument.class);
     // Die 3 Knöpfe zum Speichern, Löschen und Schließen des Forms
     Button speichern = new Button("Speichern");
     Button loeschen = new Button("Löschen");
@@ -75,10 +81,11 @@ public class MieterForm extends FormLayout {
      * @param mietvertragService the MietvertragService to use for managing Mietvertrag entities
      * @param wohnungsService the WohnungService to use for managing Wohnung entities
      */
-    public MieterForm(MieterService mieterService, MietvertragService mietvertragService, WohnungService wohnungsService) {
+    public MieterForm(MieterService mieterService, MietvertragService mietvertragService, WohnungService wohnungsService, DokumentService dokumentService) {
         this.mieterService = mieterService;
         this.mietvertragService = mietvertragService;
         this.wohnungsService = wohnungsService;
+        this.dokumentService = dokumentService;
         this.availableWohnungen = wohnungsService.findWohnungenWithoutMietvertrag();
         addClassName("mieter-form");
 
@@ -91,8 +98,23 @@ public class MieterForm extends FormLayout {
         wohnungMultiSelectComboBox.setItems(availableWohnungen);
         wohnungMultiSelectComboBox.setItemLabelGenerator(Wohnung::getFormattedAddress);
 
-        add(name, vorname, telefonnummer, email, einkommen, mietbeginn, mietende, kaution, miete, anzahlBewohner, wohnungMultiSelectComboBox, createButtonsLayout());
+        configureDokumentGrid();
+
+        VerticalLayout gridLayout = new VerticalLayout(new H1("Dokumente"));
+        gridLayout.add(dokumentGrid);
+
+        add(name, vorname, telefonnummer, email, einkommen, mietbeginn, mietende, kaution, miete, anzahlBewohner, wohnungMultiSelectComboBox,
+                createButtonsLayout(), gridLayout);
         configureValidation();
+    }
+
+
+
+    private void configureDokumentGrid() {
+        dokumentGrid.setColumns("dokumententyp", "dateipfad");
+        dokumentGrid.getColumnByKey("dokumententyp").setHeader("Dokumententyp");
+        dokumentGrid.getColumnByKey("dateipfad").setHeader("Dateipfad");
+        dokumentGrid.setHeight("300px");
     }
 
     /**
@@ -211,6 +233,14 @@ public class MieterForm extends FormLayout {
 
         // Show the delete button only if the Mieter is not null and has an ID
         loeschen.setVisible(mieter != null && mieter.getMieter_id() != null);
+
+        // Update the Dokument grid
+        if (mieter != null) {
+            List<Dokument> dokumente = dokumentService.findDokumenteByMieter(mieter);
+            dokumentGrid.setItems(dokumente);
+        } else {
+            dokumentGrid.setItems(new ArrayList<>());
+        }
     }
 
     //Erstellt und konfiguriert eines Layout für die Buttons Speichern, Löschen und Schließen
