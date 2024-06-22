@@ -39,6 +39,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Diese Klasse stellt ein Formular zur Bearbeitung eines Mieters dar.
+ * Es ermöglicht die Eingabe, Validierung und Speicherung von Mieter- und Mietvertragsdaten.
+ */
 @PermitAll
 @SuppressWarnings("SpellCheckingInspection")
 public class MieterForm extends FormLayout {
@@ -75,11 +79,12 @@ public class MieterForm extends FormLayout {
     Button schliessen = new Button("Schließen");
 
     /**
-     * Constructs a MieterForm with the given services.
+     * Konstruktor für MieterForm mit den gegebenen Services.
      *
-     * @param mieterService the MieterService to use for managing Mieter entities
-     * @param mietvertragService the MietvertragService to use for managing Mietvertrag entities
-     * @param wohnungsService the WohnungService to use for managing Wohnung entities
+     * @param mieterService       der MieterService zur Verwaltung von Mieter-Entitäten
+     * @param mietvertragService  der MietvertragService zur Verwaltung von Mietvertrag-Entitäten
+     * @param wohnungsService     der WohnungService zur Verwaltung von Wohnung-Entitäten
+     * @param dokumentService     der DokumentService zur Verwaltung von Dokument-Entitäten
      */
     public MieterForm(MieterService mieterService, MietvertragService mietvertragService, WohnungService wohnungsService, DokumentService dokumentService) {
         this.mieterService = mieterService;
@@ -108,8 +113,10 @@ public class MieterForm extends FormLayout {
         configureValidation();
     }
 
-
-
+    /**
+     * Konfiguriert das Grid für die Dokumente.
+     * Setzt die sichtbaren Spalten und deren Header.
+     */
     private void configureDokumentGrid() {
         dokumentGrid.setColumns("dokumententyp", "dateipfad");
         dokumentGrid.getColumnByKey("dokumententyp").setHeader("Dokumententyp");
@@ -118,9 +125,9 @@ public class MieterForm extends FormLayout {
     }
 
     /**
-     * Configures the validation for the fields in the form.
-     * Sets up regex validators for text fields, range validators for number fields,
-     * and custom validators for date fields.
+     * Konfiguriert die Validierung für die Formularfelder.
+     * Setzt Regex-Validator für Textfelder, Bereichs-Validator für Zahlenfelder
+     * und benutzerdefinierte Validator für Datumsfelder.
      */
     private void configureValidation() {
         configureTextField(name, "^[a-zA-Z\\s]{1,50}$", "Name darf nur Buchstaben und Leerzeichen enthalten, 1-50 Zeichen", Mieter::getName, Mieter::setName, binder);
@@ -147,15 +154,15 @@ public class MieterForm extends FormLayout {
     }
 
     /**
-     * Configures a text field with a regex validator.
+     * Konfiguriert ein Textfeld mit einem Regex-Validator.
      *
-     * @param <T>          The type of the bean.
-     * @param field        The text field to configure.
-     * @param regex        The regex pattern for validation.
-     * @param errorMessage The error message to display if validation fails.
-     * @param getter       The getter method for the field value.
-     * @param setter       The setter method for the field value.
-     * @param binder       The binder to use for validation.
+     * @param <T>          Der Typ des Beans.
+     * @param field        Das Textfeld, das konfiguriert werden soll.
+     * @param regex        Das Regex-Muster zur Validierung.
+     * @param errorMessage Die Fehlermeldung bei Validierungsfehlern.
+     * @param getter       Die Methode zum Abrufen des Feldwerts.
+     * @param setter       Die Methode zum Setzen des Feldwerts.
+     * @param binder       Der Binder zur Validierung.
      */
     private <T> void configureTextField(TextField field, String regex, String errorMessage, ValueProvider<T, String> getter, Setter<T, String> setter, Binder<T> binder) {
         binder.forField(field)
@@ -165,16 +172,16 @@ public class MieterForm extends FormLayout {
     }
 
     /**
-     * Configures a number field with a range validator.
+     * Konfiguriert ein Nummernfeld mit einem Bereichs-Validator.
      *
-     * @param <T>          The type of the bean.
-     * @param field        The number field to configure.
-     * @param errorMessage The error message to display if validation fails.
-     * @param min          The minimum valid value.
-     * @param max          The maximum valid value.
-     * @param getter       The getter method for the field value.
-     * @param setter       The setter method for the field value.
-     * @param binder       The binder to use for validation.
+     * @param <T>          Der Typ des Beans.
+     * @param field        Das Nummernfeld, das konfiguriert werden soll.
+     * @param errorMessage Die Fehlermeldung bei Validierungsfehlern.
+     * @param min          Der minimale gültige Wert.
+     * @param max          Der maximale gültige Wert.
+     * @param getter       Die Methode zum Abrufen des Feldwerts.
+     * @param setter       Die Methode zum Setzen des Feldwerts.
+     * @param binder       Der Binder zur Validierung.
      */
     @SuppressWarnings("SameParameterValue")
     private <T> void configureNumberField(NumberField field, String errorMessage, double min, double max, ValueProvider<T, Double> getter, Setter<T, Double> setter, Binder<T> binder) {
@@ -186,16 +193,16 @@ public class MieterForm extends FormLayout {
     }
 
     /**
-     * Configures an integer field with a range validator.
+     * Konfiguriert ein Integer-Feld mit einer Fehlermeldung, einem Wertebereich und bindet es an einen Binder.
      *
-     * @param <T>          The type of the bean.
-     * @param field        The integer field to configure.
-     * @param errorMessage The error message to display if validation fails.
-     * @param min          The minimum valid value.
-     * @param max          The maximum valid value.
-     * @param getter       The getter method for the field value.
-     * @param setter       The setter method for the field value.
-     * @param binder       The binder to use for validation.
+     * @param field       Das Integer-Feld, das konfiguriert werden soll
+     * @param errorMessage Die Fehlermeldung für die Validierung
+     * @param min         Der minimale gültige Wert
+     * @param max         Der maximale gültige Wert
+     * @param getter      Der Getter für den Wert aus der Datenquelle
+     * @param setter      Der Setter für den Wert in die Datenquelle
+     * @param binder      Der Binder, an den das Feld gebunden werden soll
+     * @param <T>         Der Typ der Datenquelle
      */
     @SuppressWarnings("SameParameterValue")
     private <T> void configureIntegerField(IntegerField field, String errorMessage, int min, int max, ValueProvider<T, Integer> getter, Setter<T, Integer> setter, Binder<T> binder) {
@@ -207,10 +214,10 @@ public class MieterForm extends FormLayout {
     }
 
     /**
-     * Binds the given Mieter entity to the form.
-     * Updates the form fields with the Mieter's data and associated Mietvertrag information.
+     * Bindet die übergebene Mieter-Entität an das Formular.
+     * Aktualisiert die Formularfelder mit den Daten des Mieters und den zugehörigen Mietvertragsinformationen.
      *
-     * @param mieter the Mieter entity to bind to the form
+     * @param mieter Die Mieter-Entität, die an das Formular gebunden werden soll
      */
     public void setMieter(Mieter mieter) {
         this.mieter = mieter;
@@ -243,7 +250,13 @@ public class MieterForm extends FormLayout {
         }
     }
 
-    //Erstellt und konfiguriert eines Layout für die Buttons Speichern, Löschen und Schließen
+    /**
+     * Erstellt und konfiguriert ein Layout für die Buttons Speichern, Löschen und Schließen.
+     * Jeder Button wird mit einer Theme-Variante versehen und entsprechende Click-Listener hinzugefügt.
+     * Zudem werden Tastaturkürzel für die Buttons festgelegt und deren Aktivierung basierend auf dem Zustand der Binder überwacht.
+     *
+     * @return Ein HorizontalLayout, das die konfigurierten Buttons enthält
+     */
     private HorizontalLayout createButtonsLayout() {
         speichern.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         loeschen.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -262,9 +275,9 @@ public class MieterForm extends FormLayout {
     }
 
     /**
-     * Validates the form inputs and saves the Mieter (tenant) if the inputs are valid.
-     * Checks for duplicate Mieters and manages the assignment and removal of Wohnungen (apartments).
-     * Shows appropriate notifications based on the success or failure of the operation.
+     * Validiert die Formulareingaben und speichert den Mieter, wenn die Eingaben gültig sind.
+     * Prüft auf doppelte Mieter und verwaltet die Zuweisung und Entfernung von Wohnungen.
+     * Zeigt entsprechende Benachrichtigungen basierend auf dem Erfolg oder dem Scheitern der Operation an.
      */
     private void validateAndSave() {
         if (mieter != null && binder.isValid() && mietvertragBinder.isValid() && validateMietPeriod()) {
@@ -318,9 +331,9 @@ public class MieterForm extends FormLayout {
     }
 
     /**
-     * Validates that the Mietbeginn (start date) is before the Mietende (end date).
+     * Validiert, dass der Mietbeginn vor dem Mietende liegt.
      *
-     * @return true if the Mietperiode is valid, false otherwise.
+     * @return true, wenn die Mietperiode gültig ist, sonst false
      */
     private boolean validateMietPeriod() {
         // TODO: Error message if save without Mietbeginn but with mietende
@@ -335,10 +348,10 @@ public class MieterForm extends FormLayout {
     }
 
     /**
-     * Checks if a Mieter with the same name and phone number already exists in the system.
+     * Überprüft, ob ein Mieter mit dem gleichen Namen und Telefonnummer bereits im System existiert.
      *
-     * @param mieter The Mieter to check for duplicates.
-     * @return true if a duplicate Mieter exists, false otherwise.
+     * @param mieter Der Mieter, der auf Duplikate geprüft werden soll
+     * @return true, wenn ein duplizierter Mieter existiert, sonst false
      */
     private boolean isDuplicateMieter(Mieter mieter) {
         List<Mieter> existingMieters = mieterService.findAllMieter();
@@ -351,8 +364,8 @@ public class MieterForm extends FormLayout {
     }
 
     /**
-     * Refreshes the list of available Wohnungen (apartments) and updates the items in the MultiSelectComboBox.
-     * If no Wohnungen are available, sets a placeholder message in the ComboBox.
+     * Aktualisiert die Liste der verfügbaren Wohnungen und aktualisiert die Elemente im MultiSelectComboBox.
+     * Wenn keine Wohnungen verfügbar sind, wird eine Platzhaltermeldung im ComboBox gesetzt.
      */
     private void refreshAvailableWohnungen() {
         availableWohnungen = wohnungsService.findAvailableWohnungen();
@@ -363,28 +376,48 @@ public class MieterForm extends FormLayout {
         }
     }
 
-    //Fügt einen Listener für die angegebene Ereignis hinzu (Speichern, Löschen und Schließen)
+    /**
+     * Fügt einen Listener für das angegebene Ereignis hinzu (Speichern, Löschen und Schließen).
+     *
+     * @param <T>        Der Typ des Ereignisses, das abgehört werden soll
+     * @param eventType  Die Klasse des Ereignisses, auf das gehört werden soll
+     * @param listener   Der Listener, der auf das Ereignis reagiert
+     * @return Eine Registration, die verwendet werden kann, um den Listener zu entfernen
+     */
     public <T extends ComponentEvent<?>> Registration addListener(Class<T> eventType, ComponentEventListener<T> listener) {
         return getEventBus().addListener(eventType, listener);
     }
 
-    // Events für die Buttons Speichern, Löschen und Schließen
+    /**
+     * Ereignis, das ausgelöst wird, wenn ein Mieter bearbeitet wird.
+     */
     public static abstract class MieterFormEvent extends ComponentEvent<MieterForm> {
         private final Mieter mieter;
 
+        /**
+         * Konstruktor für das MieterFormEvent.
+         *
+         * @param source Die Quelle des Ereignisses (MieterForm, die das Ereignis auslöst)
+         * @param mieter Der Mieter, auf den sich das Ereignis bezieht
+         */
         protected MieterFormEvent(MieterForm source, Mieter mieter) {
             super(source, false);
             this.mieter = mieter;
         }
 
+        /**
+         * Gibt den Mieter zurück, auf den sich das Ereignis bezieht.
+         *
+         * @return Der Mieter, auf den sich das Ereignis bezieht
+         */
         public Mieter getContact() {
             return mieter;
         }
     }
 
     /**
-     * Displays a confirmation dialog to confirm the deletion of a Mieter.
-     * If confirmed, fires a DeleteEvent and shows a success notification.
+     * Zeigt einen Bestätigungsdialog zur Löschung eines Mieters an.
+     * Bei Bestätigung wird ein DeleteEvent ausgelöst und eine Erfolgsmeldung angezeigt.
      */
     private void showDeleteConfirmationDialog() {
         // Create a new ConfirmationDialog with a message and a confirm action
@@ -400,23 +433,48 @@ public class MieterForm extends FormLayout {
         confirmationDialog.open();
     }
 
-    //Ereignis, das ausgelöst wird, wenn ein Mieter gespeichert wird
+    /**
+     * Ereignis, das ausgelöst wird, wenn ein Mieter gespeichert wird.
+     */
     public static class SaveEvent extends MieterFormEvent {
+        /**
+         * Konstruktor für das SaveEvent.
+         *
+         * @param source Die Quelle des Ereignisses (MieterForm, die das Ereignis auslöst)
+         * @param mieter Der Mieter, der gespeichert wurde
+         */
         SaveEvent(MieterForm source, Mieter mieter) {
             super(source, mieter);
         }
     }
 
-    //Ereignis, das ausgelöst wird, wenn ein Mieter gelöscht wird
+    /**
+     * Ereignis, das ausgelöst wird, wenn ein Mieter gelöscht wird.
+     */
     public static class DeleteEvent extends MieterFormEvent {
+        /**
+         * Konstruktor für das DeleteEvent.
+         *
+         * @param source Die Quelle des Ereignisses (MieterForm, die das Ereignis auslöst)
+         * @param mieter Der Mieter, der gelöscht wird
+         */
         DeleteEvent(MieterForm source, Mieter mieter) {
             super(source, mieter);
         }
     }
 
+    /**
+     * Ereignis, das ausgelöst wird, wenn das Schließen der MieterForm ausgelöst wird.
+     */
     public static class CloseEvent extends MieterFormEvent {
+        /**
+         * Konstruktor für das CloseEvent.
+         *
+         * @param source Die Quelle des Ereignisses (MieterForm, die das Ereignis auslöst)
+         */
         CloseEvent(MieterForm source) {
             super(source, null);
         }
     }
+
 }
