@@ -1,4 +1,4 @@
-package projektarbeit.immobilienverwaltung.ui.views.Login;
+package projektarbeit.immobilienverwaltung.ui.views.login;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;

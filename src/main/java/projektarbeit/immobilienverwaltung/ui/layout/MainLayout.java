@@ -14,7 +14,7 @@ import com.vaadin.flow.theme.lumo.Lumo;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import projektarbeit.immobilienverwaltung.service.SecurityService;
-import projektarbeit.immobilienverwaltung.ui.views.Login.AdminView;
+import projektarbeit.immobilienverwaltung.ui.views.login.AdminView;
 import projektarbeit.immobilienverwaltung.ui.views.MainView;
 import projektarbeit.immobilienverwaltung.ui.views.mieter.MieterListView;
 import projektarbeit.immobilienverwaltung.ui.views.wohnung.WohnungListView;

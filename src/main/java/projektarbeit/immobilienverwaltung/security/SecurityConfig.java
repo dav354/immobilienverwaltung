@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import projektarbeit.immobilienverwaltung.model.User;
 import projektarbeit.immobilienverwaltung.repository.UserRepository;
-import projektarbeit.immobilienverwaltung.ui.views.Login.LoginView;
+import projektarbeit.immobilienverwaltung.ui.views.login.LoginView;
 
 /**
  * Sicherheitskonfiguration für die Anwendung.

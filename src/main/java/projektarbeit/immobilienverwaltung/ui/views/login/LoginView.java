@@ -1,4 +1,4 @@
-package projektarbeit.immobilienverwaltung.ui.views.Login;
+package projektarbeit.immobilienverwaltung.ui.views.login;
 
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.login.LoginForm;
@@ -8,7 +8,6 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
-import jakarta.annotation.security.PermitAll;
 import projektarbeit.immobilienverwaltung.ui.layout.LoginLayout;
 
 /**
