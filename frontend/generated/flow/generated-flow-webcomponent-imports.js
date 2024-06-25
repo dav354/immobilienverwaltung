@@ -1,7 +1,7 @@
 import { injectGlobalCss } from 'Frontend/generated/jar-resources/theme-util.js';
 
 import { css, unsafeCSS, registerStyles } from '@vaadin/vaadin-themable-mixin';
-import $cssFromFile_0 from './styles/shared-styles.css?inline';
+import $cssFromFile_0 from 'Frontend/styles/shared-styles.css?inline';
 
 injectGlobalCss($cssFromFile_0.toString(), 'CSSImport end', document);
 import '@vaadin/common-frontend/ConnectionIndicator.js';
@@ -15,6 +15,7 @@ import 'Frontend/generated/jar-resources/buttonFunctions.js';
 import '@vaadin/app-layout/theme/lumo/vaadin-drawer-toggle.js';
 import '@vaadin/avatar/theme/lumo/vaadin-avatar.js';
 import '@vaadin/avatar-group/theme/lumo/vaadin-avatar-group.js';
+import '@vaadin/vaadin-charts/src/vaadin-chart.js';
 import '@vaadin/checkbox/theme/lumo/vaadin-checkbox.js';
 import '@vaadin/checkbox-group/theme/lumo/vaadin-checkbox-group.js';
 import '@vaadin/combo-box/theme/lumo/vaadin-combo-box.js';
