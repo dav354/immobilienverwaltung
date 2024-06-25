@@ -73,7 +73,6 @@ public class MieterListView extends VerticalLayout {
         updateList();
 
         closeEditor();
-
     }
 
     /**

@@ -35,6 +35,7 @@ import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.WohnungEditDialog;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.ZaehlerstandDialog;
+import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
 
 /**
  * View for displaying the details of a Wohnung.
@@ -309,8 +310,8 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
      * @param zaehlerstandGrid  the grid for Zählerstände
      */
     private void setGridData(Grid<Dokument> dokumentGrid, Grid<Zaehlerstand> zaehlerstandGrid) {
-        dokumentGrid.setItems(dokumentService.findDokumenteByWohnung(currentWohnung));
-        zaehlerstandGrid.setItems(zaehlerstandService.findZaehlerstandByWohnung(currentWohnung));
+        TableUtils.configureGrid(dokumentGrid, dokumentService.findDokumenteByWohnung(currentWohnung), "No documents available");
+        TableUtils.configureGrid(zaehlerstandGrid, zaehlerstandService.findZaehlerstandByWohnung(currentWohnung), "No meter readings available");
     }
 
     public void refreshView() {

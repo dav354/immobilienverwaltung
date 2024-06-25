@@ -34,6 +34,7 @@ import projektarbeit.immobilienverwaltung.service.MietvertragService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.ui.components.ConfirmationDialog;
 import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
+import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
 
 
 import java.util.ArrayList;
@@ -249,20 +250,8 @@ public class MieterForm extends FormLayout {
         loeschen.setVisible(mieter != null && mieter.getMieter_id() != null);
 
         // Update the Dokument grid
-        if (mieter != null) {
-            List<Dokument> dokumente = dokumentService.findDokumenteByMieter(mieter);
-            dokumentGrid.setItems(dokumente);
-            // Berechne die Höhe basierend auf der Anzahl der Zeilen
-            int rowCount = dokumente.size();
-            int rowHeight = 40; // Standardzeilenhöhe in Pixel (kann je nach Thema variieren)
-            int headerHeight = 56; // Höhe des Headers in Pixel (auch anpassbar)
-            int footerHeight = 0; // Höhe des Footers (falls vorhanden)
-
-            // Setze die Höhe des Grids
-            dokumentGrid.setHeight((rowCount * rowHeight + headerHeight + footerHeight) + "px");
-        } else {
-            dokumentGrid.setItems(new ArrayList<>());
-        }
+        List<Dokument> dokumente = mieter != null ? dokumentService.findDokumenteByMieter(mieter) : new ArrayList<>();
+        TableUtils.configureGrid(dokumentGrid, dokumente, "Keine Dokumente vorhanden.");
     }
 
     /**
