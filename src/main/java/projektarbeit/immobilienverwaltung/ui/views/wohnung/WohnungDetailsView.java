@@ -30,6 +30,8 @@ import projektarbeit.immobilienverwaltung.service.DokumentService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.service.ZaehlerstandService;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
+import projektarbeit.immobilienverwaltung.ui.views.wohnung.dialog.WohnungEditDialog;
+import projektarbeit.immobilienverwaltung.ui.views.wohnung.dialog.ZaehlerstandDialog;
 
 /**
  * View for displaying the details of a Wohnung.
@@ -76,6 +78,10 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         Button wohnungEditButton = new Button("edit");
 
         wohnungEditButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        wohnungEditButton.addClickListener(event -> {
+            WohnungEditDialog editDialog = new WohnungEditDialog(wohnungService, currentWohnung, this::setupView);
+            editDialog.open();
+        });
 
         layoutRow.add(wohnungHeading, wohnungEditButton);
         layoutRow.setAlignItems(FlexComponent.Alignment.CENTER);
@@ -139,6 +145,15 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         HorizontalLayout zaehlerstandHeaderLayout = new HorizontalLayout();
         H1 zaehlerstaendeHeading = new H1("Zählerstände");
         Button addZaehlerstandButton = new Button("Add Zählerstand");
+
+        addZaehlerstandButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        addZaehlerstandButton.addClickListener(event -> {
+            Zaehlerstand zaehlerstand = new Zaehlerstand();
+            zaehlerstand.setWohnung(currentWohnung);
+            ZaehlerstandDialog zaehlerstandDialog = new ZaehlerstandDialog(zaehlerstandService, zaehlerstand, this::setupView);
+            zaehlerstandDialog.open();
+        });
+
         addZaehlerstandButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         zaehlerstandHeaderLayout.add(zaehlerstaendeHeading, addZaehlerstandButton);
         zaehlerstandHeaderLayout.setAlignItems(FlexComponent.Alignment.CENTER);
@@ -191,7 +206,7 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         // Drag-and-drop upload area for Dokumente
         Upload dokumentUpload = getUpload();
 
-        VerticalLayout dokumentUploadLayout = new VerticalLayout(dokumentGrid, dokumentUpload);
+        VerticalLayout dokumentUploadLayout = new VerticalLayout(dokumentUpload, dokumentGrid);
         dokumentUploadLayout.setWidthFull();
 
         // Grid for Zählerstände
