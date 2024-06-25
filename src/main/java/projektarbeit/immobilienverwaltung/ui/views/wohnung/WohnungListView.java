@@ -15,6 +15,7 @@ import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.spring.annotation.UIScope;
 import jakarta.annotation.security.PermitAll;
 import projektarbeit.immobilienverwaltung.model.Mieter;
@@ -22,6 +23,7 @@ import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.service.MietvertragService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
+import projektarbeit.immobilienverwaltung.ui.views.dialog.WohnungEditDialog;
 
 import java.util.List;
 
@@ -36,7 +38,6 @@ public class WohnungListView extends VerticalLayout {
     private final MietvertragService mietvertragService;
     TreeGrid<Wohnung> treeGrid = new TreeGrid<>(Wohnung.class);
     TextField filterText = new TextField();
-    WohnungForm form;
 
     /**
      * Konstruktor für WohnungListView.
@@ -52,7 +53,6 @@ public class WohnungListView extends VerticalLayout {
         setSizeFull();
 
         configureTreeGrid();
-        configureForm();
 
         HorizontalLayout header = new HorizontalLayout(new H1("Wohnungen Übersicht"));
         header.setWidthFull();
@@ -62,18 +62,6 @@ public class WohnungListView extends VerticalLayout {
         add(header, getToolbar(), getContent());
 
         updateList();
-
-        closeEditor();
-    }
-
-    /**
-     * Schließt den Editor.
-     * Setzt die ausgewählte Wohnung im Formular zurück und macht es unsichtbar.
-     */
-    private void closeEditor() {
-        form.setWohnung(null);
-        form.setVisible(false);
-        removeClassName("editing");
     }
 
     /**
@@ -140,7 +128,11 @@ public class WohnungListView extends VerticalLayout {
 
         updateGridColumns();
 
-        treeGrid.asSingleSelect().addValueChangeListener(event -> editWohnung(event.getValue()));
+        treeGrid.asSingleSelect().addValueChangeListener(event -> {
+            if (event.getValue() != null) {
+                UI.getCurrent().navigate(WohnungDetailsView.class, event.getValue().getWohnung_id());
+            }
+        });
     }
 
     /**
@@ -150,49 +142,12 @@ public class WohnungListView extends VerticalLayout {
      * @return das konfigurierte Inhaltslayout
      */
     private Component getContent() {
-        HorizontalLayout content = new HorizontalLayout(treeGrid, form);
+        HorizontalLayout content = new HorizontalLayout(treeGrid);
         content.setFlexGrow(2, treeGrid);
-        content.setFlexGrow(1, form);
+        content.setFlexGrow(1);
         content.addClassNames("content");
         content.setSizeFull();
         return content;
-    }
-
-    /**
-     * Konfiguriert das Formular zur Bearbeitung von Wohnungen.
-     * Setzt die Breite und fügt Listener für Speichern, Löschen und Schließen hinzu.
-     */
-    private void configureForm() {
-        form = new WohnungForm(wohnungService.findAllMieter(), mietvertragService);
-        form.setWidth("200em");
-
-        form.addListener(WohnungForm.SaveEvent.class, this::saveWohnung);
-        form.addListener(WohnungForm.DeleteEvent.class, this::deleteWohnung);
-        form.addListener(WohnungForm.CloseEvent.class, e -> closeEditor());
-    }
-
-    /**
-     * Speichert die Wohnung.
-     * Aktualisiert die Liste und schließt den Editor.
-     *
-     * @param event das Speicherevent
-     */
-    private void saveWohnung(WohnungForm.SaveEvent event) {
-        wohnungService.save(event.getWohnung());
-        updateList();
-        closeEditor();
-    }
-
-    /**
-     * Löscht die Wohnung.
-     * Aktualisiert die Liste und schließt den Editor.
-     *
-     * @param event das Löschevent
-     */
-    private void deleteWohnung(WohnungForm.DeleteEvent event) {
-        wohnungService.delete(event.getWohnung());
-        updateList();
-        closeEditor();
     }
 
     /**
@@ -208,46 +163,18 @@ public class WohnungListView extends VerticalLayout {
         filterText.addValueChangeListener(e -> updateList());
 
         Button addContactButton = new Button("Wohnung hinzufügen");
-        addContactButton.addClickListener(e -> addWohnung());
+        addContactButton.addClickListener(e -> {
+            Wohnung newWohnung = new Wohnung();
+            WohnungEditDialog dialog = new WohnungEditDialog(wohnungService, newWohnung, () -> {
+                updateList();
+                getUI().ifPresent(ui -> ui.navigate(WohnungDetailsView.class, newWohnung.getWohnung_id()));
+            });
+            dialog.open();
+        });
 
         var toolbar = new HorizontalLayout(filterText, addContactButton);
         toolbar.addClassName("toolbar");
         return toolbar;
-    }
-
-    /**
-     * Bearbeitet die ausgewählte Wohnung.
-     * Zeigt das Formular zum Bearbeiten oder Hinzufügen einer neuen Wohnung an.
-     *
-     * @param wohnung die zu bearbeitende Wohnung
-     */
-    private void editWohnung(Wohnung wohnung) {
-        if (wohnung == null) {
-            form.clearFields();
-            closeEditor();
-        } else {
-            form.setWohnung(wohnung);
-            form.setVisible(true);
-            addClassName("editing");
-
-            // Navigate to the detailed view
-            getUI().ifPresent(ui -> ui.navigate(WohnungDetailsView.class, wohnung.getWohnung_id()));
-        }
-    }
-
-    /**
-     * Fügt eine neue Wohnung hinzu.
-     * Zeigt das Formular zum Hinzufügen einer neuen Wohnung an.
-     */
-    private void addWohnung() {
-        treeGrid.asSingleSelect().clear();
-        Wohnung neueWohnung = new Wohnung();
-
-        form.clearFields();
-        form.setWohnung(neueWohnung);
-        form.loeschen.setVisible(false);
-        form.setVisible(true);
-        addClassName("editing");
     }
 
     /**

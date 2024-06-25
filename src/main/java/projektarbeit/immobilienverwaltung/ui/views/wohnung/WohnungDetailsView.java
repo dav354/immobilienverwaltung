@@ -1,6 +1,7 @@
 package projektarbeit.immobilienverwaltung.ui.views.wohnung;
 
 import com.vaadin.flow.component.Composite;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.Uses;
@@ -29,9 +30,11 @@ import projektarbeit.immobilienverwaltung.model.Zaehlerstand;
 import projektarbeit.immobilienverwaltung.service.DokumentService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.service.ZaehlerstandService;
+import projektarbeit.immobilienverwaltung.ui.components.ConfirmationDialog;
+import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
-import projektarbeit.immobilienverwaltung.ui.views.wohnung.dialog.WohnungEditDialog;
-import projektarbeit.immobilienverwaltung.ui.views.wohnung.dialog.ZaehlerstandDialog;
+import projektarbeit.immobilienverwaltung.ui.views.dialog.WohnungEditDialog;
+import projektarbeit.immobilienverwaltung.ui.views.dialog.ZaehlerstandDialog;
 
 /**
  * View for displaying the details of a Wohnung.
@@ -76,14 +79,29 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         HorizontalLayout layoutRow = new HorizontalLayout();
         H1 wohnungHeading = new H1("Wohnung");
         Button wohnungEditButton = new Button("edit");
+        Button wohnungLoeschenButton = new Button("Löschen");
+
 
         wohnungEditButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         wohnungEditButton.addClickListener(event -> {
-            WohnungEditDialog editDialog = new WohnungEditDialog(wohnungService, currentWohnung, this::setupView);
+            WohnungEditDialog editDialog = new WohnungEditDialog(wohnungService, currentWohnung, this::refreshView);
             editDialog.open();
         });
 
-        layoutRow.add(wohnungHeading, wohnungEditButton);
+        wohnungLoeschenButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        wohnungLoeschenButton.addClickListener(event -> {
+            ConfirmationDialog confirmationDialog = new ConfirmationDialog(
+                    "Möchten Sie diese Wohnung wirklich löschen? Es werden auch alle Dokumente mit gelöscht.",
+                    () -> {
+                        wohnungService.delete(currentWohnung);
+                        Notification.show("Wohnung erfolgreich gelöscht.");
+                        UI.getCurrent().navigate(WohnungListView.class);
+                    }
+            );
+            confirmationDialog.open();
+        });
+
+        layoutRow.add(wohnungHeading, wohnungEditButton, wohnungLoeschenButton);
         layoutRow.setAlignItems(FlexComponent.Alignment.CENTER);
 
         FormLayout formLayout = new FormLayout();
@@ -294,4 +312,18 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         dokumentGrid.setItems(dokumentService.findDokumenteByWohnung(currentWohnung));
         zaehlerstandGrid.setItems(zaehlerstandService.findZaehlerstandByWohnung(currentWohnung));
     }
+
+    public void refreshView() {
+        // Re-fetch the current Wohnung from the service
+        currentWohnung = wohnungService.findWohnungById(currentWohnung.getWohnung_id());
+        if (currentWohnung != null) {
+            // Clear existing content
+            getContent().removeAll();
+            // Re-setup the view with the updated Wohnung details
+            setupView();
+        } else {
+            NotificationPopup.showWarningNotification("Wohnung nicht gefunden.");
+        }
+    }
+
 }

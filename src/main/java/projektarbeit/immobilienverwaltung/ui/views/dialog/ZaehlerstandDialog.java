@@ -1,5 +1,6 @@
-package projektarbeit.immobilienverwaltung.ui.views.wohnung.dialog;
+package projektarbeit.immobilienverwaltung.ui.views.dialog;
 
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -70,5 +71,10 @@ public class ZaehlerstandDialog extends Dialog {
         // Set the size of the dialog
         setWidth("500px");
         setHeight("320px");
+
+        // Add keyboard shortcut for Enter key
+        saveButton.addClickShortcut(Key.ENTER);
+        cancelButton.addClickShortcut(Key.ESCAPE);
+
     }
 }
