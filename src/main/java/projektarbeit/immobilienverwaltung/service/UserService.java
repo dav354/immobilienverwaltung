@@ -148,7 +148,7 @@ public class UserService {
      * @param username Der Benutzername, der im Passwort nicht enthalten sein darf.
      * @throws IllegalArgumentException Wenn das Passwort ungültig ist.
      */
-    public void validatePassword(String password, String username) {
+    public void validatePassword(String password) {
         if (password.length() < 8 || password.length() > 20) {
             throw new IllegalArgumentException("Password must be between 8 and 20 characters");
         }

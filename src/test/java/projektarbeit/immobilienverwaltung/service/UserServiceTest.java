@@ -140,11 +140,11 @@ public class UserServiceTest {
 
     @Test
     public void testValidatePassword() {
-        assertDoesNotThrow(() -> userService.validatePassword("ValidPass123@", "testuser"));
+        assertDoesNotThrow(() -> userService.validatePassword("ValidPass123@"));
     }
 
     @Test
     public void testValidatePasswordThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> userService.validatePassword("short", "testuser"));
+        assertThrows(IllegalArgumentException.class, () -> userService.validatePassword("short"));
     }
 }

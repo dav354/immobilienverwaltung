@@ -5,9 +5,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -28,6 +26,7 @@ import projektarbeit.immobilienverwaltung.service.SecurityService;
 import projektarbeit.immobilienverwaltung.service.UserService;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 
+import projektarbeit.immobilienverwaltung.ui.components.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -44,9 +43,7 @@ import java.util.stream.Collectors;
 public class AdminView extends VerticalLayout implements BeforeEnterObserver {
 
     private final UserService userService;
-    private final RoleRepository roleRepository;
-    private final SecurityService securityService;
-    private Grid<User> userGrid;
+    private final Grid<User> userGrid;
 
     /**
      * Konstruktor für die AdminView-Klasse.
@@ -59,8 +56,6 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
     @Autowired
     public AdminView(UserService userService, RoleRepository roleRepository, SecurityService securityService) {
         this.userService = userService;
-        this.roleRepository = roleRepository;
-        this.securityService = securityService;
 
         if (userService == null || roleRepository == null || securityService == null) {
             throw new IllegalArgumentException("userService, roleRepository, and securityService cannot be null");
@@ -79,7 +74,7 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
 
         // Erstellen des Titels
         User currentAdmin = getCurrentAdmin();
-        Label titleLabel = new Label("Admin Panel - " + currentAdmin.getUsername());
+        Span titleLabel = new Span("Admin Panel - " + currentAdmin.getUsername());
         titleLabel.getStyle().set("font-size", "24px").set("font-weight", "bold");
         titleLabel.getStyle().set("text-align", "center");
         titleLabel.setWidthFull();
@@ -110,10 +105,10 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
 
             try {
                 userService.validateUsername(username);
-                userService.validatePassword(password, username);
+                userService.validatePassword(password);
 
                 if (selectedRole == null) {
-                    Notification.show("Role must not be empty");
+                    NotificationPopup.showWarningNotification("Role must not be empty");
                     return;
                 }
 
@@ -128,14 +123,14 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
 
                 userService.saveUser(newUser, currentAdmin);
                 updateUserGrid();
-                Notification.show("User added successfully");
+                NotificationPopup.showSuccessNotification("User added successfully");
 
                 // Felder leeren
                 usernameField.clear();
                 passwordField.clear();
                 roleComboBox.clear();
             } catch (IllegalArgumentException e) {
-                Notification.show(e.getMessage());
+                NotificationPopup.showErrorNotification(e.getMessage());
             }
         });
 
@@ -146,7 +141,7 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
         userGrid = new Grid<>(User.class);
         userGrid.setColumns(); // Clear existing columns
         userGrid.addColumn(User::getUsername).setHeader("Username");
-        userGrid.addColumn(new ComponentRenderer<>(user -> new Label(
+        userGrid.addColumn(new ComponentRenderer<>(user -> new Span(
                 user.getRoles().stream().map(Role::getName).collect(Collectors.joining(", "))
         ))).setHeader("Roles");
         userGrid.addColumn(new ComponentRenderer<>(user -> {
@@ -154,13 +149,19 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
 
             Button deleteButton = new Button("Delete");
             deleteButton.addClickListener(e -> {
-                boolean deleted = userService.deleteUser(user);
-                if (deleted) {
-                    updateUserGrid();
-                    Notification.show("User deleted successfully");
-                } else {
-                    Notification.show("Cannot delete the last admin", 3000, Notification.Position.MIDDLE);
-                }
+                ConfirmationDialog confirmationDialog = new ConfirmationDialog(
+                        "Are you sure you want to delete the user " + user.getUsername() + "?",
+                        () -> {
+                            boolean deleted = userService.deleteUser(user);
+                            if (deleted) {
+                                updateUserGrid();
+                                NotificationPopup.showSuccessNotification("User deleted successfully");
+                            } else {
+                                NotificationPopup.showErrorNotification("Cannot delete the last admin");
+                            }
+                        }
+                );
+                confirmationDialog.open();
             });
 
             Button updatePasswordButton = new Button("Change Password");
@@ -217,12 +218,12 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
         Button changeButton = new Button("Change", event -> {
             String newPassword = newPasswordField.getValue();
             try {
-                userService.validatePassword(newPassword, user.getUsername());
+                userService.validatePassword(newPassword);
                 userService.updatePassword(user, newPassword);
-                Notification.show("Password changed successfully for user: " + user.getUsername());
+                NotificationPopup.showSuccessNotification("Password changed successfully for user: " + user.getUsername());
                 dialog.close();
             } catch (IllegalArgumentException ex) {
-                Notification.show(ex.getMessage());
+                NotificationPopup.showErrorNotification(ex.getMessage());
             }
         });
 
