@@ -102,7 +102,7 @@ Die Anwendung stellt sicher, dass die Beziehungen zwischen Mietern, Mietverträg
 - dann die [Docker compose](docker-compose.yml) herunterladen und anpassen
 - dann `docker compose up -d`
 
-|  Variable   | Werte                                 | Default              |
+|  Variable   | Beschreibung                          | Default              |
 |:-----------:|---------------------------------------|----------------------|
 |   DB_HOST   | Hostname/IP der Datenbank             | db                   |
 |   DB_PORT   | Port von Postgres                     | 5432                 |

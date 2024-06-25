@@ -1,7 +1,7 @@
 ---
 services:
   immobilienverwaltung:
-    image: ghcr.io/dav354/immobilienverwaltung:0.2
+    image: ghcr.io/dav354/immobilienverwaltung:latest
     restart: unless-stopped
     container_name: immobilienverwaltung
     depends_on:
@@ -18,6 +18,8 @@ services:
       - DB_USER=myuser
       - DB_PASSWORD=mypassword
       - DEMO_MODE=true
+      - ADMIN=admin
+      - ADMIN_PW=password
 
   db:
     image: docker.io/postgres:16-alpine
