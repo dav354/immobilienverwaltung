@@ -8,6 +8,7 @@ import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
@@ -34,11 +35,11 @@ import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.ui.components.ConfirmationDialog;
 import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 /**
  * Diese Klasse stellt ein Formular zur Bearbeitung eines Mieters dar.
  * Es ermöglicht die Eingabe, Validierung und Speicherung von Mieter- und Mietvertragsdaten.
@@ -73,6 +74,7 @@ public class MieterForm extends FormLayout {
 
     // Grid for Dokumente
     Grid<Dokument> dokumentGrid = new Grid<>(Dokument.class);
+
     // Die 3 Knöpfe zum Speichern, Löschen und Schließen des Forms
     Button speichern = new Button("Speichern");
     Button loeschen = new Button("Löschen");
@@ -105,11 +107,17 @@ public class MieterForm extends FormLayout {
 
         configureDokumentGrid();
 
+        H2 zwischen = new H2("Mietvertrag");
+        H1 absatz = new H1("");
+        H1 absatz1 = new H1("");
+        H1 absatz2= new H1("");
+
+
         VerticalLayout gridLayout = new VerticalLayout(new H1("Dokumente"));
         gridLayout.add(dokumentGrid);
 
-        add(name, vorname, telefonnummer, email, einkommen, mietbeginn, mietende, kaution, miete, anzahlBewohner, wohnungMultiSelectComboBox,
-                createButtonsLayout(), gridLayout);
+        add(name, vorname, telefonnummer, email, einkommen, absatz, zwischen, absatz1, mietbeginn, mietende, kaution, miete, anzahlBewohner, wohnungMultiSelectComboBox,
+                absatz2, createButtonsLayout(), gridLayout);
         configureValidation();
     }
 
@@ -121,7 +129,6 @@ public class MieterForm extends FormLayout {
         dokumentGrid.setColumns("dokumententyp", "dateipfad");
         dokumentGrid.getColumnByKey("dokumententyp").setHeader("Dokumententyp");
         dokumentGrid.getColumnByKey("dateipfad").setHeader("Dateipfad");
-        dokumentGrid.setHeight("300px");
     }
 
     /**
@@ -215,7 +222,7 @@ public class MieterForm extends FormLayout {
 
     /**
      * Bindet die übergebene Mieter-Entität an das Formular.
-     * Aktualisiert die Formularfelder mit den Daten des Mieters und den zugehörigen Mietvertragsinformationen.
+     * Aktualisiert die Formularfelder mit den Daten des Mieters, den zugehörigen Mietvertragsinformationen und die Dokumente
      *
      * @param mieter Die Mieter-Entität, die an das Formular gebunden werden soll
      */
@@ -245,6 +252,14 @@ public class MieterForm extends FormLayout {
         if (mieter != null) {
             List<Dokument> dokumente = dokumentService.findDokumenteByMieter(mieter);
             dokumentGrid.setItems(dokumente);
+            // Berechne die Höhe basierend auf der Anzahl der Zeilen
+            int rowCount = dokumente.size();
+            int rowHeight = 40; // Standardzeilenhöhe in Pixel (kann je nach Thema variieren)
+            int headerHeight = 56; // Höhe des Headers in Pixel (auch anpassbar)
+            int footerHeight = 0; // Höhe des Footers (falls vorhanden)
+
+            // Setze die Höhe des Grids
+            dokumentGrid.setHeight((rowCount * rowHeight + headerHeight + footerHeight) + "px");
         } else {
             dokumentGrid.setItems(new ArrayList<>());
         }
@@ -420,7 +435,7 @@ public class MieterForm extends FormLayout {
      * Bei Bestätigung wird ein DeleteEvent ausgelöst und eine Erfolgsmeldung angezeigt.
      */
     private void showDeleteConfirmationDialog() {
-        // Create a new ConfirmationDialog with a message and a confirm action
+        // Create a new ConfirmationDialog with a message and a confirmation action
         ConfirmationDialog confirmationDialog = new ConfirmationDialog(
                 "Are you sure you want to delete this Mieter?\nThe Mietvertrag will also be deleted.",
                 () -> {
