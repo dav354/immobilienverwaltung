@@ -1,36 +1,30 @@
 package projektarbeit.immobilienverwaltung.ui.layout;
 
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.AfterNavigationEvent;
-import com.vaadin.flow.router.AfterNavigationObserver;
-import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.component.sidenav.SideNav;
+import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.theme.lumo.Lumo;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import projektarbeit.immobilienverwaltung.service.SecurityService;
+import projektarbeit.immobilienverwaltung.ui.views.Login.AdminView;
 import projektarbeit.immobilienverwaltung.ui.views.MainView;
 import projektarbeit.immobilienverwaltung.ui.views.mieter.MieterListView;
 import projektarbeit.immobilienverwaltung.ui.views.wohnung.WohnungListView;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
 /**
  * Hauptlayout der Anwendung, das die Navigation und das Layout der Anwendung definiert.
  */
-public class MainLayout extends AppLayout implements AfterNavigationObserver {
+public class MainLayout extends AppLayout {
 
     private boolean isDarkMode = true; // Dark mode standardmäßig aktiviert
-    private final List<RouterLink> navLinks = new ArrayList<>();
     private final SecurityService securityService;
 
     /**
@@ -42,7 +36,6 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
         this.securityService = securityService;
         createHeader();
         createDrawer();
-        createFooter();
         enableDarkMode();
     }
 
@@ -53,8 +46,7 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
         String currentUsername = getCurrentUsername();
         DrawerToggle toggle = new DrawerToggle();
         Div title = new Div();
-        title.setText("Immobilienverwaltung - "+ currentUsername);
-
+        title.setText("Immobilienverwaltung - " + currentUsername);
 
         HorizontalLayout header = new HorizontalLayout(toggle, title);
         header.setWidthFull();
@@ -84,7 +76,7 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
     /**
      * Erstellt die Fußzeile des Layouts.
      */
-    private void createFooter() {
+    private VerticalLayout createFooter() {
         Button logoutButton = new Button("Logout", event -> securityService.logout());
         logoutButton.addClassName("footer-button");
 
@@ -96,11 +88,11 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
         footerLayout.setPadding(true);
         footerLayout.setAlignItems(FlexComponent.Alignment.STRETCH);
         footerLayout.setMargin(false);
-        addToDrawer(footerLayout);
+        return footerLayout;
     }
 
     /**
-     * Wechselt den Darmode des Layouts.
+     * Wechselt den Darkmode des Layouts.
      */
     private void toggleDarkMode() {
         if (isDarkMode) {
@@ -115,64 +107,28 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
      * Erstellt das Navigationsmenü im Drawer.
      */
     private void createDrawer() {
-        VerticalLayout layout = new VerticalLayout();
-        layout.add(new Span("Navigation"));
-        layout.add(createNavigationLink("Home", MainView.class));
-        layout.add(createNavigationLink("Wohnungen", WohnungListView.class));
-        layout.add(createNavigationLink("Mieter", MieterListView.class));
+        SideNav nav = new SideNav();
+
+        SideNavItem home = new SideNavItem("Home", MainView.class, VaadinIcon.DASHBOARD.create());
+        SideNavItem wohnungen = new SideNavItem("Wohnungen", WohnungListView.class, VaadinIcon.HOME.create());
+        SideNavItem mieter = new SideNavItem("Mieter", MieterListView.class, VaadinIcon.USER.create());
+
+        nav.addItem(home, wohnungen, mieter);
 
         // Füge den Admin-Seiten-Link hinzu, wenn der Benutzer ein ADMIN ist
         if (securityService.getAuthenticatedUserRoles().contains("ADMIN")) {
-            layout.add(createNavigationLink("Admin", projektarbeit.immobilienverwaltung.ui.views.Login.AdminView.class));
+            SideNavItem admin = new SideNavItem("Admin", AdminView.class, VaadinIcon.WRENCH.create());
+            nav.addItem(admin);
         }
 
-        layout.setWidthFull();
-        layout.setSizeFull();
-        layout.getStyle().set("background-color", "var(--lumo-contrast-10pct)");
-        layout.getStyle().set("padding", "10px");
-        addToDrawer(layout);
-    }
+        nav.getElement().getStyle().set("width", "100%");
 
-    /**
-     * Erstellt einen Navigationslink für das Navigationsmenü.
-     *
-     * @param text der anzuzeigende Text des Links.
-     * @param navigationTarget das Ziel der Navigation.
-     * @return der erstellte RouterLink.
-     */
-    private RouterLink createNavigationLink(String text, Class<? extends Component> navigationTarget) {
-        RouterLink link = new RouterLink();
-        link.setText(text);
-        link.setRoute(navigationTarget);
-        link.getStyle().set("display", "block");
-        link.getStyle().set("padding", "10px");
-        link.getStyle().set("margin", "5px 0");
-        link.getStyle().set("border", "1px solid var(--lumo-contrast-20pct)");
-        link.getStyle().set("border-radius", "5px");
-        link.getStyle().set("text-decoration", "none");
-        link.getStyle().set("color", "var(--lumo-body-text-color)");
-        link.getStyle().set("background-color", "var(--lumo-contrast-5pct)");
-        link.getStyle().set("width", "90%");
-        navLinks.add(link); // Add link to the list
-        return link;
-    }
+        // Add the nav and footer to a flex layout to push footer to the bottom
+        VerticalLayout drawerContent = new VerticalLayout(nav, createFooter());
+        drawerContent.setSizeFull();
+        drawerContent.setFlexGrow(1, nav);
+        drawerContent.setAlignItems(FlexComponent.Alignment.STRETCH);
 
-    /**
-     * Wird nach der Navigation ausgeführt und hebt den aktuellen Navigationslink hervor.
-     *
-     * @param event das Navigationsevent.
-     */
-    @Override
-    public void afterNavigation(AfterNavigationEvent event) {
-        String currentRoute = event.getLocation().getFirstSegment();
-        navLinks.forEach(link -> {
-            if (link.getHref().equals(currentRoute)) {
-                link.getStyle().set("background-color", "var(--lumo-primary-color-10pct)");
-                link.getStyle().set("color", "var(--lumo-body-text-color)");
-            } else {
-                link.getStyle().set("background-color", "var(--lumo-contrast-5pct)");
-                link.getStyle().set("color", "var(--lumo-body-text-color)");
-            }
-        });
+        addToDrawer(drawerContent);
     }
 }
