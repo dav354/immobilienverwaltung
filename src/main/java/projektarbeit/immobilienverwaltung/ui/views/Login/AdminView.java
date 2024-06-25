@@ -13,6 +13,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,7 @@ import java.util.stream.Collectors;
 @Route(value = "admin", layout = MainLayout.class)
 @PermitAll
 @Secured("ROLE_ADMIN")
+@PageTitle("Admin Panel")
 public class AdminView extends VerticalLayout implements BeforeEnterObserver {
 
     private final UserService userService;
@@ -91,6 +93,8 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
 
         TextField usernameField = new TextField("Username");
         PasswordField passwordField = new PasswordField("Password");
+        passwordField.setPattern("(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,20}");
+        passwordField.setErrorMessage("Password must be 8-20 characters long, include uppercase and lowercase letters, a number, and a special character (@#$%^&+=!).");
 
         ComboBox<Role> roleComboBox = new ComboBox<>("Role");
         List<Role> roles = roleRepository.findAll();
