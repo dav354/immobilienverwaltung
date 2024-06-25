@@ -1,7 +1,9 @@
 package projektarbeit.immobilienverwaltung.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.model.Zaehlerstand;
 import projektarbeit.immobilienverwaltung.repository.ZaehlerstandRepository;
 
@@ -60,5 +62,16 @@ public class ZaehlerstandService {
      */
     public void deleteZaehlerstand(Long id) {
         zaehlerstandRepository.deleteById(id);
+    }
+
+    /**
+     * Finds and returns a list of Zaehlerstand entities associated with a given Wohnung.
+     *
+     * @param wohnung     The Wohnung entity for which to find associated Zaehlerstände.
+     * @param pageRequest
+     * @return A list of Zaehlerstand entities associated with the specified Wohnung.
+     */
+    public List<Zaehlerstand> findZaehlerstandByWohnung(Wohnung wohnung) {
+        return zaehlerstandRepository.findByWohnung(wohnung);
     }
 }

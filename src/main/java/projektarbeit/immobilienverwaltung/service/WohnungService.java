@@ -9,6 +9,7 @@ import projektarbeit.immobilienverwaltung.repository.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("SpellCheckingInspection")
@@ -50,6 +51,17 @@ public class WohnungService {
      */
     public List<Mieter> findAllMieter() {
         return mieterRepository.findAll();
+    }
+
+    /**
+     * Finds a Wohnung by its ID.
+     *
+     * @param wohnungId the ID of the Wohnung to find
+     * @return the Wohnung with the specified ID, or null if not found
+     */
+    @Transactional(readOnly = true)
+    public Wohnung findWohnungById(Long wohnungId) {
+        return wohnungRepository.findById(wohnungId).orElse(null);
     }
 
     /**
@@ -185,5 +197,20 @@ public class WohnungService {
                 .map(Mietvertrag::getWohnung)
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Retrieves the list of Zaehlerstand (meter readings) associated with a given Wohnung (apartment).
+     * This method queries the ZaehlerstandRepository to fetch all Zaehlerstand entries linked to the specified Wohnung.
+     *
+     * @param wohnung the Wohnung entity for which to find the Zaehlerstand entries.
+     * @return a list of Zaehlerstand entries associated with the given Wohnung.
+     */
+    @Transactional(readOnly = true)
+    public List<Zaehlerstand> findZaehlerstandByWohnung(Wohnung wohnung) {
+        if (wohnung == null) {
+            throw new IllegalArgumentException("Wohnung cannot be null");
+        }
+        return zaehlerstandRepository.findByWohnung(wohnung);
     }
 }

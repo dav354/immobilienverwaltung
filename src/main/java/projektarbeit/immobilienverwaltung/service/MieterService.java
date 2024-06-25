@@ -169,4 +169,8 @@ public class MieterService {
     public void deleteMietvertrag(Mietvertrag mietvertrag) {
         mietvertragRepository.delete(mietvertrag);
     }
+
+    public Mieter findById(Long id) {
+        return mieterRepository.findById(id).orElse(null);
+    }
 }

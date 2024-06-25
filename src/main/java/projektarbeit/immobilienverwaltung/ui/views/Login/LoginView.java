@@ -8,8 +8,13 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import jakarta.annotation.security.PermitAll;
 import projektarbeit.immobilienverwaltung.ui.layout.LoginLayout;
 
+/**
+ * Diese Klasse stellt die Login-Ansicht der Immobilienverwaltung dar.
+ * Sie ermöglicht es Benutzern, sich in die Anwendung einzuloggen.
+ */
 @Route(value = "login", layout = LoginLayout.class)
 @PageTitle("Login | Immobilienverwaltung")
 @AnonymousAllowed
@@ -17,6 +22,10 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
     private final LoginForm login = new LoginForm();
 
+    /**
+     * Konstruktor für die LoginView-Klasse.
+     * Initialisiert das Layout und die Komponenten der Login-Ansicht.
+     */
     public LoginView(){
         addClassName("login-view");
         setSizeFull();
@@ -28,9 +37,15 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         add(new H1("Immobilienverwaltung"), login);
     }
 
+    /**
+     * Diese Methode wird vor dem Betreten der Ansicht aufgerufen.
+     * Sie überprüft, ob ein Authentifizierungsfehler vorliegt und zeigt eine Fehlermeldung an, falls vorhanden.
+     *
+     * @param beforeEnterEvent das BeforeEnterEvent, das Informationen über die Navigation enthält
+     */
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
-        // Inform the user about an authentication error
+        // Informiert den Benutzer über einen Authentifizierungsfehler
         if(beforeEnterEvent.getLocation()
                 .getQueryParameters()
                 .getParameters()
