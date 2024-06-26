@@ -3,8 +3,7 @@ package projektarbeit.immobilienverwaltung.service;
 import com.vaadin.flow.spring.security.AuthenticationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import projektarbeit.immobilienverwaltung.model.User;
 import projektarbeit.immobilienverwaltung.repository.UserRepository;
 
@@ -14,25 +13,22 @@ import java.util.stream.Collectors;
 /**
  * Sicherheitsdienstklasse für die Verwaltung der Authentifizierung und Autorisierung.
  */
-@Component
+@Service
 public class SecurityService {
 
     private final AuthenticationContext authenticationContext;
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
     /**
      * Konstruktor für die SecurityService-Klasse.
      *
      * @param authenticationContext Der Kontext zur Authentifizierung.
      * @param userRepository        Das Repository für Benutzer.
-     * @param passwordEncoder       Der Encoder für Passwörter.
      */
     @Autowired
-    public SecurityService(AuthenticationContext authenticationContext, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public SecurityService(AuthenticationContext authenticationContext, UserRepository userRepository) {
         this.authenticationContext = authenticationContext;
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -58,16 +54,6 @@ public class SecurityService {
      */
     public void save(User user) {
         userRepository.save(user);
-    }
-
-    /**
-     * Verschlüsselt ein Passwort.
-     *
-     * @param password Das zu verschlüsselnde Passwort.
-     * @return Das verschlüsselte Passwort.
-     */
-    public String encodePassword(String password) {
-        return passwordEncoder.encode(password);
     }
 
     /**

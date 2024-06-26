@@ -22,6 +22,7 @@ import com.vaadin.flow.data.validator.DoubleRangeValidator;
 import com.vaadin.flow.data.validator.IntegerRangeValidator;
 import com.vaadin.flow.data.validator.RegexpValidator;
 import com.vaadin.flow.function.ValueProvider;
+import com.vaadin.flow.router.Route;
 import com.vaadin.flow.shared.Registration;
 import jakarta.annotation.security.PermitAll;
 import projektarbeit.immobilienverwaltung.model.Dokument;
@@ -35,6 +36,7 @@ import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.ui.components.ConfirmationDialog;
 import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
 import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
+import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 
 
 import java.util.ArrayList;
@@ -46,6 +48,7 @@ import java.util.stream.Collectors;
  * Es ermöglicht die Eingabe, Validierung und Speicherung von Mieter- und Mietvertragsdaten.
  */
 @PermitAll
+@Route(value = "mieter-details/:id", layout = MainLayout.class)
 @SuppressWarnings("SpellCheckingInspection")
 public class MieterForm extends FormLayout {
 

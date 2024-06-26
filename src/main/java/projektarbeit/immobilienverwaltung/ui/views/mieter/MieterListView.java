@@ -2,6 +2,7 @@ package projektarbeit.immobilienverwaltung.ui.views.mieter;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Html;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
@@ -110,7 +111,7 @@ public class MieterListView extends VerticalLayout {
 
     /**
      * Konfiguriert das Mieter-Formular für die Bearbeitung von Mieterdaten.
-     * Setzt die Breite auf 100 % und setzt es initial auf unsichtbar.
+     * Setzt die Breite auf 100% und setzt es initial auf unsichtbar.
      * Fügt Listener für Speichern, Löschen und Schließen hinzu, um entsprechende Aktionen auszuführen.
      */
     private void configureForm() {
@@ -184,7 +185,11 @@ public class MieterListView extends VerticalLayout {
         grid.getColumns().forEach(col -> col.setAutoWidth(true).setSortable(true));
 
         // Listener für die Auswahl eines Mieters zum Bearbeiten hinzufügen
-        grid.asSingleSelect().addValueChangeListener(e -> editMieter(e.getValue()));
+        grid.asSingleSelect().addValueChangeListener(event -> {
+            if (event.getValue() != null) {
+                UI.getCurrent().navigate("mieter-details/" + event.getValue().getMieter_id());
+            }
+        });
     }
 
     /**
@@ -249,25 +254,6 @@ public class MieterListView extends VerticalLayout {
      */
     private <T> void addMietvertragColumn(ValueProvider<Mietvertrag, T> valueProvider, String headerHtml, boolean isCurrency) {
         addMietvertragColumn(valueProvider, headerHtml, isCurrency, false, false);
-    }
-
-    /**
-     * Öffnet den Editor für die Bearbeitung eines Mieters.
-     * Wenn der übergebene Mieter null ist, wird der Editor geschlossen.
-     *
-     * @param mieter Der Mieter, der bearbeitet werden soll. Kann null sein.
-     */
-    private void editMieter(Mieter mieter) {
-        if (mieter == null) {
-            closeEditor();
-        } else {
-            form.setMieter(mieter);
-            form.setVisible(true);
-            grid.setVisible(false);
-            toolbar.setVisible(false);
-            form.loeschen.setVisible(true);
-            addClassName("editing");
-        }
     }
 
     /**
