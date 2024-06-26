@@ -93,6 +93,13 @@ public class Wohnung {
     @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Illegal Wohnungsnummer")
     private String wohnungsnummer;
 
+    @Column(nullable = true)
+    private Double latitude;
+
+    @Column(nullable = true)
+    private Double longitude;
+
+
     /**
      * Default constructor for JPA.
      */
@@ -546,6 +553,22 @@ public class Wohnung {
      */
     public void setHeader(boolean header) {
         isHeader = header;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 
     /**

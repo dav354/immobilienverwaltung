@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import projektarbeit.immobilienverwaltung.model.*;
 import projektarbeit.immobilienverwaltung.repository.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,18 +22,21 @@ public class WohnungService {
     private final MieterRepository mieterRepository;
     private final  MietvertragRepository mietvertragRepository;
     private final ZaehlerstandRepository zaehlerstandRepository;
+    private final GeocodingService geocodingService;
 
     @Autowired
     public WohnungService(WohnungRepository wohnungRepository,
                           DokumentRepository dokumentRepository,
                           MieterRepository mieterRepository,
                           MietvertragRepository mietvertragRepository,
-                          ZaehlerstandRepository zaehlerstandRepository) {
+                          ZaehlerstandRepository zaehlerstandRepository,
+                          GeocodingService geocodingService) {
         this.wohnungRepository = wohnungRepository;
         this.dokumentRepository = dokumentRepository;
         this.mieterRepository = mieterRepository;
         this.mietvertragRepository = mietvertragRepository;
         this.zaehlerstandRepository = zaehlerstandRepository;
+        this.geocodingService = geocodingService;
     }
 
     /**
@@ -181,7 +185,29 @@ public class WohnungService {
      */
     @Transactional
     public Wohnung save(Wohnung wohnung) {
+        setCoordinates(wohnung);
         return wohnungRepository.save(wohnung);
+    }
+
+    /**
+     * Sets the coordinates (latitude and longitude) of a Wohnung based on its address.
+     *
+     * @param wohnung the Wohnung entity for which to set the coordinates
+     */
+    private void setCoordinates(Wohnung wohnung) {
+        String address = String.format("%s %s, %s, %s, %s",
+                wohnung.getStrasse(), wohnung.getHausnummer(),
+                wohnung.getPostleitzahl(), wohnung.getStadt(),
+                wohnung.getLand().name());
+        try {
+            double[] coordinates = geocodingService.getCoordinates(address);
+            wohnung.setLatitude(coordinates[0]);
+            wohnung.setLongitude(coordinates[1]);
+        } catch (IOException e) {
+            // Handle the exception (log it, set default coordinates, etc.)
+            wohnung.setLatitude(null);
+            wohnung.setLongitude(null);
+        }
     }
 
     /**

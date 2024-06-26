@@ -14,10 +14,15 @@ import com.vaadin.flow.spring.annotation.UIScope;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import projektarbeit.immobilienverwaltung.controller.DashboardController;
+import projektarbeit.immobilienverwaltung.model.Wohnung;
+import projektarbeit.immobilienverwaltung.service.GeocodingService;
+import projektarbeit.immobilienverwaltung.service.WohnungService;
+import projektarbeit.immobilienverwaltung.ui.components.MapComponent;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 
 import jakarta.annotation.PostConstruct;
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -33,6 +38,7 @@ import java.util.Map;
 public class MainView extends VerticalLayout {
 
     private final DashboardController dashboardController;
+    private final WohnungService wohnungService;
 
     /**
      * Konstruktor für die MainView-Klasse.
@@ -40,8 +46,9 @@ public class MainView extends VerticalLayout {
      * @param dashboardController der Controller, der die Daten für die Statistiken bereitstellt.
      */
     @Autowired
-    public MainView(DashboardController dashboardController) {
+    public MainView(DashboardController dashboardController, WohnungService wohnungService) {
         this.dashboardController = dashboardController;
+        this.wohnungService = wohnungService;
     }
 
     /**
@@ -77,6 +84,12 @@ public class MainView extends VerticalLayout {
 
         // Hinzufügen des HorizontalLayout zum Hauptlayout
         add(statsLayout);
+
+        // Hinzufügen der Übersichtskarte
+        List<Wohnung> wohnungen = wohnungService.findAllWohnungen();
+        MapComponent overviewMap = new MapComponent(wohnungen);
+        overviewMap.setWidth("100%");
+        add(overviewMap);
     }
 
     /**

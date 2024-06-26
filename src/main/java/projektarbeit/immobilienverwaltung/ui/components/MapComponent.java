@@ -1,69 +1,82 @@
 package projektarbeit.immobilienverwaltung.ui.components;
 
-import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.IFrame;
 import com.vaadin.flow.component.html.Span;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
-import projektarbeit.immobilienverwaltung.service.GeocodingService;
 
-import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * Eine Komponente, die eine Karte anzeigt, basierend auf der Adresse einer Wohnung.
- * Wenn keine Koordinaten gefunden werden, wird eine Standardkarte angezeigt.
+ * Eine Komponente, die eine Übersichtskarte mit Markierungen für alle angegebenen Wohnungen anzeigt.
+ * Wenn keine Koordinaten gefunden werden, wird ein Hinweistext angezeigt.
  */
-public class MapComponent extends Composite<Div> {
+public class MapComponent extends Div {
 
     private static final String OSM_BASE_URL = "https://www.openstreetmap.org/export/embed.html?bbox=";
     private static final String OSM_MARKER_URL = "&marker=";
-    private static final String DEFAULT_MAP_URL = "https://www.openstreetmap.org/export/embed.html?bbox=10.986022%2C47.421033%2C10.986022%2C47.421033&marker=47.421033%2C10.986022";
 
-    private final Wohnung wohnung;
-    private final GeocodingService geocodingService = new GeocodingService();
-
-    /**
-     * Konstruktor für die MapComponent.
-     *
-     * @param wohnung Die Wohnung, deren Adresse auf der Karte angezeigt werden soll.
-     */
     public MapComponent(Wohnung wohnung) {
-        this.wohnung = wohnung;
-        setupMap();
+        setupMapForSingleWohnung(wohnung);
+    }
+
+    public MapComponent(List<Wohnung> wohnungen) {
+        setupMapForWohnungen(wohnungen);
     }
 
     /**
-     * Initialisiert die Karte und zeigt sie an.
-     * Wenn keine Koordinaten gefunden werden, wird eine Standardkarte angezeigt.
-     */
-    private void setupMap() {
-        String mapUrl;
-        try {
-            mapUrl = buildMapUrl(wohnung);
-        } catch (IOException e) {
-            mapUrl = DEFAULT_MAP_URL;
-            getContent().add(new Span("Keine Koordinaten für die angegebene Adresse gefunden. Zeige Standardkarte."));
-        }
-        IFrame mapFrame = new IFrame(mapUrl);
-        mapFrame.setWidth("100%");
-        mapFrame.setHeight("400px");
-        mapFrame.getElement().getStyle().set("border", "0");
-        getContent().add(mapFrame);
-    }
-
-    /**
-     * Erzeugt die URL für die Karte basierend auf der Adresse der Wohnung.
+     * Initialisiert die Karte für eine einzelne Wohnung und zeigt sie an.
+     * Wenn keine Koordinaten gefunden werden, wird ein Hinweistext angezeigt.
      *
-     * @param wohnung Die Wohnung, deren Adresse geocodiert werden soll.
-     * @return Die URL für die Karte.
-     * @throws IOException Wenn keine Koordinaten für die Adresse gefunden werden.
+     * @param wohnung Die Wohnung, für die die Karte angezeigt werden soll.
      */
-    private String buildMapUrl(Wohnung wohnung) throws IOException {
-        String address = buildAddress(wohnung);
-        double[] coordinates = geocodingService.getCoordinates(address);
-        double latitude = coordinates[0];
-        double longitude = coordinates[1];
-        double boundingBoxSize = 0.01; // Größe des Bounding-Box nach Bedarf anpassen
+    private void setupMapForSingleWohnung(Wohnung wohnung) {
+        if (wohnung.getLatitude() == null || wohnung.getLongitude() == null) {
+            add(new Span("Keine Koordinaten für die angegebene Adresse gefunden."));
+        } else {
+            String mapUrl = buildMapUrlForWohnung(wohnung);
+            IFrame mapFrame = new IFrame(mapUrl);
+            mapFrame.setWidth("100%");
+            mapFrame.setHeight("600px");
+            mapFrame.getElement().getStyle().set("border", "0");
+            add(mapFrame);
+        }
+    }
+
+    /**
+     * Initialisiert die Karte für eine Liste von Wohnungen und zeigt sie an.
+     * Wohnungen ohne Koordinaten werden übersprungen.
+     *
+     * @param wohnungen Eine Liste von Wohnungen, für die die Karte angezeigt werden soll.
+     */
+    private void setupMapForWohnungen(List<Wohnung> wohnungen) {
+        List<Wohnung> validWohnungen = wohnungen.stream()
+                .filter(wohnung -> wohnung.getLatitude() != null && wohnung.getLongitude() != null)
+                .collect(Collectors.toList());
+
+        if (validWohnungen.isEmpty()) {
+            add(new Span("Keine Koordinaten für die angegebenen Adressen gefunden."));
+        } else {
+            String mapUrl = buildMapUrlForWohnungen(validWohnungen);
+            IFrame mapFrame = new IFrame(mapUrl);
+            mapFrame.setWidth("100%");
+            mapFrame.setHeight("600px");
+            mapFrame.getElement().getStyle().set("border", "0");
+            add(mapFrame);
+        }
+    }
+
+    /**
+     * Erzeugt die URL für die Karte basierend auf den Koordinaten einer einzelnen Wohnung.
+     *
+     * @param wohnung Die Wohnung, für die die Koordinaten abgerufen werden sollen.
+     * @return Die URL für die Karte.
+     */
+    private String buildMapUrlForWohnung(Wohnung wohnung) {
+        double latitude = wohnung.getLatitude();
+        double longitude = wohnung.getLongitude();
+        double boundingBoxSize = 0.01; // Größe des Bounding Box
 
         String boundingBox = (longitude - boundingBoxSize) + "," + (latitude - boundingBoxSize) + "," + (longitude + boundingBoxSize) + "," + (latitude + boundingBoxSize);
         String marker = latitude + "," + longitude;
@@ -72,12 +85,26 @@ public class MapComponent extends Composite<Div> {
     }
 
     /**
-     * Baut die Adresse der Wohnung als String zusammen.
+     * Erzeugt die URL für die Karte basierend auf den Koordinaten einer Liste von Wohnungen.
      *
-     * @param wohnung Die Wohnung, deren Adresse zusammengebaut werden soll.
-     * @return Die Adresse als String.
+     * @param wohnungen Eine Liste von Wohnungen, für die die Koordinaten abgerufen werden sollen.
+     * @return Die URL für die Karte.
      */
-    private String buildAddress(Wohnung wohnung) {
-        return String.format("%s %s, %s, %s, %s", wohnung.getStrasse(), wohnung.getHausnummer(), wohnung.getPostleitzahl(), wohnung.getStadt(), wohnung.getLand().name());
+    private String buildMapUrlForWohnungen(List<Wohnung> wohnungen) {
+        double minLat = Double.MAX_VALUE, minLon = Double.MAX_VALUE, maxLat = Double.MIN_VALUE, maxLon = Double.MIN_VALUE;
+        StringBuilder markers = new StringBuilder();
+
+        for (Wohnung wohnung : wohnungen) {
+            double latitude = wohnung.getLatitude();
+            double longitude = wohnung.getLongitude();
+            minLat = Math.min(minLat, latitude);
+            minLon = Math.min(minLon, longitude);
+            maxLat = Math.max(maxLat, latitude);
+            maxLon = Math.max(maxLon, longitude);
+            markers.append(OSM_MARKER_URL).append(latitude).append("%2C").append(longitude);
+        }
+
+        String boundingBox = minLon + "," + minLat + "," + maxLon + "," + maxLat;
+        return OSM_BASE_URL + boundingBox + markers;
     }
 }

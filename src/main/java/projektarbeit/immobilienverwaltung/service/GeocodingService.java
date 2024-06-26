@@ -6,13 +6,15 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
 /**
- * Ein Dienst zum Abrufen von Geokoordinaten für eine gegebene Adresse
+ * Ein Dienst zum Abrufen von Geokoordinaten für gegebene Adressen
  * unter Verwendung der Nominatim-API von OpenStreetMap.
  */
+@Service
 public class GeocodingService {
 
     private static final String NOMINATIM_URL = "https://nominatim.openstreetmap.org/search?q=%s&format=json&addressdetails=1&limit=1";
