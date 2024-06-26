@@ -9,7 +9,6 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.IFrame;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
@@ -29,6 +28,7 @@ import projektarbeit.immobilienverwaltung.service.DokumentService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.service.ZaehlerstandService;
 import projektarbeit.immobilienverwaltung.ui.components.ConfirmationDialog;
+import projektarbeit.immobilienverwaltung.ui.components.MapComponent;
 import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.WohnungEditDialog;
@@ -155,21 +155,13 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         VerticalLayout leftLayout = new VerticalLayout(formLayout);
         leftLayout.setWidth("60%");
 
-        IFrame mapFrame = createMapFrame();
+        MapComponent mapComponent = new MapComponent(currentWohnung);
 
-        VerticalLayout rightLayout = new VerticalLayout(mapFrame);
+        VerticalLayout rightLayout = new VerticalLayout(mapComponent);
         rightLayout.setWidth("40%");
 
         topLayout.add(leftLayout, rightLayout);
         return topLayout;
-    }
-
-    private IFrame createMapFrame() {
-        IFrame mapFrame = new IFrame("https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d243647.30699931925!2d-74.0060152!3d40.7127281!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c250bdeb33f607%3A0x4b105c8b569d1e14!2sNew+York%2C+NY%2C+USA!5e0!3m2!1sen!2s!4v1421001339451");
-        mapFrame.setWidth("100%");
-        mapFrame.setHeight("400px");
-        mapFrame.getElement().getStyle().set("border", "0");
-        return mapFrame;
     }
 
     private VerticalLayout createFormLayout2Col() {

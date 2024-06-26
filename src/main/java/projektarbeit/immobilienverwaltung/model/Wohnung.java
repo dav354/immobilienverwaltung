@@ -24,7 +24,7 @@ public class Wohnung {
     @Column(nullable = false, length = 100)
     @NotBlank(message = "Illegal Strasse")
     @Size(max = 100, message = "Illegal Strasse")
-    @Pattern(regexp = "^[\\p{L}\\s]+$", message = "Illegal Strasse")
+    @Pattern(regexp = "^[\\p{L}äöüÄÖÜß\\s\\-]+$", message = "Illegal Strasse")
     private String strasse;
 
     @Column(nullable = false, length = 6)

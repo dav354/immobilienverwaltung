@@ -42,7 +42,7 @@ public class WohnungEditDialog extends Dialog {
         // Create and bind fields
         TextField strasseField = new TextField("Strasse");
         binder.forField(strasseField).asRequired("Strasse ist erforderlich")
-                .withValidator(new RegexpValidator("Strasse darf nur Buchstaben enthalten", "^[\\p{L}\\s]+$", true))
+                .withValidator(new RegexpValidator("Strasse darf nur Buchstaben enthalten", "^[\\p{L}äöüÄÖÜß\\s\\-]+$", true))
                 .bind(Wohnung::getStrasse, Wohnung::setStrasse);
 
         TextField hausnummerField = new TextField("Hausnummer");
