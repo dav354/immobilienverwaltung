@@ -35,13 +35,16 @@ public class ZaehlerstandDialog extends Dialog {
 
         // Create and bind fields
         TextField nameField = new TextField("Name");
-        binder.forField(nameField).bind(Zaehlerstand::getName, Zaehlerstand::setName);
+        binder.forField(nameField).asRequired("Name is required")
+                .bind(Zaehlerstand::getName, Zaehlerstand::setName);
 
         DatePicker ablesedatumField = new DatePicker("Ablesedatum");
-        binder.forField(ablesedatumField).bind(Zaehlerstand::getAblesedatum, Zaehlerstand::setAblesedatum);
+        binder.forField(ablesedatumField).asRequired("Ablesedatum is required")
+                .bind(Zaehlerstand::getAblesedatum, Zaehlerstand::setAblesedatum);
 
         NumberField ablesewertField = new NumberField("Ablesewert");
-        binder.forField(ablesewertField).bind(Zaehlerstand::getAblesewert, Zaehlerstand::setAblesewert);
+        binder.forField(ablesewertField).asRequired("Ablesewert is required")
+                .bind(Zaehlerstand::getAblesewert, Zaehlerstand::setAblesewert);
 
         // Read the current Zaehlerstand details into the binder
         binder.readBean(zaehlerstand);
@@ -75,6 +78,5 @@ public class ZaehlerstandDialog extends Dialog {
         // Add keyboard shortcut for Enter key
         saveButton.addClickShortcut(Key.ENTER);
         cancelButton.addClickShortcut(Key.ESCAPE);
-
     }
 }

@@ -38,8 +38,9 @@ public class MapComponent extends Div {
             String mapUrl = buildMapUrlForWohnung(wohnung);
             IFrame mapFrame = new IFrame(mapUrl);
             mapFrame.setWidth("100%");
-            mapFrame.setHeight("600px");
+            mapFrame.setHeight("400px");
             mapFrame.getElement().getStyle().set("border", "0");
+
             add(mapFrame);
         }
     }

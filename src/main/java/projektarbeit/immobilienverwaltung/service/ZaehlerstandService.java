@@ -74,4 +74,14 @@ public class ZaehlerstandService {
     public List<Zaehlerstand> findZaehlerstandByWohnung(Wohnung wohnung) {
         return zaehlerstandRepository.findByWohnung(wohnung);
     }
+
+    /**
+     * Deletes a Zaehlerstand entity.
+     *
+     * @param zaehlerstand the Zaehlerstand to delete
+     */
+    public void deleteZaehlerstand(Zaehlerstand zaehlerstand) {
+        zaehlerstandRepository.delete(zaehlerstand);
+    }
+
 }

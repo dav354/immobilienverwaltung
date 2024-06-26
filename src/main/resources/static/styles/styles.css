@@ -71,3 +71,16 @@ body {
     background-color: var(--lumo-primary-color-10pct);
     color: var(--lumo-primary-color);
 }
+
+.map-component {
+    width: 100%;
+    height: 100%;
+}
+
+.dokument-table {
+    width: 100%;
+}
+
+.zaehlerstand-table {
+    width: 100%;
+}

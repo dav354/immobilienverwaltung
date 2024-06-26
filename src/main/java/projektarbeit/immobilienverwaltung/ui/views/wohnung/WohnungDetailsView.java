@@ -35,6 +35,8 @@ import projektarbeit.immobilienverwaltung.ui.views.dialog.WohnungEditDialog;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.ZaehlerstandDialog;
 import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
 
+import java.util.List;
+
 /**
  * View for displaying the details of a Wohnung.
  */
@@ -151,16 +153,16 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
     private HorizontalLayout createTopLayout(FormLayout formLayout) {
         HorizontalLayout topLayout = new HorizontalLayout();
         topLayout.setWidthFull();
+        topLayout.setHeight("400px"); // Höhe der Karte
 
         VerticalLayout leftLayout = new VerticalLayout(formLayout);
-        leftLayout.setWidth("60%");
+        leftLayout.setWidth("750px"); // Feste Breite für den Textbereich
 
         MapComponent mapComponent = new MapComponent(currentWohnung);
+        mapComponent.setWidthFull(); // Die Karte soll den verbleibenden Platz einnehmen
 
-        VerticalLayout rightLayout = new VerticalLayout(mapComponent);
-        rightLayout.setWidth("40%");
-
-        topLayout.add(leftLayout, rightLayout);
+        topLayout.add(leftLayout, mapComponent);
+        topLayout.setFlexGrow(1, mapComponent); // Karte soll wachsen
         return topLayout;
     }
 
@@ -210,7 +212,7 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         addZaehlerstandButton.addClickListener(event -> {
             Zaehlerstand zaehlerstand = new Zaehlerstand();
             zaehlerstand.setWohnung(currentWohnung);
-            ZaehlerstandDialog zaehlerstandDialog = new ZaehlerstandDialog(zaehlerstandService, zaehlerstand, this::setupView);
+            ZaehlerstandDialog zaehlerstandDialog = new ZaehlerstandDialog(zaehlerstandService, zaehlerstand, this::refreshView);
             zaehlerstandDialog.open();
         });
 
@@ -229,16 +231,13 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         Grid<Dokument> dokumentGrid = createDokumentGrid();
         Grid<Zaehlerstand> zaehlerstandGrid = createZaehlerstandGrid();
 
-        Div verticalSeparator = createVerticalSeparator();
-
-        zaehlerstandTable.add(dokumentGrid, verticalSeparator, zaehlerstandGrid);
+        zaehlerstandTable.add(dokumentGrid, zaehlerstandGrid);
         zaehlerstandTable.setFlexGrow(1, dokumentGrid, zaehlerstandGrid);
         return zaehlerstandTable;
     }
 
     private Grid<Dokument> createDokumentGrid() {
         Grid<Dokument> dokumentGrid = new Grid<>(Dokument.class);
-        dokumentGrid.getElement().getStyle().set("min-height", "150px"); // Ensure at least 3 rows
         dokumentGrid.setColumns("dokumententyp");
         dokumentGrid.setWidthFull();
 
@@ -270,18 +269,70 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
             return actionsLayout;
         }).setHeader("Actions").setFlexGrow(0).setAutoWidth(true);
 
-        TableUtils.configureGrid(dokumentGrid, dokumentService.findDokumenteByWohnung(currentWohnung));
+        List<Dokument> dokuments = dokumentService.findDokumenteByWohnung(currentWohnung);
+        addInvisibleBarrierIfEmpty(dokumentGrid, dokuments);
+
         return dokumentGrid;
     }
 
+    /**
+     * Erstellt ein Grid für die Anzeige und Verwaltung von Zählerständen.
+     *
+     * @return das konfigurierte Zählerstands-Grid
+     */
     private Grid<Zaehlerstand> createZaehlerstandGrid() {
         Grid<Zaehlerstand> zaehlerstandGrid = new Grid<>(Zaehlerstand.class);
-        zaehlerstandGrid.getElement().getStyle().set("min-height", "150px"); // Ensure at least 3 rows
         zaehlerstandGrid.setColumns("name", "ablesedatum", "ablesewert");
         zaehlerstandGrid.setWidthFull();
 
-        TableUtils.configureGrid(zaehlerstandGrid, zaehlerstandService.findZaehlerstandByWohnung(currentWohnung));
+        // Füge eine Spalte mit Lösch-Schaltflächen hinzu
+        zaehlerstandGrid.addComponentColumn(zaehlerstand -> {
+            Button deleteButton = new Button(new Icon("close"));
+            deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+            deleteButton.getElement().setAttribute("title", "Löschen");
+
+            // Füge einen Klick-Listener hinzu, um den Bestätigungsdialog anzuzeigen
+            deleteButton.addClickListener(event -> {
+                ConfirmationDialog confirmationDialog = new ConfirmationDialog(
+                        "Möchten Sie diesen Zählerstand wirklich löschen?",
+                        () -> {
+                            zaehlerstandService.deleteZaehlerstand(zaehlerstand);
+                            // Aktualisiere die Höhe des Grids
+                            List<Zaehlerstand> updatedZaehlerstaende = zaehlerstandService.findZaehlerstandByWohnung(currentWohnung);
+                            TableUtils.configureGrid(zaehlerstandGrid, updatedZaehlerstaende);
+                        }
+                );
+                confirmationDialog.open();
+            });
+
+            return deleteButton;
+        }).setHeader("Aktionen").setAutoWidth(true);
+
+        List<Zaehlerstand> zaehlerstaende = zaehlerstandService.findZaehlerstandByWohnung(currentWohnung);
+        addInvisibleBarrierIfEmpty(zaehlerstandGrid, zaehlerstaende);
+
         return zaehlerstandGrid;
+    }
+
+    /**
+     * Konfiguriert das gegebene Grid mit den angegebenen Elementen und fügt eine unsichtbare Barriere hinzu,
+     * wenn keine Elemente vorhanden sind. Dies stellt sicher, dass das Layout stabil bleibt.
+     *
+     * @param <T>   Der Typ der Elemente im Grid.
+     * @param grid  Das zu konfigurierende Grid.
+     * @param items Die Elemente, die im Grid angezeigt werden sollen.
+     */
+    private <T> void addInvisibleBarrierIfEmpty(Grid<T> grid, List<T> items) {
+        // Konfiguriere das Grid mit den gegebenen Elementen
+        TableUtils.configureGrid(grid, items);
+
+        // Wenn keine Elemente vorhanden sind, füge eine unsichtbare Barriere hinzu
+        if (items.isEmpty()) {
+            Div invisibleBarrier = new Div();
+            invisibleBarrier.setHeight("150px");
+            invisibleBarrier.getStyle().set("visibility", "hidden");
+            grid.getElement().appendChild(invisibleBarrier.getElement());
+        }
     }
 
     /**
@@ -297,6 +348,7 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
             container.getStyle().set("display", "flex").set("justify-content", "space-between");
             Span labelSpan = new Span(label);
             Span valueSpan = new Span(value);
+            labelSpan.getStyle().set("font-weight", "bold"); // Setze den Label-Text fett
             container.add(labelSpan, valueSpan);
             formLayout.add(container);
         }
@@ -312,18 +364,6 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         separator.getStyle().set("border-top", "1px solid var(--lumo-contrast-20pct)");
         separator.setWidthFull();
         separator.getStyle().set("margin", "20px 0");
-        return separator;
-    }
-
-    /**
-     * Creates a vertical separator.
-     *
-     * @return the vertical separator
-     */
-    private Div createVerticalSeparator() {
-        Div separator = new Div();
-        separator.getStyle().set("border-left", "1px solid var(--lumo-contrast-20pct)");
-        separator.setHeight("100%");
         return separator;
     }
 
