@@ -286,8 +286,9 @@ public class MieterForm extends FormLayout {
      * Prüft auf doppelte Mieter und verwaltet die Zuweisung und Entfernung von Wohnungen.
      * Zeigt entsprechende Benachrichtigungen basierend auf dem Erfolg oder dem Scheitern der Operation an.
      */
+    // && mietvertragBinder.isValid() entfernt für mieter ohne mietvertrag
     private void validateAndSave() {
-        if (mieter != null && binder.isValid() && mietvertragBinder.isValid() && validateMietPeriod()) {
+        if (mieter != null && binder.isValid() && validateMietPeriod()) {
             if (binder.writeBeanIfValid(mieter)) {
                 if (isDuplicateMieter(mieter)) {
                     NotificationPopup.showErrorNotification("Ein Mieter mit dem gleichen Namen und Telefonnummer existiert bereits.");
