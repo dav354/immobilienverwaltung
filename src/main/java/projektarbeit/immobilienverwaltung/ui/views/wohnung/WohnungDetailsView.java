@@ -38,7 +38,7 @@ import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
 import java.util.List;
 
 /**
- * View for displaying the details of a Wohnung.
+ * View zur Anzeige der Details einer Wohnung.
  */
 @PageTitle("Wohnung Details")
 @PermitAll
@@ -50,13 +50,14 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
     private final DokumentService dokumentService;
     private final ZaehlerstandService zaehlerstandService;
     private Wohnung currentWohnung;
+    private final int tableRowHeight = 54;
 
     /**
-     * Constructor for WohnungDetailsView.
+     * Konstruktor für WohnungDetailsView.
      *
-     * @param wohnungService      the service for Wohnung operations
-     * @param dokumentService     the service for Dokument operations
-     * @param zaehlerstandService the service for Zaehlerstand operations
+     * @param wohnungService       der Service für Wohnung-Operationen
+     * @param dokumentService      der Service für Dokument-Operationen
+     * @param zaehlerstandService  der Service für Zählerstand-Operationen
      */
     @Autowired
     public WohnungDetailsView(WohnungService wohnungService, DokumentService dokumentService, ZaehlerstandService zaehlerstandService) {
@@ -73,29 +74,38 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         }
     }
 
+    /**
+     * Initialisiert die Ansicht.
+     */
     private void setupView() {
-        HorizontalLayout layoutRow = createLayoutRow();
-        FormLayout formLayout = createFormLayout();
-        HorizontalLayout topLayout = createTopLayout(formLayout);
-        VerticalLayout formLayout2Col = createFormLayout2Col();
-
         getContent().setWidth("100%");
         getContent().getStyle().set("flex-grow", "1");
-
-        getContent().add(layoutRow, topLayout, createSeparator(), formLayout2Col);
+        getContent().add(
+                createWohnungHeader(),
+                createInfoMapLayout(),
+                createSeparator(),
+                createDokumenteZaehlerstandLayout()
+        );
     }
 
-    private HorizontalLayout createLayoutRow() {
-        HorizontalLayout layoutRow = new HorizontalLayout();
+    /**
+     * Erstellt die Kopfzeile für die Wohnung.
+     *
+     * @return das Layout für die Kopfzeile
+     */
+    private HorizontalLayout createWohnungHeader() {
+        HorizontalLayout layout = new HorizontalLayout();
         H1 wohnungHeading = new H1("Wohnung");
-        Button wohnungEditButton = createWohnungEditButton();
-        Button wohnungLoeschenButton = createWohnungLoeschenButton();
-
-        layoutRow.add(wohnungHeading, wohnungEditButton, wohnungLoeschenButton);
-        layoutRow.setAlignItems(FlexComponent.Alignment.CENTER);
-        return layoutRow;
+        layout.add(wohnungHeading, createWohnungEditButton(), createWohnungLoeschenButton());
+        layout.setAlignItems(FlexComponent.Alignment.CENTER);
+        return layout;
     }
 
+    /**
+     * Erstellt den Bearbeiten-Button für die Wohnung.
+     *
+     * @return der Bearbeiten-Button
+     */
     private Button createWohnungEditButton() {
         Button wohnungEditButton = new Button("edit");
         wohnungEditButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -106,6 +116,11 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         return wohnungEditButton;
     }
 
+    /**
+     * Erstellt den Löschen-Button für die Wohnung.
+     *
+     * @return der Löschen-Button
+     */
     private Button createWohnungLoeschenButton() {
         Button wohnungLoeschenButton = new Button("Löschen");
         wohnungLoeschenButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -123,74 +138,101 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         return wohnungLoeschenButton;
     }
 
-    private FormLayout createFormLayout() {
-        FormLayout formLayout = new FormLayout();
-        formLayout.setResponsiveSteps(
+    /**
+     * Erstellt das Layout für die Informationen und die Karte.
+     *
+     * @return das Layout für die Informationen und die Karte
+     */
+    private HorizontalLayout createInfoMapLayout() {
+        HorizontalLayout layout = new HorizontalLayout();
+        layout.setWidthFull();
+        layout.setHeight("400px");
+
+        VerticalLayout leftLayout = new VerticalLayout(createWohnungInfos());
+        leftLayout.setWidth("750px");
+
+        MapComponent mapComponent = new MapComponent(currentWohnung);
+        mapComponent.setWidthFull();
+
+        layout.add(leftLayout, mapComponent);
+        layout.setFlexGrow(1, mapComponent);
+        return layout;
+    }
+
+    /**
+     * Erstellt das Layout für die Wohnungsinformationen.
+     *
+     * @return das Layout für die Wohnungsinformationen
+     */
+    private FormLayout createWohnungInfos() {
+        FormLayout layout = new FormLayout();
+        layout.setResponsiveSteps(
                 new FormLayout.ResponsiveStep("0", 1),
                 new FormLayout.ResponsiveStep("500px", 2)
         );
 
-        // Add details to the form layout
-        addDetailToFormLayout(formLayout, "Strasse", currentWohnung.getStrasse());
-        addDetailToFormLayout(formLayout, "Hausnummer", currentWohnung.getHausnummer());
-        addDetailToFormLayout(formLayout, "PLZ", currentWohnung.getPostleitzahl());
-        addDetailToFormLayout(formLayout, "Stadt", currentWohnung.getStadt());
-        addDetailToFormLayout(formLayout, "Land", currentWohnung.getLand().name());
-        addDetailToFormLayout(formLayout, "Stockwerk", currentWohnung.getStockwerk());
-        addDetailToFormLayout(formLayout, "Wohnungsnummer", currentWohnung.getWohnungsnummer());
-        addDetailToFormLayout(formLayout, "GesamtQuadratmeter", String.valueOf(currentWohnung.getGesamtQuadratmeter()));
-        addDetailToFormLayout(formLayout, "Baujahr", String.valueOf(currentWohnung.getBaujahr()));
-        addDetailToFormLayout(formLayout, "Anzahl Bäder", String.valueOf(currentWohnung.getAnzahlBaeder()));
-        addDetailToFormLayout(formLayout, "Anzahl Schlafzimmer", String.valueOf(currentWohnung.getAnzahlSchlafzimmer()));
-        addDetailToFormLayout(formLayout, "Garten", currentWohnung.isHatGarten() ? "Ja" : "Nein");
-        addDetailToFormLayout(formLayout, "Balkon", currentWohnung.isHatBalkon() ? "Ja" : "Nein");
-        addDetailToFormLayout(formLayout, "Terrasse", currentWohnung.isHatTerrasse() ? "Ja" : "Nein");
-        addDetailToFormLayout(formLayout, "Klimaanlage", currentWohnung.isHatKlimaanlage() ? "Ja" : "Nein");
+        addDetailToFormLayout(layout, "Strasse", currentWohnung.getStrasse());
+        addDetailToFormLayout(layout, "Hausnummer", currentWohnung.getHausnummer());
+        addDetailToFormLayout(layout, "PLZ", currentWohnung.getPostleitzahl());
+        addDetailToFormLayout(layout, "Stadt", currentWohnung.getStadt());
+        addDetailToFormLayout(layout, "Land", currentWohnung.getLand().name());
+        addDetailToFormLayout(layout, "Stockwerk", currentWohnung.getStockwerk());
+        addDetailToFormLayout(layout, "Wohnungsnummer", currentWohnung.getWohnungsnummer());
+        addDetailToFormLayout(layout, "GesamtQuadratmeter", String.valueOf(currentWohnung.getGesamtQuadratmeter()));
+        addDetailToFormLayout(layout, "Baujahr", String.valueOf(currentWohnung.getBaujahr()));
+        addDetailToFormLayout(layout, "Anzahl Bäder", String.valueOf(currentWohnung.getAnzahlBaeder()));
+        addDetailToFormLayout(layout, "Anzahl Schlafzimmer", String.valueOf(currentWohnung.getAnzahlSchlafzimmer()));
+        addDetailToFormLayout(layout, "Garten", currentWohnung.isHatGarten() ? "Ja" : "Nein");
+        addDetailToFormLayout(layout, "Balkon", currentWohnung.isHatBalkon() ? "Ja" : "Nein");
+        addDetailToFormLayout(layout, "Terrasse", currentWohnung.isHatTerrasse() ? "Ja" : "Nein");
+        addDetailToFormLayout(layout, "Klimaanlage", currentWohnung.isHatKlimaanlage() ? "Ja" : "Nein");
 
-        return formLayout;
+        return layout;
     }
 
-    private HorizontalLayout createTopLayout(FormLayout formLayout) {
-        HorizontalLayout topLayout = new HorizontalLayout();
-        topLayout.setWidthFull();
-        topLayout.setHeight("400px"); // Höhe der Karte
+    /**
+     * Erstellt das Layout für Dokumente und Zählerstände.
+     *
+     * @return das Layout für Dokumente und Zählerstände
+     */
+    private VerticalLayout createDokumenteZaehlerstandLayout() {
+        VerticalLayout layout = new VerticalLayout();
+        layout.setWidthFull();
 
-        VerticalLayout leftLayout = new VerticalLayout(formLayout);
-        leftLayout.setWidth("750px"); // Feste Breite für den Textbereich
-
-        MapComponent mapComponent = new MapComponent(currentWohnung);
-        mapComponent.setWidthFull(); // Die Karte soll den verbleibenden Platz einnehmen
-
-        topLayout.add(leftLayout, mapComponent);
-        topLayout.setFlexGrow(1, mapComponent); // Karte soll wachsen
-        return topLayout;
-    }
-
-    private VerticalLayout createFormLayout2Col() {
-        VerticalLayout formLayout2Col = new VerticalLayout();
-        HorizontalLayout documentTable = createDocumentTable();
-        HorizontalLayout zaehlerstandTable = createZaehlerstandTable();
-
-        formLayout2Col.add(documentTable, zaehlerstandTable);
-        return formLayout2Col;
-    }
-
-    private HorizontalLayout createDocumentTable() {
-        HorizontalLayout documentTable = new HorizontalLayout();
-        documentTable.setWidthFull();
-        documentTable.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        // Erstelle Header und Buttons
+        HorizontalLayout headers = new HorizontalLayout();
+        headers.setWidthFull();
+        headers.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
 
         HorizontalLayout dokumentHeaderLayout = createDokumentHeaderLayout();
-        VerticalLayout dokumentLayout = new VerticalLayout(dokumentHeaderLayout);
-
         HorizontalLayout zaehlerstandHeaderLayout = createZaehlerstandHeaderLayout();
-        VerticalLayout zaehlerstandLayout = new VerticalLayout(zaehlerstandHeaderLayout);
 
-        documentTable.add(dokumentLayout, zaehlerstandLayout);
-        return documentTable;
+        headers.add(dokumentHeaderLayout, zaehlerstandHeaderLayout);
+
+        // Erstelle Grids
+        HorizontalLayout grids = new HorizontalLayout();
+        grids.setWidthFull();
+        grids.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+
+        Grid<Dokument> dokumentGrid = createDokumentGrid();
+        Grid<Zaehlerstand> zaehlerstandGrid = createZaehlerstandGrid();
+
+        dokumentGrid.setWidth("50%");
+        zaehlerstandGrid.setWidth("50%");
+
+        grids.add(dokumentGrid, zaehlerstandGrid);
+        layout.add(headers, grids);
+        return layout;
     }
 
-    private HorizontalLayout createDokumentHeaderLayout() {
+    /**
+     * Erstellt das Header-Layout für Dokumente.
+     *
+     * @return das Header-Layout für Dokumente
+     */
+    private
+
+    HorizontalLayout createDokumentHeaderLayout() {
         HorizontalLayout dokumentHeaderLayout = new HorizontalLayout();
         H1 dokumenteHeading = new H1("Dokumente");
         Button addDokumentButton = new Button("Add Dokument");
@@ -199,10 +241,15 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         dokumentHeaderLayout.add(dokumenteHeading, addDokumentButton);
         dokumentHeaderLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         dokumentHeaderLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-        dokumentHeaderLayout.setWidthFull();
+        dokumentHeaderLayout.setWidth("50%");
         return dokumentHeaderLayout;
     }
 
+    /**
+     * Erstellt das Header-Layout für Zählerstände.
+     *
+     * @return das Header-Layout für Zählerstände
+     */
     private HorizontalLayout createZaehlerstandHeaderLayout() {
         HorizontalLayout zaehlerstandHeaderLayout = new HorizontalLayout();
         H1 zaehlerstaendeHeading = new H1("Zählerstände");
@@ -219,27 +266,19 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         zaehlerstandHeaderLayout.add(zaehlerstaendeHeading, addZaehlerstandButton);
         zaehlerstandHeaderLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         zaehlerstandHeaderLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-        zaehlerstandHeaderLayout.setWidthFull();
+        zaehlerstandHeaderLayout.setWidth("50%");
         return zaehlerstandHeaderLayout;
     }
 
-    private HorizontalLayout createZaehlerstandTable() {
-        HorizontalLayout zaehlerstandTable = new HorizontalLayout();
-        zaehlerstandTable.setWidthFull();
-        zaehlerstandTable.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-
-        Grid<Dokument> dokumentGrid = createDokumentGrid();
-        Grid<Zaehlerstand> zaehlerstandGrid = createZaehlerstandGrid();
-
-        zaehlerstandTable.add(dokumentGrid, zaehlerstandGrid);
-        zaehlerstandTable.setFlexGrow(1, dokumentGrid, zaehlerstandGrid);
-        return zaehlerstandTable;
-    }
-
+    /**
+     * Erstellt das Grid für Dokumente.
+     *
+     * @return das Grid für Dokumente
+     */
     private Grid<Dokument> createDokumentGrid() {
         Grid<Dokument> dokumentGrid = new Grid<>(Dokument.class);
         dokumentGrid.setColumns("dokumententyp");
-        dokumentGrid.setWidthFull();
+        dokumentGrid.setWidth("50%");
 
         dokumentGrid.addComponentColumn(dokument -> {
             HorizontalLayout actionsLayout = new HorizontalLayout();
@@ -247,59 +286,47 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
             Button viewButton = new Button(new Icon("eye"));
             viewButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
             viewButton.getElement().setAttribute("title", "View");
-            viewButton.addClickListener(event -> {
-                // Define the view action ToDo
-            });
 
             Button deleteButton = new Button(new Icon("close"));
             deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
             deleteButton.getElement().setAttribute("title", "Delete");
-            deleteButton.addClickListener(event -> {
-                // Define the delete action ToDo
-            });
 
             Button downloadButton = new Button(new Icon("download"));
             downloadButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             downloadButton.getElement().setAttribute("title", "Download");
-            downloadButton.addClickListener(event -> {
-                // Define the download action ToDo
-            });
 
             actionsLayout.add(viewButton, deleteButton, downloadButton);
             return actionsLayout;
         }).setHeader("Actions").setFlexGrow(0).setAutoWidth(true);
 
         List<Dokument> dokuments = dokumentService.findDokumenteByWohnung(currentWohnung);
-        addInvisibleBarrierIfEmpty(dokumentGrid, dokuments);
+        TableUtils.configureGrid(dokumentGrid, dokuments, tableRowHeight);
 
         return dokumentGrid;
     }
 
     /**
-     * Erstellt ein Grid für die Anzeige und Verwaltung von Zählerständen.
+     * Erstellt das Grid für Zählerstände.
      *
-     * @return das konfigurierte Zählerstands-Grid
+     * @return das Grid für Zählerstände
      */
     private Grid<Zaehlerstand> createZaehlerstandGrid() {
         Grid<Zaehlerstand> zaehlerstandGrid = new Grid<>(Zaehlerstand.class);
         zaehlerstandGrid.setColumns("name", "ablesedatum", "ablesewert");
-        zaehlerstandGrid.setWidthFull();
+        zaehlerstandGrid.setWidth("50%");
 
-        // Füge eine Spalte mit Lösch-Schaltflächen hinzu
         zaehlerstandGrid.addComponentColumn(zaehlerstand -> {
             Button deleteButton = new Button(new Icon("close"));
             deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
             deleteButton.getElement().setAttribute("title", "Löschen");
 
-            // Füge einen Klick-Listener hinzu, um den Bestätigungsdialog anzuzeigen
             deleteButton.addClickListener(event -> {
                 ConfirmationDialog confirmationDialog = new ConfirmationDialog(
                         "Möchten Sie diesen Zählerstand wirklich löschen?",
                         () -> {
                             zaehlerstandService.deleteZaehlerstand(zaehlerstand);
-                            // Aktualisiere die Höhe des Grids
                             List<Zaehlerstand> updatedZaehlerstaende = zaehlerstandService.findZaehlerstandByWohnung(currentWohnung);
-                            TableUtils.configureGrid(zaehlerstandGrid, updatedZaehlerstaende);
+                            TableUtils.configureGrid(zaehlerstandGrid, updatedZaehlerstaende, tableRowHeight);
                         }
                 );
                 confirmationDialog.open();
@@ -309,38 +336,17 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         }).setHeader("Aktionen").setAutoWidth(true);
 
         List<Zaehlerstand> zaehlerstaende = zaehlerstandService.findZaehlerstandByWohnung(currentWohnung);
-        addInvisibleBarrierIfEmpty(zaehlerstandGrid, zaehlerstaende);
+        TableUtils.configureGrid(zaehlerstandGrid, zaehlerstaende, tableRowHeight);
 
         return zaehlerstandGrid;
     }
 
     /**
-     * Konfiguriert das gegebene Grid mit den angegebenen Elementen und fügt eine unsichtbare Barriere hinzu,
-     * wenn keine Elemente vorhanden sind. Dies stellt sicher, dass das Layout stabil bleibt.
+     * Fügt ein Detail zum Formularlayout hinzu.
      *
-     * @param <T>   Der Typ der Elemente im Grid.
-     * @param grid  Das zu konfigurierende Grid.
-     * @param items Die Elemente, die im Grid angezeigt werden sollen.
-     */
-    private <T> void addInvisibleBarrierIfEmpty(Grid<T> grid, List<T> items) {
-        // Konfiguriere das Grid mit den gegebenen Elementen
-        TableUtils.configureGrid(grid, items);
-
-        // Wenn keine Elemente vorhanden sind, füge eine unsichtbare Barriere hinzu
-        if (items.isEmpty()) {
-            Div invisibleBarrier = new Div();
-            invisibleBarrier.setHeight("150px");
-            invisibleBarrier.getStyle().set("visibility", "hidden");
-            grid.getElement().appendChild(invisibleBarrier.getElement());
-        }
-    }
-
-    /**
-     * Adds a detail to the form layout.
-     *
-     * @param formLayout the form layout
-     * @param label      the label for the detail
-     * @param value      the value for the detail
+     * @param formLayout das Formularlayout
+     * @param label      das Label für das Detail
+     * @param value      der Wert für das Detail
      */
     private void addDetailToFormLayout(FormLayout formLayout, String label, String value) {
         if (value != null) {
@@ -348,16 +354,16 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
             container.getStyle().set("display", "flex").set("justify-content", "space-between");
             Span labelSpan = new Span(label);
             Span valueSpan = new Span(value);
-            labelSpan.getStyle().set("font-weight", "bold"); // Setze den Label-Text fett
+            labelSpan.getStyle().set("font-weight", "bold");
             container.add(labelSpan, valueSpan);
             formLayout.add(container);
         }
     }
 
     /**
-     * Creates a horizontal separator.
+     * Erstellt einen horizontalen Separator.
      *
-     * @return the horizontal separator
+     * @return der horizontale Separator
      */
     private Div createSeparator() {
         Div separator = new Div();
@@ -367,17 +373,16 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         return separator;
     }
 
+    /**
+     * Aktualisiert die Ansicht.
+     */
     public void refreshView() {
-        // Re-fetch the current Wohnung from the service
         currentWohnung = wohnungService.findWohnungById(currentWohnung.getWohnung_id());
         if (currentWohnung != null) {
-            // Clear existing content
             getContent().removeAll();
-            // Re-setup the view with the updated Wohnung details
             setupView();
         } else {
             NotificationPopup.showWarningNotification("Wohnung nicht gefunden.");
         }
     }
-
 }

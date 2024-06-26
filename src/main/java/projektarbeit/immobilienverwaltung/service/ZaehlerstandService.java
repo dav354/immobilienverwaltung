@@ -68,7 +68,6 @@ public class ZaehlerstandService {
      * Finds and returns a list of Zaehlerstand entities associated with a given Wohnung.
      *
      * @param wohnung     The Wohnung entity for which to find associated Zaehlerstände.
-     * @param pageRequest
      * @return A list of Zaehlerstand entities associated with the specified Wohnung.
      */
     public List<Zaehlerstand> findZaehlerstandByWohnung(Wohnung wohnung) {

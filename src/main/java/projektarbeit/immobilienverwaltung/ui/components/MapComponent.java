@@ -33,14 +33,24 @@ public class MapComponent extends Div {
      */
     private void setupMapForSingleWohnung(Wohnung wohnung) {
         if (wohnung.getLatitude() == null || wohnung.getLongitude() == null) {
-            add(new Span("Keine Koordinaten für die angegebene Adresse gefunden."));
+            Div container = new Div();
+            container.getStyle().set("display", "flex");
+            container.getStyle().set("justify-content", "center");
+            container.getStyle().set("align-items", "center");
+            container.getStyle().set("height", "400px"); // Höhe der Karte
+            container.getStyle().set("width", "100%"); // Breite der Karte
+            container.getStyle().set("border", "2px solid #ccc");
+            container.getStyle().set("box-sizing", "border-box");
+
+            Span noCoordinatesMessage = new Span("Keine Koordinaten für die angegebenen Adressen gefunden.");
+            container.add(noCoordinatesMessage);
+            add(container);
         } else {
             String mapUrl = buildMapUrlForWohnung(wohnung);
             IFrame mapFrame = new IFrame(mapUrl);
             mapFrame.setWidth("100%");
             mapFrame.setHeight("400px");
             mapFrame.getElement().getStyle().set("border", "0");
-
             add(mapFrame);
         }
     }
@@ -62,7 +72,7 @@ public class MapComponent extends Div {
             String mapUrl = buildMapUrlForWohnungen(validWohnungen);
             IFrame mapFrame = new IFrame(mapUrl);
             mapFrame.setWidth("100%");
-            mapFrame.setHeight("600px");
+            mapFrame.setHeight("400px");
             mapFrame.getElement().getStyle().set("border", "0");
             add(mapFrame);
         }

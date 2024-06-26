@@ -254,7 +254,7 @@ public class MieterForm extends FormLayout {
 
         // Update the Dokument grid
         List<Dokument> dokumente = mieter != null ? dokumentService.findDokumenteByMieter(mieter) : new ArrayList<>();
-        TableUtils.configureGrid(dokumentGrid, dokumente);
+        TableUtils.configureGrid(dokumentGrid, dokumente, 40);
     }
 
     /**
