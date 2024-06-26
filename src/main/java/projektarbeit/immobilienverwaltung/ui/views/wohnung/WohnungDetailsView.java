@@ -16,8 +16,6 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.upload.Upload;
-import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.PageTitle;
@@ -73,22 +71,41 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         }
     }
 
-    /**
-     * Sets up the view with the details of the Wohnung.
-     */
     private void setupView() {
+        HorizontalLayout layoutRow = createLayoutRow();
+        FormLayout formLayout = createFormLayout();
+        HorizontalLayout topLayout = createTopLayout(formLayout);
+        VerticalLayout formLayout2Col = createFormLayout2Col();
+
+        getContent().setWidth("100%");
+        getContent().getStyle().set("flex-grow", "1");
+
+        getContent().add(layoutRow, topLayout, createSeparator(), formLayout2Col);
+    }
+
+    private HorizontalLayout createLayoutRow() {
         HorizontalLayout layoutRow = new HorizontalLayout();
         H1 wohnungHeading = new H1("Wohnung");
+        Button wohnungEditButton = createWohnungEditButton();
+        Button wohnungLoeschenButton = createWohnungLoeschenButton();
+
+        layoutRow.add(wohnungHeading, wohnungEditButton, wohnungLoeschenButton);
+        layoutRow.setAlignItems(FlexComponent.Alignment.CENTER);
+        return layoutRow;
+    }
+
+    private Button createWohnungEditButton() {
         Button wohnungEditButton = new Button("edit");
-        Button wohnungLoeschenButton = new Button("Löschen");
-
-
         wohnungEditButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         wohnungEditButton.addClickListener(event -> {
             WohnungEditDialog editDialog = new WohnungEditDialog(wohnungService, currentWohnung, this::refreshView);
             editDialog.open();
         });
+        return wohnungEditButton;
+    }
 
+    private Button createWohnungLoeschenButton() {
+        Button wohnungLoeschenButton = new Button("Löschen");
         wohnungLoeschenButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         wohnungLoeschenButton.addClickListener(event -> {
             ConfirmationDialog confirmationDialog = new ConfirmationDialog(
@@ -101,10 +118,10 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
             );
             confirmationDialog.open();
         });
+        return wohnungLoeschenButton;
+    }
 
-        layoutRow.add(wohnungHeading, wohnungEditButton, wohnungLoeschenButton);
-        layoutRow.setAlignItems(FlexComponent.Alignment.CENTER);
-
+    private FormLayout createFormLayout() {
         FormLayout formLayout = new FormLayout();
         formLayout.setResponsiveSteps(
                 new FormLayout.ResponsiveStep("0", 1),
@@ -124,43 +141,75 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         addDetailToFormLayout(formLayout, "Anzahl Bäder", String.valueOf(currentWohnung.getAnzahlBaeder()));
         addDetailToFormLayout(formLayout, "Anzahl Schlafzimmer", String.valueOf(currentWohnung.getAnzahlSchlafzimmer()));
         addDetailToFormLayout(formLayout, "Garten", currentWohnung.isHatGarten() ? "Ja" : "Nein");
+        addDetailToFormLayout(formLayout, "Balkon", currentWohnung.isHatBalkon() ? "Ja" : "Nein");
+        addDetailToFormLayout(formLayout, "Terrasse", currentWohnung.isHatTerrasse() ? "Ja" : "Nein");
         addDetailToFormLayout(formLayout, "Klimaanlage", currentWohnung.isHatKlimaanlage() ? "Ja" : "Nein");
 
+        return formLayout;
+    }
+
+    private HorizontalLayout createTopLayout(FormLayout formLayout) {
         HorizontalLayout topLayout = new HorizontalLayout();
         topLayout.setWidthFull();
 
         VerticalLayout leftLayout = new VerticalLayout(formLayout);
         leftLayout.setWidth("60%");
 
-        // Map frame displaying the location of the Wohnung
-        IFrame mapFrame = new IFrame("https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d243647.30699931925!2d-74.0060152!3d40.7127281!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c250bdeb33f607%3A0x4b105c8b569d1e14!2sNew+York%2C+NY%2C+USA!5e0!3m2!1sen!2s!4v1421001339451");
-        mapFrame.setWidth("100%");
-        mapFrame.setHeight("400px");
-        mapFrame.getElement().getStyle().set("border", "0");
+        IFrame mapFrame = createMapFrame();
 
         VerticalLayout rightLayout = new VerticalLayout(mapFrame);
         rightLayout.setWidth("40%");
 
         topLayout.add(leftLayout, rightLayout);
+        return topLayout;
+    }
 
+    private IFrame createMapFrame() {
+        IFrame mapFrame = new IFrame("https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d243647.30699931925!2d-74.0060152!3d40.7127281!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c250bdeb33f607%3A0x4b105c8b569d1e14!2sNew+York%2C+NY%2C+USA!5e0!3m2!1sen!2s!4v1421001339451");
+        mapFrame.setWidth("100%");
+        mapFrame.setHeight("400px");
+        mapFrame.getElement().getStyle().set("border", "0");
+        return mapFrame;
+    }
+
+    private VerticalLayout createFormLayout2Col() {
         VerticalLayout formLayout2Col = new VerticalLayout();
+        HorizontalLayout documentTable = createDocumentTable();
+        HorizontalLayout zaehlerstandTable = createZaehlerstandTable();
+
+        formLayout2Col.add(documentTable, zaehlerstandTable);
+        return formLayout2Col;
+    }
+
+    private HorizontalLayout createDocumentTable() {
         HorizontalLayout documentTable = new HorizontalLayout();
         documentTable.setWidthFull();
         documentTable.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
-        // Header for Dokumente section
+        HorizontalLayout dokumentHeaderLayout = createDokumentHeaderLayout();
+        VerticalLayout dokumentLayout = new VerticalLayout(dokumentHeaderLayout);
+
+        HorizontalLayout zaehlerstandHeaderLayout = createZaehlerstandHeaderLayout();
+        VerticalLayout zaehlerstandLayout = new VerticalLayout(zaehlerstandHeaderLayout);
+
+        documentTable.add(dokumentLayout, zaehlerstandLayout);
+        return documentTable;
+    }
+
+    private HorizontalLayout createDokumentHeaderLayout() {
         HorizontalLayout dokumentHeaderLayout = new HorizontalLayout();
         H1 dokumenteHeading = new H1("Dokumente");
         Button addDokumentButton = new Button("Add Dokument");
         addDokumentButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
         dokumentHeaderLayout.add(dokumenteHeading, addDokumentButton);
         dokumentHeaderLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         dokumentHeaderLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         dokumentHeaderLayout.setWidthFull();
+        return dokumentHeaderLayout;
+    }
 
-        VerticalLayout dokumentLayout = new VerticalLayout(dokumentHeaderLayout);
-
-        // Header for Zählerstände section
+    private HorizontalLayout createZaehlerstandHeaderLayout() {
         HorizontalLayout zaehlerstandHeaderLayout = new HorizontalLayout();
         H1 zaehlerstaendeHeading = new H1("Zählerstände");
         Button addZaehlerstandButton = new Button("Add Zählerstand");
@@ -173,27 +222,34 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
             zaehlerstandDialog.open();
         });
 
-        addZaehlerstandButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         zaehlerstandHeaderLayout.add(zaehlerstaendeHeading, addZaehlerstandButton);
         zaehlerstandHeaderLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         zaehlerstandHeaderLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         zaehlerstandHeaderLayout.setWidthFull();
+        return zaehlerstandHeaderLayout;
+    }
 
-        VerticalLayout zaehlerstandLayout = new VerticalLayout(zaehlerstandHeaderLayout);
-
-        documentTable.add(dokumentLayout, zaehlerstandLayout);
-
+    private HorizontalLayout createZaehlerstandTable() {
         HorizontalLayout zaehlerstandTable = new HorizontalLayout();
         zaehlerstandTable.setWidthFull();
         zaehlerstandTable.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
-        // Grid for Dokumente
+        Grid<Dokument> dokumentGrid = createDokumentGrid();
+        Grid<Zaehlerstand> zaehlerstandGrid = createZaehlerstandGrid();
+
+        Div verticalSeparator = createVerticalSeparator();
+
+        zaehlerstandTable.add(dokumentGrid, verticalSeparator, zaehlerstandGrid);
+        zaehlerstandTable.setFlexGrow(1, dokumentGrid, zaehlerstandGrid);
+        return zaehlerstandTable;
+    }
+
+    private Grid<Dokument> createDokumentGrid() {
         Grid<Dokument> dokumentGrid = new Grid<>(Dokument.class);
         dokumentGrid.getElement().getStyle().set("min-height", "150px"); // Ensure at least 3 rows
         dokumentGrid.setColumns("dokumententyp");
         dokumentGrid.setWidthFull();
 
-        // Adding custom action buttons (view, delete, download) to the grid
         dokumentGrid.addComponentColumn(dokument -> {
             HorizontalLayout actionsLayout = new HorizontalLayout();
 
@@ -222,44 +278,18 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
             return actionsLayout;
         }).setHeader("Actions").setFlexGrow(0).setAutoWidth(true);
 
-        // Drag-and-drop upload area for Dokumente
-        Upload dokumentUpload = getUpload();
+        TableUtils.configureGrid(dokumentGrid, dokumentService.findDokumenteByWohnung(currentWohnung));
+        return dokumentGrid;
+    }
 
-        VerticalLayout dokumentUploadLayout = new VerticalLayout(dokumentUpload, dokumentGrid);
-        dokumentUploadLayout.setWidthFull();
-
-        // Grid for Zählerstände
+    private Grid<Zaehlerstand> createZaehlerstandGrid() {
         Grid<Zaehlerstand> zaehlerstandGrid = new Grid<>(Zaehlerstand.class);
         zaehlerstandGrid.getElement().getStyle().set("min-height", "150px"); // Ensure at least 3 rows
         zaehlerstandGrid.setColumns("name", "ablesedatum", "ablesewert");
         zaehlerstandGrid.setWidthFull();
 
-        setGridData(dokumentGrid, zaehlerstandGrid);
-
-        Div verticalSeparator = createVerticalSeparator();
-
-        zaehlerstandTable.add(dokumentUploadLayout, verticalSeparator, zaehlerstandGrid);
-        zaehlerstandTable.setFlexGrow(1, dokumentGrid, zaehlerstandGrid);
-
-        getContent().setWidth("100%");
-        getContent().getStyle().set("flex-grow", "1");
-
-        formLayout2Col.add(documentTable, zaehlerstandTable);
-
-        getContent().add(layoutRow, topLayout, createSeparator(), formLayout2Col);
-    }
-
-    private static Upload getUpload() {
-        MemoryBuffer dokumentBuffer = new MemoryBuffer();
-        Upload dokumentUpload = new Upload(dokumentBuffer);
-        dokumentUpload.setDropLabel(new Span("Drag and drop files here to upload")); // Doesn't work, but that's the way to go
-        dokumentUpload.setWidthFull();
-        dokumentUpload.addSucceededListener(event -> {
-            // Handle successful upload for Dokumente
-            Notification.show("Dokument uploaded: " + event.getFileName());
-            // Add logic to save the uploaded file
-        });
-        return dokumentUpload;
+        TableUtils.configureGrid(zaehlerstandGrid, zaehlerstandService.findZaehlerstandByWohnung(currentWohnung));
+        return zaehlerstandGrid;
     }
 
     /**
@@ -270,12 +300,14 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
      * @param value      the value for the detail
      */
     private void addDetailToFormLayout(FormLayout formLayout, String label, String value) {
-        Div container = new Div();
-        container.getStyle().set("display", "flex").set("justify-content", "space-between");
-        Span labelSpan = new Span(label);
-        Span valueSpan = new Span(value);
-        container.add(labelSpan, valueSpan);
-        formLayout.add(container);
+        if (value != null) {
+            Div container = new Div();
+            container.getStyle().set("display", "flex").set("justify-content", "space-between");
+            Span labelSpan = new Span(label);
+            Span valueSpan = new Span(value);
+            container.add(labelSpan, valueSpan);
+            formLayout.add(container);
+        }
     }
 
     /**
@@ -301,17 +333,6 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         separator.getStyle().set("border-left", "1px solid var(--lumo-contrast-20pct)");
         separator.setHeight("100%");
         return separator;
-    }
-
-    /**
-     * Sets the data for the grids.
-     *
-     * @param dokumentGrid      the grid for Dokumente
-     * @param zaehlerstandGrid  the grid for Zählerstände
-     */
-    private void setGridData(Grid<Dokument> dokumentGrid, Grid<Zaehlerstand> zaehlerstandGrid) {
-        TableUtils.configureGrid(dokumentGrid, dokumentService.findDokumenteByWohnung(currentWohnung), "No documents available");
-        TableUtils.configureGrid(zaehlerstandGrid, zaehlerstandService.findZaehlerstandByWohnung(currentWohnung), "No meter readings available");
     }
 
     public void refreshView() {

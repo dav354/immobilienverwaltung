@@ -1,13 +1,12 @@
 package projektarbeit.immobilienverwaltung.ui.components;
 
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import java.util.List;
 
 public class TableUtils {
 
-    public static <T> void configureGrid(Grid<T> grid, List<T> items, String noItemsMessage) {
+    public static <T> void configureGrid(Grid<T> grid, List<T> items) {
         // Set the items to the grid
         grid.setItems(items);
 
@@ -28,18 +27,6 @@ public class TableUtils {
                     .filter(component -> component.getId().isPresent() && component.getId().get().equals("no-items-div"))
                     .findFirst()
                     .ifPresent(parentLayout::remove);
-
-            // Add the "no items" message if there are no items
-            if (items.isEmpty()) {
-                Div noItemsDiv = new Div();
-                noItemsDiv.setId("no-items-div");
-                noItemsDiv.setText(noItemsMessage);
-                noItemsDiv.getStyle().set("padding", "10px");
-                noItemsDiv.getStyle().set("text-align", "center");
-                noItemsDiv.getStyle().set("width", "100%");
-                noItemsDiv.getStyle().set("background-color", "var(--lumo-shade-10pct)");
-                parentLayout.add(noItemsDiv);
-            }
         }
 
         // Show or hide the grid based on the presence of items
