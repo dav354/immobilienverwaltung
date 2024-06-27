@@ -1,9 +1,7 @@
 package projektarbeit.immobilienverwaltung.ui.views;
 
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -13,9 +11,8 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
-import projektarbeit.immobilienverwaltung.controller.DashboardController;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
-import projektarbeit.immobilienverwaltung.service.GeocodingService;
+import projektarbeit.immobilienverwaltung.service.DashboardService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.ui.components.MapComponent;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
@@ -37,17 +34,17 @@ import java.util.Map;
 @UIScope
 public class MainView extends VerticalLayout {
 
-    private final DashboardController dashboardController;
+    private final DashboardService dashboardService;
     private final WohnungService wohnungService;
 
     /**
      * Konstruktor für die MainView-Klasse.
      *
-     * @param dashboardController der Controller, der die Daten für die Statistiken bereitstellt.
+     * @param dashboardService der Service, der die Daten für die Statistiken bereitstellt.
      */
     @Autowired
-    public MainView(DashboardController dashboardController, WohnungService wohnungService) {
-        this.dashboardController = dashboardController;
+    public MainView(DashboardService dashboardService, WohnungService wohnungService) {
+        this.dashboardService = dashboardService;
         this.wohnungService = wohnungService;
     }
 
@@ -66,15 +63,15 @@ public class MainView extends VerticalLayout {
         add(titleLayout);
 
         // Mieteinnahmen Anzeige
-        double mieteinnahmen = dashboardController.getMieteinnahmen();
+        double mieteinnahmen = dashboardService.getMieteinnahmen();
         Div mieteinnahmenDiv = createMieteinnahmenDiv(mieteinnahmen);
 
         // Immobilien Statistik Anzeige
-        Map<String, Long> immobilienStats = dashboardController.getImmobilienStats();
+        Map<String, Long> immobilienStats = dashboardService.getImmobilienStats();
         Div immobilienDiv = createImmobilienDiv(immobilienStats);
 
         // Mieter Statistik Anzeige
-        long totalMieter = dashboardController.getTotalMieter();
+        long totalMieter = dashboardService.getTotalMieter();
         Div mieterDiv = createMieterDiv(totalMieter);
 
         // Erstellen eines HorizontalLayout zur Platzierung der Divs nebeneinander
