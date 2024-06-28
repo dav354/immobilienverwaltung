@@ -1,58 +1,41 @@
-name: Generate and Deploy Documentation PDF
+name: Build Documentation
 
 on:
   push:
     branches:
       - main
-    paths:
-      - "docs/**"
-  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  build-and-deploy:
+  build-docs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Cache npm packages
-        uses: actions/cache@v4
+      - name: Install Nix
+        uses: cachix/install-nix-action@v27
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      - name: Set up Nix cache
+        uses: nix-community/cache-nix-action@v5
+        with:
+          path: /nix/store
+          key: ${{ runner.os }}-nix-${{ hashFiles('**/*.nix') }}
           restore-keys: |
-            ${{ runner.os }}-node-
+            ${{ runner.os }}-nix-
 
-      - uses: actions/checkout@v2
-      - uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: pandoc texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra nodejs npm chromium
-
-      - name: Install Dependencies
+      - name: Build Documentation
         run: |
-          sudo npm install -g @mermaid-js/mermaid-cli puppeteer
-
-      - name: Generate Mermaid Diagram Images
-        run: |
-          OUTPUT_DIR="docs"
-          DIAGRAMS_DIR="docs/diagrams"
-          IMAGE_DIR="docs/tmp"
-          mkdir -p "$IMAGE_DIR"
-          for file in "$DIAGRAMS_DIR"/*.md; do
-            basename=$(basename "$file" .md)
-            mmdc -i "$file" -o "$IMAGE_DIR/$basename.png"
-            mv "$IMAGE_DIR/$basename-1.png" "$IMAGE_DIR/$basename.png" || true
-            echo "Renamed file to: $IMAGE_DIR/$basename.png"
-          done
-
-      - name: Generate PDF from Markdown
-        run: |
-          pandoc docs/index.md docs/motivation.md docs/architektur.md docs/komponenten.md docs/databaseDesign.md docs/useCases.md docs/verwendungszweck.md docs/zieluser.md --pdf-engine=pdflatex -o docs/documentation.pdf
+          nix-shell default.nix
 
       - name: Create or Update GitHub Release
         id: create_release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v1
         with:
           files: docs/documentation.pdf
         env:
