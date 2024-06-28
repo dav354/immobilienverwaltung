@@ -21,6 +21,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y pandoc texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra nodejs npm
           sudo npm install -g @mermaid-js/mermaid-cli
+          sudo npm install puppeteer
 
       - name: Generate Mermaid Diagram Images
         run: |
