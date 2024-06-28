@@ -156,15 +156,15 @@ Die Anwendung stellt sicher, dass die Beziehungen zwischen Mietern, Mietverträg
 
 ```mermaid
 erDiagram
-  Mieter {
+ Mieter {
     Long mieterId PK
     String name
     String vorname
     String telefonnummer
     String email
     double einkommen
-  }
-  Mietvertrag {
+ }
+ Mietvertrag {
     Long mietvertrag_id PK
     Long mieterId FK
     Long wohnung_id FK
@@ -173,8 +173,8 @@ erDiagram
     double kaution
     double miete
     int anzahlBewohner
-  }
-  Wohnung {
+ }
+ Wohnung {
     Long wohnung_id PK
     String strasse
     String hausnummer
@@ -191,27 +191,47 @@ erDiagram
     boolean hatKlimaanlage
     String stockwerk
     String wohnungsnummer
-  }
-  Dokument {
+    Double latitude
+    Double longitude
+ }
+ Dokument {
     Long dokument_id PK
     Long wohnung_id FK
     Long mieter_id FK
     String dokumententyp
     String dateipfad
-  }
-  Zaehlerstand {
+ }
+ Zaehlerstand {
     Long zaehlerstandId PK
     Long wohnung_id FK
     LocalDate ablesedatum
     double ablesewert
-  }
+    String name
+ }
+ Role {
+    Long id PK
+    String name
+ }
+ User {
+    Long id PK
+    String username
+    String password
+    Long created_by_admin_id FK
+ }
+ UserRole {
+    Long user_id FK
+    Long role_id FK
+ }
 
-  Mieter ||--o{ Dokument : "hat"
-  Mieter ||--o{ Mietvertrag : "hat"
-  Wohnung ||--o{ Mietvertrag : "hat"
-  Wohnung ||--o{ Dokument : "hat"
-  Wohnung ||--o{ Zaehlerstand : "hat"
-
+Mieter ||--o{ Dokument : "hat"
+Mieter ||--o{ Mietvertrag : "hat"
+Wohnung ||--o{ Mietvertrag : "hat"
+Wohnung ||--o{ Dokument : "hat"
+Wohnung ||--o{ Zaehlerstand : "hat"
+User ||--o{ Role : "hat viele"
+Role ||--o{ User : "hat viele"
+User ||--o{ UserRole : "zugeordnet"
+Role ||--o{ UserRole : "zugeordnet"
 ```
 
 </details>
