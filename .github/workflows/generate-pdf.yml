@@ -1,4 +1,4 @@
-name: Generate and Deploy Documentation PDF
+name: Generate-PDF
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  generate-pdf:
     runs-on: ubuntu-latest
 
     steps:
