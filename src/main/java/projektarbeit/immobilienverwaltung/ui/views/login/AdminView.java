@@ -63,6 +63,7 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
             throw new IllegalArgumentException("userService, roleRepository, and securityService cannot be null");
         }
 
+        /*
         // Erstellen des Headers mit dem Button zum Ändern des eigenen Passworts
         Button changeOwnPasswordButton = new Button("Change Own Password", event -> openChangePasswordDialog(getCurrentAdmin()));
         changeOwnPasswordButton.getStyle().set("margin-left", "auto");
@@ -73,10 +74,11 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
 
         // Header zum Layout hinzufügen
         add(headerLayout);
+         */
 
         // Erstellen des Titels
         User currentAdmin = getCurrentAdmin();
-        Span titleLabel = new Span("Admin Panel - " + currentAdmin.getUsername());
+        Span titleLabel = new Span("Admin Panel");
         titleLabel.getStyle().set("font-size", "24px").set("font-weight", "bold");
         titleLabel.getStyle().set("text-align", "center");
         titleLabel.setWidthFull();
@@ -235,7 +237,7 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
             try {
                 userService.validatePassword(newPassword);
                 userService.updatePassword(user, newPassword);
-                NotificationPopup.showSuccessNotification("Password changed successfully user: " + user.getUsername());
+                NotificationPopup.showSuccessNotification("Password changed successfully for " + user.getUsername());
                 dialog.close();
             } catch (IllegalArgumentException ex) {
                 NotificationPopup.showErrorNotification(ex.getMessage());
