@@ -11,7 +11,6 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -129,7 +128,7 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
                     "Möchten Sie diese Wohnung wirklich löschen? Es werden auch alle Dokumente mit gelöscht.",
                     () -> {
                         wohnungService.delete(currentWohnung);
-                        Notification.show("Wohnung erfolgreich gelöscht.");
+                        NotificationPopup.showSuccessNotification("Wohnung erfolgreich gelöscht.");
                         UI.getCurrent().navigate(WohnungListView.class);
                     }
             );
