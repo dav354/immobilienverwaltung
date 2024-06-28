@@ -1,0 +1,46 @@
+name: Generate and Deploy Documentation PDF
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra nodejs npm
+          sudo npm install -g mermaid.cli
+
+      - name: Generate Mermaid Diagram Images
+        run: |
+          OUTPUT_DIR="docs"
+          DIAGRAMS_DIR="docs/diagrams"
+          IMAGE_DIR="docs/tmp"
+          mkdir -p "$IMAGE_DIR"
+          for file in "$DIAGRAMS_DIR"/*.md; do
+            basename=$(basename "$file" .md)
+            mmdc -i "$file" -o "$IMAGE_DIR/$basename.png"
+            mv "$IMAGE_DIR/$basename-1.png" "$IMAGE_DIR/$basename.png" || true
+            echo "Renamed file to: $IMAGE_DIR/$basename.png"
+          done
+
+      - name: Generate PDF from Markdown
+        run: |
+          pandoc docs/index.md docs/motivation.md docs/architektur.md docs/komponenten.md docs/databaseDesign.md docs/useCases.md docs/verwendungszweck.md docs/zieluser.md --pdf-engine=pdflatex -o docs/documentation.pdf
+
+      - name: Upload PDF as Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: documentation
+          path: docs/documentation.pdf
