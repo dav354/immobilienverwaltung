@@ -10,8 +10,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
-import com.vaadin.flow.router.AfterNavigationEvent;
-import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.theme.lumo.Lumo;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,11 +22,10 @@ import projektarbeit.immobilienverwaltung.ui.views.wohnung.WohnungListView;
 /**
  * Hauptlayout der Anwendung, das die Navigation und das Layout der Anwendung definiert.
  */
-public class MainLayout extends AppLayout implements AfterNavigationObserver {
+public class MainLayout extends AppLayout {
 
     private boolean isDarkMode = true; // Dark mode standardmäßig aktiviert
     private final SecurityService securityService;
-    private HorizontalLayout header;
 
     /**
      * Konstruktor für das MainLayout.
@@ -42,23 +39,21 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
         enableDarkMode();
     }
 
-    @Override
-    public void afterNavigation(AfterNavigationEvent event) {
-        updateHeader();
-    }
-
     /**
      * Erstellt die Kopfzeile des Layouts.
      */
     private void createHeader() {
-        header = new HorizontalLayout();
+        String currentUsername = getCurrentUsername();
+        DrawerToggle toggle = new DrawerToggle();
+        Div title = new Div();
+        title.setText("Immobilienverwaltung - " + currentUsername);
+        title.getStyle().set("font-weight", "bold").set("font-size", "24px");
+
+        HorizontalLayout header = new HorizontalLayout(toggle, title);
         header.setWidthFull();
         header.setAlignItems(FlexComponent.Alignment.CENTER);
         header.setSpacing(false);
         header.getStyle().set("padding", "10px");
-
-        updateHeader();
-
         addToNavbar(header);
     }
 
@@ -137,78 +132,4 @@ public class MainLayout extends AppLayout implements AfterNavigationObserver {
 
         addToDrawer(drawerContent);
     }
-
-    /**
-     * Aktualisiert die Kopfzeile des Layouts basierend auf der aktuellen Ansicht.
-     */
-    private void updateHeader() {
-        header.removeAll();
-
-        DrawerToggle toggle = new DrawerToggle();
-        Div title = new Div();
-        title.setText("Immobilienverwaltung");
-
-        HorizontalLayout titleLayout = new HorizontalLayout(toggle, title);
-        titleLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-        titleLayout.setSpacing(true);
-
-        // Add the title layout to the header
-        header.add(titleLayout);
-
-        // Create the back button if needed
-        if (isInSubview()) {
-            Button backButton = new Button("Zurück", event -> getUI().ifPresent(ui -> ui.navigate(getPreviousView())));
-            backButton.setIcon(VaadinIcon.ARROW_BACKWARD.create());
-            HorizontalLayout backButtonLayout = new HorizontalLayout(backButton);
-            backButton.getStyle().set("margin-left", "20px");
-            header.add(backButtonLayout);
-        }
-
-        // Create and add the username layout
-        String currentUsername = getCurrentUsername();
-        Div username = new Div();
-        username.setText(currentUsername);
-        HorizontalLayout usernameLayout = new HorizontalLayout(username);
-        usernameLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-        usernameLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
-        usernameLayout.setWidthFull();
-
-        // Add the username layout to the header
-        header.add(usernameLayout);
-    }
-
-    /**
-     * Überprüft, ob die aktuelle Ansicht eine Unteransicht ist, die einen Zurück-Button erfordert.
-     *
-     * @return true, wenn die aktuelle Ansicht eine Unteransicht ist, ansonsten false.
-     */
-    private boolean isInSubview() {
-        String currentRoute = getCurrentView();
-        return currentRoute.startsWith("mieter-details") || currentRoute.startsWith("wohnung-details");
-    }
-    /**
-     * Gibt den Namen der vorherigen Ansicht zurück, zu der der Benutzer navigieren soll.
-     *
-     * @return der Name der vorherigen Ansicht.
-     */
-    private String getPreviousView() {
-        String currentRoute = getCurrentView();
-        if (currentRoute.startsWith("mieter-details")) {
-            return "mieter";
-        } else if (currentRoute.startsWith("wohnung-details")) {
-            return "wohnungen";
-        }
-        return "";
-    }
-
-    /**
-     * Gibt den aktuellen Routennamen zurück.
-     *
-     * @return der aktuelle Routename.
-     */
-    private String getCurrentView() {
-        return getUI().map(ui -> ui.getInternals().getActiveViewLocation().getPath()).orElse("");
-    }
-
-
 }

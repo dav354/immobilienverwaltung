@@ -96,7 +96,7 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
     private HorizontalLayout createWohnungHeader() {
         HorizontalLayout layout = new HorizontalLayout();
         H1 wohnungHeading = new H1("Wohnung");
-        layout.add(wohnungHeading, createWohnungEditButton(), createWohnungLoeschenButton());
+        layout.add(wohnungHeading, createWohnungEditButton(), createWohnungLoeschenButton(), createSchliessenButton());
         layout.setAlignItems(FlexComponent.Alignment.CENTER);
         return layout;
     }
@@ -136,6 +136,18 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
             confirmationDialog.open();
         });
         return wohnungLoeschenButton;
+    }
+
+    /**
+     * Erstellt den Schließen-Button für die Wohnung.
+     *
+     * @return der Schließen-Button
+     */
+    private Button createSchliessenButton() {
+        Button schliessenButton = new Button("Schließen");
+        schliessenButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        schliessenButton.addClickListener(event -> UI.getCurrent().navigate(WohnungListView.class));
+        return schliessenButton;
     }
 
     /**
