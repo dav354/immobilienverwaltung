@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "docs/**"
   workflow_dispatch:
 
 jobs:
@@ -28,6 +30,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: docs/documentation.pdf
-          tag_name: latest
+          tag_name: Documentation.pdf
         env:
           GITHUB_TOKEN: ${{ secrets.GHCR_PAT }}
