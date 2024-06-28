@@ -19,7 +19,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y pandoc texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra nodejs npm
-          sudo npm install -g mermaid.cli
+          sudo npm install -g @mermaid-js/mermaid-cli
 
       - name: Generate Mermaid Diagram Images
         run: |
@@ -38,8 +38,10 @@ jobs:
         run: |
           pandoc docs/index.md docs/motivation.md docs/architektur.md docs/komponenten.md docs/databaseDesign.md docs/useCases.md docs/verwendungszweck.md docs/zieluser.md --pdf-engine=pdflatex -o docs/documentation.pdf
 
-      - name: Upload PDF as Artifact
-        uses: actions/upload-artifact@v4
+      - name: Create or Update GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
         with:
-          name: documentation
-          path: docs/documentation.pdf
+          files: docs/documentation.pdf
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
