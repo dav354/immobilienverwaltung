@@ -5,9 +5,18 @@ on:
     branches:
       - main
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: dav354/immobilienverwaltung
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
 
     steps:
       - name: Checkout repository
@@ -30,5 +39,10 @@ jobs:
       - name: Build with Maven
         run: mvn clean package -Pproduction
 
-      - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag immobilienverwaltung:latest
+      - name: Log in to GitHub Container Registry
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build and Push Docker image
+        run: |
+          docker build . --file Dockerfile --tag $REGISTRY/$IMAGE_NAME:latest
+          docker push $REGISTRY/$IMAGE_NAME:latest
