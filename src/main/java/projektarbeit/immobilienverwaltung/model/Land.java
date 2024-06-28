@@ -1,13 +1,14 @@
 package projektarbeit.immobilienverwaltung.model;
+
 /**
- * Represents a country with its name.
- * This enum holds the ISO 3166-1 alpha-2 country codes along with their respective country names.
+ * Repräsentiert ein Land mit seinem Namen.
+ * Dieses Enum enthält die ISO 3166-1 alpha-2 Ländercodes zusammen mit den jeweiligen Ländernamen.
  */
 @SuppressWarnings("SpellCheckingInspection")
 public enum Land {
-    // List of countries with ISO 3166-1 alpha-2 codes and their names
+    // Liste der Länder mit ISO 3166-1 alpha-2 Codes und deren Namen
 
-    //TODO add missing Countries to succeed tests
+    //TODO fehlende Länder hinzufügen, um Tests zu bestehen
 
     AF("Afghanistan"),
     EG("Ägypten"),
@@ -204,27 +205,27 @@ public enum Land {
     private final String name;
 
     /**
-     * Constructs a new Land with the specified country name.
+     * Erstellt ein neues Land mit dem angegebenen Ländernamen.
      *
-     * @param name the name of the country
+     * @param name der Name des Landes
      */
     Land(String name) {
         this.name = name;
     }
 
     /**
-     * Returns the name of the country.
+     * Gibt den Namen des Landes zurück.
      *
-     * @return the name of the country
+     * @return der Name des Landes
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Returns a string representation of the country name.
+     * Gibt eine Zeichenkettendarstellung des Ländernamens zurück.
      *
-     * @return the name of the country
+     * @return der Name des Landes
      */
     @Override
     public String toString() {

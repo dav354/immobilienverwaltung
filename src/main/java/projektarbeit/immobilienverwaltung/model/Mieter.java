@@ -2,14 +2,13 @@ package projektarbeit.immobilienverwaltung.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import projektarbeit.immobilienverwaltung.validation.UniqueEmail;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a tenant entity with details about the tenant and their rental agreement.
- * This entity is mapped to the database table 'mieter'.
+ * Repräsentiert eine Mieter-Entität mit Details zum Mieter und deren Mietvertrag.
+ * Diese Entität wird der Datenbanktabelle 'mieter' zugeordnet.
  */
 @SuppressWarnings({"unused", "SpellCheckingInspection"})
 @Entity
@@ -24,21 +23,18 @@ public class Mieter {
 
     @Column(nullable = false, length = 100)
     @NotBlank(message = "Illegal Name")
-    @NotNull(message = "Illegal Name")
     @Size(max = 100, message = "Illegal Name")
     @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Illegal Name")
     private String name;
 
     @Column(nullable = false, length = 100)
     @NotBlank(message = "Illegal Vorname")
-    @NotNull(message = "Illegal Vorname")
     @Size(max = 100, message = "Illegal Vorname")
     @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Illegal Vorname")
     private String vorname;
 
     @Column(nullable = false)
     @NotBlank(message = "Illegal Telefonnummer")
-    @NotNull(message = "Illegal Telefonnummer")
     @Pattern(regexp = "^\\d{6,12}$", message = "Illegal Telefonnummer")
     private String telefonnummer; // can start with 0
 
@@ -47,9 +43,8 @@ public class Mieter {
 
     @Column(nullable = false)
     @Email(message = "Email should be valid")
-    @NotNull
+    @NotBlank(message = "Illegal Mail")
     //@UniqueEmail TODO: kp warum das mit derValidation nicht geht, bekomme immer eine Nullpointer Exception
-    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Illegal Mail")
     private String email;
 
     @Column(nullable = false)
@@ -57,20 +52,25 @@ public class Mieter {
     private double einkommen;
 
     /**
-     * Constructs a new Mieter with the specified details.
+     * Standardkonstruktor für JPA.
+     */
+    public Mieter() {
+    }
+
+    /**
+     * Erstellt einen neuen Mieter mit den angegebenen Details.
      *
-     * @param name           Last name of the tenant.
-     * @param vorname        First name of the tenant.
-     * @param telefonnummer  Contact number of the tenant.
-     * @param email Mail of the tenant
-     * @param einkommen      Monthly income of the tenant.
+     * @param name          Nachname des Mieters.
+     * @param vorname       Vorname des Mieters.
+     * @param telefonnummer Telefonnummer des Mieters.
+     * @param email         E-Mail-Adresse des Mieters.
+     * @param einkommen     Monatliches Einkommen des Mieters.
      */
     public Mieter(String name,
                   String vorname,
                   String telefonnummer,
                   String email,
-                  double einkommen
-    ) {
+                  double einkommen) {
         this.name = name;
         this.vorname = vorname;
         this.telefonnummer = telefonnummer;
@@ -79,174 +79,162 @@ public class Mieter {
     }
 
     /**
-     * Default constructor for JPA.
-     */
-    public Mieter() {
-    }
-
-    /**
-     * Returns the ID of the tenant.
+     * Gibt die ID des Mieters zurück.
      *
-     * @return the tenant's ID
+     * @return die Mieter-ID.
      */
     public Long getMieter_id() {
         return mieterId;
     }
 
     /**
-     * Set the ID of the tenant.
+     * Setzt die ID des Mieters.
      *
-     * @param mieter_id the tenant's ID
+     * @param mieter_id die Mieter-ID.
      */
     public void setMieter_id(Long mieter_id) {
         this.mieterId = mieter_id;
     }
 
-
     /**
-     * Returns the list of documents associated with the tenant.
+     * Gibt die Liste der Dokumente zurück, die mit dem Mieter verknüpft sind.
      *
-     * @return the list of documents
+     * @return die Liste der Dokumente.
      */
     public List<Dokument> getDokument() {
         return dokument;
     }
 
     /**
-     * Sets the list of documents for the tenant.
+     * Setzt die Liste der Dokumente für den Mieter.
      *
-     * @param dokument the list of documents to set
+     * @param dokument die zu setzende Liste der Dokumente.
      */
     public void setDokument(List<Dokument> dokument) {
         this.dokument = dokument;
     }
 
     /**
-     * Returns the last name of the tenant.
+     * Gibt den Nachnamen des Mieters zurück.
      *
-     * @return the tenant's last name
+     * @return der Nachname des Mieters.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Sets the last name of the tenant.
+     * Setzt den Nachnamen des Mieters.
      *
-     * @param name the last name to set
-     * @throws IllegalArgumentException if the name is null, empty, or exceeds 100 characters
+     * @param name der zu setzende Nachname.
      */
     public void setName(String name) {
-        if (name == null || name.isEmpty()) throw new IllegalArgumentException("Name cannot be null or empty");
-        if (name.length() > 100) throw new IllegalArgumentException("Name cannot exceed 100 characters");
-        if (!name.matches("^[a-zA-Z\\s]+$")) throw new IllegalArgumentException("Name must contain only letters");
         this.name = name;
     }
 
     /**
-     * Returns the first name of the tenant.
+     * Gibt den Vornamen des Mieters zurück.
      *
-     * @return the tenant's first name
+     * @return der Vorname des Mieters.
      */
     public String getVorname() {
         return vorname;
     }
 
     /**
-     * Sets the first name of the tenant.
+     * Setzt den Vornamen des Mieters.
      *
-     * @param vorname the first name to set
-     * @throws IllegalArgumentException if the first name is null, empty, or exceeds 100 characters
+     * @param vorname der zu setzende Vorname.
      */
     public void setVorname(String vorname) {
-        if (vorname == null || vorname.isEmpty()) throw new IllegalArgumentException("Vorname cannot be null or empty");
-        if (vorname.length() > 100) throw new IllegalArgumentException("Vorname cannot exceed 100 characters");
-        if (!vorname.matches("^[a-zA-Z\\s]+$")) throw new IllegalArgumentException("Vorname must contain only letters");
         this.vorname = vorname;
     }
 
     /**
-     * Returns the phone number of the tenant.
+     * Gibt die Telefonnummer des Mieters zurück.
      *
-     * @return the tenant's phone number
+     * @return die Telefonnummer des Mieters.
      */
     public String getTelefonnummer() {
         return telefonnummer;
     }
 
     /**
-     * Sets the phone number of the tenant.
+     * Setzt die Telefonnummer des Mieters.
      *
-     * @param telefonnummer the phone number to set
-     * @throws IllegalArgumentException if the phone number format is invalid
+     * @param telefonnummer die zu setzende Telefonnummer.
      */
     public void setTelefonnummer(String telefonnummer) {
-        if (telefonnummer == null || !telefonnummer.matches("^\\d{6,12}$")) throw new IllegalArgumentException("Invalid Telefonnummer format");
         this.telefonnummer = telefonnummer;
     }
 
     /**
-     * Gets the email address of the Mieter.
+     * Gibt die E-Mail-Adresse des Mieters zurück.
      *
-     * @return the email address of the Mieter.
+     * @return die E-Mail-Adresse des Mieters.
      */
     public String getEmail() {
         return email;
     }
 
     /**
-     * Sets the email address of the Mieter.
+     * Setzt die E-Mail-Adresse des Mieters.
      *
-     * @param email the email address to set.
-     * @throws IllegalArgumentException if the mail format is invalid
+     * @param email die zu setzende E-Mail-Adresse.
      */
     public void setEmail(String email) {
-        if (email == null || !email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) throw new IllegalArgumentException("Invalid email format");
         this.email = email;
     }
 
     /**
-     * Returns the income of the tenant.
+     * Gibt das Einkommen des Mieters zurück.
      *
-     * @return the tenant's income
+     * @return das Einkommen des Mieters.
      */
     public double getEinkommen() {
         return einkommen;
     }
 
     /**
-     * Sets the income of the tenant.
-     * The income must be a positive value.
+     * Setzt das Einkommen des Mieters.
      *
-     * @param einkommen the income to set
-     * @throws IllegalArgumentException if the income is negative
+     * @param einkommen das zu setzende Einkommen.
      */
     public void setEinkommen(double einkommen) {
-        if (einkommen <= 0) throw new IllegalArgumentException("Einkommen must be positive");
         this.einkommen = einkommen;
     }
 
+    /**
+     * Gibt die Liste der Mietverträge zurück, die mit dem Mieter verknüpft sind.
+     *
+     * @return die Liste der Mietverträge.
+     */
     public List<Mietvertrag> getMietvertraege() {
         return mietvertraege;
     }
 
+    /**
+     * Setzt die Liste der Mietverträge für den Mieter.
+     *
+     * @param mietvertraege die zu setzende Liste der Mietverträge.
+     */
     public void setMietvertraege(List<Mietvertrag> mietvertraege) {
         this.mietvertraege = mietvertraege;
     }
 
     /**
-     * Returns the full name of the tenant by combining the first name and last name.
+     * Gibt den vollständigen Namen des Mieters zurück, indem der Vorname und Nachname kombiniert werden.
      *
-     * @return The full name of the tenant in the format "FirstName LastName".
+     * @return Der vollständige Name des Mieters im Format "Vorname Nachname".
      */
     public String getFullName() {
         return vorname + " " + name;
     }
 
     /**
-     * Returns a string representation of this Mieter.
+     * Gibt eine String-Darstellung dieses Mieters zurück.
      *
-     * @return a string representation of this Mieter.
+     * @return eine String-Darstellung dieses Mieters.
      */
     @Override
     public String toString() {

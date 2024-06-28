@@ -1,15 +1,16 @@
 package projektarbeit.immobilienverwaltung.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import projektarbeit.immobilienverwaltung.validation.ValidMietPeriod;
 
 import java.time.LocalDate;
-import java.util.stream.Collectors;
 
 /**
- * Represents a rental agreement (Mietvertrag) entity.
- * This entity is mapped to the database table 'mietvertrag'.
+ * Repräsentiert eine Mietvertrags-Entität (Mietvertrag).
+ * Diese Entität wird der Datenbanktabelle 'mietvertrag' zugeordnet.
  */
 @ValidMietPeriod
 @Entity
@@ -29,39 +30,39 @@ public class Mietvertrag {
     private Wohnung wohnung;
 
     @Column(nullable = false)
-    @NotNull(message = "Mietbeginn cannot be null")
+    @NotNull(message = "Mietbeginn darf nicht null sein")
     private LocalDate mietbeginn;
 
     @Column
     private LocalDate mietende;
 
     @Column(nullable = false)
-    @Positive(message = "Kaution must be positive")
+    @Positive(message = "Kaution muss positiv sein")
     private double kaution;
 
     @Column(nullable = false)
-    @Positive(message = "Miete must be positive")
+    @Positive(message = "Miete muss positiv sein")
     private double miete;
 
     @Column(nullable = false)
-    @Min(value = 1, message = "AnzahlBewohner must be at least 1")
+    @Min(value = 1, message = "AnzahlBewohner muss mindestens 1 sein")
     private int anzahlBewohner;
 
     /**
-     * Default constructor for JPA.
+     * Standardkonstruktor für JPA.
      */
     public Mietvertrag() {
     }
 
     /**
-     * Constructs a new Mietvertrag with specified details.
+     * Erstellt einen neuen Mietvertrag mit den angegebenen Details.
      *
-     * @param mieter     The tenant (Mieter) associated with the rental agreement.
-     * @param wohnung    The property (Wohnung) associated with the rental agreement.
-     * @param mietbeginn The start date of the rental agreement.
-     * @param mietende   The end date of the rental agreement.
-     * @param kaution    The deposit amount for the rental agreement.
-     * @param miete      The monthly rent for the rental agreement.
+     * @param mieter     Der Mieter (Mieter), der mit dem Mietvertrag verknüpft ist.
+     * @param wohnung    Die Immobilie (Wohnung), die mit dem Mietvertrag verknüpft ist.
+     * @param mietbeginn Das Startdatum des Mietvertrags.
+     * @param mietende   Das Enddatum des Mietvertrags.
+     * @param kaution    Die Kautionssumme für den Mietvertrag.
+     * @param miete      Die monatliche Miete für den Mietvertrag.
      */
     public Mietvertrag(Mieter mieter,
                        Wohnung wohnung,
@@ -78,156 +79,146 @@ public class Mietvertrag {
     }
 
     /**
-     * Returns the ID of the Mietvertrag (rental contract).
+     * Gibt die ID des Mietvertrags zurück.
      *
-     * @return the ID of the Mietvertrag
+     * @return die Mietvertrag-ID
      */
     public Long getMietvertrag_id() {
         return mietvertrag_id;
     }
 
     /**
-     * Sets the ID of the Mietvertrag (rental contract).
+     * Setzt die ID des Mietvertrags.
      *
-     * @param mietvertrag_id the ID to set
+     * @param mietvertrag_id die Mietvertrag-ID
      */
     public void setMietvertrag_id(Long mietvertrag_id) {
         this.mietvertrag_id = mietvertrag_id;
     }
 
     /**
-     * Returns the Mieter (tenant) associated with this Mietvertrag.
+     * Gibt den Mieter zurück, der mit diesem Mietvertrag verknüpft ist.
      *
-     * @return the Mieter associated with this Mietvertrag
+     * @return der Mieter
      */
     public Mieter getMieter() {
         return mieter;
     }
 
     /**
-     * Sets the Mieter (tenant) associated with this Mietvertrag.
+     * Setzt den Mieter, der mit diesem Mietvertrag verknüpft ist.
      *
-     * @param mieter the Mieter to set
+     * @param mieter der Mieter
      */
     public void setMieter(Mieter mieter) {
         this.mieter = mieter;
     }
 
     /**
-     * Returns the Wohnung (apartment) associated with this Mietvertrag.
+     * Gibt die Wohnung zurück, die mit diesem Mietvertrag verknüpft ist.
      *
-     * @return the Wohnung associated with this Mietvertrag
+     * @return die Wohnung
      */
     public Wohnung getWohnung() {
         return wohnung;
     }
 
     /**
-     * Sets the Wohnung (apartment) associated with this Mietvertrag.
+     * Setzt die Wohnung, die mit diesem Mietvertrag verknüpft ist.
      *
-     * @param wohnung the Wohnung to set
+     * @param wohnung die Wohnung
      */
     public void setWohnung(Wohnung wohnung) {
         this.wohnung = wohnung;
     }
 
     /**
-     * Returns the Miete (rent) for this Mietvertrag.
+     * Gibt die Miete für diesen Mietvertrag zurück.
      *
-     * @return the Miete for this Mietvertrag
+     * @return die Miete
      */
     public double getMiete() {
         return miete;
     }
 
     /**
-     * Sets the Miete (rent) for this Mietvertrag.
+     * Setzt die Miete für diesen Mietvertrag.
      *
-     * @param miete the Miete to set
+     * @param miete die Miete
      */
     public void setMiete(double miete) {
         this.miete = miete;
     }
 
     /**
-     * Returns the start date of the tenancy.
+     * Gibt den Mietbeginn zurück.
      *
-     * @return the start date of the tenancy
+     * @return der Mietbeginn
      */
     public LocalDate getMietbeginn() {
         return mietbeginn;
     }
 
     /**
-     * Sets the start date of the tenancy.
-     * The start date must be before the end date, if it is set.
+     * Setzt den Mietbeginn.
      *
-     * @param mietbeginn the start date to set
-     * @throws IllegalArgumentException if the start date is after the end date
+     * @param mietbeginn der Mietbeginn
      */
     public void setMietbeginn(LocalDate mietbeginn) {
-        if (mietende != null && mietbeginn != null && (mietbeginn.isAfter(mietende) || mietbeginn.isEqual(mietende))) throw new IllegalArgumentException("Mietbeginn must be before Mietende");
         this.mietbeginn = mietbeginn;
     }
 
     /**
-     * Returns the end date of the tenancy.
+     * Gibt das Mietende zurück.
      *
-     * @return the end date of the tenancy
+     * @return das Mietende
      */
     public LocalDate getMietende() {
         return mietende;
     }
 
     /**
-     * Sets the end date of the tenancy.
-     * The end date must be after the start date.
+     * Setzt das Mietende.
      *
-     * @param mietende the end date to set
-     * @throws IllegalArgumentException if the end date is before the start date
+     * @param mietende das Mietende
      */
     public void setMietende(LocalDate mietende) {
-        if (mietbeginn != null && mietende != null && (mietende.isBefore(mietbeginn) || mietende.isEqual(mietbeginn))) throw new IllegalArgumentException("Mietbeginn must be before Mietende");
         this.mietende = mietende;
     }
 
     /**
-     * Returns the security deposit amount.
+     * Gibt die Kaution zurück.
      *
-     * @return the security deposit amount
+     * @return die Kaution
      */
     public double getKaution() {
         return kaution;
     }
 
     /**
-     * Sets the security deposit amount.
+     * Setzt die Kaution.
      *
-     * @param kaution the security deposit amount to set
-     * @throws IllegalArgumentException if the security deposit is not positive
+     * @param kaution die Kaution
      */
     public void setKaution(double kaution) {
-        if (kaution <= 0) throw new IllegalArgumentException("Kaution must be positive");
         this.kaution = kaution;
     }
 
     /**
-     * Returns the number of residents.
+     * Gibt die Anzahl der Bewohner zurück.
      *
-     * @return the number of residents
+     * @return die Anzahl der Bewohner
      */
     public int getAnzahlBewohner() {
         return anzahlBewohner;
     }
 
     /**
-     * Sets the number of residents.
+     * Setzt die Anzahl der Bewohner.
      *
-     * @param anzahlBewohner the number of residents to set
-     * @throws IllegalArgumentException if the number of residents is less than 1
+     * @param anzahlBewohner die Anzahl der Bewohner
      */
     public void setAnzahlBewohner(int anzahlBewohner) {
-        if (anzahlBewohner < 1) throw new IllegalArgumentException("AnzahlBewohner must be at least 1");
         this.anzahlBewohner = anzahlBewohner;
     }
 
@@ -241,6 +232,7 @@ public class Mietvertrag {
                 ", mietende=" + mietende +
                 ", kaution=" + kaution +
                 ", miete=" + miete +
+                ", anzahlBewohner=" + anzahlBewohner +
                 '}';
     }
 }

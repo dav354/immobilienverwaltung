@@ -5,8 +5,8 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * Represents a document entity associated with a property (Wohnung) or a tenant (Mieter).
- * This entity is mapped to the database table 'dokument'.
+ * Repräsentiert eine Dokument-Entität, die einer Immobilie (Wohnung) oder einem Mieter zugeordnet ist.
+ * Diese Entität wird der Datenbanktabelle 'dokument' zugeordnet.
  */
 @Entity
 @Table(name = "dokument")
@@ -25,22 +25,28 @@ public class Dokument {
     private Mieter mieter;
 
     @Column(nullable = false)
-    @NotEmpty(message = "Dokumententyp cannot be null")
-    @NotNull(message = "Dokumententyp cannot be null")
+    @NotEmpty(message = "Dokumententyp darf nicht leer sein")
+    @NotNull(message = "Dokumententyp darf nicht null sein")
     private String dokumententyp;
 
     @Column(nullable = false)
-    @NotEmpty(message = "Dateipfad cannot be null")
-    @NotNull(message = "Dateipfad cannot be null")
+    @NotEmpty(message = "Dateipfad darf nicht leer sein")
+    @NotNull(message = "Dateipfad darf nicht null sein")
     private String dateipfad;
 
     /**
-     * Constructs a new Dokument with specified details.
+     * Standardkonstruktor für JPA.
+     */
+    public Dokument() {
+    }
+
+    /**
+     * Erstellt ein neues Dokument mit den angegebenen Details.
      *
-     * @param wohnung       The property (Wohnung) this document is associated with.
-     * @param mieter        The tenant (Mieter) this document is associated with.
-     * @param dokumententyp The type of the document.
-     * @param dateipfad     The file path where the document is stored.
+     * @param wohnung       Die Immobilie (Wohnung), mit der dieses Dokument verknüpft ist.
+     * @param mieter        Der Mieter (Mieter), mit dem dieses Dokument verknüpft ist.
+     * @param dokumententyp Der Typ des Dokuments.
+     * @param dateipfad     Der Dateipfad, wo das Dokument gespeichert ist.
      */
     public Dokument(Wohnung wohnung,
                     Mieter mieter,
@@ -53,116 +59,106 @@ public class Dokument {
     }
 
     /**
-     * Default constructor for JPA.
-     */
-    public Dokument() {
-    }
-
-    /**
-     * Gets the ID of this document.
+     * Gibt die ID dieses Dokuments zurück.
      *
-     * @return the document ID.
+     * @return die Dokument-ID.
      */
     public Long getDokument_id() {
         return dokument_id;
     }
 
     /**
-     * Sets the ID of this document.
+     * Setzt die ID dieses Dokuments.
      *
-     * @param dokument_id the document ID.
+     * @param dokument_id die Dokument-ID.
      */
     public void setDokument_id(Long dokument_id) {
         this.dokument_id = dokument_id;
     }
 
     /**
-     * Gets the property (Wohnung) associated with this document.
+     * Gibt die Wohnung zurück, die mit diesem Dokument verknüpft ist.
      *
-     * @return the associated Wohnung.
+     * @return die verknüpfte Wohnung.
      */
     public Wohnung getWohnung() {
         return wohnung;
     }
 
     /**
-     * Sets the property (Wohnung) associated with this document.
+     * Setzt die Wohnung, die mit diesem Dokument verknüpft ist.
      *
-     * @param wohnung the Wohnung to associate.
+     * @param wohnung die zu verknüpfende Wohnung.
      */
     public void setWohnung(Wohnung wohnung) {
         this.wohnung = wohnung;
     }
 
     /**
-     * Gets the tenant (Mieter) associated with this document.
+     * Gibt den Mieter zurück, der mit diesem Dokument verknüpft ist.
      *
-     * @return the associated Mieter.
+     * @return der verknüpfte Mieter.
      */
     public Mieter getMieter() {
         return mieter;
     }
 
     /**
-     * Sets the tenant (Mieter) associated with this document.
+     * Setzt den Mieter, der mit diesem Dokument verknüpft ist.
      *
-     * @param mieter the Mieter to associate.
+     * @param mieter der zu verknüpfende Mieter.
      */
     public void setMieter(Mieter mieter) {
         this.mieter = mieter;
     }
 
     /**
-     * Gets the type of this document.
+     * Gibt den Dokumententyp zurück.
      *
-     * @return the document type.
+     * @return der Dokumententyp.
      */
     public String getDokumententyp() {
         return dokumententyp;
     }
 
     /**
-     * Sets the type of this document.
+     * Setzt den Dokumententyp.
      *
-     * @param dokumententyp the new document type.
-     * @throws IllegalArgumentException if the document type is null or empty.
+     * @param dokumententyp der neue Dokumententyp.
      */
     public void setDokumententyp(String dokumententyp) {
-        if (dokumententyp == null || dokumententyp.isEmpty()) throw new IllegalArgumentException("Dokumententyp cannot be null");
         this.dokumententyp = dokumententyp;
     }
 
     /**
-     * Gets the file path where this document is stored.
+     * Gibt den Dateipfad zurück, in dem dieses Dokument gespeichert ist.
      *
-     * @return the file path.
+     * @return der Dateipfad.
      */
     public String getDateipfad() {
         return dateipfad;
     }
 
     /**
-     * Sets the file path where this document is stored.
+     * Setzt den Dateipfad, in dem dieses Dokument gespeichert ist.
      *
-     * @param dateipfad the new file path.
-     * @throws IllegalArgumentException if the file path is null or empty.
+     * @param dateipfad der neue Dateipfad.
      */
     public void setDateipfad(String dateipfad) {
-        if (dateipfad == null || dateipfad.isEmpty()) throw new IllegalArgumentException("Dateipfad cannot be null");
         this.dateipfad = dateipfad;
     }
 
     /**
-     * Returns a string representation of this document.
+     * Gibt eine String-Darstellung dieses Dokuments zurück.
      *
-     * @return a string representation of this document.
+     * @return eine String-Darstellung dieses Dokuments.
      */
     @Override
     public String toString() {
         return "Dokument[" +
                 "dokumentId='" + dokument_id +
-                "', eigentum='" + (wohnung != null ? wohnung.getWohnung_id() : "None") +
-                "', mieter='" + (mieter != null ? mieter.getMieter_id() : "None") +
+                "', wohnung='" + (wohnung != null ? wohnung.getWohnung_id() : "Keine") +
+                "', mieter='" + (mieter != null ? mieter.getMieter_id() : "Keine") +
                 "', dokumententyp='" + dokumententyp +
                 "', dateipfad='" + dateipfad +
                 "']";
