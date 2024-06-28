@@ -24,18 +24,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Cache apt packages
-        uses: actions/cache@v4
+      - uses: actions/checkout@v2
+      - uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          path: /var/cache/apt
-          key: ${{ runner.os }}-apt-${{ hashFiles('**/package.json') }}
-          restore-keys: |
-            ${{ runner.os }}-apt-
+          packages: pandoc texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra nodejs npm
 
       - name: Install Dependencies
         run: |
-          sudo apt-get update
-           sudo apt-get install -y pandoc texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra nodejs npm
           sudo npm install -g @mermaid-js/mermaid-cli puppeteer
 
       - name: Generate Mermaid Diagram Images
