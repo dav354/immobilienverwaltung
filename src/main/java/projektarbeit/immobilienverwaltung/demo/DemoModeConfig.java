@@ -1,12 +1,17 @@
 package projektarbeit.immobilienverwaltung.demo;
 
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import projektarbeit.immobilienverwaltung.model.Configuration;
 import projektarbeit.immobilienverwaltung.repository.MieterRepository;
 import projektarbeit.immobilienverwaltung.repository.UserRepository;
 import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
+import projektarbeit.immobilienverwaltung.service.ConfigurationService;
+
+import java.util.Optional;
 
 /**
  * Konfigurationsklasse zur Verwaltung des Demo-Modus.
@@ -20,44 +25,81 @@ public class DemoModeConfig {
     private final MieterRepository mieterRepository;
     private final WohnungRepository wohnungRepository;
     private final UserRepository userRepository;
+    private final ConfigurationService configurationService;
+
+    private boolean isDemoMode = false;
+
+    /**
+     * Die Einstellung des Demo-Modus, gelesen aus den Anwendungseigenschaften.
+     */
+    @Value("${demo.mode:false}")
+    private String demoMode;
 
     /**
      * Konstruktor für DemoModeConfig.
      *
-     * @param mieterRepository  Das Repository zur Verwaltung von Mieter-Entitäten.
-     * @param wohnungRepository Das Repository zur Verwaltung von Wohnungs-Entitäten.
-     * @param userRepository    Das Repository zur Verwaltung von Benutzer-Entitäten.
+     * @param mieterRepository     Das Repository zur Verwaltung von Mieter-Entitäten.
+     * @param wohnungRepository    Das Repository zur Verwaltung von Wohnungs-Entitäten.
+     * @param userRepository       Das Repository zur Verwaltung von Benutzer-Entitäten.
+     * @param configurationService Der Service zur Verwaltung von Konfigurationseinstellungen.
      */
     public DemoModeConfig(MieterRepository mieterRepository,
                           WohnungRepository wohnungRepository,
-                          UserRepository userRepository) {
+                          UserRepository userRepository,
+                          ConfigurationService configurationService) {
         this.mieterRepository = mieterRepository;
         this.wohnungRepository = wohnungRepository;
         this.userRepository = userRepository;
+        this.configurationService = configurationService;
     }
 
     /**
-     * Die Einstellung des Demo-Modus, gelesen aus den Anwendungseigenschaften.
-     * Der Standardwert ist "FALSE", wenn die Eigenschaft nicht gesetzt ist.
+     * Diese Methode wird nach der Konstruktion des Beans aufgerufen und überprüft und setzt den Demo-Modus-Status.
      */
-    @Value("${demo.mode:FALSE}")
-    private String demoMode;
+    @PostConstruct
+    private void checkAndSetDemoMode() {
+        // Konvertiere den demoMode-String in einen boolean-Wert
+        if ("true".equalsIgnoreCase(demoMode)) {
+            isDemoMode = true;
+        } else if ("false".equalsIgnoreCase(demoMode)) {
+            isDemoMode = false;
+        } else {
+            logger.error("Ungültiger Wert für demo.mode: {}. Erwartet 'true' oder 'false'.", demoMode);
+            System.exit(1);
+        }
+
+        if (isDemoMode) {
+            Optional<Configuration> demoModeConfig = configurationService.findById("demo.mode.disable");
+
+            if (demoModeConfig.isPresent()) {
+                isDemoMode = Boolean.parseBoolean(demoModeConfig.get().getConfigValue());
+            } else {
+                if (mieterRepository.count() == 0 && wohnungRepository.count() == 0) {
+                    logger.info("DEMO Mode aktiv. DEMO Daten werden geladen");
+                    isDemoMode = true;
+                    Configuration newConfig = new Configuration();
+                    newConfig.setConfigKey("demo.mode.disable");
+                    newConfig.setConfigValue("false");
+                    configurationService.save(newConfig);
+                } else {
+                    logger.warn("DEMO Mode aktiv, aber es existieren bereits Daten. Überspringe laden der Demo Daten.");
+                    isDemoMode = false;
+                    Configuration newConfig = new Configuration();
+                    newConfig.setConfigKey("demo.mode.disable");
+                    newConfig.setConfigValue("disable");
+                    configurationService.save(newConfig);
+                }
+
+            }
+        }
+    }
 
     /**
      * Überprüft, ob der Demo-Modus aktiviert ist.
-     * Der Demo-Modus wird nur aktiviert, wenn keine Mieter und Wohnungen in der Datenbank vorhanden sind,
-     * aber Benutzer existieren.
      *
-     * @return true, wenn der Demo-Modus auf "TRUE" gesetzt ist und die Datenbank leer ist, sonst false.
+     * @return true, wenn der Demo-Modus aktiviert ist, sonst false.
      */
     public boolean isDemoMode() {
-        // Überprüfen, ob keine Mieter und Wohnungen existieren, aber Benutzer vorhanden sind
-        if (mieterRepository.count() == 0 && wohnungRepository.count() == 0 && userRepository.count() != 0) {
-            logger.info("DEMO Mode aktiv. DEMO Daten werden geladen");
-            return "TRUE".equalsIgnoreCase(demoMode);
-        }
-        // Wenn Daten existieren, wird das Laden der Demo-Daten übersprungen
-        logger.warn("DEMO Mode aktiv, aber es existieren bereits Daten. Überspringe laden der Demo Daten.");
-        return "FALSE".equalsIgnoreCase(demoMode);
+        return isDemoMode;
     }
 }
