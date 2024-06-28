@@ -63,6 +63,7 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
             throw new IllegalArgumentException("userService, roleRepository, and securityService cannot be null");
         }
 
+        /*
         // Erstellen des Headers mit dem Button zum Ändern des eigenen Passworts
         Button changeOwnPasswordButton = new Button("Change Own Password", event -> openChangePasswordDialog(getCurrentAdmin()));
         changeOwnPasswordButton.getStyle().set("margin-left", "auto");
@@ -73,10 +74,11 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
 
         // Header zum Layout hinzufügen
         add(headerLayout);
+         */
 
         // Erstellen des Titels
         User currentAdmin = getCurrentAdmin();
-        Span titleLabel = new Span("Admin Panel - " + currentAdmin.getUsername());
+        Span titleLabel = new Span("Admin Panel");
         titleLabel.getStyle().set("font-size", "24px").set("font-weight", "bold");
         titleLabel.getStyle().set("text-align", "center");
         titleLabel.setWidthFull();
@@ -196,13 +198,24 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
     }
 
     /**
-     * Aktualisiert das Benutzergrid mit den vom aktuellen Admin erstellten Benutzern.
+     * Aktualisiert das Benutzergrid mit den vom aktuellen Admin erstellten Benutzern,
+     * und passt die Größe der Tabelle automatisch an.
      */
     private void updateUserGrid() {
         User currentAdmin = getCurrentAdmin();
         List<User> users = userService.findUsersCreatedByAdmin(currentAdmin);
         users.add(currentAdmin); // Add the current admin to the list
         userGrid.setItems(users);
+
+        // Dynamische Höhe des Grids basierend auf der Anzahl der Benutzer
+        int numberOfUsers = users.size();
+        int rowHeight = 60; // Höhe einer Zeile in Pixeln (ungefähr)
+        int headerHeight = 50; // Höhe des Headers in Pixeln (ungefähr)
+        int maxRowsToShow = 10; // Maximale Anzahl der anzuzeigenden Zeilen
+
+        // Berechne die Höhe des Grids
+        int gridHeight = headerHeight + (Math.min(numberOfUsers, maxRowsToShow) * rowHeight);
+        userGrid.setHeight(gridHeight + "px");
     }
 
     /**
@@ -224,14 +237,20 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
             try {
                 userService.validatePassword(newPassword);
                 userService.updatePassword(user, newPassword);
-                NotificationPopup.showSuccessNotification("Password changed successfully for user: " + user.getUsername());
+                NotificationPopup.showSuccessNotification("Password changed successfully for " + user.getUsername());
                 dialog.close();
             } catch (IllegalArgumentException ex) {
                 NotificationPopup.showErrorNotification(ex.getMessage());
             }
         });
 
-        dialogLayout.add(newPasswordField, changeButton);
+        // Cancel Button hinzufügen
+        Button cancelButton = new Button("Cancel", event -> dialog.close());
+
+        // Layout für Buttons erstellen
+        HorizontalLayout buttonsLayout = new HorizontalLayout(changeButton, cancelButton);
+
+        dialogLayout.add(newPasswordField, buttonsLayout);
         dialog.add(dialogLayout);
         dialog.open();
     }
