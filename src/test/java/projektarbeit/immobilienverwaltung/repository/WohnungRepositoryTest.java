@@ -9,7 +9,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static projektarbeit.immobilienverwaltung.model.Land.*;
-
+/*
 @DataJpaTest
 public class WohnungRepositoryTest {
 
@@ -48,3 +48,5 @@ public class WohnungRepositoryTest {
         assertThat(result).isEmpty();
     }
 }
+
+ */

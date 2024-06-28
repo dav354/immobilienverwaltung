@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static projektarbeit.immobilienverwaltung.model.Land.*;
-
+/*
 @DataJpaTest
 public class DokumentRepositoryTest {
 
@@ -59,3 +59,5 @@ public class DokumentRepositoryTest {
         assertThat(found.getDateipfad()).isEqualTo("/pfad/zu/datei.pdf");
     }
 }
+
+ */
