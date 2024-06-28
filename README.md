@@ -3,6 +3,10 @@
 ![Java Version](https://img.shields.io/badge/java-v21-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
+
+[![Docker Image](https://github.com/dav354/immobilienverwaltung/actions/workflows/build-and-push-container.yml/badge.svg)](https://github.com/dav354/immobilienverwaltung/actions/workflows/build-and-push-container.yml)
+[![PDF Documentation](https://github.com/dav354/immobilienverwaltung/actions/workflows/generate-pdf.yml/badge.svg)](https://github.com/dav354/immobilienverwaltung/actions/workflows/generate-pdf.yml)
+
 <img src="assets/artwork.webp" width="60%" alt="artwork"/>
 <p><em>Erstellt mit DALL-E</em></p>
 </div>

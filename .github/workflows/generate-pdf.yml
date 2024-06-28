@@ -29,6 +29,5 @@ jobs:
         with:
           files: docs/documentation.pdf
           tag_name: latest
-          release_name: Latest Documentation
         env:
           GITHUB_TOKEN: ${{ secrets.GHCR_PAT }}
