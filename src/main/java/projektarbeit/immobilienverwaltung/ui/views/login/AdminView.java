@@ -243,9 +243,7 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
         });
 
         // Cancel Button hinzufügen
-        Button cancelButton = new Button("Cancel", event -> {
-            dialog.close();
-        });
+        Button cancelButton = new Button("Cancel", event -> dialog.close());
 
         // Layout für Buttons erstellen
         HorizontalLayout buttonsLayout = new HorizontalLayout(changeButton, cancelButton);
