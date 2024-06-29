@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import projektarbeit.immobilienverwaltung.model.Dokument;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.model.Zaehlerstand;
+import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 import projektarbeit.immobilienverwaltung.service.DokumentService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.service.ZaehlerstandService;
@@ -49,6 +50,7 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
     private final DokumentService dokumentService;
     private final ZaehlerstandService zaehlerstandService;
     private Wohnung currentWohnung;
+    private final ConfigurationService configurationService;
     private final int tableRowHeight = 54;
 
     /**
@@ -57,13 +59,16 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
      * @param wohnungService       der Service für Wohnung-Operationen
      * @param dokumentService      der Service für Dokument-Operationen
      * @param zaehlerstandService  der Service für Zählerstand-Operationen
+     * @param configurationService der Service für Globale Konfigurationen
      */
     @Autowired
-    public WohnungDetailsView(WohnungService wohnungService, DokumentService dokumentService, ZaehlerstandService zaehlerstandService) {
+    public WohnungDetailsView(WohnungService wohnungService, DokumentService dokumentService, ZaehlerstandService zaehlerstandService, ConfigurationService configurationService) {
         this.wohnungService = wohnungService;
         this.dokumentService = dokumentService;
         this.zaehlerstandService = zaehlerstandService;
+        this.configurationService = configurationService;
     }
+
 
     @Override
     public void setParameter(BeforeEvent event, Long wohnungId) {
@@ -109,7 +114,7 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         Button wohnungEditButton = new Button("edit");
         wohnungEditButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         wohnungEditButton.addClickListener(event -> {
-            WohnungEditDialog editDialog = new WohnungEditDialog(wohnungService, currentWohnung, this::refreshView);
+            WohnungEditDialog editDialog = new WohnungEditDialog(wohnungService, currentWohnung, this::refreshView, configurationService);
             editDialog.open();
         });
         return wohnungEditButton;
@@ -270,7 +275,7 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         addZaehlerstandButton.addClickListener(event -> {
             Zaehlerstand zaehlerstand = new Zaehlerstand();
             zaehlerstand.setWohnung(currentWohnung);
-            ZaehlerstandDialog zaehlerstandDialog = new ZaehlerstandDialog(zaehlerstandService, zaehlerstand, this::refreshView);
+            ZaehlerstandDialog zaehlerstandDialog = new ZaehlerstandDialog(zaehlerstandService, zaehlerstand, this::refreshView, configurationService);
             zaehlerstandDialog.open();
         });
 
