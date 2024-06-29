@@ -43,7 +43,7 @@ class DokumentServiceTest {
         dokument2 = new Dokument();
         dokument2.setDokument_id(2L);
         dokument2.setWohnung(wohnung);
-        dokument2.setMieter(null); // No associated Mieter
+        dokument2.setMieter(null); // Kein zugeordneter Mieter
     }
 
     @Test
@@ -64,7 +64,7 @@ class DokumentServiceTest {
     void testDeleteDokumenteByWohnung_WithNullWohnung() {
         assertThrows(NullPointerException.class, () -> {
             dokumentService.deleteDokumenteByWohnung(null);
-        });
+        }, "Wohnung ist null");
     }
 
     @Test
@@ -100,5 +100,41 @@ class DokumentServiceTest {
         verify(dokumentRepository, times(1)).findByWohnung(wohnung);
         verify(dokumentRepository, never()).save(any(Dokument.class));
         verify(dokumentRepository, times(2)).delete(any(Dokument.class));
+    }
+
+    @Test
+    public void testFindDokumenteByWohnung() {
+        List<Dokument> dokumente = Arrays.asList(dokument1, dokument2);
+        when(dokumentRepository.findByWohnung(wohnung)).thenReturn(dokumente);
+
+        List<Dokument> result = dokumentService.findDokumenteByWohnung(wohnung);
+
+        assertEquals(2, result.size());
+        verify(dokumentRepository, times(1)).findByWohnung(wohnung);
+    }
+
+    @Test
+    public void testFindDokumenteByMieter() {
+        Mieter mieter = new Mieter();
+        dokument1.setMieter(mieter);
+        dokument2.setMieter(mieter);
+        List<Dokument> dokumente = Arrays.asList(dokument1, dokument2);
+        when(dokumentRepository.findByMieter(mieter)).thenReturn(dokumente);
+
+        List<Dokument> result = dokumentService.findDokumenteByMieter(mieter);
+
+        assertEquals(2, result.size());
+        verify(dokumentRepository, times(1)).findByMieter(mieter);
+    }
+
+    @Test
+    public void testFindDokumenteByMieter_NoDokumente() {
+        Mieter mieter = new Mieter();
+        when(dokumentRepository.findByMieter(mieter)).thenReturn(new ArrayList<>());
+
+        List<Dokument> result = dokumentService.findDokumenteByMieter(mieter);
+
+        assertTrue(result.isEmpty());
+        verify(dokumentRepository, times(1)).findByMieter(mieter);
     }
 }

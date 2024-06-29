@@ -7,17 +7,22 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import projektarbeit.immobilienverwaltung.model.Dokument;
 import projektarbeit.immobilienverwaltung.model.Mieter;
+import projektarbeit.immobilienverwaltung.model.Mietvertrag;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.repository.DokumentRepository;
 import projektarbeit.immobilienverwaltung.repository.MieterRepository;
+import projektarbeit.immobilienverwaltung.repository.MietvertragRepository;
 import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
 import projektarbeit.immobilienverwaltung.repository.ZaehlerstandRepository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-/*
+
 class MieterServiceTest {
 
     @Mock
@@ -31,6 +36,9 @@ class MieterServiceTest {
 
     @Mock
     private DokumentRepository dokumentRepository;
+
+    @Mock
+    private MietvertragRepository mietvertragRepository;
 
     @InjectMocks
     private MieterService mieterService;
@@ -69,6 +77,14 @@ class MieterServiceTest {
     }
 
     @Test
+    void testFindAllWohnungen() {
+        List<Wohnung> wohnungList = Arrays.asList(new Wohnung(), new Wohnung());
+        when(wohnungRepository.findAll()).thenReturn(wohnungList);
+        List<Wohnung> result = mieterService.findAllWohnungen();
+        assertEquals(wohnungList, result);
+    }
+
+    @Test
     void testFindAllMieter_NoFilter() {
         List<Mieter> mieterList = Arrays.asList(new Mieter(), new Mieter());
         when(mieterRepository.findAll()).thenReturn(mieterList);
@@ -90,20 +106,15 @@ class MieterServiceTest {
         Dokument dokument = new Dokument();
         dokument.setMieter(mieter);
         Wohnung wohnung = new Wohnung();
-        wohnung.setMieter(mieter);
+        List<Mietvertrag> mietvertraege = Arrays.asList(new Mietvertrag());
 
-        // Use mutable lists
         mieter.setDokument(new ArrayList<>(List.of(dokument)));
-        mieter.setWohnung(new ArrayList<>(List.of(wohnung)));
 
-
-        when(dokumentRepository.save(any(Dokument.class))).thenReturn(dokument);
-        when(wohnungRepository.save(any(Wohnung.class))).thenReturn(wohnung);
+        when(mietvertragRepository.findByMieter_MieterId(anyLong())).thenReturn(mietvertraege);
 
         mieterService.deleteMieter(mieter);
 
         verify(dokumentRepository, times(1)).save(dokument);
-        verify(wohnungRepository, times(1)).save(wohnung);
         verify(mieterRepository, times(1)).delete(mieter);
     }
 
@@ -114,40 +125,42 @@ class MieterServiceTest {
         verify(mieterRepository, times(1)).save(mieter);
     }
 
-    // TODO fix counting error
-    /*
     @Test
-    void testSaveWohnungToMieter() {
-        Mieter mieter = new Mieter();
-        Wohnung wohnung1 = new Wohnung();
-        Wohnung wohnung2 = new Wohnung();
-        List<Wohnung> wohnungen = Arrays.asList(wohnung1, wohnung2);
-
-        // Ensure the mieter starts with no wohnung assigned
-        assertTrue(mieter.getWohnung().isEmpty());
-
-        mieterService.saveWohnungToMieter(mieter, wohnungen);
-
-        assertEquals(2, mieter.getWohnung().size());
-        verify(mieterRepository, times(1)).save(mieter);
-        verify(wohnungRepository, times(1)).saveAll(wohnungen);
+    void testEmailExists() {
+        String email = "test@example.com";
+        when(mieterRepository.existsByEmail(email)).thenReturn(true);
+        boolean exists = mieterService.emailExists(email);
+        assertTrue(exists);
     }
 
     @Test
-    void testRemoveWohnungFromMieter() {
+    void testSaveMietvertrag() {
+        Mietvertrag mietvertrag = new Mietvertrag();
+        when(mietvertragRepository.save(mietvertrag)).thenReturn(mietvertrag);
+        Mietvertrag savedMietvertrag = mieterService.saveMietvertrag(mietvertrag);
+        assertEquals(mietvertrag, savedMietvertrag);
+        verify(mietvertragRepository, times(1)).save(mietvertrag);
+    }
+
+    @Test
+    void testDeleteMietvertrag() {
+        Mietvertrag mietvertrag = new Mietvertrag();
+        mieterService.deleteMietvertrag(mietvertrag);
+        verify(mietvertragRepository, times(1)).delete(mietvertrag);
+    }
+
+    @Test
+    void testFindById() {
         Mieter mieter = new Mieter();
-        Wohnung wohnung1 = new Wohnung();
-        Wohnung wohnung2 = new Wohnung();
+        when(mieterRepository.findById(1L)).thenReturn(Optional.of(mieter));
+        Mieter foundMieter = mieterService.findById(1L);
+        assertEquals(mieter, foundMieter);
+    }
 
-        // Use mutable lists
-        mieter.setWohnung(new ArrayList<>(List.of(wohnung1, wohnung2)));
-        List<Wohnung> wohnungen = Arrays.asList(wohnung1, wohnung2);
-
-        mieterService.removeWohnungFromMieter(mieter, wohnungen);
-
-        assertEquals(0, mieter.getWohnung().size());
-        verify(mieterRepository, times(1)).save(mieter);
-        verify(wohnungRepository, times(1)).saveAll(wohnungen);
+    @Test
+    void testFindById_NotFound() {
+        when(mieterRepository.findById(1L)).thenReturn(Optional.empty());
+        Mieter foundMieter = mieterService.findById(1L);
+        assertNull(foundMieter);
     }
 }
-  */
