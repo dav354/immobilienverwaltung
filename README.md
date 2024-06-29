@@ -226,14 +226,16 @@ erDiagram
     Long user_id FK
     Long role_id FK
  }
+ Configuration {
+    String configKey PK
+    String configValue 
+ }
 
 Mieter ||--o{ Dokument : "hat"
 Mieter ||--o{ Mietvertrag : "hat"
 Wohnung ||--o{ Mietvertrag : "hat"
 Wohnung ||--o{ Dokument : "hat"
 Wohnung ||--o{ Zaehlerstand : "hat"
-User ||--o{ Role : "hat viele"
-Role ||--o{ User : "hat viele"
 User ||--o{ UserRole : "zugeordnet"
 Role ||--o{ UserRole : "zugeordnet"
 ```

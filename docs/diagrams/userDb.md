@@ -14,8 +14,6 @@ erDiagram
         Long user_id FK
         Long role_id FK
     }
-    User ||--o{ Role : "hat viele"
-    Role ||--o{ User : "hat viele"
     User ||--o{ UserRole : "zugeordnet"
     Role ||--o{ UserRole : "zugeordnet"
 ```
