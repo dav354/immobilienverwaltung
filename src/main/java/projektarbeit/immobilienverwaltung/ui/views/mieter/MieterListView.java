@@ -19,11 +19,7 @@ import com.vaadin.flow.spring.annotation.UIScope;
 import jakarta.annotation.security.PermitAll;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Mietvertrag;
-import projektarbeit.immobilienverwaltung.repository.MieterRepository;
-import projektarbeit.immobilienverwaltung.service.DokumentService;
-import projektarbeit.immobilienverwaltung.service.MieterService;
-import projektarbeit.immobilienverwaltung.service.MietvertragService;
-import projektarbeit.immobilienverwaltung.service.WohnungService;
+import projektarbeit.immobilienverwaltung.service.*;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 
 import java.text.NumberFormat;
@@ -48,18 +44,19 @@ public class MieterListView extends VerticalLayout {
     private final MietvertragService mietvertragService;
     private final WohnungService wohnungService;
     private final DokumentService dokumentService;
+    private final ConfigurationService configurationService;
 
     Grid<Mieter> grid = new Grid<>(Mieter.class);
     TextField filterText = new TextField();
     MieterForm form;
     HorizontalLayout toolbar;
 
-    public MieterListView(MieterService mieterService, MietvertragService mietvertragService, WohnungService wohnungService, DokumentService dokumentService) {
+    public MieterListView(MieterService mieterService, MietvertragService mietvertragService, WohnungService wohnungService, DokumentService dokumentService, ConfigurationService configurationService) {
         this.mieterService = mieterService;
         this.mietvertragService = mietvertragService;
         this.wohnungService = wohnungService;
         this.dokumentService = dokumentService;
-
+        this.configurationService = configurationService;
 
         HorizontalLayout header = new HorizontalLayout(new H1("Mieter Übersicht"));
         header.setWidthFull();
@@ -116,7 +113,7 @@ public class MieterListView extends VerticalLayout {
      * Fügt Listener für Speichern, Löschen und Schließen hinzu, um entsprechende Aktionen auszuführen.
      */
     private void configureForm() {
-        form = new MieterForm(mieterService, mietvertragService, wohnungService, dokumentService);
+        form = new MieterForm(mieterService, mietvertragService, wohnungService, dokumentService, configurationService);
         form.setWidth("100%");
         form.setVisible(false);
 
