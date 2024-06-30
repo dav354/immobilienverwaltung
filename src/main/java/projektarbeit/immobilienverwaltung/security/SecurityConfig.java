@@ -24,8 +24,17 @@ import projektarbeit.immobilienverwaltung.ui.views.login.LoginView;
 @Configuration
 public class SecurityConfig extends VaadinWebSecurity {
 
+    private final UserRepository userRepository;
+
+    /**
+     * Konstruktor für die SecurityConfig-Klasse.
+     *
+     * @param userRepository Das Repository für Benutzer.
+     */
     @Autowired
-    private UserRepository userRepository;
+    public SecurityConfig(UserRepository userRepository){
+        this.userRepository = userRepository;
+    }
 
     /**
      * Konfiguriert die HTTP-Sicherheitsanforderungen für die Anwendung.

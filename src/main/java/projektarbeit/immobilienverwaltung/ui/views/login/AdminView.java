@@ -63,19 +63,6 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
             throw new IllegalArgumentException("userService, roleRepository, and securityService cannot be null");
         }
 
-        /*
-        // Erstellen des Headers mit dem Button zum Ändern des eigenen Passworts
-        Button changeOwnPasswordButton = new Button("Change Own Password", event -> openChangePasswordDialog(getCurrentAdmin()));
-        changeOwnPasswordButton.getStyle().set("margin-left", "auto");
-
-        HorizontalLayout headerLayout = new HorizontalLayout(changeOwnPasswordButton);
-        headerLayout.setWidthFull();
-        headerLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);
-
-        // Header zum Layout hinzufügen
-        add(headerLayout);
-         */
-
         // Erstellen des Titels
         User currentAdmin = getCurrentAdmin();
         Span titleLabel = new Span("Admin Panel");
@@ -170,16 +157,22 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
                 confirmationDialog.open();
             });
 
-            Button updatePasswordButton = new Button("Change Password");
-            updatePasswordButton.setEnabled(user.getRoles().stream().noneMatch(role -> role.getName().equals("ADMIN")));
-            updatePasswordButton.addClickListener(e -> {
-                // Dialog zum Ändern des Passworts öffnen
-                openChangePasswordDialog(user);
-            });
+            actions.add(deleteButton);
 
-            actions.add(deleteButton, updatePasswordButton);
+            // Prüfen, ob der Benutzer nicht die Rolle "ADMIN" hat
+            boolean isNotAdmin = user.getRoles().stream().noneMatch(role -> role.getName().equals("ADMIN"));
+            if (isNotAdmin) {
+                Button updatePasswordButton = new Button("Change Password");
+                updatePasswordButton.addClickListener(e -> {
+                    // Dialog zum Ändern des Passworts öffnen
+                    openChangePasswordDialog(user);
+                });
+                actions.add(updatePasswordButton);
+            }
+
             return actions;
         })).setHeader("Actions");
+
         add(userGrid);
 
         // Benutzer in das Grid laden
