@@ -26,7 +26,7 @@ public class    LoginLayout extends VerticalLayout implements RouterLayout {
 
         enableDarkMode(); // Enable dark mode
     }
-    //TODO password forgotten button entfernen
+
     /**
      * Aktiviert den Darkmode für das Layout.
      */
