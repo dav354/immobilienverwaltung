@@ -92,15 +92,22 @@ class WohnungServiceTest {
     }
 
      */
-
     @Test
     void delete() {
         Wohnung wohnung = new Wohnung();
         Mietvertrag mietvertrag = new Mietvertrag();
-        when(mietvertragRepository.findByWohnung(wohnung)).thenReturn(mietvertrag);
+        Dokument dokument = new Dokument();
+        Zaehlerstand zaehlerstand = new Zaehlerstand();
 
+        // Mock the repository methods
+        when(mietvertragRepository.findByWohnung(wohnung)).thenReturn(mietvertrag);
+        when(dokumentRepository.findByWohnung(wohnung)).thenReturn(Collections.singletonList(dokument));
+        when(zaehlerstandRepository.findByWohnung(wohnung)).thenReturn(Collections.singletonList(zaehlerstand));
+
+        // Call the method to test
         wohnungService.delete(wohnung);
 
+        // Verify the interactions
         verify(dokumentRepository, times(1)).deleteAll(anyList());
         verify(mietvertragRepository, times(1)).delete(mietvertrag);
         verify(zaehlerstandRepository, times(1)).deleteAll(anyList());
