@@ -1,6 +1,7 @@
 package projektarbeit.immobilienverwaltung.service;
 
 import com.vaadin.flow.spring.security.AuthenticationContext;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -52,7 +53,7 @@ public class SecurityService {
      *
      * @param user Der zu speichernde Benutzer.
      */
-    public void save(User user) {
+    public void save(@Valid User user) {
         userRepository.save(user);
     }
 

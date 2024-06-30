@@ -4,7 +4,6 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
@@ -59,7 +58,7 @@ public class ZaehlerstandDialog extends DialogLayout {
         // Create save button with save logic
         Button saveButton = new Button("Save", event -> {
             if (binder.writeBeanIfValid(zaehlerstand)) {
-                zaehlerstandService.saveOrUpdateZaehlerstand(zaehlerstand);
+                zaehlerstandService.saveZaehlerstand(zaehlerstand);
                 onSave.run();
                 this.close();
                 NotificationPopup.showSuccessNotification("Zaehlerstand saved.");

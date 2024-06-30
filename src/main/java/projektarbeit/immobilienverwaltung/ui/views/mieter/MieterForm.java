@@ -235,7 +235,7 @@ public class MieterForm extends FormLayout {
         // Bind the Mieter entity to the form fields
         binder.readBean(mieter);
         // Bind the first Mietvertrag entity (if exists) or a new Mietvertrag entity to the Mietvertrag fields
-        mietvertragBinder.readBean(mietvertraege.isEmpty() ? new Mietvertrag() : mietvertraege.get(0));
+        mietvertragBinder.readBean(mietvertraege.isEmpty() ? new Mietvertrag() : mietvertraege.getFirst());
 
         if (mieter != null && !mietvertraege.isEmpty()) {
             // If there are Mietvertraege, get the associated Wohnungen and set them in the MultiSelectComboBox

@@ -24,13 +24,13 @@ public class Mieter {
     @Column
     @NotBlank(message = "Name darf nicht leer sein")
     @Size(max = 100, message = "Name darf nicht länger als 100 Zeichen sein")
-    @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Name darf nur Buchstaben enthalten")
+    @Pattern(regexp = "^[a-zA-ZäöüÄÖÜß\\s'-]+$", message = "Name darf nur Buchstaben enthalten")
     private String name;
 
     @Column
     @NotBlank(message = "Vorname darf nicht leer sein")
     @Size(max = 100, message = "Vorname darf nicht länger als 100 Zeichen sein")
-    @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Vorname darf nur Buchstaben enthalten")
+    @Pattern(regexp = "^[a-zA-ZäöüÄÖÜß\\s'-]+$", message = "Vorname darf nur Buchstaben enthalten")
     private String vorname;
 
     @Column
@@ -42,9 +42,8 @@ public class Mieter {
     private List<Mietvertrag> mietvertraege = new ArrayList<>();
 
     @Column
-    @Email(message = "Ungültige E-Mail-Adresse")
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Ungültige E-Mail-Adresse")
     @NotBlank(message = "E-Mail darf nicht leer sein")
-    //@UniqueEmail TODO: kp warum das mit derValidation nicht geht, bekomme immer eine Nullpointer Exception
     private String email;
 
     @Column

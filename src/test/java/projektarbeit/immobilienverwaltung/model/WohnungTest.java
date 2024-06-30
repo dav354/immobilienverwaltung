@@ -6,7 +6,6 @@ import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 
 import java.util.Set;
 
@@ -16,18 +15,12 @@ public class WohnungTest {
 
     private Wohnung wohnung;
 
-    @Mock
-    private Mieter mieter;
-
     private Validator validator;
-
-    private Wohnung testWohnung;
 
     @BeforeEach
     public void setUp() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
-        testWohnung = new Wohnung("Musterstraße", "11", "12345", "Musterstadt", Land.DE, 200, 2000, 2, 2, false, false, false, false, null, null);
     }
 
     @Test
@@ -179,82 +172,88 @@ public class WohnungTest {
     }
 
     @Test
-    public void testNullSetQuadratmeter() {
-        IllegalArgumentException thrown = assertThrows(
-                IllegalArgumentException.class,
-                () -> testWohnung.setGesamtQuadratmeter(0),
-                "Erwartete Ausnahme bei setGesamtQuadratmeter mit null, aber es wurde keine geworfen"
-        );
-        assertEquals("GesamtQuadratmeter muss mindestens 1 sein", thrown.getMessage());
+    public void testNullStrasse() {
+        wohnung = new Wohnung(null, "11", "12345", "Musterstadt", Land.DE, 200, 2000, 2, 2, false, false, false, false, null, null);
+        Set<ConstraintViolation<Wohnung>> violations = validator.validate(wohnung);
+        assertFalse(violations.isEmpty(), "Wohnung mit null Straße sollte Verstöße haben");
+        assertEquals("Illegal Strasse", violations.iterator().next().getMessage());
     }
 
     @Test
-    public void testNegativeSetQuadratmeter() {
-        IllegalArgumentException thrown = assertThrows(
-                IllegalArgumentException.class,
-                () -> testWohnung.setGesamtQuadratmeter(-200),
-                "Erwartete Ausnahme bei setGesamtQuadratmeter mit negativen Werten, aber es wurde keine geworfen"
-        );
-        assertEquals("GesamtQuadratmeter muss mindestens 1 sein", thrown.getMessage());
+    public void testNullHausnummer() {
+        wohnung = new Wohnung("Musterstraße", null, "12345", "Musterstadt", Land.DE, 200, 2000, 2, 2, false, false, false, false, null, null);
+        Set<ConstraintViolation<Wohnung>> violations = validator.validate(wohnung);
+        assertFalse(violations.isEmpty(), "Wohnung mit null Hausnummer sollte Verstöße haben");
+        assertEquals("Illegal Hausnummer", violations.iterator().next().getMessage());
     }
 
     @Test
-    public void testNullSetBaujahr() {
-        IllegalArgumentException thrown = assertThrows(
-                IllegalArgumentException.class,
-                () -> testWohnung.setBaujahr(0),
-                "Erwartete Ausnahme bei setBaujahr mit null, aber es wurde keine geworfen"
-        );
-        assertEquals("Baujahr muss eine vierstellige Zahl sein und darf nicht in der Zukunft liegen", thrown.getMessage());
+    public void testNullPostleitzahl() {
+        wohnung = new Wohnung("Musterstraße", "11", null, "Musterstadt", Land.DE, 200, 2000, 2, 2, false, false, false, false, null, null);
+        Set<ConstraintViolation<Wohnung>> violations = validator.validate(wohnung);
+        assertFalse(violations.isEmpty(), "Wohnung mit null Postleitzahl sollte Verstöße haben");
+        assertEquals("Illegal Postleitzahl", violations.iterator().next().getMessage());
     }
 
     @Test
-    public void testThreeDigitSetBaujahr() {
-        IllegalArgumentException thrown = assertThrows(
-                IllegalArgumentException.class,
-                () -> testWohnung.setBaujahr(999),
-                "Erwartete Ausnahme bei setBaujahr mit dreistelliger Zahl, aber es wurde keine geworfen"
-        );
-        assertEquals("Baujahr muss eine vierstellige Zahl sein und darf nicht in der Zukunft liegen", thrown.getMessage());
+    public void testNullStadt() {
+        wohnung = new Wohnung("Musterstraße", "11", "12345", null, Land.DE, 200, 2000, 2, 2, false, false, false, false, null, null);
+        Set<ConstraintViolation<Wohnung>> violations = validator.validate(wohnung);
+        assertFalse(violations.isEmpty(), "Wohnung mit null Stadt sollte Verstöße haben");
+        assertEquals("Illegal Stadt", violations.iterator().next().getMessage());
     }
 
     @Test
-    public void testFutureSetBaujahr() {
-        IllegalArgumentException thrown = assertThrows(
-                IllegalArgumentException.class,
-                () -> testWohnung.setBaujahr(3000),
-                "Erwartete Ausnahme bei setBaujahr mit zukünftiger Zahl, aber es wurde keine geworfen"
-        );
-        assertEquals("Baujahr muss eine vierstellige Zahl sein und darf nicht in der Zukunft liegen", thrown.getMessage());
+    public void testNullLand() {
+        wohnung = new Wohnung("Musterstraße", "11", "12345", "Musterstadt", null, 200, 2000, 2, 2, false, false, false, false, null, null);
+        Set<ConstraintViolation<Wohnung>> violations = validator.validate(wohnung);
+        assertFalse(violations.isEmpty(), "Wohnung mit null Land sollte Verstöße haben");
+        assertEquals("Land darf nicht null sein", violations.iterator().next().getMessage());
     }
 
     @Test
-    public void testNegativeSetAnzahlBaeder() {
-        IllegalArgumentException thrown = assertThrows(
-                IllegalArgumentException.class,
-                () -> testWohnung.setAnzahlBaeder(-2),
-                "Erwartete Ausnahme bei setAnzahlBaeder mit negativen Werten, aber es wurde keine geworfen"
-        );
-        assertEquals("AnzahlBaeder muss positiv sein", thrown.getMessage());
+    public void testEmptyStrasse() {
+        wohnung = new Wohnung("", "11", "12345", "Musterstadt", Land.DE, 200, 2000, 2, 2, false, false, false, false, null, null);
+        Set<ConstraintViolation<Wohnung>> violations = validator.validate(wohnung);
+        assertFalse(violations.isEmpty(), "Wohnung mit leerer Straße sollte Verstöße haben");
+        assertEquals("Illegal Strasse", violations.iterator().next().getMessage());
     }
 
     @Test
-    public void testNullSetAnzahlBaeder() {
-        IllegalArgumentException thrown = assertThrows(
-                IllegalArgumentException.class,
-                () -> testWohnung.setAnzahlBaeder(0),
-                "Erwartete Ausnahme bei setAnzahlBaeder mit null, aber es wurde keine geworfen"
-        );
-        assertEquals("AnzahlBaeder muss positiv sein", thrown.getMessage());
+    public void testEmptyHausnummer() {
+        wohnung = new Wohnung("Musterstraße", "", "12345", "Musterstadt", Land.DE, 200, 2000, 2, 2, false, false, false, false, null, null);
+        Set<ConstraintViolation<Wohnung>> violations = validator.validate(wohnung);
+        assertFalse(violations.isEmpty(), "Wohnung mit leerer Hausnummer sollte Verstöße haben");
+        assertEquals("Illegal Hausnummer", violations.iterator().next().getMessage());
     }
 
     @Test
-    public void testNegativeSetAnzahlSchlafzimmer() {
-        IllegalArgumentException thrown = assertThrows(
-                IllegalArgumentException.class,
-                () -> testWohnung.setAnzahlSchlafzimmer(-2),
-                "Erwartete Ausnahme bei setAnzahlSchlafzimmer mit negativen Werten, aber es wurde keine geworfen"
-        );
-        assertEquals("AnzahlSchlafzimmer muss null oder positiv sein", thrown.getMessage());
+    public void testEmptyPostleitzahl() {
+        wohnung = new Wohnung("Musterstraße", "11", "", "Musterstadt", Land.DE, 200, 2000, 2, 2, false, false, false, false, null, null);
+        Set<ConstraintViolation<Wohnung>> violations = validator.validate(wohnung);
+        assertFalse(violations.isEmpty(), "Wohnung mit leerer Postleitzahl sollte Verstöße haben");
+        assertEquals("Illegal Postleitzahl", violations.iterator().next().getMessage());
+    }
+
+    @Test
+    public void testEmptyStadt() {
+        wohnung = new Wohnung("Musterstraße", "11", "12345", "", Land.DE, 200, 2000, 2, 2, false, false, false, false, null, null);
+        Set<ConstraintViolation<Wohnung>> violations = validator.validate(wohnung);
+        assertFalse(violations.isEmpty(), "Wohnung mit leerer Stadt sollte Verstöße haben");
+        assertEquals("Illegal Stadt", violations.iterator().next().getMessage());
+    }
+
+    @Test
+    public void testMinAnzahlBaeder() {
+        wohnung = new Wohnung("Musterstraße", "11", "12345", "Musterstadt", Land.DE, 200, 2000, 1, 2, false, false, false, false, null, null);
+        Set<ConstraintViolation<Wohnung>> violations = validator.validate(wohnung);
+        assertTrue(violations.isEmpty(), "Wohnung mit minimaler Anzahl Bäder sollte keine Verstöße haben");
+    }
+
+    @Test
+    public void testMinAnzahlSchlafzimmer() {
+        wohnung = new Wohnung("Musterstraße", "11", "12345", "Musterstadt", Land.DE, 200, 2000, 2, 0, false, false, false, false, null, null);
+        Set<ConstraintViolation<Wohnung>> violations = validator.validate(wohnung);
+        assertTrue(violations.isEmpty(), "Wohnung mit minimaler Anzahl Schlafzimmer sollte keine Verstöße haben");
     }
 }

@@ -1,6 +1,7 @@
 package projektarbeit.immobilienverwaltung.service;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,14 +20,16 @@ import java.util.regex.Pattern;
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+     @Autowired
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder){
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     /**
      * Initialisiert die Standardrollen "ADMIN" und "USER", wenn sie nicht vorhanden sind.
@@ -52,7 +55,7 @@ public class UserService {
      * @param user           Der zu speichernde Benutzer.
      * @param createdByAdmin Der Admin, der den Benutzer erstellt hat.
      */
-    public void saveUser(User user, User createdByAdmin) {
+    public void saveUser(@Valid User user, User createdByAdmin) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setCreatedByAdmin(createdByAdmin);
         userRepository.save(user);
@@ -145,7 +148,6 @@ public class UserService {
      * Validiert ein Passwort nach bestimmten Regeln.
      *
      * @param password Das zu validierende Passwort.
-     * @param username Der Benutzername, der im Passwort nicht enthalten sein darf.
      * @throws IllegalArgumentException Wenn das Passwort ungültig ist.
      */
     public void validatePassword(String password) {

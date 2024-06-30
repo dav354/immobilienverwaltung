@@ -1,5 +1,6 @@
 package projektarbeit.immobilienverwaltung.service;
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import projektarbeit.immobilienverwaltung.model.Configuration;
@@ -42,7 +43,7 @@ public class ConfigurationService {
      * @param config Die zu speichernde Konfigurationseinstellung.
      */
     @Transactional
-    public void save(Configuration config) {
+    public void save(@Valid Configuration config) {
         configurationRepository.save(config);
     }
 
@@ -71,4 +72,6 @@ public class ConfigurationService {
                 .map(config -> Boolean.parseBoolean(config.getConfigValue()))
                 .orElse(true);
     }
+
+
 }

@@ -1,22 +1,22 @@
 package projektarbeit.immobilienverwaltung.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import projektarbeit.immobilienverwaltung.model.Dokument;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.repository.DokumentRepository;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class DokumentServiceTest {
 
     @Mock
@@ -25,50 +25,19 @@ class DokumentServiceTest {
     @InjectMocks
     private DokumentService dokumentService;
 
-    private Wohnung wohnung;
-    private Dokument dokument1;
-    private Dokument dokument2;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-
-        wohnung = new Wohnung();
-        wohnung.setWohnung_id(1L);
-
-        dokument1 = new Dokument();
-        dokument1.setDokument_id(1L);
-        dokument1.setWohnung(wohnung);
-
-        dokument2 = new Dokument();
-        dokument2.setDokument_id(2L);
-        dokument2.setWohnung(wohnung);
-        dokument2.setMieter(null); // Kein zugeordneter Mieter
-    }
-
     @Test
-    void testFindAllDokumente() {
-        List<Dokument> dokumente = new ArrayList<>();
-        dokumente.add(dokument1);
-        dokumente.add(dokument2);
-
-        when(dokumentRepository.findAll()).thenReturn(dokumente);
+    void findAllDokumente() {
+        List<Dokument> dokumentList = new ArrayList<>();
+        dokumentList.add(new Dokument());
+        when(dokumentRepository.findAll()).thenReturn(dokumentList);
 
         List<Dokument> result = dokumentService.findAllDokumente();
-
-        assertEquals(2, result.size());
+        assertEquals(1, result.size());
         verify(dokumentRepository, times(1)).findAll();
     }
 
     @Test
-    void testDeleteDokumenteByWohnung_WithNullWohnung() {
-        assertThrows(NullPointerException.class, () -> {
-            dokumentService.deleteDokumenteByWohnung(null);
-        }, "Wohnung ist null");
-    }
-
-    @Test
-    void testFindAllDokumente_EmptyList() {
+    void findAllDokumenteWhenEmpty() {
         when(dokumentRepository.findAll()).thenReturn(new ArrayList<>());
 
         List<Dokument> result = dokumentService.findAllDokumente();
@@ -77,64 +46,148 @@ class DokumentServiceTest {
     }
 
     @Test
-    public void testDeleteDokumenteByWohnung_WithMieter() {
-        dokument1.setMieter(new Mieter());
-        List<Dokument> dokumente = Arrays.asList(dokument1, dokument2);
-        when(dokumentRepository.findByWohnung(wohnung)).thenReturn(dokumente);
+    void deleteDokumenteByWohnung() {
+        Wohnung wohnung = new Wohnung();
+        Dokument dokumentWithMieter = new Dokument();
+        dokumentWithMieter.setWohnung(wohnung);
+        dokumentWithMieter.setMieter(new Mieter());
+
+        Dokument dokumentWithoutMieter = new Dokument();
+        dokumentWithoutMieter.setWohnung(wohnung);
+
+        List<Dokument> dokumentList = new ArrayList<>();
+        dokumentList.add(dokumentWithMieter);
+        dokumentList.add(dokumentWithoutMieter);
+
+        when(dokumentRepository.findByWohnung(any(Wohnung.class))).thenReturn(dokumentList);
 
         dokumentService.deleteDokumenteByWohnung(wohnung);
 
         verify(dokumentRepository, times(1)).findByWohnung(wohnung);
-        verify(dokumentRepository, times(1)).save(dokument1);
-        verify(dokumentRepository, times(1)).delete(dokument2);
-        assertNull(dokument1.getWohnung());
+        verify(dokumentRepository, times(1)).delete(dokumentWithoutMieter);
+        verify(dokumentRepository, times(1)).save(dokumentWithMieter);
+        assertNull(dokumentWithoutMieter.getWohnung());
+        assertNull(dokumentWithMieter.getWohnung());
     }
 
     @Test
-    public void testDeleteDokumenteByWohnung_WithoutMieter() {
-        List<Dokument> dokumente = Arrays.asList(dokument1, dokument2);
-        when(dokumentRepository.findByWohnung(wohnung)).thenReturn(dokumente);
-
-        dokumentService.deleteDokumenteByWohnung(wohnung);
-
-        verify(dokumentRepository, times(1)).findByWohnung(wohnung);
-        verify(dokumentRepository, never()).save(any(Dokument.class));
-        verify(dokumentRepository, times(2)).delete(any(Dokument.class));
+    void deleteDokumenteByWohnungWhenWohnungIsNull() {
+        assertThrows(NullPointerException.class, () -> dokumentService.deleteDokumenteByWohnung(null));
     }
 
     @Test
-    public void testFindDokumenteByWohnung() {
-        List<Dokument> dokumente = Arrays.asList(dokument1, dokument2);
-        when(dokumentRepository.findByWohnung(wohnung)).thenReturn(dokumente);
+    void findDokumenteByWohnung() {
+        Wohnung wohnung = new Wohnung();
+        List<Dokument> dokumentList = new ArrayList<>();
+        dokumentList.add(new Dokument());
+        when(dokumentRepository.findByWohnung(wohnung)).thenReturn(dokumentList);
 
         List<Dokument> result = dokumentService.findDokumenteByWohnung(wohnung);
-
-        assertEquals(2, result.size());
+        assertEquals(1, result.size());
         verify(dokumentRepository, times(1)).findByWohnung(wohnung);
     }
 
     @Test
-    public void testFindDokumenteByMieter() {
+    void findDokumenteByWohnungWhenEmpty() {
+        Wohnung wohnung = new Wohnung();
+        when(dokumentRepository.findByWohnung(wohnung)).thenReturn(new ArrayList<>());
+
+        List<Dokument> result = dokumentService.findDokumenteByWohnung(wohnung);
+        assertTrue(result.isEmpty());
+        verify(dokumentRepository, times(1)).findByWohnung(wohnung);
+    }
+
+    @Test
+    void findDokumenteByMieter() {
         Mieter mieter = new Mieter();
-        dokument1.setMieter(mieter);
-        dokument2.setMieter(mieter);
-        List<Dokument> dokumente = Arrays.asList(dokument1, dokument2);
-        when(dokumentRepository.findByMieter(mieter)).thenReturn(dokumente);
+        List<Dokument> dokumentList = new ArrayList<>();
+        dokumentList.add(new Dokument());
+        when(dokumentRepository.findByMieter(mieter)).thenReturn(dokumentList);
 
         List<Dokument> result = dokumentService.findDokumenteByMieter(mieter);
-
-        assertEquals(2, result.size());
+        assertEquals(1, result.size());
         verify(dokumentRepository, times(1)).findByMieter(mieter);
     }
 
     @Test
-    public void testFindDokumenteByMieter_NoDokumente() {
+    void findDokumenteByMieterWhenEmpty() {
         Mieter mieter = new Mieter();
         when(dokumentRepository.findByMieter(mieter)).thenReturn(new ArrayList<>());
 
         List<Dokument> result = dokumentService.findDokumenteByMieter(mieter);
-
         assertTrue(result.isEmpty());
         verify(dokumentRepository, times(1)).findByMieter(mieter);
+    }
+
+    @Test
+    void deleteDokumenteByWohnungWhenEmptyList() {
+        Wohnung wohnung = new Wohnung();
+        when(dokumentRepository.findByWohnung(any(Wohnung.class))).thenReturn(new ArrayList<>());
+
+        dokumentService.deleteDokumenteByWohnung(wohnung);
+
+        verify(dokumentRepository, times(1)).findByWohnung(wohnung);
+        verify(dokumentRepository, never()).delete(any(Dokument.class));
+        verify(dokumentRepository, never()).save(any(Dokument.class));
+    }
+
+    @Test
+    void deleteDokumenteByWohnungWhenAllHaveMieter() {
+        Wohnung wohnung = new Wohnung();
+        Dokument dokumentWithMieter1 = new Dokument();
+        dokumentWithMieter1.setWohnung(wohnung);
+        dokumentWithMieter1.setMieter(new Mieter());
+
+        Dokument dokumentWithMieter2 = new Dokument();
+        dokumentWithMieter2.setWohnung(wohnung);
+        dokumentWithMieter2.setMieter(new Mieter());
+
+        List<Dokument> dokumentList = new ArrayList<>();
+        dokumentList.add(dokumentWithMieter1);
+        dokumentList.add(dokumentWithMieter2);
+
+        when(dokumentRepository.findByWohnung(any(Wohnung.class))).thenReturn(dokumentList);
+
+        dokumentService.deleteDokumenteByWohnung(wohnung);
+
+        verify(dokumentRepository, times(1)).findByWohnung(wohnung);
+        verify(dokumentRepository, never()).delete(any(Dokument.class));
+        verify(dokumentRepository, times(2)).save(any(Dokument.class));
+        assertNull(dokumentWithMieter1.getWohnung());
+        assertNull(dokumentWithMieter2.getWohnung());
+    }
+
+    @Test
+    void deleteDokumenteByWohnungWhenAllHaveNoMieter() {
+        Wohnung wohnung = new Wohnung();
+        Dokument dokumentWithoutMieter1 = new Dokument();
+        dokumentWithoutMieter1.setWohnung(wohnung);
+
+        Dokument dokumentWithoutMieter2 = new Dokument();
+        dokumentWithoutMieter2.setWohnung(wohnung);
+
+        List<Dokument> dokumentList = new ArrayList<>();
+        dokumentList.add(dokumentWithoutMieter1);
+        dokumentList.add(dokumentWithoutMieter2);
+
+        when(dokumentRepository.findByWohnung(any(Wohnung.class))).thenReturn(dokumentList);
+
+        dokumentService.deleteDokumenteByWohnung(wohnung);
+
+        verify(dokumentRepository, times(1)).findByWohnung(wohnung);
+        verify(dokumentRepository, times(2)).delete(any(Dokument.class));
+        verify(dokumentRepository, never()).save(any(Dokument.class));
+    }
+
+    @Test
+    void findDokumenteByWohnungWithPagination() {
+        Wohnung wohnung = new Wohnung();
+        List<Dokument> dokumentList = new ArrayList<>();
+        dokumentList.add(new Dokument());
+        when(dokumentRepository.findByWohnung(wohnung)).thenReturn(dokumentList);
+
+        List<Dokument> result = dokumentService.findDokumenteByWohnung(wohnung);
+        assertEquals(1, result.size());
+        verify(dokumentRepository, times(1)).findByWohnung(wohnung);
     }
 }

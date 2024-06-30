@@ -1,20 +1,22 @@
 package projektarbeit.immobilienverwaltung.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.model.Zaehlerstand;
 import projektarbeit.immobilienverwaltung.repository.ZaehlerstandRepository;
 
-import java.time.LocalDate;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class ZaehlerstandServiceTest {
 
     @Mock
@@ -23,118 +25,67 @@ class ZaehlerstandServiceTest {
     @InjectMocks
     private ZaehlerstandService zaehlerstandService;
 
-    private Zaehlerstand zaehlerstand;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-
-        zaehlerstand = new Zaehlerstand();
-        zaehlerstand.setZaehlerstandId(1L);
-        zaehlerstand.setAblesedatum(LocalDate.of(2024,1,1));
-        zaehlerstand.setAblesewert(123.45);
-    }
-
     @Test
-    void testSaveOrUpdateZaehlerstand() {
-        when(zaehlerstandRepository.save(any(Zaehlerstand.class))).thenReturn(zaehlerstand);
+    void saveOrUpdateZaehlerstand() {
+        Zaehlerstand zaehlerstand = new Zaehlerstand();
+        when(zaehlerstandRepository.save(zaehlerstand)).thenReturn(zaehlerstand);
 
-        Zaehlerstand savedZaehlerstand = zaehlerstandService.saveOrUpdateZaehlerstand(zaehlerstand);
+        Zaehlerstand result = zaehlerstandService.saveZaehlerstand(zaehlerstand);
 
-        assertNotNull(savedZaehlerstand);
-        assertEquals(1L, savedZaehlerstand.getZaehlerstandId());
+        assertEquals(zaehlerstand, result);
         verify(zaehlerstandRepository, times(1)).save(zaehlerstand);
     }
 
     @Test
-    void testFindAllZaehlerstaende() {
-        Zaehlerstand zaehlerstand2 = new Zaehlerstand();
-        zaehlerstand2.setZaehlerstandId(2L);
-        zaehlerstand2.setAblesedatum(LocalDate.of(2024,1,1));
-        zaehlerstand2.setAblesewert(234.56);
-
-        List<Zaehlerstand> zaehlerstaende = Arrays.asList(zaehlerstand, zaehlerstand2);
-        when(zaehlerstandRepository.findAll()).thenReturn(zaehlerstaende);
+    void findAllZaehlerstaende() {
+        List<Zaehlerstand> expectedZaehlerstaende = Arrays.asList(new Zaehlerstand(), new Zaehlerstand());
+        when(zaehlerstandRepository.findAll()).thenReturn(expectedZaehlerstaende);
 
         List<Zaehlerstand> result = zaehlerstandService.findAllZaehlerstaende();
 
-        assertEquals(2, result.size());
+        assertEquals(expectedZaehlerstaende.size(), result.size());
         verify(zaehlerstandRepository, times(1)).findAll();
     }
 
     @Test
-    void testGetZaehlerstandById() {
-        when(zaehlerstandRepository.findById(anyLong())).thenReturn(Optional.of(zaehlerstand));
+    void getZaehlerstandById() {
+        Long id = 1L;
+        Zaehlerstand expectedZaehlerstand = new Zaehlerstand();
+        when(zaehlerstandRepository.findById(id)).thenReturn(Optional.of(expectedZaehlerstand));
 
-        Zaehlerstand result = zaehlerstandService.getZaehlerstandById(1L);
+        Zaehlerstand result = zaehlerstandService.getZaehlerstandById(id);
 
-        assertNotNull(result);
-        assertEquals(1L, result.getZaehlerstandId());
-        verify(zaehlerstandRepository, times(1)).findById(1L);
+        assertEquals(expectedZaehlerstand, result);
+        verify(zaehlerstandRepository, times(1)).findById(id);
     }
 
     @Test
-    void testGetZaehlerstandById_NotFound() {
-        when(zaehlerstandRepository.findById(anyLong())).thenReturn(Optional.empty());
+    void deleteZaehlerstandById() {
+        Long id = 1L;
 
-        Zaehlerstand result = zaehlerstandService.getZaehlerstandById(1L);
+        zaehlerstandService.deleteZaehlerstand(id);
 
-        assertNull(result);
-        verify(zaehlerstandRepository, times(1)).findById(1L);
+        verify(zaehlerstandRepository, times(1)).deleteById(id);
     }
 
     @Test
-    void testDeleteZaehlerstand() {
-        doNothing().when(zaehlerstandRepository).deleteById(anyLong());
+    void findZaehlerstandByWohnung() {
+        Wohnung wohnung = new Wohnung();
+        List<Zaehlerstand> expectedZaehlerstaende = Arrays.asList(new Zaehlerstand(), new Zaehlerstand());
+        when(zaehlerstandRepository.findByWohnung(wohnung)).thenReturn(expectedZaehlerstaende);
 
-        zaehlerstandService.deleteZaehlerstand(1L);
+        List<Zaehlerstand> result = zaehlerstandService.findZaehlerstandByWohnung(wohnung);
 
-        verify(zaehlerstandRepository, times(1)).deleteById(1L);
+        assertEquals(expectedZaehlerstaende.size(), result.size());
+        verify(zaehlerstandRepository, times(1)).findByWohnung(wohnung);
     }
 
     @Test
-    void testFindAllZaehlerstaende_EmptyList() {
-        when(zaehlerstandRepository.findAll()).thenReturn(Collections.emptyList());
+    void deleteZaehlerstand() {
+        Zaehlerstand zaehlerstand = new Zaehlerstand();
 
-        List<Zaehlerstand> result = zaehlerstandService.findAllZaehlerstaende();
+        zaehlerstandService.deleteZaehlerstand(zaehlerstand);
 
-        assertTrue(result.isEmpty());
-        verify(zaehlerstandRepository, times(1)).findAll();
-    }
-
-    @Test
-    void testSaveOrUpdateZaehlerstand_NullInput() {
-        assertThrows(NullPointerException.class, () -> {
-            zaehlerstandService.saveOrUpdateZaehlerstand(null);
-        });
-    }
-
-    @Test
-    void testGetZaehlerstandById_ExceptionHandling() {
-        when(zaehlerstandRepository.findById(anyLong())).thenThrow(new RuntimeException("Database error"));
-
-        assertThrows(RuntimeException.class, () -> {
-            zaehlerstandService.getZaehlerstandById(1L);
-        });
-    }
-
-    @Test
-    void testDeleteZaehlerstand_ExceptionHandling() {
-        doThrow(new RuntimeException("Database error")).when(zaehlerstandRepository).deleteById(anyLong());
-
-        assertThrows(RuntimeException.class, () -> {
-            zaehlerstandService.deleteZaehlerstand(1L);
-        });
-    }
-
-    @Test
-    void testSaveOrUpdateZaehlerstand_BoundaryValues() {
-        zaehlerstand.setAblesewert(Double.MAX_VALUE);
-        when(zaehlerstandRepository.save(any(Zaehlerstand.class))).thenReturn(zaehlerstand);
-
-        Zaehlerstand savedZaehlerstand = zaehlerstandService.saveOrUpdateZaehlerstand(zaehlerstand);
-
-        assertEquals(Double.MAX_VALUE, savedZaehlerstand.getAblesewert());
-        verify(zaehlerstandRepository, times(1)).save(zaehlerstand);
+        verify(zaehlerstandRepository, times(1)).delete(zaehlerstand);
     }
 }

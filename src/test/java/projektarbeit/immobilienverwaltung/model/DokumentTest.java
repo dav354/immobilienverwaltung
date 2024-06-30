@@ -167,4 +167,20 @@ public class DokumentTest {
         Set<ConstraintViolation<Dokument>> violations = validator.validate(dokument);
         assertTrue(violations.isEmpty(), "Dokument ohne Wohnung und Mieter sollte keine Verstöße haben");
     }
+
+    @Test
+    public void testMaxDokumententyp() {
+        String longDokumententyp = "A".repeat(255);
+        dokument = new Dokument(wohnung, mieter, longDokumententyp, "/pfad/zu/datei.pdf");
+        Set<ConstraintViolation<Dokument>> violations = validator.validate(dokument);
+        assertTrue(violations.isEmpty(), "Maximaler Dokumententyp sollte keine Verstöße haben");
+    }
+
+    @Test
+    public void testMaxDateipfad() {
+        String longDateipfad = "/".repeat(200) + "datei.pdf";
+        dokument = new Dokument(wohnung, mieter, "Rechnung", longDateipfad);
+        Set<ConstraintViolation<Dokument>> violations = validator.validate(dokument);
+        assertTrue(violations.isEmpty(), "Maximaler Dateipfad sollte keine Verstöße haben");
+    }
 }
