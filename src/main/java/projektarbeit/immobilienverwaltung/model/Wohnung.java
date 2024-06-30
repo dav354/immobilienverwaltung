@@ -4,13 +4,12 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import projektarbeit.immobilienverwaltung.validation.ValidYear;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a property (Wohnung) entity with details about the property such as address, size, number of rooms, and amenities.
- * This entity is mapped to the database table 'wohnung'.
+ * Repräsentiert eine Immobilien-Entität (Wohnung) mit Details zur Immobilie wie Adresse, Größe, Anzahl der Zimmer und Ausstattung.
+ * Diese Entität wird der Datenbanktabelle 'wohnung' zugeordnet.
  */
 @SuppressWarnings({"SpellCheckingInspection", "unused"})
 @Entity
@@ -34,8 +33,8 @@ public class Wohnung {
     private String hausnummer;
 
     @Column(nullable = false)
-    @NotNull(message = "Postleitzahl cannot be blank")
-    @Pattern(regexp = "^\\d{4,10}$", message = "Postleitzahl must contain only numbers")
+    @NotNull(message = "Postleitzahl darf nicht leer sein")
+    @Pattern(regexp = "^\\d{4,10}$", message = "Postleitzahl muss nur Zahlen enthalten")
     private String postleitzahl;
 
     @Column(nullable = false, length = 100)
@@ -45,30 +44,30 @@ public class Wohnung {
     private String stadt;
 
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "Land cannot be null")
+    @NotNull(message = "Land darf nicht null sein")
     private Land land;
 
     @OneToMany(mappedBy = "wohnung", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Dokument> dokumente;
+    private List<Dokument> dokumente = new ArrayList<>();
 
     @OneToMany(mappedBy = "wohnung", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Zaehlerstand> zaehlerstand;
+    private List<Zaehlerstand> zaehlerstand = new ArrayList<>();
 
     @OneToMany(mappedBy = "wohnung", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Mietvertrag> mietvertraege = new ArrayList<>();
 
     @Column(nullable = false)
-    @Min(value = 1, message = "GesamtQuadratmeter must be at least 1")
+    @Min(value = 1, message = "GesamtQuadratmeter muss mindestens 1 sein")
     private int gesamtQuadratmeter;
 
-    @Positive(message = "Baujahr must be a four-digit year and not in the future")
-    @ValidYear(message = "Baujahr must be a four-digit year and not in the future")
+    @Positive(message = "Baujahr muss eine vierstellige Zahl sein und darf nicht in der Zukunft liegen")
+    @ValidYear(message = "Baujahr muss eine vierstellige Zahl sein und darf nicht in der Zukunft liegen")
     private int baujahr;
 
-    @Positive(message = "AnzahlBäder must be positive")
+    @Positive(message = "AnzahlBäder muss positiv sein")
     private int anzahlBaeder;
 
-    @PositiveOrZero(message = "AnzahlSchlafzimmer must be zero or positive")
+    @PositiveOrZero(message = "AnzahlSchlafzimmer muss null oder positiv sein")
     private int anzahlSchlafzimmer;
 
     private boolean hatBalkon;
@@ -93,37 +92,34 @@ public class Wohnung {
     @Pattern(regexp = "^[a-zA-Z0-9]*$", message = "Illegal Wohnungsnummer")
     private String wohnungsnummer;
 
-    @Column(nullable = true)
     private Double latitude;
 
-    @Column(nullable = true)
     private Double longitude;
 
-
     /**
-     * Default constructor for JPA.
+     * Standardkonstruktor für JPA.
      */
     public Wohnung() {
     }
 
     /**
-     * Constructs a new Wohnung instance with specified details.
+     * Erstellt eine neue Wohnung-Instanz mit den angegebenen Details.
      *
-     * @param strasse            The street name of the property.
-     * @param hausnummer         The house number of the property.
-     * @param postleitzahl       The postal code of the property.
-     * @param stadt              The city of the property.
-     * @param land               The country of the property.
-     * @param gesamtQuadratmeter The total area of the property in square meters.
-     * @param baujahr            The year the property was built.
-     * @param anzahlBaeder       The number of bathrooms in the property.
-     * @param anzahlSchlafzimmer The number of bedrooms in the property.
-     * @param hatBalkon          Whether the property has a balcony.
-     * @param hatTerrasse        Whether the property has a terrace.
-     * @param hatGarten          Whether the property has a garden.
-     * @param hatKlimaanlage     Whether the property has air conditioning.
-     * @param stockwerk          The floor on which the property is located.
-     * @param wohnungsnummer     The apartment number of the property.
+     * @param strasse            Der Straßenname der Immobilie.
+     * @param hausnummer         Die Hausnummer der Immobilie.
+     * @param postleitzahl       Die Postleitzahl der Immobilie.
+     * @param stadt              Die Stadt der Immobilie.
+     * @param land               Das Land der Immobilie.
+     * @param gesamtQuadratmeter Die Gesamtfläche der Immobilie in Quadratmetern.
+     * @param baujahr            Das Baujahr der Immobilie.
+     * @param anzahlBaeder       Die Anzahl der Badezimmer in der Immobilie.
+     * @param anzahlSchlafzimmer Die Anzahl der Schlafzimmer in der Immobilie.
+     * @param hatBalkon          Ob die Immobilie einen Balkon hat.
+     * @param hatTerrasse        Ob die Immobilie eine Terrasse hat.
+     * @param hatGarten          Ob die Immobilie einen Garten hat.
+     * @param hatKlimaanlage     Ob die Immobilie eine Klimaanlage hat.
+     * @param stockwerk          Das Stockwerk, in dem sich die Immobilie befindet.
+     * @param wohnungsnummer     Die Wohnungsnummer der Immobilie.
      */
     public Wohnung(String strasse,
                    String hausnummer,
@@ -158,437 +154,435 @@ public class Wohnung {
     }
 
     /**
-     * Returns the ID of the Wohnung (apartment).
+     * Gibt die ID der Wohnung zurück.
      *
-     * @return the ID of the Wohnung
+     * @return die Wohnungs-ID
      */
     public Long getWohnung_id() {
         return wohnung_id;
     }
 
     /**
-     * Sets the ID of the Wohnung (apartment).
+     * Setzt die ID der Wohnung.
      *
-     * @param wohnung_id the ID to set
+     * @param wohnung_id die Wohnungs-ID
      */
     public void setWohnung_id(Long wohnung_id) {
         this.wohnung_id = wohnung_id;
     }
 
     /**
-     * Returns the street name of the Wohnung (apartment).
+     * Gibt die Straße der Wohnung zurück.
      *
-     * @return the street name of the Wohnung
+     * @return die Straße der Wohnung
      */
     public String getStrasse() {
         return strasse;
     }
 
     /**
-     * Sets the street name of the Wohnung (apartment).
+     * Setzt die Straße der Wohnung.
      *
-     * @param strasse the street name to set
+     * @param strasse die Straße der Wohnung
      */
     public void setStrasse(String strasse) {
         this.strasse = strasse;
     }
 
     /**
-     * Returns the house number of the Wohnung (apartment).
+     * Gibt die Hausnummer der Wohnung zurück.
      *
-     * @return the house number of the Wohnung
+     * @return die Hausnummer der Wohnung
      */
     public String getHausnummer() {
         return hausnummer;
     }
 
     /**
-     * Sets the house number of the Wohnung (apartment).
+     * Setzt die Hausnummer der Wohnung.
      *
-     * @param hausnummer the house number to set
+     * @param hausnummer die Hausnummer der Wohnung
      */
     public void setHausnummer(String hausnummer) {
         this.hausnummer = hausnummer;
     }
 
     /**
-     * Returns the postal code of the Wohnung (apartment).
+     * Gibt die Postleitzahl der Wohnung zurück.
      *
-     * @return the postal code of the Wohnung
+     * @return die Postleitzahl der Wohnung
      */
     public String getPostleitzahl() {
         return postleitzahl;
     }
 
     /**
-     * Sets the postal code of the Wohnung (apartment).
+     * Setzt die Postleitzahl der Wohnung.
      *
-     * @param postleitzahl the postal code to set
+     * @param postleitzahl die Postleitzahl der Wohnung
      */
     public void setPostleitzahl(String postleitzahl) {
         this.postleitzahl = postleitzahl;
     }
 
     /**
-     * Returns the city of the Wohnung (apartment).
+     * Gibt die Stadt der Wohnung zurück.
      *
-     * @return the city of the Wohnung
+     * @return die Stadt der Wohnung
      */
     public String getStadt() {
         return stadt;
     }
 
     /**
-     * Sets the city of the Wohnung (apartment).
+     * Setzt die Stadt der Wohnung.
      *
-     * @param stadt the city to set
+     * @param stadt die Stadt der Wohnung
      */
     public void setStadt(String stadt) {
         this.stadt = stadt;
     }
 
     /**
-     * Returns the country of the Wohnung (apartment).
+     * Gibt das Land der Wohnung zurück.
      *
-     * @return the country of the Wohnung
+     * @return das Land der Wohnung
      */
     public Land getLand() {
         return land;
     }
 
     /**
-     * Sets the country of the Wohnung (apartment).
+     * Setzt das Land der Wohnung.
      *
-     * @param land the country to set
+     * @param land das Land der Wohnung
      */
     public void setLand(Land land) {
         this.land = land;
     }
 
     /**
-     * Returns the list of Dokument (documents) associated with the Wohnung (apartment).
+     * Gibt die Liste der Dokumente zurück, die mit der Wohnung verknüpft sind.
      *
-     * @return the list of Dokumente
+     * @return die Liste der Dokumente
      */
     public List<Dokument> getDokumente() {
         return dokumente;
     }
 
     /**
-     * Sets the list of Dokument (documents) associated with the Wohnung (apartment).
+     * Setzt die Liste der Dokumente für die Wohnung.
      *
-     * @param dokumente the list of Dokumente to set
+     * @param dokumente die Liste der Dokumente
      */
     public void setDokumente(List<Dokument> dokumente) {
         this.dokumente = dokumente;
     }
 
     /**
-     * Returns the list of Zaehlerstand (meter readings) associated with the Wohnung (apartment).
+     * Gibt die Liste der Zählerstände zurück, die mit der Wohnung verknüpft sind.
      *
-     * @return the list of Zaehlerstande
+     * @return die Liste der Zählerstände
      */
     public List<Zaehlerstand> getZaehlerstand() {
         return zaehlerstand;
     }
 
     /**
-     * Sets the list of Zaehlerstand (meter readings) associated with the Wohnung (apartment).
+     * Setzt die Liste der Zählerstände für die Wohnung.
      *
-     * @param zaehlerstand the list of Zaehlerstande to set
+     * @param zaehlerstand die Liste der Zählerstände
      */
     public void setZaehlerstand(List<Zaehlerstand> zaehlerstand) {
         this.zaehlerstand = zaehlerstand;
     }
 
     /**
-     * Returns the total square meters of the Wohnung (apartment).
-     * If the Wohnung is a header, returns 0.
+     * Gibt die Gesamtquadratmeter der Wohnung zurück.
      *
-     * @return the total square meters of the Wohnung, or 0 if it is a header
+     * @return die Gesamtquadratmeter der Wohnung
      */
     public int getGesamtQuadratmeter() {
-        return isHeader ? 0 : gesamtQuadratmeter;
+        return gesamtQuadratmeter;
     }
 
     /**
-     * Sets the total square meters of the Wohnung (apartment).
+     * Setzt die Gesamtquadratmeter der Wohnung.
      *
-     * @param gesamtQuadratmeter the total square meters to set
+     * @param gesamtQuadratmeter die Gesamtquadratmeter der Wohnung
      */
     public void setGesamtQuadratmeter(int gesamtQuadratmeter) {
         this.gesamtQuadratmeter = gesamtQuadratmeter;
     }
 
     /**
-     * Returns the year of construction of the Wohnung (apartment).
-     * If the Wohnung is a header, returns 0.
+     * Gibt das Baujahr der Wohnung zurück.
      *
-     * @return the year of construction of the Wohnung, or 0 if it is a header
+     * @return das Baujahr der Wohnung
      */
     public int getBaujahr() {
-        return isHeader ? 0 : baujahr;
+        return baujahr;
     }
 
     /**
-     * Sets the year of construction of the Wohnung (apartment).
+     * Setzt das Baujahr der Wohnung.
      *
-     * @param baujahr the year of construction to set
-     * @throws IllegalArgumentException if the year is not a four-digit year or is in the future
+     * @param baujahr das Baujahr der Wohnung
      */
     public void setBaujahr(int baujahr) {
-        if (baujahr < 1000 || baujahr > LocalDate.now().getYear()) {
-            throw new IllegalArgumentException("Baujahr must be a four-digit year and not in the future");
-        }
         this.baujahr = baujahr;
     }
 
     /**
-     * Returns the number of bathrooms in the Wohnung (apartment).
-     * If the Wohnung is a header, returns 0.
+     * Gibt die Anzahl der Bäder in der Wohnung zurück.
      *
-     * @return the number of bathrooms, or 0 if it is a header
+     * @return die Anzahl der Bäder in der Wohnung
      */
     public int getAnzahlBaeder() {
-        return isHeader ? 0 : anzahlBaeder;
+        return anzahlBaeder;
     }
 
     /**
-     * Sets the number of bathrooms in the Wohnung (apartment).
+     * Setzt die Anzahl der Bäder in der Wohnung.
      *
-     * @param anzahlBaeder the number of bathrooms to set
-     * @throws IllegalArgumentException if the number of bathrooms is not positive
+     * @param anzahlBaeder die Anzahl der Bäder in der Wohnung
      */
     public void setAnzahlBaeder(int anzahlBaeder) {
-        if (anzahlBaeder <= 0) {
-            throw new IllegalArgumentException("AnzahlBaeder must be positive");
-        }
         this.anzahlBaeder = anzahlBaeder;
     }
 
     /**
-     * Returns the number of bedrooms in the Wohnung (apartment).
-     * If the Wohnung is a header, returns 0.
+     * Gibt die Anzahl der Schlafzimmer in der Wohnung zurück.
      *
-     * @return the number of bedrooms, or 0 if it is a header
+     * @return die Anzahl der Schlafzimmer in der Wohnung
      */
     public int getAnzahlSchlafzimmer() {
-        return isHeader ? 0 : anzahlSchlafzimmer;
+        return anzahlSchlafzimmer;
     }
 
     /**
-     * Sets the number of bedrooms in the Wohnung (apartment).
+     * Setzt die Anzahl der Schlafzimmer in der Wohnung.
      *
-     * @param anzahlSchlafzimmer the number of bedrooms to set
-     * @throws IllegalArgumentException if the number of bedrooms is negative
+     * @param anzahlSchlafzimmer die Anzahl der Schlafzimmer in der Wohnung
      */
     public void setAnzahlSchlafzimmer(int anzahlSchlafzimmer) {
-        if (anzahlSchlafzimmer < 0) {
-            throw new IllegalArgumentException("AnzahlSchlafzimmer must be zero or positive");
-        }
         this.anzahlSchlafzimmer = anzahlSchlafzimmer;
     }
 
     /**
-     * Returns the list of Mietvertrag (rental contracts) associated with the Wohnung (apartment).
+     * Gibt die Liste der Mietverträge zurück, die mit der Wohnung verknüpft sind.
      *
-     * @return the list of Mietvertraege
+     * @return die Liste der Mietverträge
      */
     public List<Mietvertrag> getMietvertraege() {
         return mietvertraege;
     }
 
     /**
-     * Sets the list of Mietvertrag (rental contracts) associated with the Wohnung (apartment).
+     * Setzt die Liste der Mietverträge für die Wohnung.
      *
-     * @param mietvertraege the list of Mietvertraege to set
+     * @param mietvertraege die Liste der Mietverträge
      */
     public void setMietvertraege(List<Mietvertrag> mietvertraege) {
         this.mietvertraege = mietvertraege;
     }
 
     /**
-     * Returns whether the Wohnung (apartment) has a balcony.
-     * If the Wohnung is a header, returns false.
+     * Gibt zurück, ob die Wohnung einen Balkon hat.
      *
-     * @return true if the Wohnung has a balcony and is not a header, false otherwise
+     * @return true, wenn die Wohnung einen Balkon hat, sonst false
      */
     public boolean isHatBalkon() {
-        return !isHeader && hatBalkon;
+        return hatBalkon;
     }
 
     /**
-     * Sets whether the Wohnung (apartment) has a balcony.
+     * Setzt, ob die Wohnung einen Balkon hat.
      *
-     * @param hatBalkon true if the Wohnung has a balcony, false otherwise
+     * @param hatBalkon true, wenn die Wohnung einen Balkon hat, sonst false
      */
     public void setHatBalkon(boolean hatBalkon) {
         this.hatBalkon = hatBalkon;
     }
 
     /**
-     * Returns whether the Wohnung (apartment) has a terrace.
-     * If the Wohnung is a header, returns false.
+     * Gibt zurück, ob die Wohnung eine Terrasse hat.
      *
-     * @return true if the Wohnung has a terrace and is not a header, false otherwise
+     * @return true, wenn die Wohnung eine Terrasse hat, sonst false
      */
     public boolean isHatTerrasse() {
-        return !isHeader && hatTerrasse;
+        return hatTerrasse;
     }
 
     /**
-     * Sets whether the Wohnung (apartment) has a terrace.
+     * Setzt, ob die Wohnung eine Terrasse hat.
      *
-     * @param hatTerrasse true if the Wohnung has a terrace, false otherwise
+     * @param hatTerrasse true, wenn die Wohnung eine Terrasse hat, sonst false
      */
     public void setHatTerrasse(boolean hatTerrasse) {
         this.hatTerrasse = hatTerrasse;
     }
 
     /**
-     * Returns whether the Wohnung (apartment) has a garden.
-     * If the Wohnung is a header, returns false.
+     * Gibt zurück, ob die Wohnung einen Garten hat.
      *
-     * @return true if the Wohnung has a garden and is not a header, false otherwise
+     * @return true, wenn die Wohnung einen Garten hat, sonst false
      */
     public boolean isHatGarten() {
-        return !isHeader && hatGarten;
+        return hatGarten;
     }
 
     /**
-     * Sets whether the Wohnung (apartment) has a garden.
+     * Setzt, ob die Wohnung einen Garten hat.
      *
-     * @param hatGarten true if the Wohnung has a garden, false otherwise
+     * @param hatGarten true, wenn die Wohnung einen Garten hat, sonst false
      */
     public void setHatGarten(boolean hatGarten) {
         this.hatGarten = hatGarten;
     }
 
     /**
-     * Returns whether the Wohnung (apartment) has air conditioning.
-     * If the Wohnung is a header, returns false.
+     * Gibt zurück, ob die Wohnung eine Klimaanlage hat.
      *
-     * @return true if the Wohnung has air conditioning and is not a header, false otherwise
+     * @return true, wenn die Wohnung eine Klimaanlage hat, sonst false
      */
     public boolean isHatKlimaanlage() {
-        return !isHeader && hatKlimaanlage;
+        return hatKlimaanlage;
     }
 
     /**
-     * Sets whether the Wohnung (apartment) has air conditioning.
+     * Setzt, ob die Wohnung eine Klimaanlage hat.
      *
-     * @param hatKlimaanlage true if the Wohnung has air conditioning, false otherwise
+     * @param hatKlimaanlage true, wenn die Wohnung eine Klimaanlage hat, sonst false
      */
     public void setHatKlimaanlage(boolean hatKlimaanlage) {
         this.hatKlimaanlage = hatKlimaanlage;
     }
 
     /**
-     * Returns the floor number of the Wohnung (apartment).
+     * Gibt die Etage der Wohnung zurück.
      *
-     * @return the floor number of the Wohnung
+     * @return die Etage der Wohnung
      */
     public String getStockwerk() {
         return stockwerk;
     }
 
     /**
-     * Sets the floor number of the Wohnung (apartment).
+     * Setzt die Etage der Wohnung.
      *
-     * @param stockwerk the floor number to set
+     * @param stockwerk die Etage der Wohnung
      */
     public void setStockwerk(String stockwerk) {
         this.stockwerk = stockwerk;
     }
 
     /**
-     * Returns the apartment number of the Wohnung (apartment).
+     * Gibt die Wohnungsnummer der Wohnung zurück.
      *
-     * @return the apartment number of the Wohnung
+     * @return die Wohnungsnummer der Wohnung
      */
     public String getWohnungsnummer() {
         return wohnungsnummer;
     }
 
     /**
-     * Sets the apartment number of the Wohnung (apartment).
+     * Setzt die Wohnungsnummer der Wohnung.
      *
-     * @param wohnungsnummer the apartment number to set
+     * @param wohnungsnummer die Wohnungsnummer der Wohnung
      */
     public void setWohnungsnummer(String wohnungsnummer) {
         this.wohnungsnummer = wohnungsnummer;
     }
 
     /**
-     * Returns the list of sub-Wohnungen (sub-apartments) for this Wohnung (apartment).
+     * Gibt die Liste der Subwohnungen für diese Wohnung zurück.
      *
-     * @return the list of sub-Wohnungen
+     * @return die Liste der Subwohnungen
      */
     public List<Wohnung> getSubWohnungen() {
         return subWohnungen;
     }
 
     /**
-     * Sets the list of sub-Wohnungen (sub-apartments) for this Wohnung (apartment).
+     * Setzt die Liste der Subwohnungen für diese Wohnung.
      *
-     * @param subWohnungen the list of sub-Wohnungen to set
+     * @param subWohnungen die Liste der Subwohnungen
      */
     public void setSubWohnungen(List<Wohnung> subWohnungen) {
         this.subWohnungen = subWohnungen;
     }
 
     /**
-     * Returns whether this Wohnung (apartment) is a header.
+     * Gibt zurück, ob diese Wohnung ein Header ist.
      *
-     * @return true if this Wohnung is a header, false otherwise
+     * @return true, wenn diese Wohnung ein Header ist, sonst false
      */
     public boolean isHeader() {
         return isHeader;
     }
 
     /**
-     * Sets whether this Wohnung (apartment) is a header.
+     * Setzt, ob diese Wohnung ein Header ist.
      *
-     * @param header true if this Wohnung is a header, false otherwise
+     * @param header true, wenn diese Wohnung ein Header ist, sonst false
      */
     public void setHeader(boolean header) {
         isHeader = header;
     }
 
+    /**
+     * Gibt die Breite der Wohnung zurück.
+     *
+     * @return die Breite der Wohnung
+     */
     public Double getLatitude() {
         return latitude;
     }
 
+    /**
+     * Setzt die Breite der Wohnung.
+     *
+     * @param latitude die Breite der Wohnung
+     */
     public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
+    /**
+     * Gibt die Länge der Wohnung zurück.
+     *
+     * @return die Länge der Wohnung
+     */
     public Double getLongitude() {
         return longitude;
     }
 
+    /**
+     * Setzt die Länge der Wohnung.
+     *
+     * @param longitude die Länge der Wohnung
+     */
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 
     /**
-     * Returns the street address with the house number.
-     * If the Wohnung is a header, only the street name is returned.
+     * Gibt die Straße mit Hausnummer der Wohnung zurück.
      *
-     * @return the street address with the house number, or just the street name if it is a header
+     * @return die Straße mit Hausnummer der Wohnung
      */
     public String getStrasseMitHausnummer() {
         return isHeader ? strasse : strasse + " " + hausnummer;
     }
 
-
     /**
-     * Returns the formatted address of the Wohnung (apartment).
+     * Gibt die formatierte Adresse der Wohnung zurück.
      * <p>
-     * The address format includes the country, postal code, city, street, and house number.
-     * If the address or postal code object is null, it returns "Keine Adresse".
+     * Das Adressformat umfasst das Land, die Postleitzahl, die Stadt, die Straße und die Hausnummer.
+     * Wenn die Adresse oder die Postleitzahl null ist, wird "Keine Adresse" zurückgegeben.
      *
-     * @return A formatted string representing the address of the Wohnung, or "Keine Adresse" if the address or postal code object is null.
+     * @return eine formatierte Zeichenkette, die die Adresse der Wohnung darstellt, oder "Keine Adresse", wenn die Adresse oder die Postleitzahl null ist.
      */
     public String getFormattedAddress() {
         return String.format("%s %s %s %s %s %s %s",
@@ -602,9 +596,9 @@ public class Wohnung {
     }
 
     /**
-     * Returns a string representation of this Wohnung.
+     * Gibt eine String-Darstellung dieser Wohnung zurück.
      *
-     * @return a string representation of this Wohnung.
+     * @return eine String-Darstellung dieser Wohnung
      */
     @Override
     public String toString() {

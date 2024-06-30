@@ -7,8 +7,8 @@ import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
 
 /**
- * Represents a meter reading (Zaehlerstand) entity associated with a property (Wohnung).
- * This entity is mapped to the database table 'zaehlerstand'.
+ * Repräsentiert eine Zählerstand-Entität, die einer Immobilie (Wohnung) zugeordnet ist.
+ * Diese Entität wird der Datenbanktabelle 'zaehlerstand' zugeordnet.
  */
 @SuppressWarnings("SpellCheckingInspection")
 @Entity
@@ -21,28 +21,34 @@ public class Zaehlerstand {
 
     @ManyToOne
     @JoinColumn(name = "wohnung_id", nullable = false)
-    @NotNull(message = "Wohnung cannot be null")
+    @NotNull(message = "Wohnung darf nicht null sein")
     private Wohnung wohnung;
 
     @Column(nullable = false)
-    @NotNull(message = "Ablesedatum cannot be null")
+    @NotNull(message = "Ablesedatum darf nicht null sein")
     private LocalDate ablesedatum;
 
     @Column(nullable = false)
-    @Positive(message = "Ablesewert cannot be null")
+    @Positive(message = "Ablesewert muss positiv sein")
     private double ablesewert;
 
     @Column(nullable = false)
-    @NotNull(message = "Name cannot be null")
+    @NotNull(message = "Name darf nicht null sein")
     private String name;
 
     /**
-     * Constructs a new Zaehlerstand instance with specified details.
+     * Standardkonstruktor für JPA.
+     */
+    public Zaehlerstand() {
+    }
+
+    /**
+     * Erstellt eine neue Zaehlerstand-Instanz mit den angegebenen Details.
      *
-     * @param wohnung      The property (Wohnung) to which the reading belongs.
-     * @param ablesedatum  The date when the meter reading was taken.
-     * @param ablesewert   The value of the meter reading.
-     * @param name  The Name of the meter
+     * @param wohnung     Die Immobilie (Wohnung), zu der die Ablesung gehört.
+     * @param ablesedatum Das Datum, an dem die Zählerstandablesung durchgeführt wurde.
+     * @param ablesewert  Der Wert der Zählerstandablesung.
+     * @param name        Der Name des Zählers.
      */
     public Zaehlerstand(Wohnung wohnung,
                         LocalDate ablesedatum,
@@ -55,110 +61,108 @@ public class Zaehlerstand {
     }
 
     /**
-     * Default constructor for JPA.
-     */
-    public Zaehlerstand() {
-    }
-
-    /**
-     * Returns the ID of the meter reading.
+     * Gibt die ID des Zählerstands zurück.
      *
-     * @return the meter reading ID
+     * @return die Zählerstand-ID
      */
     public Long getZaehlerstandId() {
         return zaehlerstandId;
     }
 
     /**
-     * Sets the ID of the meter reading.
+     * Setzt die ID des Zählerstands.
      *
-     * @param zaehlerstandId the meter reading ID to set
+     * @param zaehlerstandId die Zählerstand-ID
      */
     public void setZaehlerstandId(Long zaehlerstandId) {
         this.zaehlerstandId = zaehlerstandId;
     }
 
     /**
-     * Returns the property (Wohnung) associated with the meter reading.
+     * Gibt die Wohnung zurück, die mit diesem Zählerstand verknüpft ist.
      *
-     * @return the property associated with the meter reading
+     * @return die verknüpfte Wohnung
      */
     public Wohnung getWohnung() {
         return wohnung;
     }
 
     /**
-     * Sets the property (Wohnung) associated with the meter reading.
+     * Setzt die Wohnung, die mit diesem Zählerstand verknüpft ist.
      *
-     * @param wohnung the property to set
-     * @throws IllegalArgumentException if the Wohnung is null.
+     * @param wohnung die zu verknüpfende Wohnung
      */
     public void setWohnung(Wohnung wohnung) {
-        if (wohnung == null) throw new IllegalArgumentException("Wohnung cannot be null");
         this.wohnung = wohnung;
     }
 
     /**
-     * Returns the date of the meter reading.
+     * Gibt das Ablesedatum zurück.
      *
-     * @return the date of the meter reading
+     * @return das Ablesedatum
      */
     public LocalDate getAblesedatum() {
         return ablesedatum;
     }
 
     /**
-     * Sets the date of the meter reading.
+     * Setzt das Ablesedatum.
      *
-     * @param ablesedatum the date to set
-     * @throws IllegalArgumentException if the date is null.
+     * @param ablesedatum das zu setzende Ablesedatum
      */
     public void setAblesedatum(LocalDate ablesedatum) {
-        if (ablesedatum == null) throw new IllegalArgumentException("Ablesedatum cannot be null");
         this.ablesedatum = ablesedatum;
     }
 
     /**
-     * Returns the meter reading value.
+     * Gibt den Ablesewert zurück.
      *
-     * @return the meter reading value
+     * @return der Ablesewert
      */
     public double getAblesewert() {
         return ablesewert;
     }
 
     /**
-     * Sets the meter reading value.
-     * Ensures the reading value is positive.
+     * Setzt den Ablesewert.
      *
-     * @param ablesewert the meter reading value to set
-     * @throws IllegalArgumentException if the value is not positive.
+     * @param ablesewert der zu setzende Ablesewert
      */
     public void setAblesewert(double ablesewert) {
-        if (ablesewert <= 0) throw new IllegalArgumentException("Ablesewert must be positive");
         this.ablesewert = ablesewert;
     }
 
-    public @NotNull(message = "Name cannot be null") String getName() {
+    /**
+     * Gibt den Namen des Zählers zurück.
+     *
+     * @return der Name des Zählers
+     */
+    public String getName() {
         return name;
     }
 
-    public void setName(@NotNull(message = "Name cannot be null") String name) {
+    /**
+     * Setzt den Namen des Zählers.
+     *
+     * @param name der zu setzende Name
+     */
+    public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * Returns a string representation of this Zaehlerstand.
+     * Gibt eine String-Darstellung dieses Zählerstands zurück.
      *
-     * @return a string representation of this Zaehlerstand.
+     * @return eine String-Darstellung dieses Zählerstands.
      */
     @Override
     public String toString() {
         return "Zaehlerstand[" +
                 "zaehlerstandId='" + zaehlerstandId +
-                "', eigentumID='" + wohnung +
+                "', wohnung='" + wohnung +
                 "', ablesedatum='" + ablesedatum +
                 "', ablesewert='" + ablesewert +
+                "', name='" + name +
                 "']";
     }
 }
