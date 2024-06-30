@@ -26,6 +26,7 @@ import projektarbeit.immobilienverwaltung.repository.RoleRepository;
 import projektarbeit.immobilienverwaltung.service.SecurityService;
 import projektarbeit.immobilienverwaltung.service.UserService;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
+import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
 
 import projektarbeit.immobilienverwaltung.ui.components.*;
 import java.util.HashSet;
@@ -198,17 +199,9 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
         User currentAdmin = getCurrentAdmin();
         List<User> users = userService.findUsersCreatedByAdmin(currentAdmin);
         users.add(currentAdmin); // Add the current admin to the list
-        userGrid.setItems(users);
 
-        // Dynamische Höhe des Grids basierend auf der Anzahl der Benutzer
-        int numberOfUsers = users.size();
-        int rowHeight = 60; // Höhe einer Zeile in Pixeln (ungefähr)
-        int headerHeight = 50; // Höhe des Headers in Pixeln (ungefähr)
-        int maxRowsToShow = 10; // Maximale Anzahl der anzuzeigenden Zeilen
-
-        // Berechne die Höhe des Grids
-        int gridHeight = headerHeight + (Math.min(numberOfUsers, maxRowsToShow) * rowHeight);
-        userGrid.setHeight(gridHeight + "px");
+        // Verwenden von TableUtils zur Konfiguration des Grids
+        TableUtils.configureGrid(userGrid, users, 60);
     }
 
     /**
