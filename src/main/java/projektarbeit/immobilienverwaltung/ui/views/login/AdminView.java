@@ -157,16 +157,22 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
                 confirmationDialog.open();
             });
 
-            Button updatePasswordButton = new Button("Change Password");
-            updatePasswordButton.setEnabled(user.getRoles().stream().noneMatch(role -> role.getName().equals("ADMIN")));
-            updatePasswordButton.addClickListener(e -> {
-                // Dialog zum Ändern des Passworts öffnen
-                openChangePasswordDialog(user);
-            });
+            actions.add(deleteButton);
 
-            actions.add(deleteButton, updatePasswordButton);
+            // Prüfen, ob der Benutzer nicht die Rolle "ADMIN" hat
+            boolean isNotAdmin = user.getRoles().stream().noneMatch(role -> role.getName().equals("ADMIN"));
+            if (isNotAdmin) {
+                Button updatePasswordButton = new Button("Change Password");
+                updatePasswordButton.addClickListener(e -> {
+                    // Dialog zum Ändern des Passworts öffnen
+                    openChangePasswordDialog(user);
+                });
+                actions.add(updatePasswordButton);
+            }
+
             return actions;
         })).setHeader("Actions");
+
         add(userGrid);
 
         // Benutzer in das Grid laden
