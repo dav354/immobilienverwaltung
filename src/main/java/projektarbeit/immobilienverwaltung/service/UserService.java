@@ -19,14 +19,18 @@ import java.util.regex.Pattern;
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    private final RoleRepository roleRepository;
+
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder){
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     /**
      * Initialisiert die Standardrollen "ADMIN" und "USER", wenn sie nicht vorhanden sind.
@@ -145,7 +149,6 @@ public class UserService {
      * Validiert ein Passwort nach bestimmten Regeln.
      *
      * @param password Das zu validierende Passwort.
-     * @param username Der Benutzername, der im Passwort nicht enthalten sein darf.
      * @throws IllegalArgumentException Wenn das Passwort ungültig ist.
      */
     public void validatePassword(String password) {
