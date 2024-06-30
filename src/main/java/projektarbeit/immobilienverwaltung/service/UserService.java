@@ -25,6 +25,13 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Konstruktor für die UserService-Klasse.
+     *
+     * @param userRepository    Das Repository für Benutzer.
+     * @param roleRepository    Das Repository für Rollen.
+     * @param passwordEncoder   Der PasswordEncoder zum Verschlüsseln von Passwörtern.
+     */
     @Autowired
     public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
