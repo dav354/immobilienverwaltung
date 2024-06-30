@@ -26,6 +26,11 @@ public class SecurityConfig extends VaadinWebSecurity {
 
     private final UserRepository userRepository;
 
+    /**
+     * Konstruktor für die SecurityConfig-Klasse.
+     *
+     * @param userRepository Das Repository für Benutzer.
+     */
     @Autowired
     public SecurityConfig(UserRepository userRepository){
         this.userRepository = userRepository;
