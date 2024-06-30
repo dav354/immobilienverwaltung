@@ -63,19 +63,6 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
             throw new IllegalArgumentException("userService, roleRepository, and securityService cannot be null");
         }
 
-        /*
-        // Erstellen des Headers mit dem Button zum Ändern des eigenen Passworts
-        Button changeOwnPasswordButton = new Button("Change Own Password", event -> openChangePasswordDialog(getCurrentAdmin()));
-        changeOwnPasswordButton.getStyle().set("margin-left", "auto");
-
-        HorizontalLayout headerLayout = new HorizontalLayout(changeOwnPasswordButton);
-        headerLayout.setWidthFull();
-        headerLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);
-
-        // Header zum Layout hinzufügen
-        add(headerLayout);
-         */
-
         // Erstellen des Titels
         User currentAdmin = getCurrentAdmin();
         Span titleLabel = new Span("Admin Panel");
