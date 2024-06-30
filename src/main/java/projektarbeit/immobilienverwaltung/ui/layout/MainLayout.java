@@ -3,7 +3,6 @@ package projektarbeit.immobilienverwaltung.ui.layout;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -11,15 +10,13 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
-import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.theme.lumo.Lumo;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import projektarbeit.immobilienverwaltung.model.User;
 import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 import projektarbeit.immobilienverwaltung.service.SecurityService;
 import projektarbeit.immobilienverwaltung.service.UserService;
-import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
+import projektarbeit.immobilienverwaltung.ui.views.dialog.ChangePasswordDialog;
 import projektarbeit.immobilienverwaltung.ui.views.login.AdminView;
 import projektarbeit.immobilienverwaltung.ui.views.MainView;
 import projektarbeit.immobilienverwaltung.ui.views.mieter.MieterListView;
@@ -46,6 +43,7 @@ public class MainLayout extends AppLayout {
         this.securityService = securityService;
         this.userService = userService;
         this.configurationService = configurationService;
+
         this.isDarkMode = configurationService.isDarkMode();
 
         createHeader();
@@ -65,7 +63,10 @@ public class MainLayout extends AppLayout {
 
         // Benutzername Button
         Button userButton = new Button(currentUsername);
-        userButton.addClickListener(event -> openChangePasswordDialog());
+        userButton.addClickListener(event -> {
+            ChangePasswordDialog changePasswordDialog = new ChangePasswordDialog(configurationService, userService);
+            changePasswordDialog.open();
+        });
 
         HorizontalLayout header = new HorizontalLayout(toggle, title, userButton);
         header.setWidthFull();
@@ -84,44 +85,6 @@ public class MainLayout extends AppLayout {
     private String getCurrentUsername() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userDetails.getUsername();
-    }
-
-    /**
-     * Öffnet einen Dialog zum Ändern des Passworts des aktuellen Benutzers.
-     */
-    private void openChangePasswordDialog() {
-        Dialog dialog = new Dialog();
-        dialog.setWidth("400px");
-
-        VerticalLayout dialogLayout = new VerticalLayout();
-        dialogLayout.setPadding(false);
-        dialogLayout.setSpacing(false);
-
-        PasswordField newPasswordField = new PasswordField("New Password");
-        Button changeButton = new Button("Change", event -> {
-            String newPassword = newPasswordField.getValue();
-            try {
-                userService.validatePassword(newPassword);
-                UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                User currentUser = userService.findByUsername(userDetails.getUsername()).orElseThrow(() ->
-                        new IllegalStateException("Current user not found"));
-                userService.updatePassword(currentUser, newPassword);
-                NotificationPopup.showSuccessNotification("Password changed successfully");
-                dialog.close();
-            } catch (IllegalArgumentException ex) {
-                NotificationPopup.showErrorNotification(ex.getMessage());
-            }
-        });
-
-        // Cancel Button hinzufügen
-        Button cancelButton = new Button("Cancel", event -> dialog.close());
-
-        // Layout für Buttons erstellen
-        HorizontalLayout buttonsLayout = new HorizontalLayout(changeButton, cancelButton);
-
-        dialogLayout.add(newPasswordField, buttonsLayout);
-        dialog.add(dialogLayout);
-        dialog.open();
     }
 
     /**
