@@ -20,24 +20,24 @@ public class Wohnung {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long wohnung_id;
 
-    @Column(nullable = false, length = 100)
+    @Column
     @NotBlank(message = "Illegal Strasse")
     @Size(max = 100, message = "Illegal Strasse")
     @Pattern(regexp = "^[\\p{L}äöüÄÖÜß\\s\\-]+$", message = "Illegal Strasse")
     private String strasse;
 
-    @Column(nullable = false, length = 6)
+    @Column
     @NotBlank(message = "Illegal Hausnummer")
     @Size(max = 6, message = "Illegal Hausnummer")
     @Pattern(regexp = "^\\d+[a-zA-Z]?$", message = "Illegal Hausnummer")
     private String hausnummer;
 
-    @Column(nullable = false)
-    @NotNull(message = "Postleitzahl darf nicht leer sein")
-    @Pattern(regexp = "^\\d{4,10}$", message = "Postleitzahl muss nur Zahlen enthalten")
+    @Column
+    @NotNull(message = "Illegal Postleitzahl")
+    @Pattern(regexp = "^\\d{4,10}$", message = "Illegal Postleitzahl")
     private String postleitzahl;
 
-    @Column(nullable = false, length = 100)
+    @Column
     @NotBlank(message = "Illegal Stadt")
     @Size(max = 100, message = "Illegal Stadt")
     @Pattern(regexp = "^[\\p{L}\\s]+$", message = "Illegal Stadt")
@@ -56,7 +56,7 @@ public class Wohnung {
     @OneToMany(mappedBy = "wohnung", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Mietvertrag> mietvertraege = new ArrayList<>();
 
-    @Column(nullable = false)
+    @Column
     @Min(value = 1, message = "GesamtQuadratmeter muss mindestens 1 sein")
     private int gesamtQuadratmeter;
 

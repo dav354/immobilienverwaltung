@@ -1,8 +1,11 @@
 package projektarbeit.immobilienverwaltung.repository;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.model.Zaehlerstand;
 
@@ -10,9 +13,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static projektarbeit.immobilienverwaltung.model.Land.*;
+import static projektarbeit.immobilienverwaltung.model.Land.DE;
 
-/*
+@ExtendWith(SpringExtension.class)
 @DataJpaTest
 public class ZaehlerstandRepositoryTest {
 
@@ -22,20 +25,24 @@ public class ZaehlerstandRepositoryTest {
     @Autowired
     private WohnungRepository wohnungRepository;
 
+    private Wohnung testWohnung;
+
+    private Zaehlerstand testZaehlerstand;
+
+    @BeforeEach
+    public void setUp() {
+        testWohnung = new Wohnung("Teststraße", "11", "07111", "Stuttgart", DE, 200, 1900, 2, 1, true, true, true, true, null, null);
+        testWohnung = wohnungRepository.save(testWohnung);
+
+        testZaehlerstand = new Zaehlerstand(testWohnung, LocalDate.of(2023, 1, 1), 1234.56, "test");
+    }
+
     @Test
     public void testSaveAndFindZaehlerstand() {
-        // Create and save a Wohnung
-        Wohnung wohnung = new Wohnung("07111", "Stuttgart", "9473", "Teststrasse", DE, 200, 1900, 2, 2, true, true, true, true, null, null);
-        wohnungRepository.save(wohnung);
+        zaehlerstandRepository.save(testZaehlerstand);
 
-        // Create and save a Zaehlerstand
-        Zaehlerstand zaehlerstand = new Zaehlerstand(wohnung, LocalDate.of(2023, 1, 1), 1234.56);
-        zaehlerstandRepository.save(zaehlerstand);
+        Zaehlerstand found = zaehlerstandRepository.findById(testZaehlerstand.getZaehlerstandId()).orElse(null);
 
-        // Retrieve the Zaehlerstand
-        Zaehlerstand found = zaehlerstandRepository.findById(zaehlerstand.getZaehlerstandId()).orElse(null);
-
-        // Assert the results
         assertThat(found).isNotNull();
         assertThat(found.getAblesedatum()).isEqualTo(LocalDate.of(2023, 1, 1));
         assertThat(found.getAblesewert()).isEqualTo(1234.56);
@@ -43,41 +50,52 @@ public class ZaehlerstandRepositoryTest {
 
     @Test
     public void testFindByWohnung() {
-        // Create and save a Wohnung
-        Wohnung wohnung = new Wohnung("07111", "Stuttgart", "34321", "Teststrasse", DE, 200, 1900, 2, 2, true, true, true, true, null, null);
-        wohnungRepository.save(wohnung);
-
-        // Create and save Zaehlerstaende
-        Zaehlerstand zaehlerstand1 = new Zaehlerstand(wohnung, LocalDate.of(2023, 1, 1), 1234.56);
-        Zaehlerstand zaehlerstand2 = new Zaehlerstand(wohnung, LocalDate.of(2023, 2, 1), 5678.90);
+        Zaehlerstand zaehlerstand1 = new Zaehlerstand(testWohnung, LocalDate.of(2023, 1, 1), 1234.56, "test");
+        Zaehlerstand zaehlerstand2 = new Zaehlerstand(testWohnung, LocalDate.of(2023, 2, 1), 5678.90, "test");
         zaehlerstandRepository.save(zaehlerstand1);
         zaehlerstandRepository.save(zaehlerstand2);
 
-        // Retrieve Zaehlerstaende by Wohnung
-        List<Zaehlerstand> zaehlerstaende = zaehlerstandRepository.findByWohnung(wohnung);
+        List<Zaehlerstand> zaehlerstaende = zaehlerstandRepository.findByWohnung(testWohnung);
 
-        // Assert the results
         assertThat(zaehlerstaende).hasSize(2);
         assertThat(zaehlerstaende).extracting(Zaehlerstand::getAblesewert).containsExactlyInAnyOrder(1234.56, 5678.90);
     }
 
     @Test
     public void testDeleteZaehlerstand() {
-        // Create and save a Wohnung
-        Wohnung wohnung = new Wohnung("07111", "Stuttgart", "91829", "Teststrasse", DE, 200, 1900, 2, 2, true, true, true, true, null, null);
-        wohnungRepository.save(wohnung);
+        zaehlerstandRepository.save(testZaehlerstand);
 
-        // Create and save a Zaehlerstand
-        Zaehlerstand zaehlerstand = new Zaehlerstand(wohnung, LocalDate.of(2023, 1, 1), 1234.56);
-        zaehlerstandRepository.save(zaehlerstand);
+        zaehlerstandRepository.delete(testZaehlerstand);
 
-        // Delete the Zaehlerstand
-        zaehlerstandRepository.delete(zaehlerstand);
+        Zaehlerstand found = zaehlerstandRepository.findById(testZaehlerstand.getZaehlerstandId()).orElse(null);
+        assertThat(found).isNull();
+    }
 
-        // Verify deletion
-        Zaehlerstand found = zaehlerstandRepository.findById(zaehlerstand.getZaehlerstandId()).orElse(null);
+    @Test
+    public void testUpdateZaehlerstand() {
+        zaehlerstandRepository.save(testZaehlerstand);
+
+        Zaehlerstand found = zaehlerstandRepository.findById(testZaehlerstand.getZaehlerstandId()).orElse(null);
+        assertThat(found).isNotNull();
+
+        found.setAblesewert(4321.65);
+        zaehlerstandRepository.save(found);
+
+        Zaehlerstand updated = zaehlerstandRepository.findById(found.getZaehlerstandId()).orElse(null);
+        assertThat(updated).isNotNull();
+        assertThat(updated.getAblesewert()).isEqualTo(4321.65);
+    }
+
+    @Test
+    public void testFindByWohnung_NoEntries() {
+        List<Zaehlerstand> zaehlerstaende = zaehlerstandRepository.findByWohnung(testWohnung);
+
+        assertThat(zaehlerstaende).isEmpty();
+    }
+
+    @Test
+    public void testFindNonExistentZaehlerstand() {
+        Zaehlerstand found = zaehlerstandRepository.findById(999L).orElse(null);
         assertThat(found).isNull();
     }
 }
-
- */

@@ -29,22 +29,25 @@ public class Mietvertrag {
     @JoinColumn(name = "wohnung_id", nullable = false)
     private Wohnung wohnung;
 
-    @Column(nullable = false)
+    @Column
     @NotNull(message = "Mietbeginn darf nicht null sein")
     private LocalDate mietbeginn;
 
     @Column
     private LocalDate mietende;
 
-    @Column(nullable = false)
+    @Column
+    @NotNull(message = "Kaution darf nicht leer sein")
     @Positive(message = "Kaution muss positiv sein")
     private double kaution;
 
-    @Column(nullable = false)
+    @Column
+    @NotNull(message = "Miete darf nicht leer sein")
     @Positive(message = "Miete muss positiv sein")
     private double miete;
 
-    @Column(nullable = false)
+    @Column
+    @NotNull(message = "AnzahlBewohner darf nicht leer sein")
     @Min(value = 1, message = "AnzahlBewohner muss mindestens 1 sein")
     private int anzahlBewohner;
 
@@ -63,19 +66,22 @@ public class Mietvertrag {
      * @param mietende   Das Enddatum des Mietvertrags.
      * @param kaution    Die Kautionssumme für den Mietvertrag.
      * @param miete      Die monatliche Miete für den Mietvertrag.
+     * @param anzahlBewohner Die Anzahl der Bewohner.
      */
     public Mietvertrag(Mieter mieter,
                        Wohnung wohnung,
                        LocalDate mietbeginn,
                        LocalDate mietende,
                        double kaution,
-                       double miete) {
+                       double miete,
+                       int anzahlBewohner) {
         this.mieter = mieter;
         this.wohnung = wohnung;
         this.mietbeginn = mietbeginn;
         this.mietende = mietende;
         this.kaution = kaution;
         this.miete = miete;
+        this.anzahlBewohner = anzahlBewohner;
     }
 
     /**

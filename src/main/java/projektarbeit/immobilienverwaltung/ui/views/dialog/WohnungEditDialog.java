@@ -15,26 +15,30 @@ import com.vaadin.flow.data.validator.IntegerRangeValidator;
 import com.vaadin.flow.data.validator.RegexpValidator;
 import projektarbeit.immobilienverwaltung.model.Land;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
+import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
+import projektarbeit.immobilienverwaltung.ui.layout.DialogLayout;
 
 import java.time.LocalDate;
 
 /**
  * A dialog for editing a Wohnung (apartment).
  */
-public class WohnungEditDialog extends Dialog {
+public class WohnungEditDialog extends DialogLayout {
 
     private final Binder<Wohnung> binder = new Binder<>(Wohnung.class);
 
     /**
-     * Constructs a new WohnungEditDialog.
+     * Konstruktor für WohnungEditDialog.
      *
-     * @param wohnungService the service to handle Wohnung operations
-     * @param wohnung        the Wohnung to be edited
-     * @param onSave         the callback to execute after saving the Wohnung
+     * @param wohnungService der Service zur Verwaltung von Wohnungen.
+     * @param wohnung die zu bearbeitende Wohnung.
+     * @param onSave der Callback, der nach dem Speichern der Wohnung ausgeführt wird.
+     * @param configurationService der ConfigurationService zur Verwaltung der Konfigurationseinstellungen.
      */
-    public WohnungEditDialog(WohnungService wohnungService, Wohnung wohnung, Runnable onSave) {
+    public WohnungEditDialog(WohnungService wohnungService, Wohnung wohnung, Runnable onSave, ConfigurationService configurationService) {
+        super(configurationService);
 
         // Create the form layout
         FormLayout formLayout = new FormLayout();

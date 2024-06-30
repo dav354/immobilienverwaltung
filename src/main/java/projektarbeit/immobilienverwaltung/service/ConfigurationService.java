@@ -1,5 +1,6 @@
 package projektarbeit.immobilienverwaltung.service;
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import projektarbeit.immobilienverwaltung.model.Configuration;
@@ -32,7 +33,7 @@ public class ConfigurationService {
      * @return Ein Optional, das die gefundene Konfigurationseinstellung enthält, oder ein leeres Optional, wenn keine Einstellung mit dem Schlüssel gefunden wurde.
      */
     @Transactional
-    public Optional<Configuration> findById(String key) {
+    public Optional<Configuration> findByKey(String key) {
         return configurationRepository.findById(key);
     }
 
@@ -42,7 +43,35 @@ public class ConfigurationService {
      * @param config Die zu speichernde Konfigurationseinstellung.
      */
     @Transactional
-    public void save(Configuration config) {
+    public void save(@Valid Configuration config) {
         configurationRepository.save(config);
     }
+
+    /**
+     * Setzt den Dark Mode-Status in der Datenbank.
+     *
+     * @param isDarkMode Der neue Dark Mode-Status.
+     */
+    @Transactional
+    public void setDarkMode(boolean isDarkMode) {
+        Configuration config = configurationRepository.findById("darkMode")
+                .orElse(new Configuration());
+        config.setConfigKey("darkMode");
+        config.setConfigValue(Boolean.toString(isDarkMode));
+        configurationRepository.save(config);
+    }
+
+    /**
+     * Prüft, ob der Dark Mode aktiviert ist.
+     *
+     * @return true, wenn der Dark Mode aktiviert ist, sonst false.
+     */
+    @Transactional
+    public boolean isDarkMode() {
+        return configurationRepository.findById("darkMode")
+                .map(config -> Boolean.parseBoolean(config.getConfigValue()))
+                .orElse(true);
+    }
+
+
 }

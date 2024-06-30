@@ -4,31 +4,34 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import projektarbeit.immobilienverwaltung.model.Zaehlerstand;
+import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 import projektarbeit.immobilienverwaltung.service.ZaehlerstandService;
 import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
+import projektarbeit.immobilienverwaltung.ui.layout.DialogLayout;
 
 /**
  * A dialog for editing a Zaehlerstand (meter reading).
  */
-public class ZaehlerstandDialog extends Dialog {
+public class ZaehlerstandDialog extends DialogLayout {
 
     private final Binder<Zaehlerstand> binder = new Binder<>(Zaehlerstand.class);
 
     /**
-     * Constructs a new ZaehlerstandDialog.
+     * Konstruktor für ZaehlerstandDialog.
      *
-     * @param zaehlerstandService the service to handle Zaehlerstand operations
-     * @param zaehlerstand        the Zaehlerstand to be edited
-     * @param onSave              the callback to execute after saving the Zaehlerstand
+     * @param zaehlerstandService der Service zur Verwaltung der Zaehlerstand-Operationen.
+     * @param zaehlerstand der zu bearbeitende Zaehlerstand.
+     * @param onSave der Callback, der nach dem Speichern des Zaehlerstands ausgeführt wird.
+     * @param configurationService der ConfigurationService zur Verwaltung der Konfigurationseinstellungen.
      */
-    public ZaehlerstandDialog(ZaehlerstandService zaehlerstandService, Zaehlerstand zaehlerstand, Runnable onSave) {
+    public ZaehlerstandDialog(ZaehlerstandService zaehlerstandService, Zaehlerstand zaehlerstand, Runnable onSave, ConfigurationService configurationService) {
+        super(configurationService);
 
         // Create the form layout
         FormLayout formLayout = new FormLayout();
@@ -55,7 +58,7 @@ public class ZaehlerstandDialog extends Dialog {
         // Create save button with save logic
         Button saveButton = new Button("Save", event -> {
             if (binder.writeBeanIfValid(zaehlerstand)) {
-                zaehlerstandService.saveOrUpdateZaehlerstand(zaehlerstand);
+                zaehlerstandService.saveZaehlerstand(zaehlerstand);
                 onSave.run();
                 this.close();
                 NotificationPopup.showSuccessNotification("Zaehlerstand saved.");

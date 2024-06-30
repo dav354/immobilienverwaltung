@@ -1,6 +1,7 @@
 package projektarbeit.immobilienverwaltung.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
@@ -24,14 +25,12 @@ public class Dokument {
     @JoinColumn(name = "mieter_id")
     private Mieter mieter;
 
-    @Column(nullable = false)
-    @NotEmpty(message = "Dokumententyp darf nicht leer sein")
-    @NotNull(message = "Dokumententyp darf nicht null sein")
+    @Column
+    @NotBlank(message = "Dokumententyp darf nicht leer sein")
     private String dokumententyp;
 
-    @Column(nullable = false)
-    @NotEmpty(message = "Dateipfad darf nicht leer sein")
-    @NotNull(message = "Dateipfad darf nicht null sein")
+    @Column
+    @NotBlank(message = "Dateipfad darf nicht leer sein")
     private String dateipfad;
 
     /**

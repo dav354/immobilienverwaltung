@@ -20,6 +20,7 @@ import com.vaadin.flow.spring.annotation.UIScope;
 import jakarta.annotation.security.PermitAll;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
+import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 import projektarbeit.immobilienverwaltung.service.MietvertragService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
@@ -36,6 +37,7 @@ public class WohnungListView extends VerticalLayout {
 
     private final WohnungService wohnungService;
     private final MietvertragService mietvertragService;
+    private final ConfigurationService configurationService;
     TreeGrid<Wohnung> treeGrid = new TreeGrid<>(Wohnung.class);
     TextField filterText = new TextField();
 
@@ -46,7 +48,7 @@ public class WohnungListView extends VerticalLayout {
      * @param wohnungService   der Dienst für Wohnungsoperationen
      * @param mietvertragService der Dienst für Mietvertragsoperationen
      */
-    public WohnungListView(WohnungService wohnungService, MietvertragService mietvertragService) {
+    public WohnungListView(WohnungService wohnungService, MietvertragService mietvertragService, ConfigurationService configurationService) {
         this.wohnungService = wohnungService;
         this.mietvertragService = mietvertragService;
         addClassName("list-view");
@@ -62,6 +64,7 @@ public class WohnungListView extends VerticalLayout {
         add(header, getToolbar(), getContent());
 
         updateList();
+        this.configurationService = configurationService;
     }
 
     /**
@@ -168,7 +171,8 @@ public class WohnungListView extends VerticalLayout {
             WohnungEditDialog dialog = new WohnungEditDialog(wohnungService, newWohnung, () -> {
                 updateList();
                 getUI().ifPresent(ui -> ui.navigate(WohnungDetailsView.class, newWohnung.getWohnung_id()));
-            });
+            },
+            configurationService);
             dialog.open();
         });
 

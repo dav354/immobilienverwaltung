@@ -1,21 +1,20 @@
 package projektarbeit.immobilienverwaltung.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.transaction.annotation.Transactional;
+import org.mockito.junit.jupiter.MockitoExtension;
 import projektarbeit.immobilienverwaltung.model.*;
 import projektarbeit.immobilienverwaltung.repository.*;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static projektarbeit.immobilienverwaltung.model.Land.*;
-/*
+
+@ExtendWith(MockitoExtension.class)
 class WohnungServiceTest {
 
     @Mock
@@ -28,128 +27,160 @@ class WohnungServiceTest {
     private MieterRepository mieterRepository;
 
     @Mock
-    private ZaehlerstandRepository zaehlerstandRepository;
+    private MietvertragRepository mietvertragRepository;
 
     @Mock
-    private DokumentService dokumentService;
+    private ZaehlerstandRepository zaehlerstandRepository;
 
     @InjectMocks
     private WohnungService wohnungService;
 
-    private Wohnung wohnung;
+    @Test
+    void findAllWohnungen() {
+        List<Wohnung> expectedWohnungen = Arrays.asList(new Wohnung(), new Wohnung());
+        when(wohnungRepository.findAll()).thenReturn(expectedWohnungen);
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
+        List<Wohnung> result = wohnungService.findAllWohnungen();
 
-        wohnung = new Wohnung("07111", "Stuttgart", "83783", "Teststrasse", DE, 200, 1900, 2, 2, true, true, true, true, null, null);
-        wohnung.setWohnung_id(1L);
+        assertEquals(expectedWohnungen.size(), result.size());
+        verify(wohnungRepository, times(1)).findAll();
     }
 
     @Test
-    @Transactional
-    void testFindAllWohnungen() {
-        when(wohnungRepository.findAll()).thenReturn(Collections.singletonList(wohnung));
+    void findAllMieter() {
+        List<Mieter> expectedMieter = Arrays.asList(new Mieter(), new Mieter());
+        when(mieterRepository.findAll()).thenReturn(expectedMieter);
 
-        List<Wohnung> wohnungen = wohnungService.findAllWohnungen();
-        assertNotNull(wohnungen);
-        assertFalse(wohnungen.isEmpty());
-        assertEquals(1, wohnungen.size());
-        assertEquals("Teststrasse", wohnungen.getFirst().getStrasse());
+        List<Mieter> result = wohnungService.findAllMieter();
+
+        assertEquals(expectedMieter.size(), result.size());
+        verify(mieterRepository, times(1)).findAll();
     }
 
     @Test
-    @Transactional
-    void testSaveWohnung() {
-        when(wohnungRepository.save(any(Wohnung.class))).thenReturn(wohnung);
+    void findWohnungById() {
+        Long wohnungId = 1L;
+        Wohnung expectedWohnung = new Wohnung();
+        when(wohnungRepository.findById(wohnungId)).thenReturn(Optional.of(expectedWohnung));
 
-        Wohnung savedWohnung = wohnungService.save(wohnung);
+        Wohnung result = wohnungService.findWohnungById(wohnungId);
 
-        assertNotNull(savedWohnung);
-        assertEquals("Teststrasse", savedWohnung.getStrasse());
-        verify(wohnungRepository, times(1)).save(wohnung);
+        assertEquals(expectedWohnung, result);
+        verify(wohnungRepository, times(1)).findById(wohnungId);
     }
 
+    // todo Warum schlägt er fehl?
+    /*
     @Test
-    @Transactional
-    void testDeleteWohnung() {
-        Wohnung wohnung = new Wohnung("07111", "Stuttgart", "86768", "Teststrasse", DE, 200, 1900, 2, 2, true, true, true, true, null, null);
-        wohnung.setWohnung_id(1L);
+    void findWohnungenWithHierarchy() {
+        List<Wohnung> mockWohnungen = Arrays.asList(
+                createMockWohnung("Wien", "1", "1010"),
+                createMockWohnung("Wien", "2", "1010"),
+                createMockWohnung("Graz", "1", "8010")
+        );
+        when(wohnungRepository.findAll()).thenReturn(mockWohnungen);
+        when(wohnungRepository.search(anyString())).thenReturn(mockWohnungen.stream()
+                .filter(wohnung -> wohnung.getStadt().equals("Wien"))
+                .collect(Collectors.toList()));
 
-        Mieter mieter = new Mieter();
-        mieter.setWohnung(new ArrayList<>(Collections.singletonList(wohnung)));
+        List<Wohnung> result = wohnungService.findWohnungenWithHierarchy("Wien");
 
-        Dokument dokument = new Dokument();
-        dokument.setWohnung(wohnung);
+        assertEquals(2, result.size());
+        assertEquals("Wien 1", result.get(0).getStrasse() + " " + result.get(0).getHausnummer());
+        assertEquals("Wien 2", result.get(1).getStrasse() + " " + result.get(1).getHausnummer());
+        verify(wohnungRepository, times(1)).findAll();
+    }
 
-        Zaehlerstand zaehlerstand = new Zaehlerstand();
-        zaehlerstand.setWohnung(wohnung);
+     */
 
-        when(dokumentRepository.findByWohnung(wohnung)).thenReturn(Collections.singletonList(dokument));
-        when(zaehlerstandRepository.findByWohnung(wohnung)).thenReturn(Collections.singletonList(zaehlerstand));
+    @Test
+    void delete() {
+        Wohnung wohnung = new Wohnung();
+        Mietvertrag mietvertrag = new Mietvertrag();
+        when(mietvertragRepository.findByWohnung(wohnung)).thenReturn(mietvertrag);
 
         wohnungService.delete(wohnung);
 
-        verify(dokumentService, times(1)).deleteDokumenteByWohnung(wohnung);
-        verify(mieterRepository, times(1)).save(mieter);
-        verify(zaehlerstandRepository, times(1)).delete(zaehlerstand);
+        verify(dokumentRepository, times(1)).deleteAll(anyList());
+        verify(mietvertragRepository, times(1)).delete(mietvertrag);
+        verify(zaehlerstandRepository, times(1)).deleteAll(anyList());
         verify(wohnungRepository, times(1)).delete(wohnung);
     }
 
     @Test
-    void testFindDokumenteByWohnung() {
-        Dokument dokument = new Dokument();
-        dokument.setWohnung(wohnung);
+    void findDokumenteByWohnung() {
+        Wohnung wohnung = new Wohnung();
+        List<Dokument> expectedDokumente = Arrays.asList(new Dokument(), new Dokument());
+        when(dokumentRepository.findByWohnung(wohnung)).thenReturn(expectedDokumente);
 
-        when(dokumentRepository.findByWohnung(any(Wohnung.class))).thenReturn(Collections.singletonList(dokument));
+        List<Dokument> result = wohnungService.findDokumenteByWohnung(wohnung);
 
-        List<Dokument> dokumente = wohnungService.findDokumenteByWohnung(wohnung);
-
-        assertNotNull(dokumente);
-        assertFalse(dokumente.isEmpty());
-        assertEquals(1, dokumente.size());
-        assertEquals(wohnung, dokumente.getFirst().getWohnung());
+        assertEquals(expectedDokumente.size(), result.size());
+        verify(dokumentRepository, times(1)).findByWohnung(wohnung);
     }
 
     @Test
-    void testFindAllWohnungen_NoFilter() {
-        when(wohnungRepository.findAll()).thenReturn(Collections.singletonList(wohnung));
+    void findAllWohnungen_NoFilter() {
+        List<Wohnung> expectedWohnungen = Arrays.asList(new Wohnung(), new Wohnung());
+        when(wohnungRepository.findAll()).thenReturn(expectedWohnungen);
 
-        List<Wohnung> wohnungen = wohnungService.findAllWohnungen(null);
-        assertNotNull(wohnungen);
-        assertFalse(wohnungen.isEmpty());
-        assertEquals(1, wohnungen.size());
-        assertEquals("Teststrasse", wohnungen.getFirst().getStrasse());
+        List<Wohnung> result = wohnungService.findAllWohnungen(null);
 
-        wohnungen = wohnungService.findAllWohnungen("");
-        assertNotNull(wohnungen);
-        assertFalse(wohnungen.isEmpty());
-        assertEquals(1, wohnungen.size());
-        assertEquals("Teststrasse", wohnungen.getFirst().getStrasse());
+        assertEquals(expectedWohnungen.size(), result.size());
+        verify(wohnungRepository, times(1)).findAll();
     }
 
     @Test
-    void testFindAllWohnungen_WithFilter() {
-        Wohnung matchingWohnung = new Wohnung("07111", "MatchingStadt", "87482", "MatchingStrasse", DE, 250, 2000, 3, 2, true, false, true, false, null, null);
-        matchingWohnung.setWohnung_id(2L);
+    void findAllWohnungen_WithFilter() {
+        String filter = "Wien";
+        List<Wohnung> expectedWohnungen = Arrays.asList(
+                createMockWohnung("Wien", "1", "1010"),
+                createMockWohnung("Wien", "2", "1010")
+        );
+        when(wohnungRepository.search(filter)).thenReturn(expectedWohnungen);
 
-        when(wohnungRepository.findAll()).thenReturn(Collections.singletonList(matchingWohnung));
+        List<Wohnung> result = wohnungService.findAllWohnungen(filter);
 
-        List<Wohnung> wohnungen = wohnungService.findAllWohnungen("MatchingStrasse");
-        assertNotNull(wohnungen);
-        assertFalse(wohnungen.isEmpty());
-        assertEquals(1, wohnungen.size());
-        assertEquals("MatchingStrasse", wohnungen.getFirst().getStrasse());
+        assertEquals(expectedWohnungen.size(), result.size());
+        verify(wohnungRepository, times(1)).search(filter);
     }
 
     @Test
-    void testFindAllWohnungen_NoMatchingFilter() {
-        when(wohnungRepository.findAll()).thenReturn(Collections.emptyList());
+    void findAvailableWohnungen() {
+        Wohnung wohnung1 = new Wohnung();
+        Wohnung wohnung2 = new Wohnung();
+        Mieter mieter = new Mieter();
+        Mietvertrag mietvertrag1 = new Mietvertrag();
+        mietvertrag1.setWohnung(wohnung1);
+        Mietvertrag mietvertrag2 = new Mietvertrag();
+        mietvertrag2.setWohnung(wohnung2);
+        mietvertrag2.setMieter(mieter);
+        when(mietvertragRepository.findAll()).thenReturn(Arrays.asList(mietvertrag1, mietvertrag2));
 
-        List<Wohnung> wohnungen = wohnungService.findAllWohnungen("NonExistingStrasse");
-        assertNotNull(wohnungen);
-        assertTrue(wohnungen.isEmpty());
+        List<Wohnung> result = wohnungService.findAvailableWohnungen();
+
+        assertEquals(1, result.size());
+        assertEquals(wohnung1, result.getFirst());
+        verify(mietvertragRepository, times(1)).findAll();
+    }
+
+    @Test
+    void findZaehlerstandByWohnung() {
+        Wohnung wohnung = new Wohnung();
+        List<Zaehlerstand> expectedZaehlerstand = Arrays.asList(new Zaehlerstand(), new Zaehlerstand());
+        when(zaehlerstandRepository.findByWohnung(wohnung)).thenReturn(expectedZaehlerstand);
+
+        List<Zaehlerstand> result = wohnungService.findZaehlerstandByWohnung(wohnung);
+
+        assertEquals(expectedZaehlerstand.size(), result.size());
+        verify(zaehlerstandRepository, times(1)).findByWohnung(wohnung);
+    }
+
+    private Wohnung createMockWohnung(String stadt, String hausnummer, String postleitzahl) {
+        Wohnung wohnung = new Wohnung();
+        wohnung.setStadt(stadt);
+        wohnung.setHausnummer(hausnummer);
+        wohnung.setPostleitzahl(postleitzahl);
+        return wohnung;
     }
 }
-
- */

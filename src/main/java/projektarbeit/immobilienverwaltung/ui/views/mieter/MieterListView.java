@@ -48,19 +48,17 @@ public class MieterListView extends VerticalLayout {
     private final MietvertragService mietvertragService;
     private final WohnungService wohnungService;
     private final DokumentService dokumentService;
-    private final MieterRepository mieterRepository;
 
     Grid<Mieter> grid = new Grid<>(Mieter.class);
     TextField filterText = new TextField();
     MieterForm form;
     HorizontalLayout toolbar;
 
-    public MieterListView(MieterService mieterService, MietvertragService mietvertragService, WohnungService wohnungService, DokumentService dokumentService, MieterRepository mieterRepository) {
+    public MieterListView(MieterService mieterService, MietvertragService mietvertragService, WohnungService wohnungService, DokumentService dokumentService) {
         this.mieterService = mieterService;
         this.mietvertragService = mietvertragService;
         this.wohnungService = wohnungService;
         this.dokumentService = dokumentService;
-        this.mieterRepository = mieterRepository;
 
 
         HorizontalLayout header = new HorizontalLayout(new H1("Mieter Übersicht"));
