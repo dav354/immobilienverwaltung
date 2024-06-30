@@ -1,5 +1,6 @@
 package projektarbeit.immobilienverwaltung.service;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,7 +11,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("SpellCheckingInspection")
@@ -81,8 +81,7 @@ public class WohnungService {
         List<Wohnung> wohnungen = findAllWohnungen(filter);
 
         // Group Wohnungen by their address (strasse + hausnummer)
-        Map<String, List<Wohnung>> groupedWohnungen = wohnungen.stream()
-                .collect(Collectors.groupingBy(wohnung -> wohnung.getStrasse() + " " + wohnung.getHausnummer()));
+        Map<String, List<Wohnung>> groupedWohnungen = wohnungen.stream().collect(Collectors.groupingBy(this::getAddress));
 
         List<Wohnung> wohnungsWithHierarchy = new ArrayList<>();
         // Iterate over each group of Wohnungen
@@ -105,6 +104,11 @@ public class WohnungService {
         });
 
         return wohnungsWithHierarchy;
+    }
+
+    // Helper method to get address string
+    private String getAddress(Wohnung wohnung) {
+        return String.format("%s %s", wohnung.getStrasse(), wohnung.getHausnummer());
     }
 
     /**
@@ -184,7 +188,7 @@ public class WohnungService {
      * @return the saved Wohnung entity
      */
     @Transactional
-    public Wohnung save(Wohnung wohnung) {
+    public Wohnung save(@Valid Wohnung wohnung) {
         setCoordinates(wohnung);
         return wohnungRepository.save(wohnung);
     }

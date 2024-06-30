@@ -1,6 +1,7 @@
 package projektarbeit.immobilienverwaltung.service;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -63,7 +64,7 @@ public class UserService {
      * @param user           Der zu speichernde Benutzer.
      * @param createdByAdmin Der Admin, der den Benutzer erstellt hat.
      */
-    public void saveUser(User user, User createdByAdmin) {
+    public void saveUser(@Valid User user, User createdByAdmin) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setCreatedByAdmin(createdByAdmin);
         userRepository.save(user);

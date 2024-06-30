@@ -21,34 +21,34 @@ public class Mieter {
     @OneToMany(mappedBy = "mieter", fetch = FetchType.EAGER)
     private List<Dokument> dokument = new ArrayList<>();
 
-    @Column(nullable = false, length = 100)
-    @NotBlank(message = "Illegal Name")
-    @Size(max = 100, message = "Illegal Name")
-    @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Illegal Name")
+    @Column
+    @NotBlank(message = "Name darf nicht leer sein")
+    @Size(max = 100, message = "Name darf nicht länger als 100 Zeichen sein")
+    @Pattern(regexp = "^[a-zA-ZäöüÄÖÜß\\s'-]+$", message = "Name darf nur Buchstaben enthalten")
     private String name;
 
-    @Column(nullable = false, length = 100)
-    @NotBlank(message = "Illegal Vorname")
-    @Size(max = 100, message = "Illegal Vorname")
-    @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Illegal Vorname")
+    @Column
+    @NotBlank(message = "Vorname darf nicht leer sein")
+    @Size(max = 100, message = "Vorname darf nicht länger als 100 Zeichen sein")
+    @Pattern(regexp = "^[a-zA-ZäöüÄÖÜß\\s'-]+$", message = "Vorname darf nur Buchstaben enthalten")
     private String vorname;
 
-    @Column(nullable = false)
-    @NotBlank(message = "Illegal Telefonnummer")
-    @Pattern(regexp = "^\\d{6,12}$", message = "Illegal Telefonnummer")
+    @Column
+    @NotBlank(message = "Telefonnummer darf nicht leer sein")
+    @Pattern(regexp = "^\\d{6,12}$", message = "Ungültiges Telefonnummer-Format")
     private String telefonnummer; // can start with 0
 
     @OneToMany(mappedBy = "mieter", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Mietvertrag> mietvertraege = new ArrayList<>();
 
-    @Column(nullable = false)
-    @Email(message = "Email should be valid")
-    @NotBlank(message = "Illegal Mail")
-    //@UniqueEmail TODO: kp warum das mit derValidation nicht geht, bekomme immer eine Nullpointer Exception
+    @Column
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Ungültige E-Mail-Adresse")
+    @NotBlank(message = "E-Mail darf nicht leer sein")
     private String email;
 
-    @Column(nullable = false)
-    @Positive(message = "Einkommen must be positive")
+    @Column
+    @Positive(message = "Einkommen muss positiv sein")
+    @NotNull(message = "Einkommen darf nicht null sein")
     private double einkommen;
 
     /**

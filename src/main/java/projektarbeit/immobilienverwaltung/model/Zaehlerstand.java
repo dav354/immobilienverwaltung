@@ -1,6 +1,7 @@
 package projektarbeit.immobilienverwaltung.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
@@ -24,16 +25,18 @@ public class Zaehlerstand {
     @NotNull(message = "Wohnung darf nicht null sein")
     private Wohnung wohnung;
 
-    @Column(nullable = false)
+    @Column
     @NotNull(message = "Ablesedatum darf nicht null sein")
     private LocalDate ablesedatum;
 
-    @Column(nullable = false)
+    @Column
     @Positive(message = "Ablesewert muss positiv sein")
+    @NotNull(message = "Ablesewert darf nicht null sein")
     private double ablesewert;
 
-    @Column(nullable = false)
+    @Column
     @NotNull(message = "Name darf nicht null sein")
+    @NotBlank(message = "Name darf nicht null sein")
     private String name;
 
     /**

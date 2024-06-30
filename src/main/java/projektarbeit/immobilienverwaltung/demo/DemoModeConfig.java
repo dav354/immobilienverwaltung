@@ -69,7 +69,7 @@ public class DemoModeConfig {
         }
 
         if (isDemoMode) {
-            Optional<Configuration> demoModeConfig = configurationService.findById("demo.mode.disable");
+            Optional<Configuration> demoModeConfig = configurationService.findByKey("demo.mode.disable");
 
             if (demoModeConfig.isPresent()) {
                 isDemoMode = Boolean.parseBoolean(demoModeConfig.get().getConfigValue());

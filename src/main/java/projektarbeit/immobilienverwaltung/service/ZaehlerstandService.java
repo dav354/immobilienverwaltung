@@ -1,7 +1,7 @@
 package projektarbeit.immobilienverwaltung.service;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.model.Zaehlerstand;
@@ -31,8 +31,7 @@ public class ZaehlerstandService {
      * @param zaehlerstand the Zaehlerstand entity to save or update
      * @return the saved or updated Zaehlerstand entity
      */
-    public Zaehlerstand saveOrUpdateZaehlerstand(Zaehlerstand zaehlerstand) {
-        if (zaehlerstand == null) throw new NullPointerException("Zaehlerstand is null");
+    public Zaehlerstand saveZaehlerstand(@Valid Zaehlerstand zaehlerstand) {
         return zaehlerstandRepository.save(zaehlerstand);
     }
 

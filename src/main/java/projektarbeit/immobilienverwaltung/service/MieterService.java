@@ -1,5 +1,6 @@
 package projektarbeit.immobilienverwaltung.service;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -136,8 +137,7 @@ public class MieterService {
      *
      * @param mieter The tenant to be saved. Must not be null.
      */
-    public void saveMieter(Mieter mieter) {
-        if (mieter == null) throw new NullPointerException("Mieter is null");
+    public void saveMieter(@Valid Mieter mieter) {
         mieterRepository.save(mieter);
     }
 
@@ -149,16 +149,6 @@ public class MieterService {
      */
     public boolean emailExists(String email) {
         return mieterRepository.existsByEmail(email);
-    }
-
-    /**
-     * Save Mietvertrag.
-     *
-     * @param mietvertrag the Mietvertrag to save
-     * @return the saved Mietvertrag
-     */
-    public Mietvertrag saveMietvertrag(Mietvertrag mietvertrag) {
-        return mietvertragRepository.save(mietvertrag);
     }
 
     /**

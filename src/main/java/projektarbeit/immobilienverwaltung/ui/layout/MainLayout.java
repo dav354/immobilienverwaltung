@@ -16,6 +16,7 @@ import com.vaadin.flow.theme.lumo.Lumo;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import projektarbeit.immobilienverwaltung.model.User;
+import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 import projektarbeit.immobilienverwaltung.service.SecurityService;
 import projektarbeit.immobilienverwaltung.service.UserService;
 import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
@@ -29,23 +30,27 @@ import projektarbeit.immobilienverwaltung.ui.views.wohnung.WohnungListView;
  */
 public class MainLayout extends AppLayout {
 
-    private boolean isDarkMode = true; // Dark mode standardmäßig aktiviert
+    private boolean isDarkMode;
     private final SecurityService securityService;
     private final UserService userService;
+    private final ConfigurationService configurationService;
 
     /**
      * Konstruktor für das MainLayout.
      *
      * @param securityService der SecurityService zur Verwaltung der Sicherheitsfunktionen.
      * @param userService der UserService zur Verwaltung der Benutzerdaten.
+     * @param configurationService der ConfigurationService zur Verwaltung der Konfigurationseinstellungen.
      */
-    public MainLayout(SecurityService securityService, UserService userService) {
+    public MainLayout(SecurityService securityService, UserService userService, ConfigurationService configurationService) {
         this.securityService = securityService;
         this.userService = userService;
+        this.configurationService = configurationService;
+        this.isDarkMode = configurationService.isDarkMode();
 
         createHeader();
         createDrawer();
-        enableDarkMode();
+        applyDarkMode();
     }
 
     /**
@@ -120,10 +125,14 @@ public class MainLayout extends AppLayout {
     }
 
     /**
-     * Aktiviert den Darkmode des Layouts.
+     * Wendet den aktuellen Dark Mode-Status an.
      */
-    private void enableDarkMode() {
-        getElement().getThemeList().add(Lumo.DARK);
+    private void applyDarkMode() {
+        if (isDarkMode) {
+            getElement().getThemeList().add(Lumo.DARK);
+        } else {
+            getElement().getThemeList().remove(Lumo.DARK);
+        }
     }
 
     /**
@@ -133,7 +142,11 @@ public class MainLayout extends AppLayout {
         Button logoutButton = new Button("Logout", event -> securityService.logout());
         logoutButton.addClassName("footer-button");
 
-        Button toggleButton = new Button("Toggle Dark Mode", event -> toggleDarkMode());
+        Button toggleButton = new Button("Toggle Dark Mode", event -> {
+            isDarkMode = !isDarkMode;
+            configurationService.setDarkMode(isDarkMode);
+            applyDarkMode();
+        });
         toggleButton.addClassName("footer-button");
 
         VerticalLayout footerLayout = new VerticalLayout(logoutButton, toggleButton);
@@ -142,18 +155,6 @@ public class MainLayout extends AppLayout {
         footerLayout.setAlignItems(FlexComponent.Alignment.STRETCH);
         footerLayout.setMargin(false);
         return footerLayout;
-    }
-
-    /**
-     * Wechselt den Darkmode des Layouts.
-     */
-    private void toggleDarkMode() {
-        if (isDarkMode) {
-            getElement().getThemeList().remove(Lumo.DARK);
-        } else {
-            getElement().getThemeList().add(Lumo.DARK);
-        }
-        isDarkMode = !isDarkMode;
     }
 
     /**

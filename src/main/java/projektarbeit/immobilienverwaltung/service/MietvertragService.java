@@ -1,5 +1,6 @@
 package projektarbeit.immobilienverwaltung.service;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import projektarbeit.immobilienverwaltung.model.Mieter;
@@ -33,7 +34,7 @@ public class MietvertragService {
      *
      * @param mietvertrag the Mietvertrag entity to save
      */
-    public void saveMietvertrag(Mietvertrag mietvertrag) {
+    public void saveMietvertrag(@Valid Mietvertrag mietvertrag) {
         mietvertragRepository.save(mietvertrag);
     }
 
