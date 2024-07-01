@@ -119,14 +119,23 @@ public class WohnungService {
     @Transactional
     public void delete(Wohnung wohnung) {
         // Delete documents associated with the Wohnung
-        dokumentRepository.deleteAll(dokumentRepository.findByWohnung(wohnung));
+        List<Dokument> dokumente = dokumentRepository.findByWohnung(wohnung);
+        if (dokumente != null && !dokumente.isEmpty()) {
+            dokumentRepository.deleteAll(dokumente);
+        }
 
         // Delete Mietverträge associated with the Wohnung
         Mietvertrag mietvertrag = mietvertragRepository.findByWohnung(wohnung);
-        mietvertragRepository.delete(mietvertrag);
+        if (mietvertrag != null) {
+            mietvertrag.setMieter(null);
+            mietvertragRepository.delete(mietvertrag);
+        }
 
         // Delete Zaehlerstand references to the Wohnung
-        zaehlerstandRepository.deleteAll(zaehlerstandRepository.findByWohnung(wohnung));
+        List<Zaehlerstand> zaehlerstaende = zaehlerstandRepository.findByWohnung(wohnung);
+        if (zaehlerstaende != null && !zaehlerstaende.isEmpty()) {
+            zaehlerstandRepository.deleteAll(zaehlerstaende);
+        }
 
         // Delete the Wohnung entity
         wohnungRepository.delete(wohnung);

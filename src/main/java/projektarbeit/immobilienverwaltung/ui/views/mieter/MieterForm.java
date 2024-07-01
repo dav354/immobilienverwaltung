@@ -28,11 +28,8 @@ import projektarbeit.immobilienverwaltung.model.Dokument;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Mietvertrag;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
-import projektarbeit.immobilienverwaltung.service.DokumentService;
-import projektarbeit.immobilienverwaltung.service.MieterService;
-import projektarbeit.immobilienverwaltung.service.MietvertragService;
-import projektarbeit.immobilienverwaltung.service.WohnungService;
-import projektarbeit.immobilienverwaltung.ui.components.ConfirmationDialog;
+import projektarbeit.immobilienverwaltung.service.*;
+import projektarbeit.immobilienverwaltung.ui.views.dialog.ConfirmationDialog;
 import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
 import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
 
@@ -55,6 +52,7 @@ public class MieterForm extends FormLayout {
     private List<Wohnung> availableWohnungen;
     private Mieter mieter;
     private final WohnungService wohnungsService;
+    private final ConfigurationService configurationService;
 
     //Datenbindung und Validierung zwischen UI-Komponenten und einem Java-Bean-Objekt zu erstellen
     Binder<Mieter> binder = new BeanValidationBinder<>(Mieter.class);
@@ -89,12 +87,13 @@ public class MieterForm extends FormLayout {
      * @param wohnungsService     der WohnungService zur Verwaltung von Wohnung-Entitäten
      * @param dokumentService     der DokumentService zur Verwaltung von Dokument-Entitäten
      */
-    public MieterForm(MieterService mieterService, MietvertragService mietvertragService, WohnungService wohnungsService, DokumentService dokumentService) {
+    public MieterForm(MieterService mieterService, MietvertragService mietvertragService, WohnungService wohnungsService, DokumentService dokumentService, ConfigurationService configurationService) {
         this.mieterService = mieterService;
         this.mietvertragService = mietvertragService;
         this.wohnungsService = wohnungsService;
         this.dokumentService = dokumentService;
         this.availableWohnungen = wohnungsService.findWohnungenWithoutMietvertrag();
+        this.configurationService = configurationService;
         addClassName("mieter-form");
 
         binder.bindInstanceFields(this);
@@ -432,7 +431,8 @@ public class MieterForm extends FormLayout {
                     // If confirmed, fire a DeleteEvent and show a success notification
                     fireEvent(new DeleteEvent(this, mieter));
                     NotificationPopup.showSuccessNotification("Mieter erfolgreich gelöscht.");
-                }
+                },
+                configurationService
         );
         // Open the confirmation dialog
         confirmationDialog.open();

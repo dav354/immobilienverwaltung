@@ -27,7 +27,7 @@ import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 import projektarbeit.immobilienverwaltung.service.DokumentService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.service.ZaehlerstandService;
-import projektarbeit.immobilienverwaltung.ui.components.ConfirmationDialog;
+import projektarbeit.immobilienverwaltung.ui.views.dialog.ConfirmationDialog;
 import projektarbeit.immobilienverwaltung.ui.components.MapComponent;
 import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
@@ -59,7 +59,7 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
      * @param wohnungService       der Service für Wohnung-Operationen
      * @param dokumentService      der Service für Dokument-Operationen
      * @param zaehlerstandService  der Service für Zählerstand-Operationen
-     * @param configurationService der Service für Globale Konfigurationen
+     * @param configurationService der Service für globale Konfigurationen
      */
     @Autowired
     public WohnungDetailsView(WohnungService wohnungService, DokumentService dokumentService, ZaehlerstandService zaehlerstandService, ConfigurationService configurationService) {
@@ -135,7 +135,8 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
                         wohnungService.delete(currentWohnung);
                         NotificationPopup.showSuccessNotification("Wohnung erfolgreich gelöscht.");
                         UI.getCurrent().navigate(WohnungListView.class);
-                    }
+                    },
+                    configurationService
             );
             confirmationDialog.open();
         });
@@ -343,7 +344,8 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
                             zaehlerstandService.deleteZaehlerstand(zaehlerstand);
                             List<Zaehlerstand> updatedZaehlerstaende = zaehlerstandService.findZaehlerstandByWohnung(currentWohnung);
                             TableUtils.configureGrid(zaehlerstandGrid, updatedZaehlerstaende, tableRowHeight);
-                        }
+                        },
+                        configurationService
                 );
                 confirmationDialog.open();
             });

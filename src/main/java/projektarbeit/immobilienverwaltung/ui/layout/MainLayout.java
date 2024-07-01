@@ -58,7 +58,7 @@ public class MainLayout extends AppLayout {
         String currentUsername = getCurrentUsername();
         DrawerToggle toggle = new DrawerToggle();
         Div title = new Div();
-        title.setText("Immobilienverwaltung - " + currentUsername);
+        title.setText("Immobilienverwaltung");
         title.getStyle().set("font-weight", "bold").set("font-size", "24px");
 
         // Benutzername Button

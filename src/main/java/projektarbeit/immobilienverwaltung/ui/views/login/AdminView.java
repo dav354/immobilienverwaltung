@@ -23,12 +23,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import projektarbeit.immobilienverwaltung.model.Role;
 import projektarbeit.immobilienverwaltung.model.User;
 import projektarbeit.immobilienverwaltung.repository.RoleRepository;
+import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 import projektarbeit.immobilienverwaltung.service.SecurityService;
 import projektarbeit.immobilienverwaltung.service.UserService;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
 
 import projektarbeit.immobilienverwaltung.ui.components.*;
+import projektarbeit.immobilienverwaltung.ui.views.dialog.ConfirmationDialog;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -57,7 +60,7 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
      */
 
     @Autowired
-    public AdminView(UserService userService, RoleRepository roleRepository, SecurityService securityService) {
+    public AdminView(UserService userService, RoleRepository roleRepository, SecurityService securityService, ConfigurationService configurationService) {
         this.userService = userService;
 
         if (userService == null || roleRepository == null || securityService == null) {
@@ -141,22 +144,7 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
         userGrid.addColumn(new ComponentRenderer<>(user -> {
             HorizontalLayout actions = new HorizontalLayout();
 
-            Button deleteButton = new Button("Delete");
-            deleteButton.addClickListener(e -> {
-                ConfirmationDialog confirmationDialog = new ConfirmationDialog(
-                        "Are you sure you want to delete the user " + user.getUsername() + "?",
-                        () -> {
-                            boolean deleted = userService.deleteUser(user);
-                            if (deleted) {
-                                updateUserGrid();
-                                NotificationPopup.showSuccessNotification("User deleted successfully");
-                            } else {
-                                NotificationPopup.showErrorNotification("Cannot delete the last admin");
-                            }
-                        }
-                );
-                confirmationDialog.open();
-            });
+            Button deleteButton = getDeleteButton(userService, configurationService, user);
 
             actions.add(deleteButton);
 
@@ -178,6 +166,27 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
 
         // Benutzer in das Grid laden
         updateUserGrid();
+    }
+
+    private Button getDeleteButton(UserService userService, ConfigurationService configurationService, User user) {
+        Button deleteButton = new Button("Delete");
+        deleteButton.addClickListener(e -> {
+            ConfirmationDialog confirmationDialog = new ConfirmationDialog(
+                    "Are you sure you want to delete the user " + user.getUsername() + "?",
+                    () -> {
+                        boolean deleted = userService.deleteUser(user);
+                        if (deleted) {
+                            updateUserGrid();
+                            NotificationPopup.showSuccessNotification("User deleted successfully");
+                        } else {
+                            NotificationPopup.showErrorNotification("Cannot delete the last admin");
+                        }
+                    },
+                    configurationService
+            );
+            confirmationDialog.open();
+        });
+        return deleteButton;
     }
 
     /**

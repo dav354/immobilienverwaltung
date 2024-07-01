@@ -1,17 +1,18 @@
-package projektarbeit.immobilienverwaltung.ui.components;
+package projektarbeit.immobilienverwaltung.ui.views.dialog;
 
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import projektarbeit.immobilienverwaltung.service.ConfigurationService;
+import projektarbeit.immobilienverwaltung.ui.layout.DialogLayout;
 
 /**
  * A confirmation dialog component for Vaadin applications.
  * This dialog displays a message and provides "Delete" and "Cancel" buttons.
  * When the "Delete" button is pressed, the provided ConfirmationListener is triggered.
  */
-public class ConfirmationDialog extends Dialog {
+public class ConfirmationDialog extends DialogLayout {
 
     /**
      * An interface for handling confirmation actions.
@@ -25,8 +26,14 @@ public class ConfirmationDialog extends Dialog {
      *
      * @param message                The message to display in the dialog.
      * @param confirmationListener   The listener to invoke when the "Delete" button is pressed.
+     * @param configurationService   The service for configuration settings.
      */
-    public ConfirmationDialog(String message, ConfirmationListener confirmationListener) {
+    public ConfirmationDialog(String message, ConfirmationListener confirmationListener, ConfigurationService configurationService) {
+        super(configurationService);
+
+        // Set up the DialogLayout
+        setDialogLayout();
+
         // Add the message text to the dialog
         add(new Text(message));
 
@@ -44,5 +51,13 @@ public class ConfirmationDialog extends Dialog {
         // Arrange the buttons in a horizontal layout
         HorizontalLayout buttons = new HorizontalLayout(confirmButton, cancelButton);
         add(buttons); // Add the button layout to the dialog
+    }
+
+    /**
+     * Set up the layout for the dialog.
+     */
+    private void setDialogLayout() {
+        setWidth("400px");  // Set width of the dialog
+        setHeight("200px"); // Set height of the dialog
     }
 }
