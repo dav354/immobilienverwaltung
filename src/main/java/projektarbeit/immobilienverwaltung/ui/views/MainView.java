@@ -9,10 +9,10 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
+import com.vaadin.flow.component.AttachEvent;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import projektarbeit.immobilienverwaltung.service.DashboardService;
-import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 
 import jakarta.annotation.PostConstruct;
@@ -32,6 +32,10 @@ import java.util.Map;
 public class MainView extends VerticalLayout {
 
     private final DashboardService dashboardService;
+
+    private Div mieteinnahmenDiv;
+    private Div immobilienDiv;
+    private Div mieterDiv;
 
     /**
      * Konstruktor für die MainView-Klasse.
@@ -57,17 +61,10 @@ public class MainView extends VerticalLayout {
 
         add(titleLayout);
 
-        // Mieteinnahmen Anzeige
-        double mieteinnahmen = dashboardService.getMieteinnahmen();
-        Div mieteinnahmenDiv = createMieteinnahmenDiv(mieteinnahmen);
-
-        // Immobilien Statistik Anzeige
-        Map<String, Long> immobilienStats = dashboardService.getImmobilienStats();
-        Div immobilienDiv = createImmobilienDiv(immobilienStats);
-
-        // Mieter Statistik Anzeige
-        long totalMieter = dashboardService.getTotalMieter();
-        Div mieterDiv = createMieterDiv(totalMieter);
+        // Initiale Erstellung der Divs
+        mieteinnahmenDiv = new Div();
+        immobilienDiv = new Div();
+        mieterDiv = new Div();
 
         // Erstellen eines HorizontalLayout zur Platzierung der Divs nebeneinander
         HorizontalLayout statsLayout = new HorizontalLayout(mieteinnahmenDiv, immobilienDiv, mieterDiv);
@@ -76,6 +73,39 @@ public class MainView extends VerticalLayout {
 
         // Hinzufügen des HorizontalLayout zum Hauptlayout
         add(statsLayout);
+
+        // Initiale Aktualisierung der Daten
+        updateStats();
+    }
+
+    @Override
+    protected void onAttach(AttachEvent attachEvent) {
+        super.onAttach(attachEvent);
+        // Aktualisierung der Statistiken, wenn die Seite aufgerufen wird
+        updateStats();
+    }
+
+    /**
+     * Aktualisiert die Statistiken.
+     */
+    private void updateStats() {
+        // Aktualisieren der Mieteinnahmen
+        double mieteinnahmen = dashboardService.getMieteinnahmen();
+        mieteinnahmenDiv.removeAll();
+        Div newMieteinnahmenDiv = createMieteinnahmenDiv(mieteinnahmen);
+        newMieteinnahmenDiv.getChildren().forEach(mieteinnahmenDiv::add);
+
+        // Aktualisieren der Immobilienstatistiken
+        Map<String, Long> immobilienStats = dashboardService.getImmobilienStats();
+        immobilienDiv.removeAll();
+        Div newImmobilienDiv = createImmobilienDiv(immobilienStats);
+        newImmobilienDiv.getChildren().forEach(immobilienDiv::add);
+
+        // Aktualisieren der Mieterstatistiken
+        long totalMieter = dashboardService.getTotalMieter();
+        mieterDiv.removeAll();
+        Div newMieterDiv = createMieterDiv(totalMieter);
+        newMieterDiv.getChildren().forEach(mieterDiv::add);
     }
 
     /**
