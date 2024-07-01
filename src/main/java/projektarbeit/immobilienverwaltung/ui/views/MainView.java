@@ -103,6 +103,10 @@ public class MainView extends VerticalLayout {
         NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.GERMANY);
         String formattedMieteinnahmen = "€ " + numberFormat.format(mieteinnahmen);
 
+        return getDiv(title, formattedMieteinnahmen);
+    }
+
+    private Div getDiv(H2 title, String formattedMieteinnahmen) {
         Div value = new Div();
         value.setText(formattedMieteinnahmen);
         value.getStyle().set("font-size", "48px").set("text-align", "center").set("margin-top", "0");
@@ -168,19 +172,6 @@ public class MainView extends VerticalLayout {
         NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.GERMANY);
         String formattedTotalMieter = numberFormat.format(totalMieter);
 
-        Div value = new Div();
-        value.setText(formattedTotalMieter);
-        value.getStyle().set("font-size", "48px").set("text-align", "center").set("margin-top", "0");
-
-        Div container = new Div();
-        container.add(title, value);
-        container.getStyle().set("display", "flex")
-                .set("flex-direction", "column")
-                .set("align-items", "center")
-                .set("justify-content", "center")
-                .set("width", "100%")
-                .set("padding", "20px");
-
-        return container;
+        return getDiv(title, formattedTotalMieter);
     }
 }
