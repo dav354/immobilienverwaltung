@@ -1,16 +1,13 @@
 package projektarbeit.immobilienverwaltung.ui.views.dokumente;
 
-import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.combobox.ComboBoxVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -149,7 +146,9 @@ public class DokumenteListView extends VerticalLayout {
                 .setAutoWidth(true);
         dokumentGrid.addComponentColumn(dokument -> {
             if (dokument.getWohnung() != null) {
-                return new RouterLink(dokument.getWohnung().getFormattedAddress(), WohnungDetailsView.class, dokument.getWohnung().getWohnung_id());
+                RouterLink link = new RouterLink(dokument.getWohnung().getFormattedAddress(), WohnungDetailsView.class, dokument.getWohnung().getWohnung_id());
+                link.getElement().setAttribute("href", link.getHref() + "?previousView=dokumente");
+                return link;
             }
             return null;
         }).setHeader("Wohnung").setSortable(true).setAutoWidth(true);

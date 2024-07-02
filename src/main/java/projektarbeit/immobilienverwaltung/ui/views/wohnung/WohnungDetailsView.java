@@ -34,8 +34,10 @@ import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.WohnungEditDialog;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.ZaehlerstandDialog;
 import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
+import projektarbeit.immobilienverwaltung.ui.views.dokumente.DokumenteListView;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * View zur Anzeige der Details einer Wohnung.
@@ -52,6 +54,7 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
     private Wohnung currentWohnung;
     private final ConfigurationService configurationService;
     private final int tableRowHeight = 54;
+    private String previousView;
 
     /**
      * Konstruktor für WohnungDetailsView.
@@ -72,6 +75,8 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
     @Override
     public void setParameter(BeforeEvent event, Long wohnungId) {
         currentWohnung = wohnungService.findWohnungById(wohnungId);
+        previousView = event.getLocation().getQueryParameters().getParameters().getOrDefault("previousView", List.of("")).getFirst();
+
         if (currentWohnung != null) {
             setupView();
         }
@@ -150,7 +155,13 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
     private Button createSchliessenButton() {
         Button schliessenButton = new Button("Schließen");
         schliessenButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        schliessenButton.addClickListener(event -> UI.getCurrent().navigate(WohnungListView.class));
+        schliessenButton.addClickListener(event -> {
+            if ("dokumente".equals(previousView)) {
+                UI.getCurrent().navigate(DokumenteListView.class);
+            } else {
+                UI.getCurrent().navigate(WohnungListView.class);
+            }
+        });
         return schliessenButton;
     }
 
