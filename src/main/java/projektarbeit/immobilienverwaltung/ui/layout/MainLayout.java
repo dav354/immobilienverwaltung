@@ -4,7 +4,6 @@ import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -17,9 +16,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 import projektarbeit.immobilienverwaltung.service.SecurityService;
 import projektarbeit.immobilienverwaltung.service.UserService;
-import projektarbeit.immobilienverwaltung.ui.views.dialog.ChangePasswordDialog;
-import projektarbeit.immobilienverwaltung.ui.views.login.AdminView;
 import projektarbeit.immobilienverwaltung.ui.views.MainView;
+import projektarbeit.immobilienverwaltung.ui.views.dialog.ChangePasswordDialog;
+import projektarbeit.immobilienverwaltung.ui.views.dokumente.DokumenteListView;
+import projektarbeit.immobilienverwaltung.ui.views.login.AdminView;
 import projektarbeit.immobilienverwaltung.ui.views.mieter.MieterListView;
 import projektarbeit.immobilienverwaltung.ui.views.wohnung.WohnungListView;
 
@@ -28,16 +28,16 @@ import projektarbeit.immobilienverwaltung.ui.views.wohnung.WohnungListView;
  */
 public class MainLayout extends AppLayout {
 
-    private boolean isDarkMode;
     private final SecurityService securityService;
     private final UserService userService;
     private final ConfigurationService configurationService;
+    private boolean isDarkMode;
 
     /**
      * Konstruktor für das MainLayout.
      *
-     * @param securityService der SecurityService zur Verwaltung der Sicherheitsfunktionen.
-     * @param userService der UserService zur Verwaltung der Benutzerdaten.
+     * @param securityService      der SecurityService zur Verwaltung der Sicherheitsfunktionen.
+     * @param userService          der UserService zur Verwaltung der Benutzerdaten.
      * @param configurationService der ConfigurationService zur Verwaltung der Konfigurationseinstellungen.
      */
     public MainLayout(SecurityService securityService, UserService userService, ConfigurationService configurationService) {
@@ -70,6 +70,7 @@ public class MainLayout extends AppLayout {
 
         // Benutzername Button
         Button userButton = new Button(currentUsername);
+        userButton.setSuffixComponent(VaadinIcon.KEY.create());
         userButton.addClickListener(event -> {
             ChangePasswordDialog changePasswordDialog = new ChangePasswordDialog(configurationService, userService);
             changePasswordDialog.open();
@@ -157,8 +158,9 @@ public class MainLayout extends AppLayout {
         SideNavItem home = new SideNavItem("Home", MainView.class, VaadinIcon.DASHBOARD.create());
         SideNavItem wohnungen = new SideNavItem("Wohnungen", WohnungListView.class, VaadinIcon.HOME.create());
         SideNavItem mieter = new SideNavItem("Mieter", MieterListView.class, VaadinIcon.USER.create());
+        SideNavItem dokumente = new SideNavItem("Dokumente", DokumenteListView.class, VaadinIcon.FILE.create());
 
-        nav.addItem(home, wohnungen, mieter);
+        nav.addItem(home, wohnungen, mieter, dokumente);
 
         // Füge den Admin-Seiten-Link hinzu, wenn der Benutzer ein ADMIN ist
         if (securityService.getAuthenticatedUserRoles().contains("ADMIN")) {

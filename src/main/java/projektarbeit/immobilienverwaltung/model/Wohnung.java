@@ -573,7 +573,7 @@ public class Wohnung {
      * @return die Straße mit Hausnummer der Wohnung
      */
     public String getStrasseMitHausnummer() {
-        return isHeader ? strasse : strasse + " " + hausnummer;
+        return strasse + " " + hausnummer;
     }
 
     /**

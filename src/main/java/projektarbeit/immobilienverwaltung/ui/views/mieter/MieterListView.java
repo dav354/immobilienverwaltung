@@ -5,6 +5,7 @@ import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -184,6 +185,7 @@ public class MieterListView extends VerticalLayout {
 
         // Listener für die Auswahl eines Mieters zum Bearbeiten hinzufügen
         grid.asSingleSelect().addValueChangeListener(e -> editMieter(e.getValue()));
+        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
     }
 
     /**

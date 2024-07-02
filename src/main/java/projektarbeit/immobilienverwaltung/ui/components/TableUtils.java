@@ -1,6 +1,7 @@
 package projektarbeit.immobilienverwaltung.ui.components;
 
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class TableUtils {
     public static <T> void configureGrid(Grid<T> grid, List<T> items, int rowHeight) {
         // Setzt die Elemente im Grid
         grid.setItems(items);
+        grid.addThemeVariants(GridVariant.LUMO_NO_ROW_BORDERS);
 
         // Berechnet die Höhe basierend auf der Anzahl der Zeilen
         int rowCount = items.size();
