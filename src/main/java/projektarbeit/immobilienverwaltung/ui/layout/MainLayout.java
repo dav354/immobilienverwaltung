@@ -4,6 +4,7 @@ import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -57,9 +58,15 @@ public class MainLayout extends AppLayout {
     private void createHeader() {
         String currentUsername = getCurrentUsername();
         DrawerToggle toggle = new DrawerToggle();
+
         Div title = new Div();
         title.setText("Immobilienverwaltung");
         title.getStyle().set("font-weight", "bold").set("font-size", "24px");
+
+        // Erstelle einen Layout für Logo und Titel
+        HorizontalLayout logoTitleLayout = new HorizontalLayout(title);
+        logoTitleLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        logoTitleLayout.setSpacing(true);
 
         // Benutzername Button
         Button userButton = new Button(currentUsername);
@@ -68,12 +75,24 @@ public class MainLayout extends AppLayout {
             changePasswordDialog.open();
         });
 
-        HorizontalLayout header = new HorizontalLayout(toggle, title, userButton);
+        // Linke Seite des Headers
+        HorizontalLayout leftHeader = new HorizontalLayout(toggle, logoTitleLayout);
+        leftHeader.setAlignItems(FlexComponent.Alignment.CENTER);
+        leftHeader.setSpacing(true);
+
+        // Rechte Seite des Headers
+        HorizontalLayout rightHeader = new HorizontalLayout(userButton);
+        rightHeader.setAlignItems(FlexComponent.Alignment.CENTER);
+        rightHeader.setSpacing(true);
+
+        // Hauptheader
+        HorizontalLayout header = new HorizontalLayout(leftHeader, rightHeader);
         header.setWidthFull();
         header.setAlignItems(FlexComponent.Alignment.CENTER);
         header.setSpacing(false);
         header.getStyle().set("padding", "10px");
         header.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+
         addToNavbar(header);
     }
 
@@ -105,14 +124,23 @@ public class MainLayout extends AppLayout {
         Button logoutButton = new Button("Logout", event -> securityService.logout());
         logoutButton.addClassName("footer-button");
 
-        Button toggleButton = new Button("Toggle Dark Mode", event -> {
+        Button toggleDarkModeButton = new Button("Toggle Light Mode");
+        toggleDarkModeButton.addClassName("footer-button");
+
+        toggleDarkModeButton.addClickListener(event -> {
             isDarkMode = !isDarkMode;
             configurationService.setDarkMode(isDarkMode);
             applyDarkMode();
-        });
-        toggleButton.addClassName("footer-button");
 
-        VerticalLayout footerLayout = new VerticalLayout(logoutButton, toggleButton);
+            // Update the button text
+            if (isDarkMode) {
+                toggleDarkModeButton.setText("Toggle Light Mode");
+            } else {
+                toggleDarkModeButton.setText("Toggle Dark Mode");
+            }
+        });
+
+        VerticalLayout footerLayout = new VerticalLayout(logoutButton, toggleDarkModeButton);
         footerLayout.setSpacing(false);
         footerLayout.setPadding(true);
         footerLayout.setAlignItems(FlexComponent.Alignment.STRETCH);
