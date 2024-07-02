@@ -44,9 +44,19 @@ public class DokumenteListView extends VerticalLayout {
     private final ComboBox<String> filterTypeComboBox = new ComboBox<>("Filter by");
     private final ComboBox<Mieter> mieterComboBox = new ComboBox<>("Mieter");
     private final ComboBox<Wohnung> wohnungComboBox = new ComboBox<>("Wohnung");
+    private final ComboBox<?> dummy = new ComboBox<>();
     private final TextField searchField = new TextField("Search");
     private final Grid<Dokument> dokumentGrid = new Grid<>(Dokument.class, false);
 
+    /**
+     * Konstruktor für DokumenteListView.
+     * Initialisiert die Dienste, die Benutzeroberfläche und die Grid-Konfiguration.
+     *
+     * @param wohnungService       der Dienst für Wohnungsoperationen
+     * @param dokumentService      der Dienst für Dokumentenoperationen
+     * @param configurationService der Dienst für Konfigurationseinstellungen
+     * @param mieterService        der Dienst für Mieteroperationen
+     */
     public DokumenteListView(WohnungService wohnungService, DokumentService dokumentService, ConfigurationService configurationService, MieterService mieterService) {
         this.wohnungService = wohnungService;
         this.dokumentService = dokumentService;
@@ -58,19 +68,23 @@ public class DokumenteListView extends VerticalLayout {
         header.setAlignItems(Alignment.CENTER);
         header.expand(header.getComponentAt(0));
 
-
         configureGrid();
         updateDokumenteGrid();
 
         add(header, createFilterContent(), dokumentGrid);
     }
 
+    /**
+     * Erstellt den Filterinhalt für die Ansicht.
+     *
+     * @return das konfigurierte Filterinhalt-Layout
+     */
     private HorizontalLayout createFilterContent() {
         HorizontalLayout layout = new HorizontalLayout();
         layout.setWidthFull();
         layout.setAlignItems(Alignment.END);
 
-        // Set value change mode to EAGER to update grid immediately as user types
+        // Setzt den Wertänderungsmodus auf EAGER, um das Grid sofort zu aktualisieren, während der Benutzer tippt
         searchField.setValueChangeMode(ValueChangeMode.EAGER);
         searchField.setPrefixComponent(VaadinIcon.SEARCH.create());
         searchField.addValueChangeListener(event -> updateDokumenteGrid());
@@ -78,6 +92,7 @@ public class DokumenteListView extends VerticalLayout {
 
         filterTypeComboBox.setItems("Mieter", "Wohnung");
         filterTypeComboBox.addValueChangeListener(event -> {
+            dummy.setVisible(false);
             boolean isMieter = "Mieter".equals(event.getValue());
             mieterComboBox.setVisible(isMieter);
             wohnungComboBox.setVisible(!isMieter);
@@ -98,11 +113,19 @@ public class DokumenteListView extends VerticalLayout {
         wohnungComboBox.setItemLabelGenerator(Wohnung::getFormattedAddress);
         wohnungComboBox.addValueChangeListener(event -> updateDokumenteGrid());
 
-        layout.expand(mieterComboBox, wohnungComboBox);
-        layout.add(searchField, filterTypeComboBox, mieterComboBox, wohnungComboBox);
+        dummy.setVisible(true);
+        dummy.setClearButtonVisible(true);
+        dummy.setWidthFull();
+        dummy.setReadOnly(true);
+
+        layout.expand(mieterComboBox, wohnungComboBox, dummy);
+        layout.add(searchField, filterTypeComboBox, dummy, mieterComboBox, wohnungComboBox);
         return layout;
     }
 
+    /**
+     * Aktualisiert das Dokumenten-Grid mit den gefilterten und/oder gesuchten Dokumenten.
+     */
     private void updateDokumenteGrid() {
         String searchTerm = searchField.getValue().trim();
         List<Dokument> dokumente;
@@ -119,7 +142,7 @@ public class DokumenteListView extends VerticalLayout {
             dokumente = dokumentService.findAllDokumente();
         }
 
-        // Apply search term filtering if necessary
+        // Filtert nach Suchbegriff, falls nötig
         if (!searchTerm.isEmpty()) {
             dokumente = dokumente.stream()
                     .filter(d -> d.getDokumententyp().toLowerCase().contains(searchTerm.toLowerCase()) ||
@@ -133,6 +156,10 @@ public class DokumenteListView extends VerticalLayout {
         TableUtils.configureGrid(dokumentGrid, dokumente, rowHeight);
     }
 
+    /**
+     * Konfiguriert das Grid zur Anzeige der Dokumente.
+     * Richtet die Spalten und die Aktionsschaltflächen ein.
+     */
     private void configureGrid() {
         dokumentGrid.removeAllColumns();
 
@@ -183,6 +210,5 @@ public class DokumenteListView extends VerticalLayout {
 
         dokumentGrid.setItems(dokumentService.findAllDokumente());
         dokumentGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
-
     }
 }

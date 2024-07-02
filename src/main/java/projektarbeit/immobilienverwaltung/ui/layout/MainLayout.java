@@ -16,10 +16,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 import projektarbeit.immobilienverwaltung.service.SecurityService;
 import projektarbeit.immobilienverwaltung.service.UserService;
+import projektarbeit.immobilienverwaltung.ui.views.MainView;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.ChangePasswordDialog;
 import projektarbeit.immobilienverwaltung.ui.views.dokumente.DokumenteListView;
 import projektarbeit.immobilienverwaltung.ui.views.login.AdminView;
-import projektarbeit.immobilienverwaltung.ui.views.MainView;
 import projektarbeit.immobilienverwaltung.ui.views.mieter.MieterListView;
 import projektarbeit.immobilienverwaltung.ui.views.wohnung.WohnungListView;
 
@@ -28,16 +28,16 @@ import projektarbeit.immobilienverwaltung.ui.views.wohnung.WohnungListView;
  */
 public class MainLayout extends AppLayout {
 
-    private boolean isDarkMode;
     private final SecurityService securityService;
     private final UserService userService;
     private final ConfigurationService configurationService;
+    private boolean isDarkMode;
 
     /**
      * Konstruktor für das MainLayout.
      *
-     * @param securityService der SecurityService zur Verwaltung der Sicherheitsfunktionen.
-     * @param userService der UserService zur Verwaltung der Benutzerdaten.
+     * @param securityService      der SecurityService zur Verwaltung der Sicherheitsfunktionen.
+     * @param userService          der UserService zur Verwaltung der Benutzerdaten.
      * @param configurationService der ConfigurationService zur Verwaltung der Konfigurationseinstellungen.
      */
     public MainLayout(SecurityService securityService, UserService userService, ConfigurationService configurationService) {
@@ -70,6 +70,7 @@ public class MainLayout extends AppLayout {
 
         // Benutzername Button
         Button userButton = new Button(currentUsername);
+        userButton.setSuffixComponent(VaadinIcon.KEY.create());
         userButton.addClickListener(event -> {
             ChangePasswordDialog changePasswordDialog = new ChangePasswordDialog(configurationService, userService);
             changePasswordDialog.open();
