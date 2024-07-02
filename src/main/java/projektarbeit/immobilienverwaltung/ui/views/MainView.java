@@ -9,17 +9,14 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
+import com.vaadin.flow.component.AttachEvent;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
-import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.service.DashboardService;
-import projektarbeit.immobilienverwaltung.service.WohnungService;
-import projektarbeit.immobilienverwaltung.ui.components.MapComponent;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 
 import jakarta.annotation.PostConstruct;
 import java.text.NumberFormat;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -35,7 +32,10 @@ import java.util.Map;
 public class MainView extends VerticalLayout {
 
     private final DashboardService dashboardService;
-    private final WohnungService wohnungService;
+
+    private Div mieteinnahmenDiv;
+    private Div immobilienDiv;
+    private Div mieterDiv;
 
     /**
      * Konstruktor für die MainView-Klasse.
@@ -43,9 +43,8 @@ public class MainView extends VerticalLayout {
      * @param dashboardService der Service, der die Daten für die Statistiken bereitstellt.
      */
     @Autowired
-    public MainView(DashboardService dashboardService, WohnungService wohnungService) {
+    public MainView(DashboardService dashboardService) {
         this.dashboardService = dashboardService;
-        this.wohnungService = wohnungService;
     }
 
     /**
@@ -62,17 +61,10 @@ public class MainView extends VerticalLayout {
 
         add(titleLayout);
 
-        // Mieteinnahmen Anzeige
-        double mieteinnahmen = dashboardService.getMieteinnahmen();
-        Div mieteinnahmenDiv = createMieteinnahmenDiv(mieteinnahmen);
-
-        // Immobilien Statistik Anzeige
-        Map<String, Long> immobilienStats = dashboardService.getImmobilienStats();
-        Div immobilienDiv = createImmobilienDiv(immobilienStats);
-
-        // Mieter Statistik Anzeige
-        long totalMieter = dashboardService.getTotalMieter();
-        Div mieterDiv = createMieterDiv(totalMieter);
+        // Initiale Erstellung der Divs
+        mieteinnahmenDiv = new Div();
+        immobilienDiv = new Div();
+        mieterDiv = new Div();
 
         // Erstellen eines HorizontalLayout zur Platzierung der Divs nebeneinander
         HorizontalLayout statsLayout = new HorizontalLayout(mieteinnahmenDiv, immobilienDiv, mieterDiv);
@@ -82,11 +74,38 @@ public class MainView extends VerticalLayout {
         // Hinzufügen des HorizontalLayout zum Hauptlayout
         add(statsLayout);
 
-        // Hinzufügen der Übersichtskarte
-        List<Wohnung> wohnungen = wohnungService.findAllWohnungen();
-        MapComponent overviewMap = new MapComponent(wohnungen);
-        overviewMap.setWidth("100%");
-        add(overviewMap);
+        // Initiale Aktualisierung der Daten
+        updateStats();
+    }
+
+    @Override
+    protected void onAttach(AttachEvent attachEvent) {
+        super.onAttach(attachEvent);
+        // Aktualisierung der Statistiken, wenn die Seite aufgerufen wird
+        updateStats();
+    }
+
+    /**
+     * Aktualisiert die Statistiken.
+     */
+    private void updateStats() {
+        // Aktualisieren der Mieteinnahmen
+        double mieteinnahmen = dashboardService.getMieteinnahmen();
+        mieteinnahmenDiv.removeAll();
+        Div newMieteinnahmenDiv = createMieteinnahmenDiv(mieteinnahmen);
+        newMieteinnahmenDiv.getChildren().forEach(mieteinnahmenDiv::add);
+
+        // Aktualisieren der Immobilienstatistiken
+        Map<String, Long> immobilienStats = dashboardService.getImmobilienStats();
+        immobilienDiv.removeAll();
+        Div newImmobilienDiv = createImmobilienDiv(immobilienStats);
+        newImmobilienDiv.getChildren().forEach(immobilienDiv::add);
+
+        // Aktualisieren der Mieterstatistiken
+        long totalMieter = dashboardService.getTotalMieter();
+        mieterDiv.removeAll();
+        Div newMieterDiv = createMieterDiv(totalMieter);
+        newMieterDiv.getChildren().forEach(mieterDiv::add);
     }
 
     /**
@@ -103,6 +122,10 @@ public class MainView extends VerticalLayout {
         NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.GERMANY);
         String formattedMieteinnahmen = "€ " + numberFormat.format(mieteinnahmen);
 
+        return getDiv(title, formattedMieteinnahmen);
+    }
+
+    private Div getDiv(H2 title, String formattedMieteinnahmen) {
         Div value = new Div();
         value.setText(formattedMieteinnahmen);
         value.getStyle().set("font-size", "48px").set("text-align", "center").set("margin-top", "0");
@@ -168,19 +191,6 @@ public class MainView extends VerticalLayout {
         NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.GERMANY);
         String formattedTotalMieter = numberFormat.format(totalMieter);
 
-        Div value = new Div();
-        value.setText(formattedTotalMieter);
-        value.getStyle().set("font-size", "48px").set("text-align", "center").set("margin-top", "0");
-
-        Div container = new Div();
-        container.add(title, value);
-        container.getStyle().set("display", "flex")
-                .set("flex-direction", "column")
-                .set("align-items", "center")
-                .set("justify-content", "center")
-                .set("width", "100%")
-                .set("padding", "20px");
-
-        return container;
+        return getDiv(title, formattedTotalMieter);
     }
 }
