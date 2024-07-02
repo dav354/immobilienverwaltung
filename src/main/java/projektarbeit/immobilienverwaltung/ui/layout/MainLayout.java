@@ -4,7 +4,6 @@ import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -18,6 +17,7 @@ import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 import projektarbeit.immobilienverwaltung.service.SecurityService;
 import projektarbeit.immobilienverwaltung.service.UserService;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.ChangePasswordDialog;
+import projektarbeit.immobilienverwaltung.ui.views.dokumente.DokumenteListView;
 import projektarbeit.immobilienverwaltung.ui.views.login.AdminView;
 import projektarbeit.immobilienverwaltung.ui.views.MainView;
 import projektarbeit.immobilienverwaltung.ui.views.mieter.MieterListView;
@@ -157,8 +157,9 @@ public class MainLayout extends AppLayout {
         SideNavItem home = new SideNavItem("Home", MainView.class, VaadinIcon.DASHBOARD.create());
         SideNavItem wohnungen = new SideNavItem("Wohnungen", WohnungListView.class, VaadinIcon.HOME.create());
         SideNavItem mieter = new SideNavItem("Mieter", MieterListView.class, VaadinIcon.USER.create());
+        SideNavItem dokumente = new SideNavItem("Dokumente", DokumenteListView.class, VaadinIcon.FILE.create());
 
-        nav.addItem(home, wohnungen, mieter);
+        nav.addItem(home, wohnungen, mieter, dokumente);
 
         // Füge den Admin-Seiten-Link hinzu, wenn der Benutzer ein ADMIN ist
         if (securityService.getAuthenticatedUserRoles().contains("ADMIN")) {

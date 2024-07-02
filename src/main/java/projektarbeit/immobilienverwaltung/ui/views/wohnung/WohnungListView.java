@@ -51,6 +51,7 @@ public class WohnungListView extends VerticalLayout {
     public WohnungListView(WohnungService wohnungService, MietvertragService mietvertragService, ConfigurationService configurationService) {
         this.wohnungService = wohnungService;
         this.mietvertragService = mietvertragService;
+        this.configurationService = configurationService;
         addClassName("list-view");
         setSizeFull();
 
@@ -64,7 +65,6 @@ public class WohnungListView extends VerticalLayout {
         add(header, getToolbar(), getContent());
 
         updateList();
-        this.configurationService = configurationService;
     }
 
     /**

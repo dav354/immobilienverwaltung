@@ -69,7 +69,6 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         this.configurationService = configurationService;
     }
 
-
     @Override
     public void setParameter(BeforeEvent event, Long wohnungId) {
         currentWohnung = wohnungService.findWohnungById(wohnungId);
