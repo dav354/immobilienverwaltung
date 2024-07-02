@@ -12,35 +12,6 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-:host {
-    --lumo-primary-color: #1a1a1a; /* Darker primary color */
-    --lumo-primary-text-color: #e0e0e0;
-    --lumo-error-color: #d32f2f;
-    --lumo-success-color: #388e3c;
-}
-
-:host([theme~="dark"]) {
-    --lumo-base-color: #121212; /* Dark base color */
-    --lumo-tint-5pct: rgba(255, 255, 255, 0.05);
-    --lumo-tint-10pct: rgba(255, 255, 255, 0.1);
-    --lumo-tint-20pct: rgba(255, 255, 255, 0.2);
-    --lumo-tint-30pct: rgba(255, 255, 255, 0.3);
-    --lumo-tint-40pct: rgba(255, 255, 255, 0.4);
-    --lumo-tint-50pct: rgba(255, 255, 255, 0.5);
-    --lumo-tint: #fff;
-    --lumo-primary-color: #1a1a1a;
-    --lumo-primary-text-color: #e0e0e0;
-    --lumo-body-text-color: #e0e0e0;
-    --lumo-header-text-color: #e0e0e0;
-    --lumo-secondary-text-color: #b0b0b0;
-    --lumo-disabled-text-color: #7f7f7f;
-    --lumo-primary-contrast-color: #000;
-    --lumo-primary-color-50pct: rgba(26, 26, 26, 0.5);
-    --lumo-primary-color-10pct: rgba(26, 26, 26, 0.1);
-    --lumo-error-color: #f44336;
-    --lumo-success-color: #4caf50;
-}
-
 .vaadin-app-layout vaadin-drawer-toggle {
     color: var(--lumo-body-text-color);
 }

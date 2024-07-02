@@ -4,9 +4,13 @@ import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.combobox.ComboBoxVariant;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -44,9 +48,7 @@ public class DokumenteListView extends VerticalLayout {
     private final ComboBox<Mieter> mieterComboBox = new ComboBox<>("Mieter");
     private final ComboBox<Wohnung> wohnungComboBox = new ComboBox<>("Wohnung");
     private final TextField searchField = new TextField("Search");
-    private final Grid<Dokument> dokumentGrid = new Grid<>(Dokument.class);
-
-    private final int rowHeight = 53;
+    private final Grid<Dokument> dokumentGrid = new Grid<>(Dokument.class, false);
 
     public DokumenteListView(WohnungService wohnungService, DokumentService dokumentService, ConfigurationService configurationService, MieterService mieterService) {
         this.wohnungService = wohnungService;
@@ -59,26 +61,23 @@ public class DokumenteListView extends VerticalLayout {
         header.setAlignItems(Alignment.CENTER);
         header.expand(header.getComponentAt(0));
 
-        Accordion filterAccordion = createFilterAccordion();
 
         configureGrid();
         updateDokumenteGrid();
 
-        add(header, filterAccordion, dokumentGrid);
-    }
-
-    private Accordion createFilterAccordion() {
-        HorizontalLayout filterContent = createFilterContent();
-
-        Accordion accordion = new Accordion();
-        accordion.add("Filter", filterContent);
-        accordion.close();
-
-        return accordion;
+        add(header, createFilterContent(), dokumentGrid);
     }
 
     private HorizontalLayout createFilterContent() {
         HorizontalLayout layout = new HorizontalLayout();
+        layout.setWidthFull();
+        layout.setAlignItems(Alignment.END);
+
+        // Set value change mode to EAGER to update grid immediately as user types
+        searchField.setValueChangeMode(ValueChangeMode.EAGER);
+        searchField.setPrefixComponent(VaadinIcon.SEARCH.create());
+        searchField.addValueChangeListener(event -> updateDokumenteGrid());
+        searchField.setClearButtonVisible(true);
 
         filterTypeComboBox.setItems("Mieter", "Wohnung");
         filterTypeComboBox.addValueChangeListener(event -> {
@@ -90,18 +89,19 @@ public class DokumenteListView extends VerticalLayout {
 
         mieterComboBox.setItems(mieterService.findAllMieter());
         mieterComboBox.setVisible(false);
+        mieterComboBox.setClearButtonVisible(true);
+        mieterComboBox.setWidthFull();
         mieterComboBox.setItemLabelGenerator(Mieter::getFullName);
         mieterComboBox.addValueChangeListener(event -> updateDokumenteGrid());
 
         wohnungComboBox.setItems(wohnungService.findAllWohnungen());
         wohnungComboBox.setVisible(false);
+        wohnungComboBox.setClearButtonVisible(true);
+        wohnungComboBox.setWidthFull();
         wohnungComboBox.setItemLabelGenerator(Wohnung::getFormattedAddress);
         wohnungComboBox.addValueChangeListener(event -> updateDokumenteGrid());
 
-        // Set value change mode to EAGER to update grid immediately as user types
-        searchField.setValueChangeMode(ValueChangeMode.EAGER);
-        searchField.addValueChangeListener(event -> updateDokumenteGrid());
-
+        layout.expand(mieterComboBox, wohnungComboBox);
         layout.add(searchField, filterTypeComboBox, mieterComboBox, wohnungComboBox);
         return layout;
     }
@@ -132,6 +132,7 @@ public class DokumenteListView extends VerticalLayout {
                     .toList();
         }
 
+        int rowHeight = 53;
         TableUtils.configureGrid(dokumentGrid, dokumente, rowHeight);
     }
 
@@ -148,11 +149,7 @@ public class DokumenteListView extends VerticalLayout {
                 .setAutoWidth(true);
         dokumentGrid.addComponentColumn(dokument -> {
             if (dokument.getWohnung() != null) {
-                String wohnungId = dokument.getWohnung().getWohnung_id().toString();
-                String href = String.format("wohnung-details/%s?previousView=dokumente", wohnungId);
-                RouterLink link = new RouterLink(dokument.getWohnung().getFormattedAddress(), WohnungDetailsView.class);
-                link.getElement().setAttribute("href", href);
-                return link;
+                return new RouterLink(dokument.getWohnung().getFormattedAddress(), WohnungDetailsView.class, dokument.getWohnung().getWohnung_id());
             }
             return null;
         }).setHeader("Wohnung").setSortable(true).setAutoWidth(true);
@@ -185,6 +182,8 @@ public class DokumenteListView extends VerticalLayout {
             return actionsLayout;
         }).setHeader("Actions").setFlexGrow(0).setAutoWidth(true);
 
-        TableUtils.configureGrid(dokumentGrid, dokumentService.findAllDokumente(), rowHeight);
+        dokumentGrid.setItems(dokumentService.findAllDokumente());
+        dokumentGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+
     }
 }

@@ -191,7 +191,7 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         addDetailToFormLayout(layout, "Hausnummer", currentWohnung.getHausnummer());
         addDetailToFormLayout(layout, "PLZ", currentWohnung.getPostleitzahl());
         addDetailToFormLayout(layout, "Stadt", currentWohnung.getStadt());
-        addDetailToFormLayout(layout, "Land", currentWohnung.getLand().name());
+        addDetailToFormLayout(layout, "Land", currentWohnung.getLand().getName());
         addDetailToFormLayout(layout, "Stockwerk", currentWohnung.getStockwerk());
         addDetailToFormLayout(layout, "Wohnungsnummer", currentWohnung.getWohnungsnummer());
         addDetailToFormLayout(layout, "GesamtQuadratmeter", String.valueOf(currentWohnung.getGesamtQuadratmeter()));

@@ -45,31 +45,37 @@ public class WohnungEditDialog extends DialogLayout {
 
         // Create and bind fields
         TextField strasseField = new TextField("Strasse");
+        strasseField.setClearButtonVisible(true);
         binder.forField(strasseField).asRequired("Strasse ist erforderlich")
                 .withValidator(new RegexpValidator("Strasse darf nur Buchstaben enthalten", "^[\\p{L}äöüÄÖÜß\\s\\-]+$", true))
                 .bind(Wohnung::getStrasse, Wohnung::setStrasse);
 
         TextField hausnummerField = new TextField("Hausnummer");
+        hausnummerField.setClearButtonVisible(true);
         binder.forField(hausnummerField).asRequired("Hausnummer ist erforderlich")
                 .withValidator(new RegexpValidator("Hausnummer muss numerisch sein mit optionalem Buchstaben", "^\\d+[a-zA-Z]?$", true))
                 .bind(Wohnung::getHausnummer, Wohnung::setHausnummer);
 
         TextField plzField = new TextField("PLZ");
+        plzField.setClearButtonVisible(true);
         binder.forField(plzField).asRequired("Postleitzahl ist erforderlich")
                 .withValidator(new RegexpValidator("Postleitzahl muss 4 bis 10 Ziffern lang sein", "^\\d{4,10}$", true))
                 .bind(Wohnung::getPostleitzahl, Wohnung::setPostleitzahl);
 
         TextField stadtField = new TextField("Stadt");
+        stadtField.setClearButtonVisible(true);
         binder.forField(stadtField).asRequired("Stadt ist erforderlich")
                 .withValidator(new RegexpValidator("Stadt darf nur Buchstaben enthalten", "^[\\p{L}\\s]+$", true))
                 .bind(Wohnung::getStadt, Wohnung::setStadt);
 
         TextField stockwerk = new TextField("Stockwerk");
+        stockwerk.setClearButtonVisible(true);
         binder.forField(stockwerk)
                 .withValidator(new RegexpValidator("Stockwerk darf nur Zahlen enthalten", "^[0-9]*$", true))
                 .bind(Wohnung::getStockwerk, Wohnung::setStockwerk);
 
         TextField wohnungsnummer = new TextField("Wohnungsnummer");
+        wohnungsnummer.setClearButtonVisible(true);
         binder.forField(wohnungsnummer)
                 .withValidator(new RegexpValidator("Wohnungsnummer darf nur Buchstaben und Zahlen enthalten", "^[a-zA-Z0-9]*$", true))
                 .bind(Wohnung::getWohnungsnummer, Wohnung::setWohnungsnummer);
