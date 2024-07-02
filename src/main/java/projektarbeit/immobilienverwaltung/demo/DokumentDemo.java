@@ -72,36 +72,43 @@ public class DokumentDemo implements CommandLineRunner {
 
             // Load existing Wohnungen and Mieter
             List<Wohnung> wohnungen = wohnungRepository.findAll();
-            List<Mieter> mieter = mieterRepository.findAll();
+            List<Mieter> mieterList = mieterRepository.findAll();
 
-            // Create Dokument entries if there are Wohnungen and Mieter available
-            if (!wohnungen.isEmpty() && !mieter.isEmpty()) {
-                Dokument dokument1 = new Dokument(wohnungen.get(0), mieter.get(0), "Mietvertrag", "/path/to/mietvertrag1.pdf");
-                dokumentRepository.save(dokument1);
+            // Create Dokument entries for each Mieter
+            if (!wohnungen.isEmpty() && !mieterList.isEmpty()) {
+                for (int i = 0; i < mieterList.size(); i++) {
+                    Mieter mieter = mieterList.get(i);
+                    Wohnung wohnung = i < wohnungen.size() ? wohnungen.get(i) : null;
 
-                Dokument dokument2 = new Dokument(wohnungen.get(1), mieter.get(1), "Rechnung", "/path/to/rechnung1.pdf");
-                dokumentRepository.save(dokument2);
+                    Dokument mietvertrag = new Dokument(wohnung, mieter, "Mietvertrag", "/path/to/mietvertrag" + (i + 1) + ".pdf");
+                    dokumentRepository.save(mietvertrag);
 
-                Dokument dokument3 = new Dokument(wohnungen.get(2), null, "Eigentumsnachweis", "/path/to/eigentumsnachweis1.pdf");
-                dokumentRepository.save(dokument3);
+                    Dokument rechnung = new Dokument(wohnung, mieter, "Rechnung", "/path/to/rechnung" + (i + 1) + ".pdf");
+                    dokumentRepository.save(rechnung);
 
-                Dokument dokument4 = new Dokument(null, mieter.get(2), "Kündigung", "/path/to/kündigung1.pdf");
-                dokumentRepository.save(dokument4);
+                    Dokument nebenkosten = new Dokument(wohnung, mieter, "Nebenkostenabrechnung Wasser", "/path/to/nebenkosten" + (i + 1) + ".pdf");
+                    dokumentRepository.save(nebenkosten);
 
-                Dokument dokument5 = new Dokument(wohnungen.get(3), mieter.get(3), "Nebenkostenabrechnung", "/path/to/nebenkosten1.pdf");
-                dokumentRepository.save(dokument5);
+                    Dokument nebenkosten2 = new Dokument(wohnung, mieter, "Nebenkostenabrechnung Strom", "/path/to/nebenkosten" + (i + 1) + ".pdf");
+                    dokumentRepository.save(nebenkosten2);
 
-                Dokument dokument6 = new Dokument(wohnungen.get(3), mieter.get(3), "Rechnung", "/path/to/rechnung2.pdf");
-                dokumentRepository.save(dokument6);
+                    Dokument perso = new Dokument(null, mieter, "Personalausweis", "/path/to/eigentumsnachweis" + (i + 1) + ".pdf");
+                    dokumentRepository.save(perso);
+                }
 
-                Dokument dokument7 = new Dokument(wohnungen.get(3), mieter.get(3), "Rechnung", "/path/to/rechnung3.pdf");
-                dokumentRepository.save(dokument7);
+                for (int i = 0; i < wohnungen.size(); i++) {
+                    Mieter mieter = mieterList.get(i);
+                    Wohnung wohnung = wohnungen.get(i);
 
-                Dokument dokument8 = new Dokument(wohnungen.get(3), mieter.get(3), "Rechnung", "/path/to/rechnung4.pdf");
-                dokumentRepository.save(dokument8);
+                    Dokument grundriss = new Dokument(wohnung, null, "Grundriss", "/path/to/eigentumsnachweis" + (i + 1) + ".pdf");
+                    dokumentRepository.save(grundriss);
 
-                Dokument dokument9 = new Dokument(wohnungen.get(3), mieter.get(3), "Rechnung", "/path/to/rechnung5.pdf");
-                dokumentRepository.save(dokument9);
+                    Dokument foto1 = new Dokument(wohnung, null, "Bild-Küche", "/path/to/picture028932" + (i + 1) + ".png");
+                    dokumentRepository.save(foto1);
+
+                    Dokument foto2 = new Dokument(wohnung, null, "Bild-Wohnzimmer", "/path/to/picture98423" + (i + 1) + ".png");
+                    dokumentRepository.save(foto2);
+                }
 
                 logger.info("Dokument data loaded.");
             } else {
