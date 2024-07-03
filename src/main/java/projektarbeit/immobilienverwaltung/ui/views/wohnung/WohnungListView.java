@@ -29,6 +29,7 @@ import projektarbeit.immobilienverwaltung.service.MietvertragService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.WohnungEditDialog;
+import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
 
 import java.util.List;
 
@@ -179,6 +180,7 @@ public class WohnungListView extends VerticalLayout {
                 return (mieter != null) ? mieter.getFullName() : "Kein Mieter";
             }
         })).setHeader("Mieter");
+        treeGrid.setSizeFull();
 
         treeGrid.getColumns().forEach(col -> col.setAutoWidth(true).setSortable(true));
     }
@@ -189,10 +191,10 @@ public class WohnungListView extends VerticalLayout {
      */
     private void updateList() {
         List<Wohnung> wohnungen = wohnungService.findWohnungenWithHierarchy(searchField.getValue());
+        TableUtils.configureTreeGrid(treeGrid, wohnungen, 50, Wohnung::getSubWohnungen);
         treeGrid.setItems(wohnungen, Wohnung::getSubWohnungen);
         wohnungen.stream().filter(Wohnung::isHeader).forEach(treeGrid::expand);
         updateGridColumns();
-        treeGrid.getDataProvider().refreshAll();
     }
 
     /**

@@ -10,7 +10,10 @@ import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
 import projektarbeit.immobilienverwaltung.repository.ZaehlerstandRepository;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Random;
 import java.util.List;
 
 /**
@@ -71,18 +74,26 @@ public class ZaehlerstandDemo implements CommandLineRunner {
 
             // Create Zaehlerstand entries if there are Wohnungen available
             if (!wohnungen.isEmpty()) {
-                Zaehlerstand zaehlerstand1 = new Zaehlerstand(wohnungen.get(0), LocalDate.of(2023, 1, 1), 100.0, "Strom");
-                zaehlerstandRepository.save(zaehlerstand1);
+                Random random = new Random();
 
-                Zaehlerstand zaehlerstand2 = new Zaehlerstand(wohnungen.get(1), LocalDate.of(2023, 6, 1), 200.0, "Wasser");
-                zaehlerstandRepository.save(zaehlerstand2);
+                for (Wohnung wohnung : wohnungen) {
+                    double stromValue = 10000 * random.nextDouble();
+                    double gasValue = 1000 * random.nextDouble();
+                    double wasserValue = 10000 * random.nextDouble();
 
-                Zaehlerstand zaehlerstand3 = new Zaehlerstand(wohnungen.get(2), LocalDate.of(2023, 11, 1), 300.0, "Gas");
-                zaehlerstandRepository.save(zaehlerstand3);
+                    stromValue = roundToTwoDecimalPlaces(stromValue);
+                    gasValue = roundToTwoDecimalPlaces(gasValue);
+                    wasserValue = roundToTwoDecimalPlaces(wasserValue);
 
-                Zaehlerstand zaehlerstand4 = new Zaehlerstand(wohnungen.get(3), LocalDate.of(2023, 12, 1), 400.0, "Strom");
-                zaehlerstandRepository.save(zaehlerstand4);
+                    Zaehlerstand strom = new Zaehlerstand(wohnung, LocalDate.of(2023, 1, 1), stromValue, "Strom");
+                    zaehlerstandRepository.save(strom);
 
+                    Zaehlerstand gas = new Zaehlerstand(wohnung, LocalDate.of(2023, 6, 1), gasValue, "Gas");
+                    zaehlerstandRepository.save(gas);
+
+                    Zaehlerstand wasser = new Zaehlerstand(wohnung, LocalDate.of(2023, 11, 1), wasserValue, "Wasser");
+                    zaehlerstandRepository.save(wasser);
+                }
                 logger.info("Zaehlerstand data loaded.");
             } else {
                 logger.warn("No Wohnungen found, skipping Zaehlerstand data initialization.");
@@ -90,5 +101,11 @@ public class ZaehlerstandDemo implements CommandLineRunner {
         } else {
             logger.info("Zaehlerstand data already exists, skipping initialization.");
         }
+    }
+
+    private double roundToTwoDecimalPlaces(double value) {
+        BigDecimal bd = BigDecimal.valueOf(value);
+        bd = bd.setScale(2, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 }

@@ -21,6 +21,7 @@ import jakarta.annotation.security.PermitAll;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Mietvertrag;
 import projektarbeit.immobilienverwaltung.service.*;
+import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 
 import java.text.NumberFormat;
@@ -92,7 +93,8 @@ public class MieterListView extends VerticalLayout {
      * Verwendet den Mieter-Service, um alle Mieter zu laden, die dem Filtertext entsprechen.
      */
     private void updateList() {
-        grid.setItems(mieterService.findAllMieter(filterText.getValue()));
+        List<Mieter> mieterList = mieterService.findAllMieter(filterText.getValue());
+        TableUtils.configureGrid(grid, mieterList, 50);
     }
 
     /**
@@ -185,7 +187,6 @@ public class MieterListView extends VerticalLayout {
 
         // Listener für die Auswahl eines Mieters zum Bearbeiten hinzufügen
         grid.asSingleSelect().addValueChangeListener(e -> editMieter(e.getValue()));
-        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
     }
 
     /**

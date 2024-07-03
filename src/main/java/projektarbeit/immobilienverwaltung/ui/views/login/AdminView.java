@@ -5,7 +5,9 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -69,15 +71,12 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
 
         // Erstellen des Titels
         User currentAdmin = getCurrentAdmin();
-        Span titleLabel = new Span("Admin Panel");
-        titleLabel.getStyle().set("font-size", "24px").set("font-weight", "bold");
-        titleLabel.getStyle().set("text-align", "center");
+        H1 titleLabel = new H1("Admin Panel");
         titleLabel.setWidthFull();
 
         HorizontalLayout titleLayout = new HorizontalLayout(titleLabel);
         titleLayout.setWidthFull();
-        titleLayout.setJustifyContentMode(JustifyContentMode.CENTER);
-        titleLayout.setDefaultVerticalComponentAlignment(Alignment.CENTER);
+        titleLayout.setJustifyContentMode(JustifyContentMode.START);
 
         // Titel zum Layout hinzufügen
         add(titleLayout);
@@ -95,6 +94,7 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
         roleComboBox.setItemLabelGenerator(Role::getName);
 
         Button addButton = new Button("Add User");
+        addButton.setPrefixComponent(VaadinIcon.PLUS.create());
         addButton.addClickListener(event -> {
             String username = usernameField.getValue();
             String password = passwordField.getValue();
