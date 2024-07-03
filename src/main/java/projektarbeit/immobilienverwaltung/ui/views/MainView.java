@@ -1,6 +1,6 @@
 package projektarbeit.immobilienverwaltung.ui.views;
 
-import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -52,14 +52,13 @@ public class MainView extends VerticalLayout {
      */
     @PostConstruct
     public void init() {
-        HorizontalLayout titleLayout = new HorizontalLayout();
-        titleLayout.setWidthFull();
-        titleLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        // Erstellen eines VerticalLayout zur Zentrierung von Titel und Statistiken
+        VerticalLayout mainLayout = new VerticalLayout(); // Änderung
+        mainLayout.setWidthFull(); // Änderung
+        mainLayout.setAlignItems(FlexComponent.Alignment.CENTER); // Änderung
 
-        H2 title = new H2("Hier sind Ihre aktuellen Statistiken");
-        titleLayout.add(title);
-
-        add(titleLayout);
+        H1 title = new H1("Dashboard"); // Änderung
+        mainLayout.add(title); // Änderung
 
         // Initiale Erstellung der Divs
         mieteinnahmenDiv = new Div();
@@ -72,7 +71,10 @@ public class MainView extends VerticalLayout {
         statsLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);
 
         // Hinzufügen des HorizontalLayout zum Hauptlayout
-        add(statsLayout);
+        mainLayout.add(statsLayout); // Änderung
+
+        // Hinzufügen des MainLayouts zur Hauptansicht
+        add(mainLayout); // Änderung
 
         // Initiale Aktualisierung der Daten
         updateStats();
@@ -115,7 +117,7 @@ public class MainView extends VerticalLayout {
      * @return ein Div-Element, das die Mieteinnahmen anzeigt.
      */
     private Div createMieteinnahmenDiv(double mieteinnahmen) {
-        H2 title = new H2("Mieteinnahmen");
+        H1 title = new H1("Mieteinnahmen");
         title.getStyle().set("text-align", "center");
 
         // Formatieren der Zahl mit Tausendertrennzeichen
@@ -125,7 +127,7 @@ public class MainView extends VerticalLayout {
         return getDiv(title, formattedMieteinnahmen);
     }
 
-    private Div getDiv(H2 title, String formattedMieteinnahmen) {
+    private Div getDiv(H1 title, String formattedMieteinnahmen) {
         Div value = new Div();
         value.setText(formattedMieteinnahmen);
         value.getStyle().set("font-size", "48px").set("text-align", "center").set("margin-top", "0");
@@ -149,7 +151,7 @@ public class MainView extends VerticalLayout {
      * @return ein Div-Element, das die Immobilienstatistik anzeigt.
      */
     private Div createImmobilienDiv(Map<String, Long> stats) {
-        H2 title = new H2("Immobilien");
+        H1 title = new H1("Immobilien");
         title.getStyle().set("text-align", "center");
 
         // Formatieren der Zahlen mit Tausendertrennzeichen
@@ -184,7 +186,7 @@ public class MainView extends VerticalLayout {
      * @return ein Div-Element, das die Anzahl der Mieter anzeigt.
      */
     private Div createMieterDiv(long totalMieter) {
-        H2 title = new H2("Anzahl der Mieter");
+        H1 title = new H1("Anzahl der Mieter");
         title.getStyle().set("text-align", "center");
 
         // Formatieren der Zahlen mit Tausendertrennzeichen
