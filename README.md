@@ -113,8 +113,8 @@ Die Anwendung stellt sicher, dass die Beziehungen zwischen Mietern, Mietverträg
 |   DB_NAME   | Namen der Datenbank                   | immobilienverwaltung |
 |   DB_USER   | Username der Datenbank                | myuser               |
 | DB_PASSWORD | Passwort der Datenbank                | mypassword           |
-|    ADMIN    | Admin User Name                       | user                |
-|  ADMIN_PW   | Admin Password                        | password                 |
+|    ADMIN    | Admin User Name                       | admin                |
+|  ADMIN_PW   | Admin Password                        | password             |
 |  DEMO_MODE  | enable loading demo data (true/false) | true                 |
 
 <a id="mockups"></a>
