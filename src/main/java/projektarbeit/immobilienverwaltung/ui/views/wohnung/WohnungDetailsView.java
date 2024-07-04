@@ -14,12 +14,16 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.upload.SucceededEvent;
+import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 import projektarbeit.immobilienverwaltung.model.Dokument;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.model.Zaehlerstand;
@@ -36,8 +40,11 @@ import projektarbeit.immobilienverwaltung.ui.views.dialog.ZaehlerstandDialog;
 import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
 import projektarbeit.immobilienverwaltung.ui.views.dokumente.DokumenteListView;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * View zur Anzeige der Details einer Wohnung.
@@ -257,20 +264,80 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
      *
      * @return das Header-Layout für Dokumente
      */
-    private
-
-    HorizontalLayout createDokumentHeaderLayout() {
+        private HorizontalLayout createDokumentHeaderLayout() {
         HorizontalLayout dokumentHeaderLayout = new HorizontalLayout();
         H1 dokumenteHeading = new H1("Dokumente");
-        Button addDokumentButton = new Button("Add Dokument");
-        addDokumentButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-        dokumentHeaderLayout.add(dokumenteHeading, addDokumentButton);
+        // Create a MemoryBuffer for upload
+        MemoryBuffer buffer = new MemoryBuffer();
+        Upload upload = new Upload(buffer);
+        upload.setAcceptedFileTypes("application/pdf", "image/*");
+        upload.addSucceededListener(event -> handleFileUpload(event, buffer));
+
+        dokumentHeaderLayout.add(dokumenteHeading, upload);
         dokumentHeaderLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         dokumentHeaderLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         dokumentHeaderLayout.setWidth("50%");
         return dokumentHeaderLayout;
     }
+
+    private void handleFileUpload(SucceededEvent event, MemoryBuffer buffer) {
+        String dokumententyp = event.getFileName();
+        try {
+            MultipartFile multipartFile = new MultipartFile() {
+                @Override
+                public String getName() {
+                    return event.getFileName();
+                }
+
+                @Override
+                public String getOriginalFilename() {
+                    return event.getFileName();
+                }
+
+                @Override
+                public String getContentType() {
+                    return event.getMIMEType();
+                }
+
+                @Override
+                public boolean isEmpty() {
+                    return buffer.getInputStream() == null;
+                }
+
+                @Override
+                public long getSize() {
+                    try {
+                        return buffer.getInputStream().available();
+                    } catch (IOException e) {
+                        return 0;
+                    }
+                }
+
+                @Override
+                public byte[] getBytes() throws IOException {
+                    return buffer.getInputStream().readAllBytes();
+                }
+
+                @Override
+                public InputStream getInputStream() throws IOException {
+                    return buffer.getInputStream();
+                }
+
+                @Override
+                public void transferTo(File dest) throws IOException, IllegalStateException {
+                    Files.copy(buffer.getInputStream(), dest.toPath());
+                }
+            };
+
+            dokumentService.saveFile(multipartFile, currentWohnung, null, dokumententyp);
+            refreshView();
+            NotificationPopup.showSuccessNotification("Dokument erfolgreich hochgeladen.");
+        } catch (Exception e) {
+            NotificationPopup.showErrorNotification("Fehler beim Hochladen des Dokuments: " + e.getMessage());
+        }
+    }
+
 
     /**
      * Erstellt das Header-Layout für Zählerstände.
@@ -297,11 +364,6 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         return zaehlerstandHeaderLayout;
     }
 
-    /**
-     * Erstellt das Grid für Dokumente.
-     *
-     * @return das Grid für Dokumente
-     */
     private Grid<Dokument> createDokumentGrid() {
         Grid<Dokument> dokumentGrid = new Grid<>(Dokument.class);
         dokumentGrid.setColumns("dokumententyp");
@@ -313,14 +375,17 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
             Button viewButton = new Button(new Icon("eye"));
             viewButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
             viewButton.getElement().setAttribute("title", "View");
+            viewButton.addClickListener(event -> dokumentService.viewDokument(dokument));
 
             Button deleteButton = new Button(new Icon("close"));
             deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
             deleteButton.getElement().setAttribute("title", "Delete");
+            deleteButton.addClickListener(event -> dokumentService.deleteDokument(dokument, dokumentGrid, currentWohnung, tableRowHeight, configurationService));
 
             Button downloadButton = new Button(new Icon("download"));
             downloadButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             downloadButton.getElement().setAttribute("title", "Download");
+            downloadButton.addClickListener(event -> dokumentService.downloadDokument(dokument));
 
             actionsLayout.add(viewButton, deleteButton, downloadButton);
             return actionsLayout;
