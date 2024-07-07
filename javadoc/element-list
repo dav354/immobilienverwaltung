@@ -2,7 +2,14 @@ projektarbeit.immobilienverwaltung
 projektarbeit.immobilienverwaltung.demo
 projektarbeit.immobilienverwaltung.model
 projektarbeit.immobilienverwaltung.repository
+projektarbeit.immobilienverwaltung.security
 projektarbeit.immobilienverwaltung.service
+projektarbeit.immobilienverwaltung.ui.components
 projektarbeit.immobilienverwaltung.ui.layout
 projektarbeit.immobilienverwaltung.ui.views
+projektarbeit.immobilienverwaltung.ui.views.dialog
+projektarbeit.immobilienverwaltung.ui.views.dokumente
+projektarbeit.immobilienverwaltung.ui.views.login
+projektarbeit.immobilienverwaltung.ui.views.mieter
+projektarbeit.immobilienverwaltung.ui.views.wohnung
 projektarbeit.immobilienverwaltung.validation
