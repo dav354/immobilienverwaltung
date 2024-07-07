@@ -10,6 +10,7 @@ Diese Schicht ist verantwortlich für die Benutzerinteraktion. Sie enthält vers
     - `WohnungListView`: Ansicht zur Verwaltung und Anzeige der Wohnungen.
     - `WohnungDetailsView`: Detaillierte Ansicht einer einzelnen Wohnung.
     - `MainView`: Startseite der Anwendung mit statistischen Übersichten.
+    - `DokumenteDetailsView`: Detaillierte Auflistung aller vorhandenen Dokumente. Diese können auch gefiltert werden.
 
 - **Formulare und Dialoge**: Ermöglichen die Eingabe und Bearbeitung von Daten.
     - `MieterForm`: Formular zur Eingabe und Bearbeitung von Mieterdaten.

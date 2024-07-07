@@ -30,7 +30,7 @@ pkgs.stdenv.mkDerivation {
     done
 
     # Generate the PDF using Pandoc
-    pandoc docs/index.md docs/motivation.md docs/architektur.md docs/komponenten.md docs/databaseDesign.md docs/useCases.md docs/verwendungszweck.md docs/zieluser.md --pdf-engine=pdflatex -o "$OUTPUT_DIR/$OUTPUT_FILE"
+    pandoc docs/index.md docs/motivation.md docs/installation.md docs/technologien.md docs/architektur.md docs/komponenten.md docs/databaseDesign.md docs/useCases.md docs/verwendungszweck.md docs/zieluser.md --pdf-engine=pdflatex -o "$OUTPUT_DIR/$OUTPUT_FILE"
 
     # Check if the PDF was successfully created
     if [ $? -eq 0 ]; then
