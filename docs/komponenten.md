@@ -1,18 +1,18 @@
-### Komponenten
+# Komponenten
 
-Die Anwendung folgt einer mehrschichtigen Architektur. Mit folgendem Aufbau:
+Die Anwendung folgt einer mehrschichtigen Architektur mit folgendem Aufbau:
 
 #### Service-Klassen
 
-- **DashboardService**: Berechnet verschiedene Statistiken, einschließlich der gesamten Mieteinnahmen und des Immobilienstatus (Anzahl der vermieteten und verfügbaren Immobilien).
-- **DokumentService**: Verwaltet Dokumente, einschließlich Hochladen, Abrufen und Löschen von Dokumenten, die mit Mietern oder Wohnungen verknüpft sind.
+- **DashboardService**: Berechnet verschiedene Statistiken, einschließlich der gesamten Mieteinnahmen und des Immobilienstatus (Anzahl der vermieteten und verfügbaren Immobilien). Die Mieteinnahmen werden durch die Summe der Mietzahlungen aus allen Mietverträgen berechnet. Statistiken umfassen z.B. durchschnittliche Mieteinnahmen pro Wohnung und Gesamtmieteinnahmen.
+- **DokumentService**: Verwaltet Dokumente, einschließlich Hochladen, Abrufen und Löschen von Dokumenten, die mit Mietern oder Wohnungen verknüpft sind. Dies umfasst beispielsweise Mietverträge, Rechnungen und Nebenkostenabrechnungen.
 - **GeocodingService**: Verwendet die Nominatim-API von OpenStreetMap, um Geokoordinaten (Breiten- und Längengrade) für gegebene Adressen abzurufen.
-- **MieterService**: Verwaltet Mieterdaten und Mietverträge. Bietet Methoden zum Hinzufügen, Bearbeiten und Löschen von Mietern sowie zur Überprüfung der Existenz von E-Mails.
-- **MietvertragService**: Verwaltet Mietverträge, einschließlich Erstellung, Aktualisierung und Löschung von Verträgen sowie Zuordnung von Mietern zu Wohnungen.
+- **MieterService**: Verwaltet Mieterdaten und Mietverträge. Bietet Methoden zum Hinzufügen, Bearbeiten und Löschen von Mietern sowie zur Überprüfung der Existenz von E-Mails. Verarbeitet Daten wie Name, Vorname, Telefonnummer, E-Mail und Einkommen der Mieter.
+- **MietvertragService**: Verwaltet Mietverträge, einschließlich Erstellung, Aktualisierung und Löschung von Verträgen sowie Zuordnung von Mietern zu Wohnungen. Führt Geschäftslogik zur Berechnung der Mietdauer und zur Überprüfung der Vertragsbedingungen durch.
 - **SecurityService**: Verwaltet Authentifizierung und Autorisierung der Benutzer. Bietet Methoden zur Anmeldung und Abmeldung von Benutzern sowie zur Abfrage der Rollen des angemeldeten Benutzers.
 - **UserService**: Verwaltet Benutzerkonten und Rollen. Bietet Methoden zum Hinzufügen, Bearbeiten und Löschen von Benutzern sowie zur Validierung von Benutzernamen und Passwörtern.
 - **WohnungService**: Verwaltet Wohnungsdaten, einschließlich Erstellung, Bearbeitung und Löschung von Wohnungen sowie Verwaltung der Verfügbarkeit und zugehöriger Dokumente und Zählerstände.
-- **ZaehlerstandService**: Verwaltet Zählerstände für Wohnungen, einschließlich Erstellung, Aktualisierung und Löschung von Zählerständen.
+- **ZaehlerstandService**: Verwaltet Zählerstände für Wohnungen, einschließlich Erstellung, Aktualisierung und Löschung von Zählerständen. Diese umfassen beispielsweise Wasser- und Stromzählerstände.
 - **ConfigurationService**: Verwaltet Konfigurationseinstellungen für die Anwendung.
 
 #### UI-Komponenten
