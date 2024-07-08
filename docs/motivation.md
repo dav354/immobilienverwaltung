@@ -4,7 +4,7 @@ Die Verwaltung von Immobilien umfasst komplexe und zeitaufwändige Aufgaben wie 
 
 Die Hauptmotivation für die Entwicklung dieser Anwendung ist die Vereinfachung und Automatisierung dieser Verwaltungsprozesse. Durch die Digitalisierung und Zentralisierung aller relevanten Daten werden Verwaltungsaufgaben effizienter und transparenter gestaltet, was zu einer erheblichen Zeitersparnis und reduzierter Fehleranfälligkeit führt.
 
-## Funktionen
+# Funktionen
 
 #### 1. Mieter-Verwaltung
 
@@ -16,6 +16,7 @@ Die Mieter-Verwaltung ermöglicht es, Mieter zu erstellen, zu aktualisieren und 
 - Einkommen: Muss ein positiver Wert sein.
 
 Zusätzlich können Mietern Dokumente und Mietverträge zugeordnet werden. Diese werden beim löschen eines Mieters ebenfalls mitgelöscht.
+
 #### 2. Mietvertrag-Verwaltung
 
 Mietverträge verknüpfen Mieter mit Wohnungen und enthalten Informationen wie Mietbeginn, Mietende, Miete, Kaution und die Anzahl der Bewohner. Die Validierungen stellen sicher, dass:
@@ -26,6 +27,7 @@ Mietverträge verknüpfen Mieter mit Wohnungen und enthalten Informationen wie M
 - Anzahl der Bewohner: Mindestens 1 beträgt.
 
 Mietverträge können erstellt, aktualisiert und gelöscht werden, wobei die Mieter und Wohnungen erhalten bleiben werden. 
+
 #### 3. Wohnung-Verwaltung
 
 Wohnungen werden mit verschiedenen Attributen verwaltet, darunter Straße, Hausnummer, Postleitzahl, Stadt, Land, Gesamtquadratmeter, Baujahr, Anzahl der Bäder, Schlafzimmer sowie Ausstattungsmerkmale wie Balkon, Terrasse, Garten und Klimaanlage. Die Validierungen umfassen:
@@ -38,12 +40,15 @@ Wohnungen werden mit verschiedenen Attributen verwaltet, darunter Straße, Hausn
 - Anzahl der Schlafzimmer: Muss null oder positiv sein.
 
 Wohnungen können ebenfalls Dokumente und Zählerstände zugeordnet werden.  Diese werden beim löschen einer Wohnung ebenfalls mitgelöscht.
+
 #### 4. Dokumenten-Verwaltung
 
 Dokumente können Mietern oder Wohnungen zugeordnet werden und enthalten Attribute wie Dokumenttyp und Dateipfad. Beide Felder dürfen nicht leer sein und müssen bestimmten Validierungen entsprechen. Sie können auch einzeln gelöscht, heruntergeladen oder angesehen werden werden.
+
 #### 5. Zählerstand-Verwaltung
 
 Zählerstände sind Wohnungen zugeordnet und enthalten das Ablesedatum und den Ablesewert. Beide Felder müssen gesetzt sein, wobei der Ablesewert positiv sein muss. Diese können auch einzeln gelöscht werden, unabhängig von der Wohnung. 
+
 #### 6. Beziehungen und Integrität
 
 Die Anwendung stellt sicher, dass die Beziehungen zwischen Mietern, Mietverträgen, Wohnungen, Dokumenten und Zählerständen korrekt gehandhabt werden. Beispielsweise:

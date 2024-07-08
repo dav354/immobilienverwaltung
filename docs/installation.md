@@ -1,4 +1,4 @@
-## Installation
+# Installation
 
 ### Voraussetzungen
 
@@ -16,7 +16,7 @@ Um die Anwendung zu installieren, müssen Docker und Docker Compose auf Ihrem Sy
 
 Folgende Einstellungen sollten noch angepasst werden: 
 
-- **PORT**: Als Standartport ist `8080` gesetzt. Dieser kann nach belieben geändert werden.
+- **PORT**: Als Standartport ist `8080` gesetzt. Dieser kann nach Belieben geändert werden.
 - **DATA**: Hier kann das Verzeichnis oder Docker Volume geändert werden, in das die Dateien beim Upload gespeichert werden.
 
 In der Docker Compose-Datei können folgende Umgebungsvariablen konfiguriert werden:

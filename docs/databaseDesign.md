@@ -23,8 +23,8 @@
     - `double miete`: Monatliche Mietzahlung.
     - `int anzahlBewohner`: Anzahl der Personen, die in der Wohnung leben.
 - **Beziehungen**:
-    - Many-to-One mit `Mieter`: Jeder Mietvertrag gehört zu einem Mieter.
-    - Many-to-One mit `Wohnung`: Jeder Mietvertrag bezieht sich auf eine Wohnung.
+    - One-to-One mit `Mieter`: Jeder Mietvertrag gehört zu einem Mieter.
+    - One-to-One mit `Wohnung`: Jeder Mietvertrag bezieht sich auf eine Wohnung.
 
 ## Wohnung
 - **Attribute**:
@@ -47,7 +47,7 @@
     - `Double latitude`: Geografische Breite der Wohnung.
     - `Double longitude`: Geografische Länge der Wohnung.
 - **Beziehungen**:
-    - One-to-Many mit `Mietvertrag`: Eine Wohnung kann mehrere Mietverträge haben.
+    - One-to-Many mit `Mietvertrag`: Eine Wohnung kann einen Mietverträge haben.
     - One-to-Many mit `Dokument`: Eine Wohnung kann mehrere Dokumente haben.
     - One-to-Many mit `Zaehlerstand`: Eine Wohnung kann mehrere Zählerstände haben.
 

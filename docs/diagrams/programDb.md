@@ -53,9 +53,9 @@ erDiagram
         String name
     }
 
-    Mieter ||--o{ Dokument: "hat"
+    Mieter |o--o{ Dokument: "hat"
     Mieter ||--o{ Mietvertrag: "hat"
     Wohnung ||--o{ Mietvertrag: "hat"
-    Wohnung ||--o{ Dokument: "hat"
+    Wohnung |o--o{ Dokument: "hat"
     Wohnung ||--o{ Zaehlerstand: "hat"
 ```

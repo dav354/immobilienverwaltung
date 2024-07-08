@@ -1,21 +1,59 @@
-# Komponenten
+### Komponenten
 
-## Service-Klassen
+Die Anwendung folgt einer mehrschichtigen Architektur. Mit folgendem Aufbau:
 
-- **DashboardService**: Diese Klasse berechnet verschiedene Statistiken, einschließlich der gesamten Mieteinnahmen und des Immobilienstatus (Anzahl der vermieteten und verfügbaren Immobilien).
-- **DokumentService**: Diese Klasse ist für die Verwaltung von Dokumenten verantwortlich, einschließlich des Hochladens, Abrufens und Löschens von Dokumenten, die mit Mietern oder Wohnungen verknüpft sind.
-- **GeocodingService**: Diese Klasse verwendet die Nominatim-API von OpenStreetMap, um Geokoordinaten (Breiten- und Längengrade) für gegebene Adressen abzurufen.
-- **MieterService**: Diese Klasse verwaltet die Daten der Mieter und ihrer Mietverträge. Sie bietet Methoden zum Hinzufügen, Bearbeiten und Löschen von Mietern sowie zur Überprüfung der Existenz von E-Mails.
-- **MietvertragService**: Diese Klasse verwaltet die Mietverträge, einschließlich der Erstellung, Aktualisierung und Löschung von Verträgen sowie der Zuordnung von Mietern zu Wohnungen.
-- **SecurityService**: Diese Klasse verwaltet die Authentifizierung und Autorisierung der Benutzer. Sie bietet Methoden zur Anmeldung und Abmeldung von Benutzern sowie zur Abfrage der Rollen des angemeldeten Benutzers.
-- **UserService**: Diese Klasse verwaltet die Benutzerkonten und Rollen. Sie bietet Methoden zum Hinzufügen, Bearbeiten und Löschen von Benutzern sowie zur Validierung von Benutzernamen und Passwörtern.
-- **WohnungService**: Diese Klasse verwaltet die Daten der Wohnungen, einschließlich der Erstellung, Bearbeitung und Löschung von Wohnungen sowie der Verwaltung der Verfügbarkeit und der zugehörigen Dokumente und Zählerstände.
-- **ZaehlerstandService**: Diese Klasse verwaltet die Zählerstände für die Wohnungen, einschließlich der Erstellung, Aktualisierung und Löschung von Zählerständen.
+#### Service-Klassen
 
-## UI-Komponenten
+- **DashboardService**: Berechnet verschiedene Statistiken, einschließlich der gesamten Mieteinnahmen und des Immobilienstatus (Anzahl der vermieteten und verfügbaren Immobilien).
+- **DokumentService**: Verwaltet Dokumente, einschließlich Hochladen, Abrufen und Löschen von Dokumenten, die mit Mietern oder Wohnungen verknüpft sind.
+- **GeocodingService**: Verwendet die Nominatim-API von OpenStreetMap, um Geokoordinaten (Breiten- und Längengrade) für gegebene Adressen abzurufen.
+- **MieterService**: Verwaltet Mieterdaten und Mietverträge. Bietet Methoden zum Hinzufügen, Bearbeiten und Löschen von Mietern sowie zur Überprüfung der Existenz von E-Mails.
+- **MietvertragService**: Verwaltet Mietverträge, einschließlich Erstellung, Aktualisierung und Löschung von Verträgen sowie Zuordnung von Mietern zu Wohnungen.
+- **SecurityService**: Verwaltet Authentifizierung und Autorisierung der Benutzer. Bietet Methoden zur Anmeldung und Abmeldung von Benutzern sowie zur Abfrage der Rollen des angemeldeten Benutzers.
+- **UserService**: Verwaltet Benutzerkonten und Rollen. Bietet Methoden zum Hinzufügen, Bearbeiten und Löschen von Benutzern sowie zur Validierung von Benutzernamen und Passwörtern.
+- **WohnungService**: Verwaltet Wohnungsdaten, einschließlich Erstellung, Bearbeitung und Löschung von Wohnungen sowie Verwaltung der Verfügbarkeit und zugehöriger Dokumente und Zählerstände.
+- **ZaehlerstandService**: Verwaltet Zählerstände für Wohnungen, einschließlich Erstellung, Aktualisierung und Löschung von Zählerständen.
+- **ConfigurationService**: Verwaltet Konfigurationseinstellungen für die Anwendung.
 
-- **MieterForm**: Ein Formular zur Bearbeitung von Mieterdaten. Es ermöglicht die Eingabe und Validierung von Mieterinformationen und deren Speicherung in der Datenbank.
-- **MieterListView**: Eine Übersicht und Verwaltung der Mieter. Diese Ansicht zeigt eine Liste aller Mieter und ermöglicht das Hinzufügen, Bearbeiten und Löschen von Mietern.
-- **WohnungDetailsView**: Eine Detailansicht einer Wohnung, die Zählerstände und Dokumente einschließt. Diese Ansicht zeigt die vollständigen Informationen zu einer Wohnung und ermöglicht die Verwaltung der zugehörigen Daten.
-- **WohnungListView**: Eine Übersicht und Verwaltung der Wohnungen. Diese Ansicht zeigt eine Liste aller Wohnungen und ermöglicht das Hinzufügen, Bearbeiten und Löschen von Wohnungen.
-- **MainView**: Die Startseite der Anwendung, die Statistiken zu den Mieteinnahmen, Immobilien und Mietern anzeigt. Sie enthält außerdem eine Übersichtskarte, die alle Wohnungen darstellt.
+#### UI-Komponenten
+
+- **MieterForm**: Formular zur Bearbeitung von Mieterdaten. Ermöglicht Eingabe und Validierung von Mieterinformationen und deren Speicherung in der Datenbank.
+- **MieterListView**: Übersicht und Verwaltung der Mieter. Zeigt eine Liste aller Mieter und ermöglicht Hinzufügen, Bearbeiten und Löschen von Mietern.
+- **WohnungDetailsView**: Detailansicht einer Wohnung, einschließlich Zählerstände und Dokumente. Zeigt vollständige Informationen zu einer Wohnung und ermöglicht Verwaltung der zugehörigen Daten.
+- **WohnungListView**: Übersicht und Verwaltung der Wohnungen. Zeigt eine Liste aller Wohnungen und ermöglicht Hinzufügen, Bearbeiten und Löschen von Wohnungen.
+- **MainView**: Startseite der Anwendung, die Statistiken zu Mieteinnahmen, Immobilien und Mietern anzeigt. Enthält eine Übersichtskarte, die alle Wohnungen darstellt.
+- **DokumenteDetailsView**: Detaillierte Auflistung aller vorhandenen Dokumente. Diese können auch gefiltert werden.
+
+#### Dialoge
+
+- **MieterForm**: Formular zur Eingabe und Bearbeitung von Mieterdaten.
+- **WohnungEditDialog**: Dialog zur Bearbeitung von Wohnungsdaten.
+- **ZaehlerstandDialog**: Dialog zur Eingabe und Bearbeitung von Zählerständen.
+- **ChangePasswordDialog**: Dialog zum Ändern des Passworts des aktuellen Benutzers.
+- **ConfirmationDialog**: Dialog zur Bestätigung von Löschvorgängen.
+
+#### Datenzugriffsschicht (Repository)
+
+- **Repository-Klassen**: Interagieren direkt mit der Datenbank und führen CRUD-Operationen (Create, Read, Update, Delete) aus. Verantwortlich für Speichern, Abrufen, Aktualisieren und Löschen von Daten.
+  - **MieterRepository**: Verwaltung der Mieter-Datenbankoperationen.
+  - **MietvertragRepository**: Verwaltung der Mietvertrags-Datenbankoperationen.
+  - **WohnungRepository**: Verwaltung der Wohnungs-Datenbankoperationen.
+  - **DokumentRepository**: Verwaltung der Dokument-Datenbankoperationen.
+  - **ZaehlerstandRepository**: Verwaltung der Zählerstand-Datenbankoperationen.
+  - **UserRepository**: Verwaltung der Benutzerdatenbankoperationen.
+  - **RoleRepository**: Verwaltung der Rollen-Datenbankoperationen.
+  - **ConfigurationRepository**: Verwaltung der Konfigurations-Datenbankoperationen.
+
+#### Sicherheitskomponenten
+
+- **DataLoader**: Lädt Standard-Administrationsbenutzer in die Datenbank, falls dieser noch nicht existiert.
+- **SecurityConfig**: Konfiguriert die Sicherheitsanforderungen und Authentifizierungsmethoden für die Anwendung.
+
+#### Demo-Komponenten
+
+- **DemoModeConfig**: Verwaltet den Demo-Modus der Anwendung und überprüft, ob der Demo-Modus aktiviert ist.
+- **DokumentDemo**: Initialisiert Dokument-Daten für Demo-Zwecke.
+- **MieterDemo**: Initialisiert Mieter-Daten für Demo-Zwecke.
+- **MietvertragDemo**: Weist Mietverträge Mietern und Wohnungen im Demo-Modus zu.
+- **WohnungDemo**: Initialisiert Wohnung-Daten für Demo-Zwecke.
+- **ZaehlerstandDemo**: Initialisiert Zählerstand-Daten für Demo-Zwecke.
