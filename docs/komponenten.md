@@ -4,7 +4,7 @@ Die Anwendung folgt einer mehrschichtigen Architektur mit folgendem Aufbau:
 
 #### Service-Klassen
 
-- **DashboardService**: Berechnet verschiedene Statistiken, einschließlich der gesamten Mieteinnahmen und des Immobilienstatus (Anzahl der vermieteten und verfügbaren Immobilien). Die Mieteinnahmen werden durch die Summe der Mietzahlungen aus allen Mietverträgen berechnet. Statistiken umfassen z.B. durchschnittliche Mieteinnahmen pro Wohnung und Gesamtmieteinnahmen.
+- **DashboardService**: Berechnet verschiedene Statistiken, einschließlich der gesamten Mieteinnahmen und des Immobilienstatus (Anzahl der vermieteten und verfügbaren Immobilien). Die Mieteinnahmen werden durch die Summe der Mietzahlungen aus allen Mietverträgen berechnet. Statistiken umfassen z.B. die Gesamtmieteinnahmen.
 - **DokumentService**: Verwaltet Dokumente, einschließlich Hochladen, Abrufen und Löschen von Dokumenten, die mit Mietern oder Wohnungen verknüpft sind. Dies umfasst beispielsweise Mietverträge, Rechnungen und Nebenkostenabrechnungen.
 - **GeocodingService**: Verwendet die Nominatim-API von OpenStreetMap, um Geokoordinaten (Breiten- und Längengrade) für gegebene Adressen abzurufen.
 - **MieterService**: Verwaltet Mieterdaten und Mietverträge. Bietet Methoden zum Hinzufügen, Bearbeiten und Löschen von Mietern sowie zur Überprüfung der Existenz von E-Mails. Verarbeitet Daten wie Name, Vorname, Telefonnummer, E-Mail und Einkommen der Mieter.
