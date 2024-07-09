@@ -12,13 +12,16 @@ import java.util.List;
  */
 @SuppressWarnings({"unused", "SpellCheckingInspection"})
 @Entity
+@Table(name = "mieter", indexes = {
+        @Index(name = "idx_mieter_email", columnList = "email")
+})
 public class Mieter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long mieterId;
 
-    @OneToMany(mappedBy = "mieter", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "mieter", fetch = FetchType.LAZY)
     private List<Dokument> dokument = new ArrayList<>();
 
     @Column

@@ -10,7 +10,10 @@ import jakarta.validation.constraints.NotNull;
  * Diese Entität wird der Datenbanktabelle 'dokument' zugeordnet.
  */
 @Entity
-@Table(name = "dokument")
+@Table(name = "dokument", indexes = {
+        @Index(name = "idx_dokument_wohnung_id", columnList = "wohnung_id"),
+        @Index(name = "idx_dokument_mieter_id", columnList = "mieter_id")
+})
 public class Dokument {
 
     @Id

@@ -13,7 +13,10 @@ import java.time.LocalDate;
  */
 @SuppressWarnings("SpellCheckingInspection")
 @Entity
-@Table(name = "zaehlerstand")
+@Table(name = "zaehlerstand", indexes = {
+        @Index(name = "idx_zaehlerstand_wohnung_id", columnList = "wohnung_id"),
+        @Index(name = "idx_zaehlerstand_ablesedatum", columnList = "ablesedatum")
+})
 public class Zaehlerstand {
 
     @Id

@@ -14,7 +14,10 @@ import java.time.LocalDate;
  */
 @ValidMietPeriod
 @Entity
-@Table(name = "mietvertrag")
+@Table(name = "mietvertrag", indexes = {
+        @Index(name = "idx_mietvertrag_mieter_id", columnList = "mieter_id"),
+        @Index(name = "idx_mietvertrag_wohnung_id", columnList = "wohnung_id")
+})
 public class Mietvertrag {
 
     @Id

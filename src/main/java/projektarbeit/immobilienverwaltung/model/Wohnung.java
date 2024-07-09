@@ -13,7 +13,11 @@ import java.util.List;
  */
 @SuppressWarnings({"SpellCheckingInspection", "unused"})
 @Entity
-@Table(name = "wohnung")
+@Table(name = "wohnung", indexes = {
+        @Index(name = "idx_wohnung_strasse", columnList = "strasse"),
+        @Index(name = "idx_wohnung_postleitzahl", columnList = "postleitzahl"),
+        @Index(name = "idx_wohnung_stadt", columnList = "stadt")
+})
 public class Wohnung {
 
     @Id
