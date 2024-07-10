@@ -7,7 +7,9 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
@@ -46,89 +48,116 @@ public class WohnungEditDialog extends DialogLayout {
         // Create and bind fields
         TextField strasseField = new TextField("Strasse");
         strasseField.setClearButtonVisible(true);
+        strasseField.setWidthFull();
         binder.forField(strasseField).asRequired("Strasse ist erforderlich")
                 .withValidator(new RegexpValidator("Strasse darf nur Buchstaben enthalten", "^[\\p{L}äöüÄÖÜß\\s\\-]+$", true))
                 .bind(Wohnung::getStrasse, Wohnung::setStrasse);
 
-        TextField hausnummerField = new TextField("Hausnummer");
+        TextField hausnummerField = new TextField("Hausnr.");
         hausnummerField.setClearButtonVisible(true);
+        hausnummerField.setWidth("100px");
         binder.forField(hausnummerField).asRequired("Hausnummer ist erforderlich")
                 .withValidator(new RegexpValidator("Hausnummer muss numerisch sein mit optionalem Buchstaben", "^\\d+[a-zA-Z]?$", true))
                 .bind(Wohnung::getHausnummer, Wohnung::setHausnummer);
 
         TextField plzField = new TextField("PLZ");
         plzField.setClearButtonVisible(true);
+        plzField.setWidth("150px");
         binder.forField(plzField).asRequired("Postleitzahl ist erforderlich")
                 .withValidator(new RegexpValidator("Postleitzahl muss 4 bis 10 Ziffern lang sein", "^\\d{4,10}$", true))
                 .bind(Wohnung::getPostleitzahl, Wohnung::setPostleitzahl);
 
         TextField stadtField = new TextField("Stadt");
         stadtField.setClearButtonVisible(true);
+        stadtField.setWidthFull();
         binder.forField(stadtField).asRequired("Stadt ist erforderlich")
                 .withValidator(new RegexpValidator("Stadt darf nur Buchstaben enthalten", "^[\\p{L}\\s]+$", true))
                 .bind(Wohnung::getStadt, Wohnung::setStadt);
 
         TextField stockwerk = new TextField("Stockwerk");
         stockwerk.setClearButtonVisible(true);
+        stockwerk.setWidth("300px");
         binder.forField(stockwerk)
                 .withValidator(new RegexpValidator("Stockwerk darf nur Zahlen enthalten", "^[0-9]*$", true))
                 .bind(Wohnung::getStockwerk, Wohnung::setStockwerk);
 
         TextField wohnungsnummer = new TextField("Wohnungsnummer");
         wohnungsnummer.setClearButtonVisible(true);
+        wohnungsnummer.setWidth("300px");
         binder.forField(wohnungsnummer)
                 .withValidator(new RegexpValidator("Wohnungsnummer darf nur Buchstaben und Zahlen enthalten", "^[a-zA-Z0-9]*$", true))
                 .bind(Wohnung::getWohnungsnummer, Wohnung::setWohnungsnummer);
 
-        IntegerField gesamtQuadratmeterField = new IntegerField("GesamtQuadratmeter");
+        IntegerField gesamtQuadratmeterField = new IntegerField("Quadratmeter");
         gesamtQuadratmeterField.setClearButtonVisible(true);
+        gesamtQuadratmeterField.setWidth("300px");
         binder.forField(gesamtQuadratmeterField).asRequired("Gesamt Quadratmeter muss positiv sein")
                 .withValidator(new IntegerRangeValidator("Gesamt Quadratmeter muss positiv sein", 1, Integer.MAX_VALUE))
                 .bind(Wohnung::getGesamtQuadratmeter, Wohnung::setGesamtQuadratmeter);
 
         IntegerField baujahrField = new IntegerField("Baujahr");
         baujahrField.setClearButtonVisible(true);
+        baujahrField.setWidth("300px");
         binder.forField(baujahrField).asRequired("Baujahr muss ein gültiges Jahr zwischen 1000 und " + LocalDate.now().getYear() + " sein")
                 .withValidator(new IntegerRangeValidator("Baujahr muss ein gültiges Jahr zwischen 1000 und " + LocalDate.now().getYear() + " sein", 1000, LocalDate.now().getYear()))
                 .bind(Wohnung::getBaujahr, Wohnung::setBaujahr);
 
         IntegerField anzahlBaederField = new IntegerField("Anzahl Bäder");
         anzahlBaederField.setClearButtonVisible(true);
+        anzahlBaederField.setWidth("300px");
         binder.forField(anzahlBaederField).asRequired("Anzahl Bäder muss positiv sein")
                 .withValidator(new IntegerRangeValidator("Anzahl Bäder muss positiv sein", 1, Integer.MAX_VALUE))
                 .bind(Wohnung::getAnzahlBaeder, Wohnung::setAnzahlBaeder);
 
         IntegerField anzahlSchlafzimmerField = new IntegerField("Anzahl Schlafzimmer");
         anzahlSchlafzimmerField.setClearButtonVisible(true);
+        anzahlSchlafzimmerField.setWidth("300px");
         binder.forField(anzahlSchlafzimmerField).asRequired("Anzahl Schlafzimmer muss null oder positiv sein")
                 .withValidator(new IntegerRangeValidator("Anzahl Schlafzimmer muss null oder positiv sein", 0, Integer.MAX_VALUE))
                 .bind(Wohnung::getAnzahlSchlafzimmer, Wohnung::setAnzahlSchlafzimmer);
 
         ComboBox<Land> landComboBox = new ComboBox<>("Land");
+        landComboBox.setWidth("300px");
         landComboBox.setItems(Land.values());
         landComboBox.setItemLabelGenerator(Land::getName);
         binder.forField(landComboBox).asRequired("Land ist erforderlich").bind(Wohnung::getLand, Wohnung::setLand);
 
         Checkbox hatBalkon = new Checkbox("Hat Balkon");
+        hatBalkon.setWidth("300px");
         binder.forField(hatBalkon).bind(Wohnung::isHatBalkon, Wohnung::setHatBalkon);
 
         Checkbox hatTerrasse = new Checkbox("Hat Terrasse");
+        hatTerrasse.setWidth("300px");
         binder.forField(hatTerrasse).bind(Wohnung::isHatTerrasse, Wohnung::setHatTerrasse);
 
         Checkbox hatGarten = new Checkbox("Hat Garten");
+        hatGarten.setWidth("300px");
         binder.forField(hatGarten).bind(Wohnung::isHatGarten, Wohnung::setHatGarten);
 
         Checkbox hatKlimaanlage = new Checkbox("Hat Klimaanlage");
+        hatKlimaanlage.setWidth("300px");
         binder.forField(hatKlimaanlage).bind(Wohnung::isHatKlimaanlage, Wohnung::setHatKlimaanlage);
 
-        HorizontalLayout balkonTerrasseLayout = new HorizontalLayout(hatBalkon, hatTerrasse);
-        HorizontalLayout gartenKlimaanlageLayout = new HorizontalLayout(hatGarten, hatKlimaanlage);
+        Div spacer = new Div();
+        spacer.setHeight("20px");
+        formLayout.add(spacer);
 
         // Read the current Wohnung details into the binder
         binder.readBean(wohnung);
 
+        HorizontalLayout plzStadt = new HorizontalLayout(stadtField, plzField);
+        HorizontalLayout strasseHausnummer = new HorizontalLayout(strasseField, hausnummerField);
+        HorizontalLayout qmBaujahr = new HorizontalLayout(gesamtQuadratmeterField, baujahrField);
+        HorizontalLayout baederSchlafzimmer = new HorizontalLayout(anzahlBaederField, anzahlSchlafzimmerField);
+        HorizontalLayout stockwerkWohnungsnumemr = new HorizontalLayout(stockwerk, wohnungsnummer);
+
+        HorizontalLayout gartenKlima = new HorizontalLayout(hatGarten, hatKlimaanlage);
+        gartenKlima.setWidthFull();
+        HorizontalLayout balkonTerasse = new HorizontalLayout(hatBalkon, hatTerrasse);
+        balkonTerasse.setWidthFull();
+
         // Add fields to the form layout
-        formLayout.add(landComboBox, strasseField, hausnummerField, plzField, stadtField, stockwerk, wohnungsnummer, gesamtQuadratmeterField, baujahrField, anzahlBaederField, anzahlSchlafzimmerField, balkonTerrasseLayout, gartenKlimaanlageLayout);
+        formLayout.add(landComboBox, plzStadt, strasseHausnummer, stockwerkWohnungsnumemr, qmBaujahr, baederSchlafzimmer, spacer, gartenKlima, balkonTerasse);
 
         // Create save button with save logic
         Button saveButton = new Button("Save", event -> saveWohnung(wohnung, wohnungService, onSave));
@@ -138,11 +167,11 @@ public class WohnungEditDialog extends DialogLayout {
         Button cancelButton = new Button("Cancel", event -> this.close());
 
         // Add form layout and buttons to the dialog
-        add(formLayout, new HorizontalLayout(saveButton, cancelButton));
+        add(formLayout, spacer, new HorizontalLayout(saveButton, cancelButton));
 
         // Set the size of the dialog
-        setWidth("500px");
-        setHeight("1000px");
+        setWidth("450px");
+        setHeight("625px");
 
         // Enable the save button only if the binder is valid
         binder.addStatusChangeListener(event -> saveButton.setEnabled(binder.isValid()));
