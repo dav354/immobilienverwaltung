@@ -231,6 +231,11 @@ public class Mietvertrag {
         this.anzahlBewohner = anzahlBewohner;
     }
 
+    /**
+     * Gibt eine String-Darstellung des Mietvertrags zurück.
+     *
+     * @return eine String-Darstellung dieses Mietvertrags
+     */
     @Override
     public String toString() {
         return "Mietvertrag{" +

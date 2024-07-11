@@ -15,8 +15,8 @@ import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
 import java.util.List;
 
 /**
- * Initializes the Dokument data for demo purposes.
- * This class runs as a command line runner when the application starts if the demo mode is enabled.
+ * Initialisiert die Dokumentdaten zu Demozwecken.
+ * Diese Klasse wird als Command Line Runner ausgeführt, wenn die Anwendung startet, falls der Demo-Modus aktiviert ist.
  */
 @Component
 @Order(5)
@@ -30,12 +30,12 @@ public class DokumentDemo implements CommandLineRunner {
     private final MieterRepository mieterRepository;
 
     /**
-     * Constructor for DokumentDemo.
+     * Konstruktor für DokumentDemo.
      *
-     * @param demoModeConfig    The demo mode configuration.
-     * @param dokumentRepository The repository for managing Dokument entities.
-     * @param wohnungRepository  The repository for managing Wohnung entities.
-     * @param mieterRepository   The repository for managing Mieter entities.
+     * @param demoModeConfig    Die Konfiguration des Demo-Modus.
+     * @param dokumentRepository Das Repository zur Verwaltung von Dokument-Entitäten.
+     * @param wohnungRepository  Das Repository zur Verwaltung von Wohnungs-Entitäten.
+     * @param mieterRepository   Das Repository zur Verwaltung von Mieter-Entitäten.
      */
     public DokumentDemo(DemoModeConfig demoModeConfig,
                         DokumentRepository dokumentRepository,
@@ -48,33 +48,33 @@ public class DokumentDemo implements CommandLineRunner {
     }
 
     /**
-     * Runs the initialization of Dokument data if demo mode is enabled.
+     * Führt die Initialisierung der Dokumentdaten aus, falls der Demo-Modus aktiviert ist.
      *
-     * @param args Command line arguments.
-     * @throws Exception if an error occurs during the operation.
+     * @param args Kommandozeilenargumente.
+     * @throws Exception wenn ein Fehler während des Vorgangs auftritt.
      */
     @Override
     public void run(String... args) throws Exception {
         if (demoModeConfig.isDemoMode()) {
             loadDokumentData();
         } else {
-            logger.info("Demo mode is OFF. Skipping loading of Dokument data.");
+            logger.info("Demo-Modus ist AUS. Laden der Dokumentdaten wird übersprungen.");
         }
     }
 
     /**
-     * Loads Dokument data for demo purposes.
-     * This method checks if there are no existing Dokument entries before loading the data.
+     * Lädt Dokumentdaten zu Demozwecken.
+     * Diese Methode prüft, ob keine bestehenden Dokumenteinträge vorhanden sind, bevor die Daten geladen werden.
      */
     private void loadDokumentData() {
-        if (dokumentRepository.count() == 0) { // Only load if no data exists
-            logger.info("Loading Dokument data...");
+        if (dokumentRepository.count() == 0) { // Nur laden, wenn keine Daten existieren
+            logger.info("Laden der Dokumentdaten...");
 
-            // Load existing Wohnungen and Mieter
+            // Bestehende Wohnungen und Mieter laden
             List<Wohnung> wohnungen = wohnungRepository.findAll();
             List<Mieter> mieterList = mieterRepository.findAll();
 
-            // Create Dokument entries for each Mieter
+            // Dokumenteinträge für jeden Mieter erstellen
             if (!wohnungen.isEmpty() && !mieterList.isEmpty()) {
                 for (int i = 0; i < mieterList.size(); i++) {
                     Mieter mieter = mieterList.get(i);
@@ -110,12 +110,12 @@ public class DokumentDemo implements CommandLineRunner {
                     dokumentRepository.save(foto2);
                 }
 
-                logger.info("Dokument data loaded.");
+                logger.info("Dokumentdaten geladen.");
             } else {
-                logger.warn("No Wohnungen or Mieter found, skipping Dokument data initialization.");
+                logger.warn("Keine Wohnungen oder Mieter gefunden, Initialisierung der Dokumentdaten wird übersprungen.");
             }
         } else {
-            logger.info("Dokument data already exists, skipping initialization.");
+            logger.info("Dokumentdaten existieren bereits, Initialisierung wird übersprungen.");
         }
     }
 }

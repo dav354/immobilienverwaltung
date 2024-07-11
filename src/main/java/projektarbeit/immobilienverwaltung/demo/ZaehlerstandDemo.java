@@ -17,8 +17,8 @@ import java.util.Random;
 import java.util.List;
 
 /**
- * Initializes the Zaehlerstand (meter reading) data for demo purposes.
- * This class runs as a command line runner when the application starts if the demo mode is enabled.
+ * Initialisiert die Zaehlerstand-Daten (Zählerstände) zu Demozwecken.
+ * Diese Klasse wird als Command Line Runner ausgeführt, wenn die Anwendung startet, falls der Demo-Modus aktiviert ist.
  */
 @SuppressWarnings("SpellCheckingInspection")
 @Component
@@ -32,11 +32,11 @@ public class ZaehlerstandDemo implements CommandLineRunner {
     private final WohnungRepository wohnungRepository;
 
     /**
-     * Constructor for ZaehlerstandDemo.
+     * Konstruktor für ZaehlerstandDemo.
      *
-     * @param demoModeConfig       The demo mode configuration.
-     * @param zaehlerstandRepository The repository for managing Zaehlerstand entities.
-     * @param wohnungRepository    The repository for managing Wohnung entities.
+     * @param demoModeConfig       Die Konfiguration des Demo-Modus.
+     * @param zaehlerstandRepository Das Repository zur Verwaltung von Zaehlerstand-Entitäten.
+     * @param wohnungRepository    Das Repository zur Verwaltung von Wohnungs-Entitäten.
      */
     public ZaehlerstandDemo(DemoModeConfig demoModeConfig,
                             ZaehlerstandRepository zaehlerstandRepository,
@@ -47,32 +47,32 @@ public class ZaehlerstandDemo implements CommandLineRunner {
     }
 
     /**
-     * Runs the initialization of Zaehlerstand data if demo mode is enabled.
+     * Führt die Initialisierung der Zaehlerstand-Daten aus, falls der Demo-Modus aktiviert ist.
      *
-     * @param args Command line arguments.
-     * @throws Exception if an error occurs during the operation.
+     * @param args Kommandozeilenargumente.
+     * @throws Exception wenn ein Fehler während des Vorgangs auftritt.
      */
     @Override
     public void run(String... args) throws Exception {
         if (demoModeConfig.isDemoMode()) {
             loadZaehlerstandData();
         } else {
-            logger.info("Demo mode is OFF. Skipping loading of Zaehlerstand data.");
+            logger.info("Demo-Modus ist AUS. Laden der Zaehlerstand-Daten wird übersprungen.");
         }
     }
 
     /**
-     * Loads Zaehlerstand data for demo purposes.
-     * This method checks if there are no existing Zaehlerstand entries before loading the data.
+     * Lädt Zaehlerstand-Daten zu Demozwecken.
+     * Diese Methode prüft, ob keine bestehenden Zaehlerstand-Einträge vorhanden sind, bevor die Daten geladen werden.
      */
     private void loadZaehlerstandData() {
-        if (zaehlerstandRepository.count() == 0) { // Only load if no data exists
-            logger.info("Loading Zaehlerstand data...");
+        if (zaehlerstandRepository.count() == 0) { // Nur laden, wenn keine Daten existieren
+            logger.info("Laden der Zaehlerstand-Daten...");
 
-            // Load existing Wohnungen
+            // Bestehende Wohnungen laden
             List<Wohnung> wohnungen = wohnungRepository.findAll();
 
-            // Create Zaehlerstand entries if there are Wohnungen available
+            // Zaehlerstand-Einträge erstellen, falls Wohnungen verfügbar sind
             if (!wohnungen.isEmpty()) {
                 Random random = new Random();
 
@@ -94,12 +94,12 @@ public class ZaehlerstandDemo implements CommandLineRunner {
                     Zaehlerstand wasser = new Zaehlerstand(wohnung, LocalDate.of(2023, 11, 1), wasserValue, "Wasser");
                     zaehlerstandRepository.save(wasser);
                 }
-                logger.info("Zaehlerstand data loaded.");
+                logger.info("Zaehlerstand-Daten geladen.");
             } else {
-                logger.warn("No Wohnungen found, skipping Zaehlerstand data initialization.");
+                logger.warn("Keine Wohnungen gefunden, Initialisierung der Zaehlerstand-Daten wird übersprungen.");
             }
         } else {
-            logger.info("Zaehlerstand data already exists, skipping initialization.");
+            logger.info("Zaehlerstand-Daten existieren bereits, Initialisierung wird übersprungen.");
         }
     }
 

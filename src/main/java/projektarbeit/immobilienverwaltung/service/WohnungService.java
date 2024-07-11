@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Service-Klasse zur Verwaltung von Wohnung-Entitäten und damit verbundenen Operationen.
+ */
 @SuppressWarnings("SpellCheckingInspection")
 @Service
 public class WohnungService {
@@ -20,7 +23,7 @@ public class WohnungService {
     private final WohnungRepository wohnungRepository;
     private final DokumentRepository dokumentRepository;
     private final MieterRepository mieterRepository;
-    private final  MietvertragRepository mietvertragRepository;
+    private final MietvertragRepository mietvertragRepository;
     private final ZaehlerstandRepository zaehlerstandRepository;
     private final GeocodingService geocodingService;
 
@@ -40,28 +43,28 @@ public class WohnungService {
     }
 
     /**
-     * Retrieves all Wohnung entities.
+     * Ruft alle Wohnung-Entitäten ab.
      *
-     * @return a list of all Wohnung entities
+     * @return eine Liste aller Wohnung-Entitäten
      */
     public List<Wohnung> findAllWohnungen() {
         return wohnungRepository.findAll();
     }
 
     /**
-     * Retrieves all Mieter entities.
+     * Ruft alle Mieter-Entitäten ab.
      *
-     * @return a list of all Mieter entities
+     * @return eine Liste aller Mieter-Entitäten
      */
     public List<Mieter> findAllMieter() {
         return mieterRepository.findAll();
     }
 
     /**
-     * Finds a Wohnung by its ID.
+     * Findet eine Wohnung anhand ihrer ID.
      *
-     * @param wohnungId the ID of the Wohnung to find
-     * @return the Wohnung with the specified ID, or null if not found
+     * @param wohnungId die ID der zu findenden Wohnung
+     * @return die Wohnung mit der angegebenen ID oder null, wenn sie nicht gefunden wurde
      */
     @Transactional(readOnly = true)
     public Wohnung findWohnungById(Long wohnungId) {
@@ -69,95 +72,95 @@ public class WohnungService {
     }
 
     /**
-     * Finds Wohnungen (apartments) and groups them into a hierarchical structure based on their address.
-     * If there are multiple Wohnungen at the same address, a header node is created with the address details
-     * and the individual Wohnungen as its children.
+     * Findet Wohnungen und gruppiert sie in eine hierarchische Struktur basierend auf ihrer Adresse.
+     * Wenn es mehrere Wohnungen an derselben Adresse gibt, wird ein Header-Knoten mit den Adressdetails
+     * erstellt und die einzelnen Wohnungen als dessen Kinder hinzugefügt.
      *
-     * @param filter The filter string to apply when searching for Wohnungen.
-     * @return A list of Wohnungen, some of which may be header nodes grouping multiple Wohnungen at the same address.
+     * @param filter Der Filterstring, der bei der Suche nach Wohnungen angewendet wird.
+     * @return Eine Liste von Wohnungen, von denen einige Header-Knoten sind, die mehrere Wohnungen an derselben Adresse gruppieren.
      */
     public List<Wohnung> findWohnungenWithHierarchy(String filter) {
-        // Retrieve all Wohnungen based on the filter
+        // Alle Wohnungen basierend auf dem Filter abrufen
         List<Wohnung> wohnungen = findAllWohnungen(filter);
 
-        // Group Wohnungen by their address (strasse + hausnummer)
+        // Wohnungen nach ihrer Adresse (strasse + hausnummer) gruppieren
         Map<String, List<Wohnung>> groupedWohnungen = wohnungen.stream().collect(Collectors.groupingBy(this::getAddress));
 
-        List<Wohnung> wohnungsWithHierarchy = new ArrayList<>();
-        // Iterate over each group of Wohnungen
+        List<Wohnung> wohnungenWithHierarchy = new ArrayList<>();
+        // Über jede Gruppe von Wohnungen iterieren
         groupedWohnungen.forEach((address, wohnungenForAddress) -> {
             if (wohnungenForAddress.size() > 1) {
-                // If there are multiple Wohnungen at the same address, create a header node
+                // Wenn es mehrere Wohnungen an derselben Adresse gibt, einen Header-Knoten erstellen
                 Wohnung addressNode = new Wohnung();
-                addressNode.setStrasse(wohnungenForAddress.getFirst().getStrasse());
-                addressNode.setHausnummer(wohnungenForAddress.getFirst().getHausnummer());
-                addressNode.setPostleitzahl(wohnungenForAddress.getFirst().getPostleitzahl());
-                addressNode.setStadt(wohnungenForAddress.getFirst().getStadt());
-                addressNode.setLand(wohnungenForAddress.getFirst().getLand());
+                addressNode.setStrasse(wohnungenForAddress.get(0).getStrasse());
+                addressNode.setHausnummer(wohnungenForAddress.get(0).getHausnummer());
+                addressNode.setPostleitzahl(wohnungenForAddress.get(0).getPostleitzahl());
+                addressNode.setStadt(wohnungenForAddress.get(0).getStadt());
+                addressNode.setLand(wohnungenForAddress.get(0).getLand());
                 addressNode.setHeader(true);
                 addressNode.setSubWohnungen(new ArrayList<>(wohnungenForAddress));
-                wohnungsWithHierarchy.add(addressNode);
+                wohnungenWithHierarchy.add(addressNode);
             } else {
-                // If there is only one Wohnung at the address, add it directly to the list
-                wohnungsWithHierarchy.addAll(wohnungenForAddress);
+                // Wenn es nur eine Wohnung an der Adresse gibt, direkt zur Liste hinzufügen
+                wohnungenWithHierarchy.addAll(wohnungenForAddress);
             }
         });
 
-        return wohnungsWithHierarchy;
+        return wohnungenWithHierarchy;
     }
 
-    // Helper method to get address string
+    // Hilfsmethode zum Abrufen der Adresszeichenfolge
     private String getAddress(Wohnung wohnung) {
         return String.format("%s %s", wohnung.getStrasse(), wohnung.getHausnummer());
     }
 
     /**
-     * Deletes a Wohnung entity and its associated details. Also removes references to the Wohnung from related entities.
+     * Löscht eine Wohnung und deren zugehörige Details. Entfernt auch Referenzen zur Wohnung aus verwandten Entitäten.
      *
-     * @param wohnung the Wohnung entity to delete
+     * @param wohnung die zu löschende Wohnung
      */
     @Transactional
     public void delete(Wohnung wohnung) {
-        // Delete documents associated with the Wohnung
+        // Dokumente löschen, die mit der Wohnung verknüpft sind
         List<Dokument> dokumente = dokumentRepository.findByWohnung(wohnung);
         if (dokumente != null && !dokumente.isEmpty()) {
             dokumentRepository.deleteAll(dokumente);
         }
 
-        // Delete Mietverträge associated with the Wohnung
+        // Mietverträge löschen, die mit der Wohnung verknüpft sind
         Mietvertrag mietvertrag = mietvertragRepository.findByWohnung(wohnung);
         if (mietvertrag != null) {
             mietvertrag.setMieter(null);
             mietvertragRepository.delete(mietvertrag);
         }
 
-        // Delete Zaehlerstand references to the Wohnung
+        // Zählerstand-Referenzen zur Wohnung löschen
         List<Zaehlerstand> zaehlerstaende = zaehlerstandRepository.findByWohnung(wohnung);
         if (zaehlerstaende != null && !zaehlerstaende.isEmpty()) {
             zaehlerstandRepository.deleteAll(zaehlerstaende);
         }
 
-        // Delete the Wohnung entity
+        // Wohnung-Entität löschen
         wohnungRepository.delete(wohnung);
     }
 
     /**
-     * Retrieves the Dokument entities associated with a given Wohnung.
+     * Ruft die Dokument-Entitäten ab, die mit einer bestimmten Wohnung verknüpft sind.
      *
-     * @param wohnung the Wohnung entity for which to find Dokumente
-     * @return a list of Dokument entities associated with the given Wohnung
+     * @param wohnung die Wohnung, für die die Dokumente gefunden werden sollen
+     * @return eine Liste von Dokument-Entitäten, die mit der angegebenen Wohnung verknüpft sind
      */
     public List<Dokument> findDokumenteByWohnung(Wohnung wohnung) {
         return dokumentRepository.findByWohnung(wohnung);
     }
 
     /**
-     * Service method to find all Wohnungen (apartments) based on a given string filter.
-     * If the filter string is null or empty, it returns all Wohnungen.
-     * If the filter string is provided, it first searches for all matching Wohnungen.
+     * Service-Methode, um alle Wohnungen basierend auf einem gegebenen Filterstring zu finden.
+     * Wenn der Filterstring null oder leer ist, werden alle Wohnungen zurückgegeben.
+     * Wenn der Filterstring angegeben wird, werden zunächst alle passenden Wohnungen gesucht.
      *
-     * @param stringFilter The filter string to search for matching Wohnungen. If null or empty, all Wohnungen are returned.
-     * @return A list of Wohnungen that match the given filter string. If no filter is provided, returns all Wohnungen.
+     * @param stringFilter Der Filterstring, um nach passenden Wohnungen zu suchen. Wenn null oder leer, werden alle Wohnungen zurückgegeben.
+     * @return Eine Liste von Wohnungen, die dem angegebenen Filterstring entsprechen. Wenn kein Filter angegeben ist, werden alle Wohnungen zurückgegeben.
      */
     public List<Wohnung> findAllWohnungen(String stringFilter) {
         if (stringFilter == null || stringFilter.isEmpty()) {
@@ -168,33 +171,33 @@ public class WohnungService {
     }
 
     /**
-     * Gets all Wohnungen that do not have an associated Mietvertrag.
+     * Ruft alle Wohnungen ab, die keinen zugehörigen Mietvertrag haben.
      *
-     * @return List of Wohnungen with no Mietvertrag
+     * @return eine Liste von Wohnungen ohne Mietvertrag
      */
     @Transactional(readOnly = true)
     public List<Wohnung> findWohnungenWithoutMietvertrag() {
-        // Get all Wohnungen
+        // Alle Wohnungen abrufen
         List<Wohnung> allWohnungen = wohnungRepository.findAll();
 
-        // Get all Wohnungen with a Mietvertrag
+        // Alle Wohnungen mit einem Mietvertrag abrufen
         List<Wohnung> wohnungenWithMietvertrag = mietvertragRepository.findAll().stream()
                 .map(Mietvertrag::getWohnung)
-                .toList();
+                .collect(Collectors.toList());
 
-        // Filter out Wohnungen that have a Mietvertrag
+        // Wohnungen filtern, die keinen Mietvertrag haben
         return allWohnungen.stream()
                 .filter(wohnung -> !wohnungenWithMietvertrag.contains(wohnung))
                 .collect(Collectors.toList());
     }
 
     /**
-     * Saves a Wohnung (apartment) entity to the database.
-     * This method is transactional, ensuring that all operations
-     * within the transaction are completed successfully or none are.
+     * Speichert eine Wohnung-Entität in der Datenbank.
+     * Diese Methode ist transactional und stellt sicher, dass alle Operationen
+     * innerhalb der Transaktion erfolgreich abgeschlossen werden oder keine.
      *
-     * @param wohnung the Wohnung entity to save
-     * @return the saved Wohnung entity
+     * @param wohnung die zu speichernde Wohnung-Entität
+     * @return die gespeicherte Wohnung-Entität
      */
     @Transactional
     public Wohnung save(@Valid Wohnung wohnung) {
@@ -203,9 +206,9 @@ public class WohnungService {
     }
 
     /**
-     * Sets the coordinates (latitude and longitude) of a Wohnung based on its address.
+     * Setzt die Koordinaten (Breiten- und Längengrad) einer Wohnung basierend auf ihrer Adresse.
      *
-     * @param wohnung the Wohnung entity for which to set the coordinates
+     * @param wohnung die Wohnung-Entität, für die die Koordinaten gesetzt werden sollen
      */
     private void setCoordinates(Wohnung wohnung) {
         String address = String.format("%s %s, %s, %s, %s",
@@ -217,17 +220,17 @@ public class WohnungService {
             wohnung.setLatitude(coordinates[0]);
             wohnung.setLongitude(coordinates[1]);
         } catch (IOException e) {
-            // Handle the exception (log it, set default coordinates, etc.)
+            // Ausnahme behandeln (protokollieren, Standardkoordinaten setzen, etc.)
             wohnung.setLatitude(null);
             wohnung.setLongitude(null);
         }
     }
 
     /**
-     * Gets all Wohnungen where there is no active Mietvertrag, meaning the Wohnung is available.
-     * This method is transactional and read-only.
+     * Ruft alle Wohnungen ab, für die kein aktiver Mietvertrag besteht, d.h. die Wohnung ist verfügbar.
+     * Diese Methode ist transactional und nur lesend.
      *
-     * @return List of all available Wohnungen
+     * @return eine Liste aller verfügbaren Wohnungen
      */
     @Transactional(readOnly = true)
     public List<Wohnung> findAvailableWohnungen() {
@@ -239,16 +242,16 @@ public class WohnungService {
     }
 
     /**
-     * Retrieves the list of Zaehlerstand (meter readings) associated with a given Wohnung (apartment).
-     * This method queries the ZaehlerstandRepository to fetch all Zaehlerstand entries linked to the specified Wohnung.
+     * Ruft die Liste der Zählerstand-Entitäten ab, die mit einer bestimmten Wohnung verknüpft sind.
+     * Diese Methode fragt das ZaehlerstandRepository ab, um alle Zählerstand-Einträge abzurufen, die mit der angegebenen Wohnung verknüpft sind.
      *
-     * @param wohnung the Wohnung entity for which to find the Zaehlerstand entries.
-     * @return a list of Zaehlerstand entries associated with the given Wohnung.
+     * @param wohnung die Wohnung, für die die Zählerstand-Einträge gefunden werden sollen
+     * @return eine Liste von Zählerstand-Einträgen, die mit der angegebenen Wohnung verknüpft sind
      */
     @Transactional(readOnly = true)
     public List<Zaehlerstand> findZaehlerstandByWohnung(Wohnung wohnung) {
         if (wohnung == null) {
-            throw new IllegalArgumentException("Wohnung cannot be null");
+            throw new IllegalArgumentException("Wohnung darf nicht null sein");
         }
         return zaehlerstandRepository.findByWohnung(wohnung);
     }

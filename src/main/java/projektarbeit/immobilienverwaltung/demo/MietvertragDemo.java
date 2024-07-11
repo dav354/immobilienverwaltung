@@ -15,8 +15,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * Assigns Mietvertrag (rental contracts) to Mieter (tenants) and Wohnungen (apartments) in demo mode.
- * This class runs as a command line runner when the application starts.
+ * Weist Mietverträge (Mietvertrag) den Mietern (Mieter) und Wohnungen (Wohnungen) im Demo-Modus zu.
+ * Diese Klasse wird als Command Line Runner ausgeführt, wenn die Anwendung startet.
  */
 @Component
 @Order(10)
@@ -30,12 +30,12 @@ public class MietvertragDemo implements CommandLineRunner {
     private final MietvertragService mietvertragService;
 
     /**
-     * Constructor for MietvertragDemo.
+     * Konstruktor für MietvertragDemo.
      *
-     * @param demoModeConfig    The demo mode configuration.
-     * @param mieterRepository  The repository for managing Mieter entities.
-     * @param wohnungRepository The repository for managing Wohnung entities.
-     * @param mietvertragService The service for managing Mietvertrag-related operations.
+     * @param demoModeConfig    Die Konfiguration des Demo-Modus.
+     * @param mieterRepository  Das Repository zur Verwaltung von Mieter-Entitäten.
+     * @param wohnungRepository Das Repository zur Verwaltung von Wohnungs-Entitäten.
+     * @param mietvertragService Der Service zur Verwaltung mietvertragbezogener Operationen.
      */
     public MietvertragDemo(DemoModeConfig demoModeConfig,
                            MieterRepository mieterRepository,
@@ -48,36 +48,36 @@ public class MietvertragDemo implements CommandLineRunner {
     }
 
     /**
-     * Runs the assignment of Mietvertrag to Mieter and Wohnungen if demo mode is enabled.
+     * Führt die Zuweisung von Mietverträgen an Mieter und Wohnungen aus, falls der Demo-Modus aktiviert ist.
      *
-     * @param args Command line arguments.
-     * @throws Exception if an error occurs during the operation.
+     * @param args Kommandozeilenargumente.
+     * @throws Exception wenn ein Fehler während des Vorgangs auftritt.
      */
     @Override
     public void run(String... args) throws Exception {
         if (demoModeConfig.isDemoMode()) {
             assignMietvertragDemo();
         } else {
-            logger.info("Demo mode is OFF. Skip Mietvertrag assignment.");
+            logger.info("Demo-Modus ist AUS. Zuweisung der Mietverträge wird übersprungen.");
         }
     }
 
     /**
-     * Assigns Mietvertrag to Mieter and Wohnungen in demo mode.
-     * This method checks if there are enough Mieter and Wohnungen available before assigning.
+     * Weist im Demo-Modus Mietverträge Mietern und Wohnungen zu.
+     * Diese Methode prüft, ob genügend Mieter und Wohnungen vorhanden sind, bevor die Zuweisung erfolgt.
      */
     public void assignMietvertragDemo() {
-        // Check if there are any Mieter and Wohnungen in the database
+        // Überprüfen, ob Mieter und Wohnungen in der Datenbank vorhanden sind
         if (mieterRepository.count() > 0 && wohnungRepository.count() > 0) {
-            logger.info("Assigning Mietvertrag data to Mieter and Wohnungen...");
+            logger.info("Zuweisung von Mietvertragsdaten an Mieter und Wohnungen...");
 
-            // Load existing Wohnungen
+            // Bestehende Wohnungen laden
             List<Wohnung> wohnungen = wohnungRepository.findAll();
 
-            // Load existing Mieter
+            // Bestehende Mieter laden
             List<Mieter> mieter = mieterRepository.findAll();
 
-            // Check if there are at least 3 Wohnungen and 2 Mieter
+            // Überprüfen, ob mindestens 3 Wohnungen und 2 Mieter vorhanden sind
             if (wohnungen.size() >= 6 && mieter.size() >= 4) {
                 Mieter mieter1 = mieter.get(0);
                 Mieter mieter2 = mieter.get(1);
@@ -91,7 +91,7 @@ public class MietvertragDemo implements CommandLineRunner {
                 Wohnung wohnung5 = wohnungen.get(4);
                 Wohnung wohnung6 = wohnungen.get(5);
 
-                // Assign Mietvertrag to Mieter and Wohnungen
+                // Mietverträge Mietern und Wohnungen zuweisen
                 mietvertragService.createAndSaveMietvertrag(mieter1, wohnung1, LocalDate.now().minusMonths(12), LocalDate.now().plusMonths(12), 1000.00, 500.00, 3);
                 mietvertragService.createAndSaveMietvertrag(mieter2, wohnung2, LocalDate.now().minusMonths(6), LocalDate.now().plusMonths(6), 500.00, 250.00, 1);
                 mietvertragService.createAndSaveMietvertrag(mieter3, wohnung3, LocalDate.now().minusMonths(24), LocalDate.now().plusMonths(24), 1500.00, 750.00, 2);
@@ -99,9 +99,9 @@ public class MietvertragDemo implements CommandLineRunner {
                 mietvertragService.createAndSaveMietvertrag(mieter1, wohnung5, LocalDate.now().minusMonths(12), null, 800.00, 400.00, 1);
                 mietvertragService.createAndSaveMietvertrag(mieter2, wohnung6, LocalDate.now().minusMonths(6), null, 900.00, 450.00, 2);
 
-                logger.info("Mietvertrag data assigned to Mieter and Wohnungen.");
+                logger.info("Mietvertragsdaten wurden Mietern und Wohnungen zugewiesen.");
             } else {
-                logger.warn("Not enough Wohnungen or Mieter found, skipping assignment.");
+                logger.warn("Nicht genügend Wohnungen oder Mieter gefunden, Zuweisung wird übersprungen.");
             }
         }
     }

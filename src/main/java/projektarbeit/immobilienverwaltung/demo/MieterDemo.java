@@ -13,8 +13,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * Initializes the Mieter data for demo purposes.
- * This class runs as a command line runner when the application starts if the demo mode is enabled.
+ * Initialisiert die Mieterdaten zu Demozwecken.
+ * Diese Klasse wird als Command Line Runner ausgeführt, wenn die Anwendung startet, falls der Demo-Modus aktiviert ist.
  */
 @Component
 @Order(2)
@@ -27,11 +27,11 @@ public class MieterDemo implements CommandLineRunner {
     private final WohnungRepository wohnungRepository;
 
     /**
-     * Constructor for MieterDemo.
+     * Konstruktor für MieterDemo.
      *
-     * @param demoModeConfig    The demo mode configuration.
-     * @param mieterRepository  The repository for managing Mieter entities.
-     * @param wohnungRepository The repository for managing Wohnung entities.
+     * @param demoModeConfig    Die Konfiguration des Demo-Modus.
+     * @param mieterRepository  Das Repository zur Verwaltung von Mieter-Entitäten.
+     * @param wohnungRepository Das Repository zur Verwaltung von Wohnungs-Entitäten.
      */
     public MieterDemo(DemoModeConfig demoModeConfig,
                       MieterRepository mieterRepository,
@@ -42,32 +42,32 @@ public class MieterDemo implements CommandLineRunner {
     }
 
     /**
-     * Runs the initialization of Mieter data if demo mode is enabled.
+     * Führt die Initialisierung der Mieterdaten aus, falls der Demo-Modus aktiviert ist.
      *
-     * @param args Command line arguments.
-     * @throws Exception if an error occurs during the operation.
+     * @param args Kommandozeilenargumente.
+     * @throws Exception wenn ein Fehler während des Vorgangs auftritt.
      */
     @Override
     public void run(String... args) throws Exception {
         if (demoModeConfig.isDemoMode()) {
             loadMieterData();
         } else {
-            logger.info("Demo mode is OFF. Skipping loading of Mieter data.");
+            logger.info("Demo-Modus ist AUS. Laden der Mieterdaten wird übersprungen.");
         }
     }
 
     /**
-     * Loads Mieter data for demo purposes.
-     * This method checks if there are no existing Mieter entries before loading the data.
+     * Lädt Mieterdaten zu Demozwecken.
+     * Diese Methode prüft, ob keine bestehenden Mietereinträge vorhanden sind, bevor die Daten geladen werden.
      */
     public void loadMieterData() {
-        if (mieterRepository.count() == 0) { // Only load if no data exists
-            logger.info("Loading Mieter data...");
+        if (mieterRepository.count() == 0) { // Nur laden, wenn keine Daten existieren
+            logger.info("Laden der Mieterdaten...");
 
-            // Load existing Wohnungen
+            // Bestehende Wohnungen laden
             List<Wohnung> wohnungen = wohnungRepository.findAll();
 
-            // Create Mieter entries if there are Wohnungen available
+            // Mietereinträge erstellen, falls Wohnungen verfügbar sind
             if (!wohnungen.isEmpty()) {
                 Mieter mieter1 = new Mieter("Doe", "John", "0123456789", "john@doe.com", 3000);
                 mieterRepository.save(mieter1);
@@ -105,12 +105,12 @@ public class MieterDemo implements CommandLineRunner {
                 Mieter mieter12 = new Mieter("Schneider", "Moritz", "9876543211","moritz.schneider@mailbox.org", 4200);
                 mieterRepository.save(mieter12);
 
-                logger.info("Mieter data loaded.");
+                logger.info("Mieterdaten geladen.");
             } else {
-                logger.warn("No Wohnungen found, skipping Mieter data initialization.");
+                logger.warn("Keine Wohnungen gefunden, Initialisierung der Mieterdaten wird übersprungen.");
             }
         } else {
-            logger.info("Mieter data already exists, skipping initialization.");
+            logger.info("Mieterdaten existieren bereits, Initialisierung wird übersprungen.");
         }
     }
 }

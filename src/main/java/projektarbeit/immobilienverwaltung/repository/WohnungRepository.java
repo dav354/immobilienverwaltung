@@ -9,18 +9,18 @@ import projektarbeit.immobilienverwaltung.model.Wohnung;
 import java.util.List;
 
 /**
- * Repository interface for managing Wohnung entities.
- * Extends JpaRepository to provide CRUD operations and custom query methods.
+ * Repository-Schnittstelle zur Verwaltung von Wohnung-Entitäten.
+ * Erweitert JpaRepository, um CRUD-Operationen und benutzerdefinierte Abfragemethoden bereitzustellen.
  */
 @Repository
 public interface WohnungRepository extends JpaRepository<Wohnung, Long> {
 
     /**
-     * Searches for Wohnungen based on the given search term.
-     * The search is performed on the 'strasse' and 'hausnummer' fields.
+     * Sucht nach Wohnungen basierend auf dem angegebenen Suchbegriff.
+     * Die Suche wird auf den Feldern 'strasse' und 'hausnummer' durchgeführt.
      *
-     * @param searchTerm the search term to filter Wohnungen
-     * @return a list of Wohnungen that match the search term
+     * @param searchTerm der Suchbegriff, um Wohnungen zu filtern
+     * @return eine Liste von Wohnungen, die dem Suchbegriff entsprechen
      */
     @Query("SELECT w FROM Wohnung w " +
             "WHERE lower(w.strasse) LIKE lower(concat('%', :searchTerm, '%')) " +

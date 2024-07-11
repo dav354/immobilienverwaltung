@@ -30,6 +30,10 @@ import projektarbeit.immobilienverwaltung.ui.views.wohnung.WohnungDetailsView;
 
 import java.util.List;
 
+/**
+ * Die DokumenteListView ist die Ansicht, die alle Dokumente in einer Tabelle darstellt.
+ * Sie ermöglicht das Filtern und Durchsuchen der Dokumente nach Mietern oder Wohnungen.
+ */
 @PermitAll
 @Route(value = "dokumente", layout = MainLayout.class)
 @PageTitle("Dokumente")
@@ -206,7 +210,7 @@ public class DokumenteListView extends VerticalLayout {
 
             actionsLayout.add(viewButton, deleteButton, downloadButton);
             return actionsLayout;
-        }).setHeader("Actions").setFlexGrow(0).setAutoWidth(true);
+        }).setHeader("Aktionen").setFlexGrow(0).setAutoWidth(true);
 
         dokumentGrid.setItems(dokumentService.findAllDokumente());
         dokumentGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);

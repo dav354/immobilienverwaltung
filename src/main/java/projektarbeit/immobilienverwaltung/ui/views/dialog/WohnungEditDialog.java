@@ -9,7 +9,6 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
@@ -25,7 +24,7 @@ import projektarbeit.immobilienverwaltung.ui.layout.DialogLayout;
 import java.time.LocalDate;
 
 /**
- * A dialog for editing a Wohnung (apartment).
+ * Ein Dialog zum Bearbeiten einer Wohnung.
  */
 public class WohnungEditDialog extends DialogLayout {
 
@@ -42,10 +41,10 @@ public class WohnungEditDialog extends DialogLayout {
     public WohnungEditDialog(WohnungService wohnungService, Wohnung wohnung, Runnable onSave, ConfigurationService configurationService) {
         super(configurationService);
 
-        // Create the form layout
+        // Erstellen des Formularlayouts
         FormLayout formLayout = new FormLayout();
 
-        // Create and bind fields
+        // Erstellen und Binden der Felder
         TextField strasseField = new TextField("Strasse");
         strasseField.setClearButtonVisible(true);
         strasseField.setWidthFull();
@@ -142,7 +141,7 @@ public class WohnungEditDialog extends DialogLayout {
         spacer.setHeight("20px");
         formLayout.add(spacer);
 
-        // Read the current Wohnung details into the binder
+        // Aktuelle Wohnung in den Binder einlesen
         binder.readBean(wohnung);
 
         HorizontalLayout plzStadt = new HorizontalLayout(stadtField, plzField);
@@ -156,31 +155,31 @@ public class WohnungEditDialog extends DialogLayout {
         HorizontalLayout balkonTerasse = new HorizontalLayout(hatBalkon, hatTerrasse);
         balkonTerasse.setWidthFull();
 
-        // Add fields to the form layout
+        // Felder zum Formularlayout hinzufügen
         formLayout.add(landComboBox, plzStadt, strasseHausnummer, stockwerkWohnungsnumemr, qmBaujahr, baederSchlafzimmer, spacer, gartenKlima, balkonTerasse);
 
-        // Create save button with save logic
-        Button saveButton = new Button("Save", event -> saveWohnung(wohnung, wohnungService, onSave));
+        // Erstellen der Schaltfläche "Speichern" mit Logik zum Speichern
+        Button saveButton = new Button("Speichern", event -> saveWohnung(wohnung, wohnungService, onSave));
         saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-        // Create cancel button
-        Button cancelButton = new Button("Cancel", event -> this.close());
+        // Erstellen der Schaltfläche "Abbrechen"
+        Button cancelButton = new Button("Abbrechen", event -> this.close());
 
-        // Add form layout and buttons to the dialog
+        // Formularlayout und Schaltflächen zum Dialog hinzufügen
         add(formLayout, spacer, new HorizontalLayout(saveButton, cancelButton));
 
-        // Set the size of the dialog
+        // Größe des Dialogs festlegen
         setWidth("450px");
         setHeight("625px");
 
-        // Enable the save button only if the binder is valid
+        // Aktivieren der Schaltfläche "Speichern" nur, wenn der Binder gültig ist
         binder.addStatusChangeListener(event -> saveButton.setEnabled(binder.isValid()));
 
-        // Add keyboard shortcut for Enter key
+        // Tastenkürzel für Enter-Taste hinzufügen
         saveButton.addClickShortcut(Key.ENTER);
         cancelButton.addClickShortcut(Key.ESCAPE);
 
-        // Add save callback after closing dialog
+        // Speichern-Callback nach dem Schließen des Dialogs hinzufügen
         addDialogCloseActionListener(e -> onSave.run());
     }
 
@@ -189,9 +188,9 @@ public class WohnungEditDialog extends DialogLayout {
             wohnungService.save(wohnung);
             onSave.run();
             this.close();
-            NotificationPopup.showSuccessNotification("Wohnung saved.");
+            NotificationPopup.showSuccessNotification("Wohnung gespeichert.");
         } else {
-            NotificationPopup.showWarningNotification("Please fill out all required fields.");
+            NotificationPopup.showWarningNotification("Bitte füllen Sie alle erforderlichen Felder aus.");
         }
     }
 }

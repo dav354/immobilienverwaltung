@@ -10,15 +10,18 @@ import projektarbeit.immobilienverwaltung.repository.DokumentRepository;
 
 import java.util.List;
 
+/**
+ * Service-Klasse zur Verwaltung von Dokument-Entitäten.
+ */
 @Service
 public class DokumentService {
 
     private final DokumentRepository dokumentRepository;
 
     /**
-     * Constructs a new DokumentService with the specified DokumentRepository.
+     * Konstruktor für DokumentService mit dem angegebenen DokumentRepository.
      *
-     * @param dokumentRepository the repository for Dokument entities
+     * @param dokumentRepository das Repository für Dokument-Entitäten
      */
     @Autowired
     public DokumentService(DokumentRepository dokumentRepository) {
@@ -26,22 +29,23 @@ public class DokumentService {
     }
 
     /**
-     * Retrieves all Dokument entities.
+     * Ruft alle Dokument-Entitäten ab.
      *
-     * @return a list of all Dokument entities
+     * @return eine Liste aller Dokument-Entitäten
      */
     public List<Dokument> findAllDokumente() {
         return dokumentRepository.findAll();
     }
 
     /**
-     * Deletes all Dokument entities associated with the given Wohnung. If a Dokument has no associated Mieter, it is deleted. Otherwise, the reference to the Wohnung is set to null and the Dokument is updated.
+     * Löscht alle Dokument-Entitäten, die mit der angegebenen Wohnung verknüpft sind.
+     * Wenn ein Dokument keinen zugehörigen Mieter hat, wird es gelöscht. Andernfalls wird die Referenz zur Wohnung auf null gesetzt und das Dokument wird aktualisiert.
      *
-     * @param wohnung the Wohnung entity whose associated Dokument entities are to be deleted or updated
+     * @param wohnung die Wohnung-Entität, deren zugehörige Dokument-Entitäten gelöscht oder aktualisiert werden sollen
      */
     @Transactional
     public void deleteDokumenteByWohnung(Wohnung wohnung) {
-        if (wohnung == null) throw new NullPointerException("Wohnung is null");
+        if (wohnung == null) throw new NullPointerException("Wohnung ist null");
         List<Dokument> dokumente = dokumentRepository.findByWohnung(wohnung);
         for (Dokument dokument : dokumente) {
             dokument.setWohnung(null);
@@ -54,20 +58,20 @@ public class DokumentService {
     }
 
     /**
-     * Finds and returns a list of Dokument entities associated with a given Wohnung.
+     * Findet und gibt eine Liste von Dokument-Entitäten zurück, die mit einer bestimmten Wohnung verknüpft sind.
      *
-     * @param wohnung     The Wohnung entity for which to find associated Dokumente.
-     * @return A list of Dokument entities associated with the specified Wohnung.
+     * @param wohnung Die Wohnung-Entität, für die die zugehörigen Dokumente gefunden werden sollen.
+     * @return Eine Liste von Dokument-Entitäten, die mit der angegebenen Wohnung verknüpft sind.
      */
     public List<Dokument> findDokumenteByWohnung(Wohnung wohnung) {
         return dokumentRepository.findByWohnung(wohnung);
     }
 
     /**
-     * Finds and returns a list of Dokument entities associated with a given Mieter.
+     * Findet und gibt eine Liste von Dokument-Entitäten zurück, die mit einem bestimmten Mieter verknüpft sind.
      *
-     * @param mieter The Mieter entity for which to find associated Dokumente.
-     * @return A list of Dokument entities associated with the specified Mieter.
+     * @param mieter Die Mieter-Entität, für die die zugehörigen Dokumente gefunden werden sollen.
+     * @return Eine Liste von Dokument-Entitäten, die mit dem angegebenen Mieter verknüpft sind.
      */
     public List<Dokument> findDokumenteByMieter(Mieter mieter) {
         return dokumentRepository.findByMieter(mieter);

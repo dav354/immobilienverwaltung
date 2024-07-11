@@ -9,6 +9,9 @@ import projektarbeit.immobilienverwaltung.repository.ZaehlerstandRepository;
 
 import java.util.List;
 
+/**
+ * Service-Klasse zur Verwaltung von Zaehlerstand-Entitäten.
+ */
 @SuppressWarnings("SpellCheckingInspection")
 @Service
 public class ZaehlerstandService {
@@ -16,9 +19,9 @@ public class ZaehlerstandService {
     private final ZaehlerstandRepository zaehlerstandRepository;
 
     /**
-     * Constructs a new ZaehlerstandService with the specified ZaehlerstandRepository.
+     * Konstruktor für ZaehlerstandService mit dem angegebenen ZaehlerstandRepository.
      *
-     * @param zaehlerstandRepository the repository for Zaehlerstand entities
+     * @param zaehlerstandRepository das Repository für Zaehlerstand-Entitäten
      */
     @Autowired
     public ZaehlerstandService(ZaehlerstandRepository zaehlerstandRepository) {
@@ -26,60 +29,59 @@ public class ZaehlerstandService {
     }
 
     /**
-     * Saves or updates a Zaehlerstand entity.
+     * Speichert oder aktualisiert eine Zaehlerstand-Entität.
      *
-     * @param zaehlerstand the Zaehlerstand entity to save or update
-     * @return the saved or updated Zaehlerstand entity
+     * @param zaehlerstand die zu speichernde oder zu aktualisierende Zaehlerstand-Entität
+     * @return die gespeicherte oder aktualisierte Zaehlerstand-Entität
      */
     public Zaehlerstand saveZaehlerstand(@Valid Zaehlerstand zaehlerstand) {
         return zaehlerstandRepository.save(zaehlerstand);
     }
 
     /**
-     * Retrieves all Zaehlerstand entities.
+     * Ruft alle Zaehlerstand-Entitäten ab.
      *
-     * @return a list of all Zaehlerstand entities
+     * @return eine Liste aller Zaehlerstand-Entitäten
      */
     public List<Zaehlerstand> findAllZaehlerstaende() {
         return zaehlerstandRepository.findAll();
     }
 
     /**
-     * Retrieves a Zaehlerstand entity by its ID.
+     * Ruft eine Zaehlerstand-Entität anhand ihrer ID ab.
      *
-     * @param id the ID of the Zaehlerstand entity to retrieve
-     * @return the Zaehlerstand entity with the specified ID, or null if not found
+     * @param id die ID der abzurufenden Zaehlerstand-Entität
+     * @return die Zaehlerstand-Entität mit der angegebenen ID oder null, wenn sie nicht gefunden wurde
      */
     public Zaehlerstand getZaehlerstandById(Long id) {
         return zaehlerstandRepository.findById(id).orElse(null);
     }
 
     /**
-     * Deletes a Zaehlerstand entity by its ID.
+     * Löscht eine Zaehlerstand-Entität anhand ihrer ID.
      *
-     * @param id the ID of the Zaehlerstand entity to delete
+     * @param id die ID der zu löschenden Zaehlerstand-Entität
      */
     public void deleteZaehlerstand(Long id) {
         zaehlerstandRepository.deleteById(id);
     }
 
     /**
-     * Finds and returns a list of Zaehlerstand entities associated with a given Wohnung.
+     * Findet und gibt eine Liste von Zaehlerstand-Entitäten zurück, die mit einer bestimmten Wohnung verknüpft sind.
      *
-     * @param wohnung     The Wohnung entity for which to find associated Zaehlerstände.
-     * @return A list of Zaehlerstand entities associated with the specified Wohnung.
+     * @param wohnung Die Wohnung-Entität, für die die zugehörigen Zaehlerstände gefunden werden sollen.
+     * @return Eine Liste von Zaehlerstand-Entitäten, die mit der angegebenen Wohnung verknüpft sind.
      */
     public List<Zaehlerstand> findZaehlerstandByWohnung(Wohnung wohnung) {
         return zaehlerstandRepository.findByWohnung(wohnung);
     }
 
     /**
-     * Deletes a Zaehlerstand entity.
+     * Löscht eine Zaehlerstand-Entität.
      *
-     * @param zaehlerstand the Zaehlerstand to delete
+     * @param zaehlerstand die zu löschende Zaehlerstand-Entität
      */
     public void deleteZaehlerstand(Zaehlerstand zaehlerstand) {
         zaehlerstandRepository.delete(zaehlerstand);
     }
-
 }

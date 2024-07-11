@@ -10,10 +10,9 @@ import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.model.Land;
 
-
 /**
- * Initializes the Wohnung data for demo purposes.
- * This class runs as a command line runner when the application starts if the demo mode is enabled.
+ * Initialisiert die Wohnungsdaten zu Demozwecken.
+ * Diese Klasse wird als Command Line Runner ausgeführt, wenn die Anwendung startet, falls der Demo-Modus aktiviert ist.
  */
 @SuppressWarnings("SpellCheckingInspection")
 @Component
@@ -26,10 +25,10 @@ public class WohnungDemo implements CommandLineRunner {
     private final WohnungService wohnungService;
 
     /**
-     * Constructor for WohnungDemo.
+     * Konstruktor für WohnungDemo.
      *
-     * @param demoModeConfig The demo mode configuration.
-     * @param wohnungService The service for managing Wohnung entities.
+     * @param demoModeConfig Die Konfiguration des Demo-Modus.
+     * @param wohnungService Der Service zur Verwaltung von Wohnung-Entitäten.
      */
     @Autowired
     public WohnungDemo(DemoModeConfig demoModeConfig, WohnungService wohnungService) {
@@ -38,29 +37,29 @@ public class WohnungDemo implements CommandLineRunner {
     }
 
     /**
-     * Runs the initialization of Wohnung data if demo mode is enabled.
+     * Führt die Initialisierung der Wohnungsdaten aus, falls der Demo-Modus aktiviert ist.
      *
-     * @param args Command line arguments.
-     * @throws Exception if an error occurs during the operation.
+     * @param args Kommandozeilenargumente.
+     * @throws Exception wenn ein Fehler während des Vorgangs auftritt.
      */
     @Override
     public void run(String... args) throws Exception {
         if (demoModeConfig.isDemoMode()) {
             loadWohnungData();
         } else {
-            logger.info("Demo mode is OFF. Skipping loading of Wohnung data.");
+            logger.info("Demo-Modus ist AUS. Laden der Wohnungsdaten wird übersprungen.");
         }
     }
 
     /**
-     * Loads Wohnung data for demo purposes.
-     * This method checks if there are no existing Wohnung entries before loading the data.
+     * Lädt Wohnungsdaten zu Demozwecken.
+     * Diese Methode prüft, ob keine bestehenden Wohnungseinträge vorhanden sind, bevor die Daten geladen werden.
      */
     private void loadWohnungData() {
-        if (wohnungService.findAllWohnungen().isEmpty()) { // Only load if no data exists
-            logger.info("Loading Wohnung data...");
+        if (wohnungService.findAllWohnungen().isEmpty()) { // Nur laden, wenn keine Daten existieren
+            logger.info("Laden der Wohnungsdaten...");
 
-            // Create Wohnungen with their corresponding attributes directly
+            // Wohnungen mit ihren entsprechenden Attributen direkt erstellen
             Wohnung w1 = new Wohnung("Münzstraße", "12", "97070", "Würzburg", Land.DE, 200, 1900, 2, 2, true, true, true, true, null, null);
             w1.setLatitude(49.794500); w1.setLongitude(9.930800);
             wohnungService.save(w1);
@@ -102,9 +101,9 @@ public class WohnungDemo implements CommandLineRunner {
             Wohnung w12 = new Wohnung("Königsstraße", "1", "54555", "Altona", Land.DE, 55, 2008, 2, 2, false, true, false, true, "2", "5");
             wohnungService.save(w12);
 
-            logger.info("Wohnung data loaded.");
+            logger.info("Wohnungsdaten geladen.");
         } else {
-            logger.info("Wohnung data already exists, skipping initialization.");
+            logger.info("Wohnungsdaten existieren bereits, Initialisierung wird übersprungen.");
         }
     }
 }

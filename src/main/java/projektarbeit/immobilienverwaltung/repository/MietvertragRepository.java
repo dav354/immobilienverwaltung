@@ -7,24 +7,24 @@ import projektarbeit.immobilienverwaltung.model.Wohnung;
 import java.util.List;
 
 /**
- * Repository interface for managing Mietvertrag entities.
- * Extends JpaRepository to provide CRUD operations and custom query methods.
+ * Repository-Schnittstelle zur Verwaltung von Mietvertrag-Entitäten.
+ * Erweitert JpaRepository, um CRUD-Operationen und benutzerdefinierte Abfragemethoden bereitzustellen.
  */
 public interface MietvertragRepository extends JpaRepository<Mietvertrag, Long> {
 
     /**
-     * Finds all Mietvertrag entities associated with a given Mieter ID.
+     * Findet alle Mietvertrag-Entitäten, die mit einer bestimmten Mieter-ID verknüpft sind.
      *
-     * @param mieterId the ID of the Mieter
-     * @return a list of Mietvertrag entities associated with the given Mieter ID
+     * @param mieterId die ID des Mieters
+     * @return eine Liste von Mietvertrag-Entitäten, die mit der angegebenen Mieter-ID verknüpft sind
      */
     List<Mietvertrag> findByMieter_MieterId(Long mieterId);
 
     /**
-     * Finds the Mietvertrag entity associated with a given Wohnung.
+     * Findet die Mietvertrag-Entität, die mit einer bestimmten Wohnung verknüpft ist.
      *
-     * @param wohnung the Wohnung entity
-     * @return the Mietvertrag entity associated with the given Wohnung, or null if none found
+     * @param wohnung die Wohnung-Entität
+     * @return die Mietvertrag-Entität, die mit der angegebenen Wohnung verknüpft ist, oder null, falls keine gefunden wurde
      */
     Mietvertrag findByWohnung(Wohnung wohnung);
 }

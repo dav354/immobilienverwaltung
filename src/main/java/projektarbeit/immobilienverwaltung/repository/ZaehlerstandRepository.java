@@ -6,14 +6,18 @@ import projektarbeit.immobilienverwaltung.model.Zaehlerstand;
 
 import java.util.List;
 
+/**
+ * Repository-Schnittstelle zur Verwaltung von Zählerstand-Entitäten.
+ * Erweitert JpaRepository, um CRUD-Operationen und benutzerdefinierte Abfragemethoden bereitzustellen.
+ */
 @SuppressWarnings("SpellCheckingInspection")
 public interface ZaehlerstandRepository extends JpaRepository<Zaehlerstand, Long> {
 
     /**
-     * Finds all Zaehlerstand entries associated with the given Wohnung.
+     * Findet alle Zaehlerstand-Einträge, die mit der angegebenen Wohnung verknüpft sind.
      *
-     * @param wohnung the Wohnung entity for which to find Zaehlerstand entries.
-     * @return a list of Zaehlerstand entries associated with the given Wohnung.
+     * @param wohnung die Wohnung-Entität, für die die Zaehlerstand-Einträge gefunden werden sollen.
+     * @return eine Liste von Zaehlerstand-Einträgen, die mit der angegebenen Wohnung verknüpft sind.
      */
     List<Zaehlerstand> findByWohnung(Wohnung wohnung);
 }

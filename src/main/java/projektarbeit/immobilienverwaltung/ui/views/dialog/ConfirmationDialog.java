@@ -8,56 +8,56 @@ import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 import projektarbeit.immobilienverwaltung.ui.layout.DialogLayout;
 
 /**
- * A confirmation dialog component for Vaadin applications.
- * This dialog displays a message and provides "Delete" and "Cancel" buttons.
- * When the "Delete" button is pressed, the provided ConfirmationListener is triggered.
+ * Ein Bestätigungsdialog für Vaadin-Anwendungen.
+ * Dieser Dialog zeigt eine Nachricht an und bietet Schaltflächen für "Löschen" und "Abbrechen".
+ * Wenn die "Löschen"-Schaltfläche gedrückt wird, wird der bereitgestellte ConfirmationListener ausgelöst.
  */
 public class ConfirmationDialog extends DialogLayout {
 
     /**
-     * An interface for handling confirmation actions.
+     * Eine Schnittstelle zum Handhaben von Bestätigungsaktionen.
      */
     public interface ConfirmationListener {
         void onConfirm();
     }
 
     /**
-     * Constructs a ConfirmationDialog with the specified message and confirmation listener.
+     * Konstruktor für ConfirmationDialog mit der angegebenen Nachricht und dem Bestätigungslistener.
      *
-     * @param message                The message to display in the dialog.
-     * @param confirmationListener   The listener to invoke when the "Delete" button is pressed.
-     * @param configurationService   The service for configuration settings.
+     * @param message                Die Nachricht, die im Dialog angezeigt werden soll.
+     * @param confirmationListener   Der Listener, der ausgelöst wird, wenn die "Löschen"-Schaltfläche gedrückt wird.
+     * @param configurationService   Der Dienst für Konfigurationseinstellungen.
      */
     public ConfirmationDialog(String message, ConfirmationListener confirmationListener, ConfigurationService configurationService) {
         super(configurationService);
 
-        // Set up the DialogLayout
+        // Einrichten des DialogLayouts
         setDialogLayout();
 
-        // Add the message text to the dialog
+        // Hinzufügen des Nachrichtentexts zum Dialog
         add(new Text(message));
 
-        // Create the "Delete" button and add a click listener to trigger the confirmation listener
-        Button confirmButton = new Button("Delete", event -> {
+        // Erstellen der "Löschen"-Schaltfläche und Hinzufügen eines Klick-Listeners zum Auslösen des Bestätigungslisteners
+        Button confirmButton = new Button("Löschen", event -> {
             confirmationListener.onConfirm();
-            close(); // Close the dialog after confirmation
+            close(); // Dialog nach Bestätigung schließen
         });
-        confirmButton.addThemeVariants(ButtonVariant.LUMO_ERROR); // Add error theme to the "Delete" button
+        confirmButton.addThemeVariants(ButtonVariant.LUMO_ERROR); // Hinzufügen des Fehlerthemas zur "Löschen"-Schaltfläche
 
-        // Create the "Cancel" button and add a click listener to close the dialog
-        Button cancelButton = new Button("Cancel", event -> close());
-        cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY); // Add tertiary theme to the "Cancel" button
+        // Erstellen der "Abbrechen"-Schaltfläche und Hinzufügen eines Klick-Listeners zum Schließen des Dialogs
+        Button cancelButton = new Button("Abbrechen", event -> close());
+        cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY); // Hinzufügen des tertiären Themas zur "Abbrechen"-Schaltfläche
 
-        // Arrange the buttons in a horizontal layout
+        // Anordnen der Schaltflächen in einem horizontalen Layout
         HorizontalLayout buttons = new HorizontalLayout(confirmButton, cancelButton);
-        add(buttons); // Add the button layout to the dialog
+        add(buttons); // Hinzufügen des Schaltflächenlayouts zum Dialog
     }
 
     /**
-     * Set up the layout for the dialog.
+     * Einrichten des Layouts für den Dialog.
      */
     private void setDialogLayout() {
-        setWidth("400px");  // Set width of the dialog
-        setHeight("200px"); // Set height of the dialog
+        setWidth("400px");  // Breite des Dialogs festlegen
+        setHeight("200px"); // Höhe des Dialogs festlegen
     }
 }

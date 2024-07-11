@@ -16,19 +16,19 @@ import java.util.HashSet;
 import java.util.Optional;
 
 /**
- * Configuration class responsible for loading default admin user
- * into the database if it does not already exist.
+ * Konfigurationsklasse, die für das Laden des Standard-Admin-Benutzers
+ * in die Datenbank verantwortlich ist, falls dieser noch nicht existiert.
  */
 @Configuration
 public class DataLoader {
 
     private static final Logger logger = LoggerFactory.getLogger(DataLoader.class);
 
-    // Injecting the admin username from the environment variable or application properties
+    // Injection des Admin-Benutzernamens aus der Umgebungsvariable oder den Anwendungseigenschaften
     @Value("${admin.username}")
     private String adminUsername;
 
-    // Injecting the admin password from the environment variable or application properties
+    // Injection des Admin-Passworts aus der Umgebungsvariable oder den Anwendungseigenschaften
     @Value("${admin.password}")
     private String adminPassword;
 
@@ -37,11 +37,11 @@ public class DataLoader {
     private final PasswordEncoder passwordEncoder;
 
     /**
-     * Constructor for DataLoader.
+     * Konstruktor für DataLoader.
      *
-     * @param userRepository The repository to interact with User data in the database.
-     * @param roleRepository The repository to interact with Role data in the database.
-     * @param passwordEncoder The encoder to encrypt user passwords.
+     * @param userRepository Das Repository zur Interaktion mit Benutzerdaten in der Datenbank.
+     * @param roleRepository Das Repository zur Interaktion mit Rollendaten in der Datenbank.
+     * @param passwordEncoder Der Encoder zum Verschlüsseln von Benutzerpasswörtern.
      */
     public DataLoader(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -50,45 +50,45 @@ public class DataLoader {
     }
 
     /**
-     * Initializes the default admin user in the database.
-     * This method is executed after the bean is constructed.
-     * If the admin user does not exist in the database, it creates one with the given credentials.
+     * Initialisiert den Standard-Admin-Benutzer in der Datenbank.
+     * Diese Methode wird nach der Konstruktion des Beans ausgeführt.
+     * Wenn der Admin-Benutzer nicht in der Datenbank existiert, wird einer mit den angegebenen Anmeldedaten erstellt.
      */
     @PostConstruct
     public void loadAdminUser() {
-        logger.info("Starting DataLoader...");
+        logger.info("Starte DataLoader...");
 
-        // Check if the admin user already exists in the database
+        // Überprüfen, ob der Admin-Benutzer bereits in der Datenbank existiert
         Optional<User> existingAdmin = userRepository.findByUsername(adminUsername);
         if (existingAdmin.isEmpty()) {
-            logger.info("Admin user not found, creating a new one.");
+            logger.info("Admin-Benutzer nicht gefunden, erstelle einen neuen.");
 
-            // Create roles if not present
+            // Rollen erstellen, falls nicht vorhanden
             Role adminRole = roleRepository.findByName("ADMIN").orElseGet(() -> {
-                logger.info("Role 'ADMIN' not found, creating a new one.");
+                logger.info("Rolle 'ADMIN' nicht gefunden, erstelle eine neue.");
                 Role role = new Role();
                 role.setName("ADMIN");
                 return roleRepository.save(role);
             });
 
             Role userRole = roleRepository.findByName("USER").orElseGet(() -> {
-                logger.info("Role 'USER' not found, creating a new one.");
+                logger.info("Rolle 'USER' nicht gefunden, erstelle eine neue.");
                 Role role = new Role();
                 role.setName("USER");
                 return roleRepository.save(role);
             });
 
-            // Create a new User object for the admin
+            // Ein neues User-Objekt für den Admin erstellen
             User admin = new User();
             admin.setUsername(adminUsername);
             admin.setPassword(passwordEncoder.encode(adminPassword));
             admin.setRoles(new HashSet<>(Collections.singletonList(adminRole)));
 
-            // Save the admin user to the database
+            // Admin-Benutzer in der Datenbank speichern
             userRepository.save(admin);
-            logger.info("Admin user created with username: {} and password: ****", adminUsername);
+            logger.info("Admin-Benutzer erstellt mit Benutzername: {} und Passwort: ****", adminUsername);
         } else {
-            logger.info("Admin user already exists with username: {}", adminUsername);
+            logger.info("Admin-Benutzer existiert bereits mit Benutzername: {}", adminUsername);
         }
     }
 }

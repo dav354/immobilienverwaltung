@@ -10,6 +10,9 @@ import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Service-Klasse für das Dashboard, die Methoden zur Berechnung von Statistiken und Einnahmen bereitstellt.
+ */
 @Service
 public class DashboardService {
 

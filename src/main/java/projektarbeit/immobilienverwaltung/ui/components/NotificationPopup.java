@@ -5,15 +5,15 @@ import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.notification.NotificationVariant;
 
 /**
- * Utility class for displaying different types of notifications in a Vaadin application.
- * Provides methods to show success, error, warning, and info notifications.
+ * Dienstprogrammklasse zum Anzeigen verschiedener Arten von Benachrichtigungen in einer Vaadin-Anwendung.
+ * Bietet Methoden zum Anzeigen von Erfolgs-, Fehler-, Warn- und Informationsbenachrichtigungen.
  */
 public class NotificationPopup {
 
     /**
-     * Displays a success notification with the specified message.
+     * Zeigt eine Erfolgsbenachrichtigung mit der angegebenen Nachricht an.
      *
-     * @param message The message to display in the notification.
+     * @param message Die Nachricht, die in der Benachrichtigung angezeigt werden soll.
      */
     public static void showSuccessNotification(String message) {
         Notification notification = Notification.show(message, 3000, Position.BOTTOM_END);
@@ -21,9 +21,9 @@ public class NotificationPopup {
     }
 
     /**
-     * Displays an error notification with the specified message.
+     * Zeigt eine Fehlerbenachrichtigung mit der angegebenen Nachricht an.
      *
-     * @param message The message to display in the notification.
+     * @param message Die Nachricht, die in der Benachrichtigung angezeigt werden soll.
      */
     public static void showErrorNotification(String message) {
         Notification notification = Notification.show(message, 3000, Position.BOTTOM_END);
@@ -31,9 +31,9 @@ public class NotificationPopup {
     }
 
     /**
-     * Displays a warning notification with the specified message.
+     * Zeigt eine Warnbenachrichtigung mit der angegebenen Nachricht an.
      *
-     * @param message The message to display in the notification.
+     * @param message Die Nachricht, die in der Benachrichtigung angezeigt werden soll.
      */
     public static void showWarningNotification(String message) {
         Notification notification = Notification.show(message, 3000, Position.BOTTOM_END);
@@ -41,9 +41,9 @@ public class NotificationPopup {
     }
 
     /**
-     * Displays an info notification with the specified message.
+     * Zeigt eine Informationsbenachrichtigung mit der angegebenen Nachricht an.
      *
-     * @param message The message to display in the notification.
+     * @param message Die Nachricht, die in der Benachrichtigung angezeigt werden soll.
      */
     public static void showInfoNotification(String message) {
         Notification notification = Notification.show(message, 3000, Position.BOTTOM_END);

@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * Service class for managing Mietvertrag (rental contract) entities.
+ * Service-Klasse zur Verwaltung von Mietvertrag-Entitäten.
  */
 @Service
 public class MietvertragService {
@@ -20,9 +20,9 @@ public class MietvertragService {
     private final MietvertragRepository mietvertragRepository;
 
     /**
-     * Constructs a MietvertragService with the given repository.
+     * Konstruktor für MietvertragService mit dem angegebenen Repository.
      *
-     * @param mietvertragRepository the repository for managing Mietvertrag entities
+     * @param mietvertragRepository das Repository zur Verwaltung von Mietvertrag-Entitäten
      */
     @Autowired
     public MietvertragService(MietvertragRepository mietvertragRepository) {
@@ -30,57 +30,57 @@ public class MietvertragService {
     }
 
     /**
-     * Saves a Mietvertrag entity.
+     * Speichert eine Mietvertrag-Entität.
      *
-     * @param mietvertrag the Mietvertrag entity to save
+     * @param mietvertrag die zu speichernde Mietvertrag-Entität
      */
     public void saveMietvertrag(@Valid Mietvertrag mietvertrag) {
         mietvertragRepository.save(mietvertrag);
     }
 
     /**
-     * Deletes a Mietvertrag entity.
+     * Löscht eine Mietvertrag-Entität.
      *
-     * @param mietvertrag the Mietvertrag entity to delete
+     * @param mietvertrag die zu löschende Mietvertrag-Entität
      */
     public void deleteMietvertrag(Mietvertrag mietvertrag) {
         mietvertragRepository.delete(mietvertrag);
     }
 
     /**
-     * Retrieves all Mietvertrag entities.
+     * Ruft alle Mietvertrag-Entitäten ab.
      *
-     * @return a list of all Mietvertrag entities
+     * @return eine Liste aller Mietvertrag-Entitäten
      */
     public List<Mietvertrag> findAll() {
         return mietvertragRepository.findAll();
     }
 
     /**
-     * Finds Mietvertrag entities by the Mieter ID.
+     * Findet Mietvertrag-Entitäten anhand der Mieter-ID.
      *
-     * @param mieterId the ID of the Mieter
-     * @return a list of Mietvertrag entities for the given Mieter ID
+     * @param mieterId die ID des Mieters
+     * @return eine Liste von Mietvertrag-Entitäten für die angegebene Mieter-ID
      */
     public List<Mietvertrag> findByMieter(Long mieterId) {
         return mietvertragRepository.findByMieter_MieterId(mieterId);
     }
 
     /**
-     * Finds a Mietvertrag entity by the Wohnung.
+     * Findet eine Mietvertrag-Entität anhand der Wohnung.
      *
-     * @param wohnung the Wohnung to search for
-     * @return the Mietvertrag entity for the given Wohnung
+     * @param wohnung die Wohnung, nach der gesucht werden soll
+     * @return die Mietvertrag-Entität für die angegebene Wohnung
      */
     public Mietvertrag findByWohnung(Wohnung wohnung) {
         return mietvertragRepository.findByWohnung(wohnung);
     }
 
     /**
-     * Finds the Mieter associated with a given Wohnung.
+     * Findet den Mieter, der mit einer bestimmten Wohnung verknüpft ist.
      *
-     * @param wohnung the Wohnung to search for
-     * @return the Mieter associated with the given Wohnung, or null if no Mietvertrag exists
+     * @param wohnung die Wohnung, nach der gesucht werden soll
+     * @return der Mieter, der mit der angegebenen Wohnung verknüpft ist, oder null, wenn kein Mietvertrag existiert
      */
     public Mieter findMieterByWohnung(Wohnung wohnung) {
         Mietvertrag mietvertrag = mietvertragRepository.findByWohnung(wohnung);
@@ -91,15 +91,15 @@ public class MietvertragService {
     }
 
     /**
-     * Creates and saves a Mietvertrag for a given Mieter and Wohnung.
+     * Erstellt und speichert einen Mietvertrag für einen bestimmten Mieter und eine bestimmte Wohnung.
      *
-     * @param mieter         The Mieter to whom the Mietvertrag is assigned
-     * @param wohnung        The Wohnung for which the Mietvertrag is created
-     * @param mietbeginn     The start date of the Mietvertrag
-     * @param mietende       The end date of the Mietvertrag
-     * @param miete          The monthly rent amount
-     * @param kaution        The deposit amount
-     * @param anzahlBewohner The number of inhabitants
+     * @param mieter         Der Mieter, dem der Mietvertrag zugewiesen wird
+     * @param wohnung        Die Wohnung, für die der Mietvertrag erstellt wird
+     * @param mietbeginn     Das Startdatum des Mietvertrags
+     * @param mietende       Das Enddatum des Mietvertrags
+     * @param miete          Der monatliche Mietbetrag
+     * @param kaution        Der Kautionsbetrag
+     * @param anzahlBewohner Die Anzahl der Bewohner
      */
     public void createAndSaveMietvertrag(Mieter mieter, Wohnung wohnung, LocalDate mietbeginn, LocalDate mietende, double miete, double kaution, int anzahlBewohner) {
         Mietvertrag mietvertrag = new Mietvertrag();

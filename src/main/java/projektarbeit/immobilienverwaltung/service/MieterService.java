@@ -13,6 +13,9 @@ import projektarbeit.immobilienverwaltung.repository.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service-Klasse zur Verwaltung von Mieter-Entitäten und damit verbundenen Operationen.
+ */
 @SuppressWarnings({"SpellCheckingInspection", "unused"})
 @Service
 public class MieterService {
@@ -24,13 +27,13 @@ public class MieterService {
     private final MietvertragRepository mietvertragRepository;
 
     /**
-     * Constructs a new MieterService with the given repositories.
+     * Konstruktor für MieterService mit den angegebenen Repositories.
      *
-     * @param wohnungRepository      the repository for Wohnung entities
-     * @param mieterRepository       the repository for Mieter entities
-     * @param zaehlerstandRepository the repository for Zaehlerstand entities
-     * @param dokumentRepository     the repository for Dokument entities
-     * @param mietvertragRepository  the repository for Mietvertrag entities
+     * @param wohnungRepository      das Repository für Wohnung-Entitäten
+     * @param mieterRepository       das Repository für Mieter-Entitäten
+     * @param zaehlerstandRepository das Repository für Zaehlerstand-Entitäten
+     * @param dokumentRepository     das Repository für Dokument-Entitäten
+     * @param mietvertragRepository  das Repository für Mietvertrag-Entitäten
      */
     @Autowired
     public MieterService(WohnungRepository wohnungRepository,
@@ -46,78 +49,78 @@ public class MieterService {
     }
 
     /**
-     * Returns the count of Wohnung entities.
+     * Gibt die Anzahl der Wohnung-Entitäten zurück.
      *
-     * @return the number of Wohnung entities
+     * @return die Anzahl der Wohnung-Entitäten
      */
     public long getWohnungCount() {
         return wohnungRepository.count();
     }
 
     /**
-     * Returns the count of Mieter entities.
+     * Gibt die Anzahl der Mieter-Entitäten zurück.
      *
-     * @return the number of Mieter entities
+     * @return die Anzahl der Mieter-Entitäten
      */
     public long getMieterCount() {
         return mieterRepository.count();
     }
 
     /**
-     * Returns a List of all Wohnungen
+     * Gibt eine Liste aller Wohnungen zurück.
      *
-     * @return List of all Wohnungen
+     * @return eine Liste aller Wohnungen
      */
     public List<Wohnung> findAllWohnungen() {
         return wohnungRepository.findAll();
     }
 
     /**
-     * Returns the count of Zaehlerstand entities.
+     * Gibt die Anzahl der Zaehlerstand-Entitäten zurück.
      *
-     * @return the number of Zaehlerstand entities
+     * @return die Anzahl der Zaehlerstand-Entitäten
      */
     public long getZaehlerstandCount() {
         return zaehlerstandRepository.count();
     }
 
     /**
-     * Returns the count of Dokument entities.
+     * Gibt die Anzahl der Dokument-Entitäten zurück.
      *
-     * @return the number of Dokument entities
+     * @return die Anzahl der Dokument-Entitäten
      */
     public long getDokumentCount() {
         return dokumentRepository.count();
     }
 
     /**
-     * Retrieves all Mieter entities that match the given filter string.
-     * If the filter string is null or empty, returns all Mieter entities.
+     * Ruft alle Mieter-Entitäten ab, die dem angegebenen Filterstring entsprechen.
+     * Wenn der Filterstring null oder leer ist, werden alle Mieter-Entitäten zurückgegeben.
      *
-     * @param stringFilter the filter string to search for
-     * @return a list of matching Mieter entities
+     * @param stringFilter der Filterstring, nach dem gesucht werden soll
+     * @return eine Liste der passenden Mieter-Entitäten
      */
     public List<Mieter> findAllMieter(String stringFilter) {
         return stringFilter == null || stringFilter.isEmpty() ? mieterRepository.findAll() : mieterRepository.search(stringFilter);
     }
 
     /**
-     * Overloaded method that retrieves all Mieter entities without any filtering.
+     * Überladene Methode, die alle Mieter-Entitäten ohne Filterung abruft.
      *
-     * @return a list of all Mieter entities
+     * @return eine Liste aller Mieter-Entitäten
      */
     public List<Mieter> findAllMieter() {
         return findAllMieter(null);
     }
 
     /**
-     * Deletes the given Mieter entity from the repository and sets the associated Wohnungen & Dokumente to null.
+     * Löscht die angegebene Mieter-Entität aus dem Repository und setzt die zugehörigen Wohnungen und Dokumente auf null.
      *
-     * @param mieter the Mieter entity to delete
+     * @param mieter die zu löschende Mieter-Entität
      */
     @Transactional
     public void deleteMieter(Mieter mieter) {
-        if (mieter == null) throw new NullPointerException("Mieter is null");
+        if (mieter == null) throw new NullPointerException("Mieter ist null");
 
         List<Mietvertrag> mietvertraege = mietvertragRepository.findByMieter_MieterId(mieter.getMieter_id());
         mietvertragRepository.deleteAll(mietvertraege);
@@ -132,34 +135,40 @@ public class MieterService {
     }
 
     /**
-     * Saves the given tenant (Mieter) to the repository.
-     * Logs an error message if the tenant is null and does not perform any save operation.
+     * Speichert den angegebenen Mieter im Repository.
+     * Gibt eine Fehlermeldung aus, wenn der Mieter null ist, und führt keine Speicheroperation durch.
      *
-     * @param mieter The tenant to be saved. Must not be null.
+     * @param mieter Der zu speichernde Mieter. Darf nicht null sein.
      */
     public void saveMieter(@Valid Mieter mieter) {
         mieterRepository.save(mieter);
     }
 
     /**
-     * Checks if an email already exists in the repository.
+     * Prüft, ob eine E-Mail bereits im Repository existiert.
      *
-     * @param email the email to check.
-     * @return true if the email exists, false otherwise.
+     * @param email die zu prüfende E-Mail.
+     * @return true, wenn die E-Mail existiert, andernfalls false.
      */
     public boolean emailExists(String email) {
         return mieterRepository.existsByEmail(email);
     }
 
     /**
-     * Delete Mietvertrag.
+     * Löscht den Mietvertrag.
      *
-     * @param mietvertrag the Mietvertrag to delete
+     * @param mietvertrag der zu löschende Mietvertrag
      */
     public void deleteMietvertrag(Mietvertrag mietvertrag) {
         mietvertragRepository.delete(mietvertrag);
     }
 
+    /**
+     * Findet einen Mieter anhand der ID.
+     *
+     * @param id die ID des Mieters
+     * @return der gefundene Mieter oder null, wenn keiner gefunden wurde
+     */
     public Mieter findById(Long id) {
         return mieterRepository.findById(id).orElse(null);
     }

@@ -5,33 +5,33 @@ import jakarta.validation.Payload;
 import java.lang.annotation.*;
 
 /**
- * Custom annotation for validating a year field.
- * Ensures that the annotated year field is valid according to the specified validation logic.
+ * Benutzerdefinierte Annotation zur Validierung eines Jahresfelds.
+ * Stellt sicher, dass das annotierte Jahresfeld gemäß der angegebenen Validierungslogik gültig ist.
  */
-@Documented // Indicates that elements using this annotation should be documented by javadoc and similar tools
-@Constraint(validatedBy = YearValidator.class) // Specifies the validator class
-@Target({ ElementType.FIELD, ElementType.METHOD }) // Annotation can be applied to fields and methods
-@Retention(RetentionPolicy.RUNTIME) // Annotation is available at runtime
+@Documented
+@Constraint(validatedBy = YearValidator.class)
+@Target({ ElementType.FIELD, ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
 public @interface ValidYear {
 
     /**
-     * The default error message to be used if the year is invalid.
+     * Die Standardfehlermeldung, die verwendet wird, wenn das Jahr ungültig ist.
      *
-     * @return the default error message
+     * @return die Standardfehlermeldung
      */
-    String message() default "Invalid year";
+    String message() default "Ungültiges Jahr";
 
     /**
-     * Allows the specification of validation groups, to which this constraint belongs.
+     * Ermöglicht die Angabe von Validierungsgruppen, zu denen diese Einschränkung gehört.
      *
-     * @return the groups the constraint belongs to
+     * @return die Gruppen, zu denen die Einschränkung gehört
      */
     Class<?>[] groups() default {};
 
     /**
-     * Can be used by clients of the Jakarta Bean Validation API to assign custom payload objects to a constraint.
+     * Kann von Clients der Jakarta Bean Validation API verwendet werden, um benutzerdefinierte Payload-Objekte einer Einschränkung zuzuweisen.
      *
-     * @return the payload for the constraint
+     * @return die Payload für die Einschränkung
      */
     Class<? extends Payload>[] payload() default {};
 }

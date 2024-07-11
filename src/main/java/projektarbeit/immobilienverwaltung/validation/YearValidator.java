@@ -6,36 +6,36 @@ import jakarta.validation.ConstraintValidatorContext;
 import java.time.LocalDate;
 
 /**
- * Custom validator to validate if the year provided is valid.
+ * Benutzerdefinierter Validator zur Validierung, ob das angegebene Jahr gültig ist.
  */
 public class YearValidator implements ConstraintValidator<ValidYear, Integer> {
 
     /**
-     * Initializes the validator.
+     * Initialisiert den Validator.
      *
-     * @param constraint the constraint annotation instance
+     * @param constraint die Instanz der Constraint-Annotation
      */
     @Override
     public void initialize(ValidYear constraint) {}
 
     /**
-     * Validates if the provided year is valid.
+     * Validiert, ob das angegebene Jahr gültig ist.
      *
-     * @param value   the year value to validate
-     * @param context context in which the constraint is evaluated
-     * @return true if the year is valid, false otherwise
+     * @param value   der zu validierende Jahreswert
+     * @param context der Kontext, in dem die Einschränkung bewertet wird
+     * @return true, wenn das Jahr gültig ist, andernfalls false
      */
     @Override
     public boolean isValid(Integer value, ConstraintValidatorContext context) {
-        // If the year value is null, consider it as valid
+        // Wenn der Jahreswert null ist, wird er als gültig betrachtet
         if (value == null) {
             return true;
         }
 
-        // Get the current year
+        // Das aktuelle Jahr ermitteln
         int currentYear = LocalDate.now().getYear();
 
-        // Check if the provided year is within a valid range
+        // Überprüfen, ob das angegebene Jahr in einem gültigen Bereich liegt
         return value > 999 && value <= currentYear;
     }
 }

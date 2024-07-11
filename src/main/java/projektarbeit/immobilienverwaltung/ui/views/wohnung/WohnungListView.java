@@ -33,6 +33,10 @@ import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
 
 import java.util.List;
 
+/**
+ * Die WohnungListView ist die Ansicht, die alle Wohnungen in einer hierarchischen Tabelle darstellt.
+ * Sie ermöglicht das Filtern und Durchsuchen der Wohnungen sowie das Bearbeiten und Hinzufügen neuer Wohnungen.
+ */
 @SuppressWarnings("SpellCheckingInspection")
 @PermitAll
 @Route(value = "wohnungen", layout = MainLayout.class)

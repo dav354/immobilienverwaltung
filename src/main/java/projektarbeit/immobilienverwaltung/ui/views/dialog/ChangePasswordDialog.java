@@ -31,41 +31,41 @@ public class ChangePasswordDialog extends DialogLayout {
     }
 
     private void createDialog() {
-        // Create the form layout
+        // Erstellen des Formularlayouts
         FormLayout formLayout = new FormLayout();
 
-        // Create and bind fields
-        PasswordField newPasswordField = new PasswordField("New Password");
+        // Erstellen und Binden der Felder
+        PasswordField newPasswordField = new PasswordField("Neues Passwort");
         binder.forField(newPasswordField)
-                .asRequired("New password is required")
+                .asRequired("Neues Passwort ist erforderlich")
                 .withValidator(password -> password.matches("(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,20}"),
-                        "Password must be 8-20 characters long, include uppercase and lowercase letters, a number, and a special character (@#$%^&+=!).")
-                .bind(user -> "", (user, password) -> {}); // Dummy binding
+                        "Das Passwort muss 8-20 Zeichen lang sein, Groß- und Kleinbuchstaben, eine Zahl und ein Sonderzeichen (@#$%^&+=!) enthalten.")
+                .bind(user -> "", (user, password) -> {}); // Dummy-Bindung
 
-        PasswordField confirmPasswordField = new PasswordField("Confirm Password");
+        PasswordField confirmPasswordField = new PasswordField("Passwort bestätigen");
         binder.forField(confirmPasswordField)
-                .asRequired("Please confirm the password")
+                .asRequired("Bitte bestätigen Sie das Passwort")
                 .withValidator(password -> password.matches("(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,20}"),
-                        "Password must be 8-20 characters long, include uppercase and lowercase letters, a number, and a special character (@#$%^&+=!).")
-                .withValidator(confirmPassword -> confirmPassword.equals(newPasswordField.getValue()), "Passwords do not match")
-                .bind(user -> "", (user, password) -> {}); // Dummy binding
+                        "Das Passwort muss 8-20 Zeichen lang sein, Groß- und Kleinbuchstaben, eine Zahl und ein Sonderzeichen (@#$%^&+=!) enthalten.")
+                .withValidator(confirmPassword -> confirmPassword.equals(newPasswordField.getValue()), "Passwörter stimmen nicht überein")
+                .bind(user -> "", (user, password) -> {}); // Dummy-Bindung
 
-        // Add fields to the form layout
+        // Felder zum Formularlayout hinzufügen
         formLayout.add(newPasswordField, confirmPasswordField);
 
-        // Create save button with save logic
-        Button saveButton = new Button("Change", event -> changePassword(newPasswordField.getValue(), this));
+        // Erstellen der Schaltfläche "Speichern" mit Logik zum Speichern
+        Button saveButton = new Button("Ändern", event -> changePassword(newPasswordField.getValue(), this));
         saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         saveButton.addClickShortcut(Key.ENTER);
 
-        // Create cancel button
-        Button cancelButton = new Button("Cancel", event -> this.close());
+        // Erstellen der Schaltfläche "Abbrechen"
+        Button cancelButton = new Button("Abbrechen", event -> this.close());
         cancelButton.addClickShortcut(Key.ESCAPE);
 
-        // Create a layout for buttons
+        // Layout für Schaltflächen erstellen
         HorizontalLayout buttonsLayout = new HorizontalLayout(saveButton, cancelButton);
 
-        // Add form layout and buttons to the dialog
+        // Formularlayout und Schaltflächen zum Dialog hinzufügen
         add(formLayout, buttonsLayout);
         open();
     }
@@ -75,9 +75,9 @@ public class ChangePasswordDialog extends DialogLayout {
             userService.validatePassword(newPassword);
             UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User currentUser = userService.findByUsername(userDetails.getUsername()).orElseThrow(() ->
-                    new IllegalStateException("Current user not found"));
+                    new IllegalStateException("Aktueller Benutzer nicht gefunden"));
             userService.updatePassword(currentUser, newPassword);
-            NotificationPopup.showSuccessNotification("Password changed successfully");
+            NotificationPopup.showSuccessNotification("Passwort erfolgreich geändert");
             dialog.close();
         } catch (IllegalArgumentException e) {
             NotificationPopup.showErrorNotification(e.getMessage());

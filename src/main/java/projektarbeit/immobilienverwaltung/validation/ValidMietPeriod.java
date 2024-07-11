@@ -9,33 +9,33 @@ import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 /**
- * Custom annotation for validating the rental period of a tenant (Mieter).
- * Ensures that the rental start date (mietbeginn) is before the rental end date (mietende).
+ * Benutzerdefinierte Annotation zur Validierung des Mietzeitraums eines Mieters (Mieter).
+ * Stellt sicher, dass das Mietbeginn-Datum (mietbeginn) vor dem Mietende-Datum (mietende) liegt.
  */
 @SuppressWarnings("SpellCheckingInspection")
-@Target(TYPE) // Annotation can be applied to types (classes)
-@Retention(RUNTIME) // Annotation is available at runtime
-@Constraint(validatedBy = MietPeriodValidator.class) // Specifies the validator class
+@Target(TYPE)
+@Retention(RUNTIME)
+@Constraint(validatedBy = MietPeriodValidator.class)
 public @interface ValidMietPeriod {
 
     /**
-     * The default error message to be used if the rental period is invalid.
+     * Die Standardfehlermeldung, die verwendet wird, wenn der Mietzeitraum ungültig ist.
      *
-     * @return the default error message
+     * @return die Standardfehlermeldung
      */
-    String message() default "Mietbeginn must be before Mietende";
+    String message() default "Mietbeginn muss vor Mietende liegen";
 
     /**
-     * Allows the specification of validation groups, to which this constraint belongs.
+     * Ermöglicht die Angabe von Validierungsgruppen, zu denen diese Einschränkung gehört.
      *
-     * @return the groups the constraint belongs to
+     * @return die Gruppen, zu denen die Einschränkung gehört
      */
     Class<?>[] groups() default {};
 
     /**
-     * Can be used by clients of the Jakarta Bean Validation API to assign custom payload objects to a constraint.
+     * Kann von Clients der Jakarta Bean Validation API verwendet werden, um benutzerdefinierte Payload-Objekte einer Einschränkung zuzuweisen.
      *
-     * @return the payload for the constraint
+     * @return die Payload für die Einschränkung
      */
     Class<? extends Payload>[] payload() default {};
 }
