@@ -186,7 +186,9 @@ public class WohnungListView extends VerticalLayout {
                 } else {
                     Mieter mieter = mietvertragService.findMieterByWohnung(wohnung);
                     if (mieter != null) {
-                        return new RouterLink(mieter.getFullName(), MieterDetailsView.class, mieter.getMieter_id());
+                        RouterLink link = new RouterLink(mieter.getFullName(), MieterDetailsView.class, mieter.getMieter_id());
+                        link.getElement().setAttribute("href", link.getHref() + "?previousView=wohnungen");
+                        return link;
                     } else {
                         return new Div(new Text("Kein Mieter"));
                     }

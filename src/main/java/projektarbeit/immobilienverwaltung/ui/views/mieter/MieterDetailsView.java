@@ -126,6 +126,8 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         schliessenButton.addClickListener(event -> {
             if ("dokumente".equals(previousView)) {
                 UI.getCurrent().navigate(DokumenteListView.class);
+            } else if ("wohnungen".equals(previousView)){
+                UI.getCurrent().navigate(WohnungListView.class);
             } else {
                 UI.getCurrent().navigate(MieterListView.class);
             }
