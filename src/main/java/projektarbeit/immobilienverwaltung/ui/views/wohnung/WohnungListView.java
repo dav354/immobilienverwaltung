@@ -2,12 +2,14 @@ package projektarbeit.immobilienverwaltung.ui.views.wohnung;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Html;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -30,6 +32,7 @@ import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.WohnungEditDialog;
 import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
+import projektarbeit.immobilienverwaltung.ui.views.mieter.MieterDetailsView;
 
 import java.util.List;
 
@@ -176,14 +179,21 @@ public class WohnungListView extends VerticalLayout {
             treeGrid.addComponentColumn(wohnung -> wohnung.isHeader() ? createEmptyIcon() : createIcon(wohnung.isHatKlimaanlage()))
                     .setHeader(new Html("<div>Klima-<br>anlage</div>"));
 
-        if (mieter.getValue()) treeGrid.addColumn(new TextRenderer<>(wohnung -> {
-            if (wohnung.isHeader()) {
-                return "";
-            } else {
-                Mieter mieter = mietvertragService.findMieterByWohnung(wohnung);
-                return (mieter != null) ? mieter.getFullName() : "Kein Mieter";
-            }
-        })).setHeader("Mieter");
+        if (mieter.getValue()) {
+            treeGrid.addComponentColumn(wohnung -> {
+                if (wohnung.isHeader()) {
+                    return new Div();
+                } else {
+                    Mieter mieter = mietvertragService.findMieterByWohnung(wohnung);
+                    if (mieter != null) {
+                        return new RouterLink(mieter.getFullName(), MieterDetailsView.class, mieter.getMieter_id());
+                    } else {
+                        return new Div(new Text("Kein Mieter"));
+                    }
+                }
+            }).setHeader("Mieter");
+        }
+        treeGrid.setSizeFull();
         treeGrid.setSizeFull();
 
         treeGrid.getColumns().forEach(col -> col.setAutoWidth(true).setSortable(true));
