@@ -2,7 +2,6 @@ package projektarbeit.immobilienverwaltung.ui.views;
 
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
@@ -52,13 +51,10 @@ public class MainView extends VerticalLayout {
      */
     @PostConstruct
     public void init() {
-        // Erstellen eines VerticalLayout zur Zentrierung von Titel und Statistiken
-        VerticalLayout mainLayout = new VerticalLayout(); // Änderung
-        mainLayout.setWidthFull(); // Änderung
-        mainLayout.setAlignItems(FlexComponent.Alignment.CENTER); // Änderung
-
-        H1 title = new H1("Dashboard"); // Änderung
-        mainLayout.add(title); // Änderung
+        // Erstellen eines VerticalLayout zur Zentrierung der Statistiken
+        VerticalLayout mainLayout = new VerticalLayout();
+        mainLayout.setWidthFull();
+        mainLayout.setAlignItems(Alignment.START);
 
         // Initiale Erstellung der Divs
         mieteinnahmenDiv = new Div();
@@ -71,10 +67,10 @@ public class MainView extends VerticalLayout {
         statsLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);
 
         // Hinzufügen des HorizontalLayout zum Hauptlayout
-        mainLayout.add(statsLayout); // Änderung
+        mainLayout.add(statsLayout);
 
         // Hinzufügen des MainLayouts zur Hauptansicht
-        add(mainLayout); // Änderung
+        add(mainLayout);
 
         // Initiale Aktualisierung der Daten
         updateStats();
