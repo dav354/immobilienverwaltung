@@ -25,7 +25,6 @@ import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 
 import jakarta.annotation.PostConstruct;
-import projektarbeit.immobilienverwaltung.ui.views.mieter.MieterDetailsView;
 import projektarbeit.immobilienverwaltung.ui.views.wohnung.WohnungDetailsView;
 
 import java.text.NumberFormat;
