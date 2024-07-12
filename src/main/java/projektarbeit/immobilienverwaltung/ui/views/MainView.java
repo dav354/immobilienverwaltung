@@ -11,6 +11,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 import com.vaadin.flow.component.AttachEvent;
@@ -24,6 +25,9 @@ import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 
 import jakarta.annotation.PostConstruct;
+import projektarbeit.immobilienverwaltung.ui.views.mieter.MieterDetailsView;
+import projektarbeit.immobilienverwaltung.ui.views.wohnung.WohnungDetailsView;
+
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
@@ -181,7 +185,12 @@ public class MainView extends VerticalLayout {
 
                 if ((isVermietet && vermieteteCheckbox.getValue()) ||
                         (!isVermietet && unvermieteteCheckbox.getValue())) {
-                    leafletMap.addMarker(latitude, longitude, wohnung.getFormattedAddress());
+
+                    RouterLink link = new RouterLink(wohnung.getFormattedAddress(), WohnungDetailsView.class, wohnung.getWohnung_id());
+                    link.getElement().setAttribute("href", link.getHref() + "?previousView=dashboard");
+
+                    String popupContent = "<a href='" + link.getHref() + "'>" + wohnung.getFormattedAddress() + "</a>";
+                    leafletMap.addMarker(latitude, longitude, popupContent);
                 }
             }
         }

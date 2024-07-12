@@ -27,6 +27,7 @@ import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 import projektarbeit.immobilienverwaltung.service.DokumentService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.service.ZaehlerstandService;
+import projektarbeit.immobilienverwaltung.ui.views.MainView;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.ConfirmationDialog;
 import projektarbeit.immobilienverwaltung.ui.components.MapComponent;
 import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
@@ -158,6 +159,8 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         schliessenButton.addClickListener(event -> {
             if ("dokumente".equals(previousView)) {
                 UI.getCurrent().navigate(DokumenteListView.class);
+            } else if ("dashboard".equals(previousView)){
+                UI.getCurrent().navigate(MainView.class);
             } else {
                 UI.getCurrent().navigate(WohnungListView.class);
             }
