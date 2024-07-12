@@ -187,11 +187,13 @@ public class DokumenteListView extends VerticalLayout {
 
         dokumentGrid.addComponentColumn(dokument -> {
             if (dokument.getWohnung() != null) {
-                RouterLink link = new RouterLink(dokument.getWohnung().getFormattedAddress(), WohnungDetailsView.class, dokument.getWohnung().getWohnung_id());
+                String formattedAddress = addLineBreaks(dokument.getWohnung());
+                RouterLink link = new RouterLink("", WohnungDetailsView.class, dokument.getWohnung().getWohnung_id());
+                link.getElement().setProperty("innerHTML", formattedAddress);
                 link.getElement().setAttribute("href", link.getHref() + "?previousView=dokumente");
                 return link;
             }
-            return null;
+            return new Div(new Text("Keine Wohnung"));
         }).setHeader("Wohnung").setSortable(true).setAutoWidth(true);
 
         dokumentGrid.addComponentColumn(dokument -> {
@@ -225,4 +227,25 @@ public class DokumenteListView extends VerticalLayout {
         dokumentGrid.setItems(dokumentService.findAllDokumente());
         dokumentGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
     }
+
+    /**
+     * Fügt an geeigneten Stellen in der Adresse Umbrüche ein.
+     *
+     * @param wohnung Die Wohnung, deren Adresse formatiert werden soll.
+     * @return Die formatierte Adresse mit Umbrüchen.
+     */
+    private String addLineBreaks(Wohnung wohnung) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(wohnung.getLand().name()).append(" ");
+        sb.append(wohnung.getPostleitzahl()).append(" ");
+        sb.append(wohnung.getStadt()).append(",<br>");
+        sb.append(wohnung.getStrasse()).append(" ");
+        sb.append(wohnung.getHausnummer());
+        if (wohnung.getStockwerk() != null && wohnung.getWohnungsnummer() != null) {
+            sb.append(",<br>(").append(wohnung.getStockwerk()).append("ter Stock, ");
+            sb.append(wohnung.getWohnungsnummer()).append("te Wohnung)");
+        }
+        return sb.toString();
+    }
+
 }
