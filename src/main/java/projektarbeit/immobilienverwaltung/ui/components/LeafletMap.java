@@ -25,7 +25,6 @@ public class LeafletMap extends VerticalLayout {
     public LeafletMap() {
         mapContainer = new Div();
         mapContainer.setId("map");
-        mapContainer.setHeight("600px");
         mapContainer.setWidth("100%");
         add(mapContainer);
 

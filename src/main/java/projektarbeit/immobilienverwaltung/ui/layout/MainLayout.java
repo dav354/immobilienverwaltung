@@ -3,6 +3,7 @@ package projektarbeit.immobilienverwaltung.ui.layout;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -26,6 +27,7 @@ import projektarbeit.immobilienverwaltung.ui.views.wohnung.WohnungListView;
 /**
  * Hauptlayout der Anwendung, das die Navigation und das Layout der Anwendung definiert.
  */
+@CssImport("./styles/styles.css")
 public class MainLayout extends AppLayout {
 
     private final SecurityService securityService;
@@ -125,7 +127,7 @@ public class MainLayout extends AppLayout {
         Button logoutButton = new Button("Logout", event -> securityService.logout());
         logoutButton.addClassName("footer-button");
 
-        Button toggleDarkModeButton = new Button("Toggle Light Mode");
+        Button toggleDarkModeButton = new Button(isDarkMode ? "Toggle Light Mode" : "Toggle Dark Mode");
         toggleDarkModeButton.addClassName("footer-button");
 
         toggleDarkModeButton.addClickListener(event -> {
@@ -133,12 +135,8 @@ public class MainLayout extends AppLayout {
             configurationService.setDarkMode(isDarkMode);
             applyDarkMode();
 
-            // Update the button text
-            if (isDarkMode) {
-                toggleDarkModeButton.setText("Toggle Light Mode");
-            } else {
-                toggleDarkModeButton.setText("Toggle Dark Mode");
-            }
+            // Reload the page to apply the changes
+            getUI().ifPresent(ui -> ui.getPage().reload());
         });
 
         VerticalLayout footerLayout = new VerticalLayout(logoutButton, toggleDarkModeButton);

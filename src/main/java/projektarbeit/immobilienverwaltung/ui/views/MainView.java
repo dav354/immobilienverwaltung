@@ -1,7 +1,11 @@
 package projektarbeit.immobilienverwaltung.ui.views;
 
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
@@ -11,6 +15,7 @@ import com.vaadin.flow.spring.annotation.UIScope;
 import com.vaadin.flow.component.AttachEvent;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
+import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 import projektarbeit.immobilienverwaltung.service.DashboardService;
 import projektarbeit.immobilienverwaltung.service.GeocodingService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
@@ -38,6 +43,7 @@ public class MainView extends VerticalLayout {
     private final DashboardService dashboardService;
     private final WohnungService wohnungService;
     private final GeocodingService geocodingService;
+    private final ConfigurationService configurationService;
 
     private Div mieteinnahmenDiv;
     private Div immobilienDiv;
@@ -52,10 +58,11 @@ public class MainView extends VerticalLayout {
      * @param geocodingService der Service, der die Geokoordinaten für die Adressen bereitstellt.
      */
     @Autowired
-    public MainView(DashboardService dashboardService, WohnungService wohnungService, GeocodingService geocodingService) {
+    public MainView(DashboardService dashboardService, WohnungService wohnungService, GeocodingService geocodingService, ConfigurationService configurationService) {
         this.dashboardService = dashboardService;
         this.wohnungService = wohnungService;
         this.geocodingService = geocodingService;
+        this.configurationService = configurationService;
     }
 
     /**
@@ -69,18 +76,19 @@ public class MainView extends VerticalLayout {
         mainLayout.setAlignItems(Alignment.START);
 
         // Initiale Erstellung der Divs
-        mieteinnahmenDiv = new Div();
-        immobilienDiv = new Div();
-        mieterDiv = new Div();
+        mieteinnahmenDiv = createStatDiv("Mieteinnahmen", "€ 5.900", VaadinIcon.EURO.create());
+        immobilienDiv = createStatDiv("Immobilien", "Gesamt: 12\nVermietet: 6", VaadinIcon.HOME.create());
+        mieterDiv = createStatDiv("Anzahl der Mieter", "12", VaadinIcon.USER.create());
         leafletMap = new LeafletMap();
 
         // Erstellen eines HorizontalLayout zur Platzierung der Divs nebeneinander
         HorizontalLayout statsLayout = new HorizontalLayout(mieteinnahmenDiv, immobilienDiv, mieterDiv);
         statsLayout.setWidthFull();
         statsLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);
+        statsLayout.getStyle().set("margin-bottom", "20px");
 
-        // Hinzufügen des HorizontalLayout zum Hauptlayout
-        mainLayout.add(statsLayout);
+        // Hinzufügen des HorizontalLayout und der Karte zum Hauptlayout
+        mainLayout.add(statsLayout, leafletMap, createSupportText());
 
         // Hinzufügen des MainLayouts zur Hauptansicht
         add(mainLayout);
@@ -119,6 +127,37 @@ public class MainView extends VerticalLayout {
         mieterDiv.removeAll();
         Div newMieterDiv = createMieterDiv(totalMieter);
         newMieterDiv.getChildren().forEach(mieterDiv::add);
+    }
+
+    /**
+     * Erstellt ein Div-Element für eine Statistik.
+     *
+     * @param title   der Titel der Statistik.
+     * @param value   der Wert der Statistik.
+     * @param icon    das Icon der Statistik.
+     * @return ein Div-Element, das die Statistik anzeigt.
+     */
+    private Div createStatDiv(String title, String value, Icon icon) {
+        Div statDiv = new Div();
+        statDiv.addClassName("stat-div");
+        statDiv.getStyle().set("display", "flex")
+                .set("flex-direction", "column")
+                .set("align-items", "center")
+                .set("justify-content", "center")
+                .set("padding", "20px")
+                .set("box-shadow", "0 4px 8px 0 rgba(0,0,0,0.2)")
+                .set("border-radius", "10px")
+                .set("background", "var(--lumo-base-color)");
+
+        icon.getStyle().set("width", "40px").set("height", "40px");
+        H1 statTitle = new H1(title);
+        statTitle.getStyle().set("margin", "0").set("font-size", "24px");
+        Div statValue = new Div();
+        statValue.setText(value);
+        statValue.getStyle().set("font-size", "36px").set("margin", "10px 0 0 0");
+
+        statDiv.add(icon, statTitle, statValue);
+        return statDiv;
     }
 
     /**
@@ -227,5 +266,40 @@ public class MainView extends VerticalLayout {
         String formattedTotalMieter = numberFormat.format(totalMieter);
 
         return getDiv(title, formattedTotalMieter);
+    }
+
+    /**
+     * Erstellt und konfiguriert ein Div-Element mit einem Support-Text und einem GitHub-Link.
+     *
+     * @return Ein Div-Element, das den Support-Text und den GitHub-Link anzeigt.
+     */
+    private HorizontalLayout createSupportText() {
+        Div text = new Div();
+        text.setText("Unterstütze und finde uns auf GitHub: ");
+        text.getStyle().set("display", "inline");
+
+        Anchor githubLink = new Anchor("https://github.com/dav354/immobilienverwaltung", "");
+        githubLink.setTarget("_blank");
+        githubLink.getStyle().set("display", "inline");
+
+        boolean isDarkMode = configurationService.isDarkMode();
+        String svgColor = isDarkMode ? "#fff" : "#000";
+
+        // GitHub-Icon als SVG hinzufügen
+        String svgContent = "<svg height=\"20\" width=\"20\" viewBox=\"0 0 16 16\" version=\"1.1\" aria-hidden=\"true\">" +
+                "<path fill=\"" + svgColor + "\" d=\"M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.19 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z\"></path>" +
+                "</svg>";
+
+        Div svgIcon = new Div();
+        svgIcon.getElement().setProperty("innerHTML", svgContent);
+        svgIcon.getStyle().set("display", "inline").set("vertical-align", "middle").set("margin-left", "5px");
+
+        githubLink.add(svgIcon);
+
+        HorizontalLayout supportLayout = new HorizontalLayout(text, githubLink);
+        supportLayout.setWidthFull();
+        supportLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+
+        return supportLayout;
     }
 }

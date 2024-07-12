@@ -21,10 +21,9 @@ body {
 }
 
 .vaadin-drawer-toggle {
-    color: var(--lumo-body-text-color); /* Fixed typo */
+    color: var(--lumo-body-text-color);
 }
 
-/* Ensure the navigation links have a uniform style */
 .vaadin-vertical-layout span {
     display: block;
     font-weight: bold;
@@ -57,5 +56,19 @@ body {
 }
 
 #map {
-    height: calc(100vh - 200px);
+    height: calc(100vh - 500px);
+}
+
+.stat-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    border-radius: 10px;
+    background: var(--lumo-base-color);
+    width: 100%;
+    margin: 10px;
+    text-align: center;
 }
