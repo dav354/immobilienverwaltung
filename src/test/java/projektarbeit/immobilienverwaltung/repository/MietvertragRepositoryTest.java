@@ -30,12 +30,15 @@ public class MietvertragRepositoryTest {
     private MieterRepository mieterRepository;
 
     private Wohnung wohnung;
+    private Wohnung wohnung2;
     private Mieter mieter;
 
     @BeforeEach
     public void setUp() {
         wohnung = new Wohnung("Teststraße", "11", "07111", "Stuttgart", DE, 200, 1900, 2, 1, true, true, true, true, null, null);
+        wohnung2 = new Wohnung("Teststraße", "12", "07111", "Stuttgart", DE, 200, 1900, 2, 1, true, true, true, true, null, null);
         wohnung = wohnungRepository.save(wohnung);
+        wohnung2 = wohnungRepository.save(wohnung2);
 
         mieter = new Mieter("Mustermann", "Max", "491234567890", "max@mustermann.de", 3500.0);
         mieter = mieterRepository.save(mieter);
@@ -56,7 +59,7 @@ public class MietvertragRepositoryTest {
     @Test
     public void testFindByMieterId() {
         Mietvertrag mietvertrag1 = new Mietvertrag(mieter, wohnung, LocalDate.now(), LocalDate.now().plusYears(1), 1500.0, 800.0, 2);
-        Mietvertrag mietvertrag2 = new Mietvertrag(mieter, wohnung, LocalDate.now().plusDays(1), LocalDate.now().plusYears(2), 1600.0, 850.0, 2);
+        Mietvertrag mietvertrag2 = new Mietvertrag(mieter, wohnung2, LocalDate.now().plusDays(1), LocalDate.now().plusYears(2), 1600.0, 850.0, 2);
         mietvertragRepository.save(mietvertrag1);
         mietvertragRepository.save(mietvertrag2);
 
