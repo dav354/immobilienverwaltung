@@ -28,7 +28,7 @@ public class Mietvertrag {
     @JoinColumn(name = "mieterId", nullable = false)
     private Mieter mieter;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "wohnung_id", nullable = false)
     private Wohnung wohnung;
 

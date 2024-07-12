@@ -193,10 +193,7 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
      */
     private FormLayout createWohnungInfos() {
         FormLayout layout = new FormLayout();
-        layout.setResponsiveSteps(
-                new FormLayout.ResponsiveStep("0", 1),
-                new FormLayout.ResponsiveStep("500px", 2)
-        );
+        layout.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1));
 
         addDetailToFormLayout(layout, "Strasse", currentWohnung.getStrasse());
         addDetailToFormLayout(layout, "Hausnummer", currentWohnung.getHausnummer());

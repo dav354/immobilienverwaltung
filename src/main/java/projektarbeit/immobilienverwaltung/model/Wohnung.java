@@ -57,8 +57,8 @@ public class Wohnung {
     @OneToMany(mappedBy = "wohnung", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Zaehlerstand> zaehlerstand = new ArrayList<>();
 
-    @OneToMany(mappedBy = "wohnung", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Mietvertrag> mietvertraege = new ArrayList<>();
+    @OneToOne(mappedBy = "wohnung", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Mietvertrag mietvertrag;
 
     @Column
     @Min(value = 1, message = "GesamtQuadratmeter muss mindestens 1 sein")
@@ -374,21 +374,21 @@ public class Wohnung {
     }
 
     /**
-     * Gibt die Liste der Mietverträge zurück, die mit der Wohnung verknüpft sind.
+     * Gibt den Mietvertrag zurück, der mit der Wohnung verknüpft ist.
      *
-     * @return die Liste der Mietverträge
+     * @return der Mietvertrag
      */
-    public List<Mietvertrag> getMietvertraege() {
-        return mietvertraege;
+    public Mietvertrag getMietvertrag() {
+        return mietvertrag;
     }
 
     /**
-     * Setzt die Liste der Mietverträge für die Wohnung.
+     * Setzt den Mietvertrag für die Wohnung.
      *
-     * @param mietvertraege die Liste der Mietverträge
+     * @param mietvertrag der Mietvertrag
      */
-    public void setMietvertraege(List<Mietvertrag> mietvertraege) {
-        this.mietvertraege = mietvertraege;
+    public void setMietvertraege(Mietvertrag mietvertrag) {
+        this.mietvertrag = mietvertrag;
     }
 
     /**
@@ -569,6 +569,15 @@ public class Wohnung {
      */
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
+    }
+
+    /**
+     * Überprüft, ob die Wohnung vermietet ist.
+     *
+     * @return true, wenn die Wohnung vermietet ist, sonst false
+     */
+    public boolean isVermietet() {
+        return mietvertrag != null;
     }
 
     /**

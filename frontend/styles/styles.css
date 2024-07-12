@@ -59,6 +59,10 @@ body {
     height: calc(100vh - 500px);
 }
 
+.leaflet-container {
+    border-radius: 10px;
+}
+
 .stat-div {
     display: flex;
     flex-direction: column;

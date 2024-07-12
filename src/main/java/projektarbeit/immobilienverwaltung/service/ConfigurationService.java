@@ -73,5 +73,34 @@ public class ConfigurationService {
                 .orElse(true);
     }
 
+    /**
+     * Setzt einen booleschen Wert in der Konfiguration.
+     *
+     * @param key   Der Schlüssel der Konfiguration.
+     * @param value Der zu setzende boolesche Wert.
+     */
+    @Transactional
+    public void setBooleanValue(String key, boolean value) {
+        Configuration config = configurationRepository.findById(key).orElse(new Configuration());
+        config.setConfigKey(key);
+        config.setConfigValue(Boolean.toString(value));
+        configurationRepository.save(config);
+    }
+
+    /**
+     * Gibt einen booleschen Wert aus der Konfiguration zurück.
+     *
+     * @param key          Der Schlüssel der Konfiguration.
+     * @param defaultValue Der Standardwert, der zurückgegeben wird, wenn der Schlüssel nicht gefunden wird.
+     * @return Der boolesche Wert aus der Konfiguration.
+     */
+    @Transactional
+    public boolean getBooleanValue(String key, boolean defaultValue) {
+        return configurationRepository.findById(key)
+                .map(config -> Boolean.parseBoolean(config.getConfigValue()))
+                .orElse(defaultValue);
+    }
+
+
 
 }
