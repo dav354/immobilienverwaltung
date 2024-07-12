@@ -12,10 +12,15 @@ import com.vaadin.flow.component.AttachEvent;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import projektarbeit.immobilienverwaltung.service.DashboardService;
+import projektarbeit.immobilienverwaltung.service.GeocodingService;
+import projektarbeit.immobilienverwaltung.service.WohnungService;
+import projektarbeit.immobilienverwaltung.ui.components.LeafletMap;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
+import projektarbeit.immobilienverwaltung.model.Wohnung;
 
 import jakarta.annotation.PostConstruct;
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -31,19 +36,26 @@ import java.util.Map;
 public class MainView extends VerticalLayout {
 
     private final DashboardService dashboardService;
+    private final WohnungService wohnungService;
+    private final GeocodingService geocodingService;
 
     private Div mieteinnahmenDiv;
     private Div immobilienDiv;
     private Div mieterDiv;
+    private LeafletMap leafletMap;
 
     /**
      * Konstruktor für die MainView-Klasse.
      *
      * @param dashboardService der Service, der die Daten für die Statistiken bereitstellt.
+     * @param wohnungService der Service, der die Daten für die Wohnungen bereitstellt.
+     * @param geocodingService der Service, der die Geokoordinaten für die Adressen bereitstellt.
      */
     @Autowired
-    public MainView(DashboardService dashboardService) {
+    public MainView(DashboardService dashboardService, WohnungService wohnungService, GeocodingService geocodingService) {
         this.dashboardService = dashboardService;
+        this.wohnungService = wohnungService;
+        this.geocodingService = geocodingService;
     }
 
     /**
@@ -60,6 +72,7 @@ public class MainView extends VerticalLayout {
         mieteinnahmenDiv = new Div();
         immobilienDiv = new Div();
         mieterDiv = new Div();
+        leafletMap = new LeafletMap();
 
         // Erstellen eines HorizontalLayout zur Platzierung der Divs nebeneinander
         HorizontalLayout statsLayout = new HorizontalLayout(mieteinnahmenDiv, immobilienDiv, mieterDiv);
@@ -74,6 +87,7 @@ public class MainView extends VerticalLayout {
 
         // Initiale Aktualisierung der Daten
         updateStats();
+        updateMap();
     }
 
     @Override
@@ -81,6 +95,7 @@ public class MainView extends VerticalLayout {
         super.onAttach(attachEvent);
         // Aktualisierung der Statistiken, wenn die Seite aufgerufen wird
         updateStats();
+        updateMap();
     }
 
     /**
@@ -107,6 +122,21 @@ public class MainView extends VerticalLayout {
     }
 
     /**
+     * Aktualisiert die Karte mit den Standorten aller Wohnungen.
+     */
+    private void updateMap() {
+        List<Wohnung> wohnungen = wohnungService.findAllWohnungen();
+        for (Wohnung wohnung : wohnungen) {
+            Double latitude = wohnung.getLatitude();
+            Double longitude = wohnung.getLongitude();
+
+            if (latitude != null && longitude != null) {
+                leafletMap.addMarker(latitude, longitude, wohnung.getFormattedAddress());
+            }
+        }
+    }
+
+    /**
      * Erstellt ein Div-Element zur Anzeige der Mieteinnahmen.
      *
      * @param mieteinnahmen die Gesamtsumme der Mieteinnahmen.
@@ -123,6 +153,13 @@ public class MainView extends VerticalLayout {
         return getDiv(title, formattedMieteinnahmen);
     }
 
+    /**
+     * Erstellt und konfiguriert ein Div-Element mit Titel und Wert.
+     *
+     * @param title Der Titel des Div-Elements.
+     * @param formattedMieteinnahmen Der formatierte Wert der Mieteinnahmen.
+     * @return Ein Div-Element, das den Titel und den Wert anzeigt.
+     */
     private Div getDiv(H1 title, String formattedMieteinnahmen) {
         Div value = new Div();
         value.setText(formattedMieteinnahmen);

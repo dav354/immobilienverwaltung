@@ -215,12 +215,12 @@ public class WohnungService {
                 wohnung.getStrasse(), wohnung.getHausnummer(),
                 wohnung.getPostleitzahl(), wohnung.getStadt(),
                 wohnung.getLand().name());
-        try {
-            double[] coordinates = geocodingService.getCoordinates(address);
+
+        double[] coordinates = geocodingService.getCoordinates(address);
+        if (coordinates != null) {
             wohnung.setLatitude(coordinates[0]);
             wohnung.setLongitude(coordinates[1]);
-        } catch (IOException e) {
-            // Ausnahme behandeln (protokollieren, Standardkoordinaten setzen, etc.)
+        } else {
             wohnung.setLatitude(null);
             wohnung.setLongitude(null);
         }

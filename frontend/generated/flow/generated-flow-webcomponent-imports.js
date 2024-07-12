@@ -15,7 +15,7 @@ import 'Frontend/generated/jar-resources/buttonFunctions.js';
 import '@vaadin/app-layout/theme/lumo/vaadin-drawer-toggle.js';
 import '@vaadin/avatar/theme/lumo/vaadin-avatar.js';
 import '@vaadin/avatar-group/theme/lumo/vaadin-avatar-group.js';
-import '@vaadin/vaadin-charts/src/vaadin-chart.js';
+import '@vaadin/charts/theme/lumo/vaadin-chart.js';
 import '@vaadin/checkbox/theme/lumo/vaadin-checkbox.js';
 import '@vaadin/checkbox-group/theme/lumo/vaadin-checkbox-group.js';
 import '@vaadin/combo-box/theme/lumo/vaadin-combo-box.js';
@@ -87,6 +87,7 @@ import '@vaadin/vaadin-lumo-styles/sizing.js';
 import '@vaadin/vaadin-lumo-styles/spacing.js';
 import '@vaadin/vaadin-lumo-styles/style.js';
 import '@vaadin/vaadin-lumo-styles/vaadin-iconset.js';
+import 'Frontend/map.js';
 const loadOnDemand = (key) => { return Promise.resolve(0); }
 window.Vaadin = window.Vaadin || {};
 window.Vaadin.Flow = window.Vaadin.Flow || {};

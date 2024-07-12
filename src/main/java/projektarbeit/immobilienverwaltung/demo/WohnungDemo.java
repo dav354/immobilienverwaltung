@@ -80,25 +80,25 @@ public class WohnungDemo implements CommandLineRunner {
             w5.setLatitude(52.516300); w5.setLongitude(13.377700);
             wohnungService.save(w5);
 
-            Wohnung w6 = new Wohnung("Lolgasse", "69", "77777", "Berlin", Land.DE, 35, 1943, 1, 1, false, false, false, false, null, null);
+            Wohnung w6 = new Wohnung("Adickesallee", "32", "60322", "Frankfurt am Main", Land.DE, 35, 1943, 1, 1, false, false, false, false, null, null);
             wohnungService.save(w6);
 
-            Wohnung w7 = new Wohnung("strasseb", "333", "88888", "Zürich", Land.CH, 44, 1877, 1, 3, true, false, true, false, null, null);
+            Wohnung w7 = new Wohnung("Universitätsstraße", "2", "86159", "Augsburg", Land.DE, 44, 1877, 1, 3, true, false, true, false, null, null);
             wohnungService.save(w7);
 
-            Wohnung w8 = new Wohnung("Königsstraße", "1", "54555", "Altona", Land.DE, 55, 2008, 2, 2, false, true, false, true, "1", "1");
+            Wohnung w8 = new Wohnung("Augustinerstraße", "26", "97070", "Würzburg", Land.DE, 55, 2008, 2, 2, false, true, false, true, "1", "1");
             wohnungService.save(w8);
 
-            Wohnung w9 = new Wohnung("Königsstraße", "1", "54555", "Altona", Land.DE, 55, 2008, 2, 2, false, true, false, true, "1", "2");
+            Wohnung w9 = new Wohnung("Augustinerstraße", "26", "97070", "Würzburg", Land.DE, 55, 2008, 2, 2, false, true, false, true, "1", "2");
             wohnungService.save(w9);
 
-            Wohnung w10 = new Wohnung("Königsstraße", "1", "54555", "Altona", Land.DE, 55, 2008, 2, 2, false, true, false, true, "2", "3");
+            Wohnung w10 = new Wohnung("Augustinerstraße", "26", "97070", "Würzburg", Land.DE, 55, 2008, 2, 2, false, true, false, true, "2", "3");
             wohnungService.save(w10);
 
-            Wohnung w11 = new Wohnung("Königsstraße", "1", "54555", "Altona", Land.DE, 55, 2008, 2, 2, false, true, false, true, "2", "4");
+            Wohnung w11 = new Wohnung("Augustinerstraße", "26", "97070", "Würzburg", Land.DE, 55, 2008, 2, 2, false, true, false, true, "2", "4");
             wohnungService.save(w11);
 
-            Wohnung w12 = new Wohnung("Königsstraße", "1", "54555", "Altona", Land.DE, 55, 2008, 2, 2, false, true, false, true, "2", "5");
+            Wohnung w12 = new Wohnung("Augustinerstraße", "26", "97070", "Würzburg", Land.DE, 55, 2008, 2, 2, false, true, false, true, "2", "5");
             wohnungService.save(w12);
 
             logger.info("Wohnungsdaten geladen.");

@@ -1,3 +1,9 @@
+import { injectGlobalCss } from 'Frontend/generated/jar-resources/theme-util.js';
+
+import { css, unsafeCSS, registerStyles } from '@vaadin/vaadin-themable-mixin';
+import $cssFromFile_0 from 'Frontend/styles/shared-styles.css?inline';
+
+injectGlobalCss($cssFromFile_0.toString(), 'CSSImport end', document);
 import '@vaadin/common-frontend/ConnectionIndicator.js';
 import '@vaadin/polymer-legacy-adapter/style-modules.js';
 import '@vaadin/accordion/theme/lumo/vaadin-accordion.js';
@@ -9,7 +15,7 @@ import 'Frontend/generated/jar-resources/buttonFunctions.js';
 import '@vaadin/app-layout/theme/lumo/vaadin-drawer-toggle.js';
 import '@vaadin/avatar/theme/lumo/vaadin-avatar.js';
 import '@vaadin/avatar-group/theme/lumo/vaadin-avatar-group.js';
-import '@vaadin/vaadin-charts/src/vaadin-chart.js';
+import '@vaadin/charts/theme/lumo/vaadin-chart.js';
 import '@vaadin/checkbox/theme/lumo/vaadin-checkbox.js';
 import '@vaadin/checkbox-group/theme/lumo/vaadin-checkbox-group.js';
 import '@vaadin/combo-box/theme/lumo/vaadin-combo-box.js';
@@ -83,6 +89,7 @@ import '@vaadin/vaadin-lumo-styles/sizing.js';
 import '@vaadin/vaadin-lumo-styles/spacing.js';
 import '@vaadin/vaadin-lumo-styles/style.js';
 import '@vaadin/vaadin-lumo-styles/vaadin-iconset.js';
+import 'Frontend/map.js';
 const loadOnDemand = (key) => { return Promise.resolve(0); }
 window.Vaadin = window.Vaadin || {};
 window.Vaadin.Flow = window.Vaadin.Flow || {};

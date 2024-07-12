@@ -294,7 +294,7 @@ public class WohnungListView extends VerticalLayout {
     /**
      * Erstellt ein Icon zur Anzeige im Grid.
      *
-     * @param value der Wahrheitswert, ob das Icon ein Häkchen oder ein Kreuz sein soll
+     * @param value der boolean, ob das Icon ein Häkchen oder ein Kreuz sein soll
      * @return das erstellte Icon
      */
     private Icon createIcon(boolean value) {
