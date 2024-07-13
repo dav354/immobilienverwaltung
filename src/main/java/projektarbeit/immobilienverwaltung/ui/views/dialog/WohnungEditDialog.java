@@ -5,7 +5,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -116,6 +115,7 @@ public class WohnungEditDialog extends DialogLayout {
                 .bind(Wohnung::getAnzahlSchlafzimmer, Wohnung::setAnzahlSchlafzimmer);
 
         ComboBox<Land> landComboBox = new ComboBox<>("Land");
+        landComboBox.addClassName("dark-combo-box");
         landComboBox.setWidth("300px");
         landComboBox.setItems(Land.values());
         landComboBox.setItemLabelGenerator(Land::getName);

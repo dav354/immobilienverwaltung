@@ -1,6 +1,7 @@
 package projektarbeit.immobilienverwaltung.ui.views;
 
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Div;
@@ -41,6 +42,7 @@ import java.util.Map;
 @PageTitle("Home")
 @SpringComponent
 @UIScope
+@CssImport("./styles/styles.css")
 public class MainView extends VerticalLayout {
 
     private final DashboardService dashboardService;
@@ -143,6 +145,7 @@ public class MainView extends VerticalLayout {
     private Div createStatDiv(String title, String value, Icon icon) {
         Div statDiv = new Div();
         statDiv.addClassName("stat-div");
+
         statDiv.getStyle().set("display", "flex")
                 .set("flex-direction", "column")
                 .set("align-items", "center")
@@ -150,21 +153,26 @@ public class MainView extends VerticalLayout {
                 .set("padding", "20px")
                 .set("box-shadow", "0 4px 8px 0 rgba(0,0,0,0.2)")
                 .set("border-radius", "10px")
-                .set("background", "var(--lumo-base-color)");
+                .set("background", "var(--lumo-base-color)")
+                .set("position", "relative"); // Wichtig für die Positionierung des Icons
 
-        icon.getStyle().set("width", "40px").set("height", "40px");
-        icon.getStyle().set("color", "var(--lumo-primary-color)");
+        // Add explicit width and height to icon
+        icon.getStyle().set("width", "80px").set("height", "80px");
+        icon.getStyle().set("color", "rgba(255, 255, 255, 0.1)"); // Leicht transparent
+        icon.getStyle().set("position", "absolute").set("bottom", "10px").set("left", "10px"); // Positionierung unten links
+        icon.addClassName("stat-icon");
 
         H1 statTitle = new H1(title);
-        statTitle.getStyle().set("margin", "0").set("font-size", "24px");
+        statTitle.getStyle().set("margin", "0").set("font-size", "24px").set("color", "white");
 
         Div statValue = new Div();
         statValue.setText(value);
-        statValue.getStyle().set("font-size", "36px").set("margin", "10px 0 0 0");
+        statValue.getStyle().set("font-size", "36px").set("margin", "10px 0 0 0").set("color", "white");
 
-        statDiv.add(icon, statTitle, statValue);
+        statDiv.add(statTitle, statValue, icon); // Icon zuletzt hinzufügen
         return statDiv;
     }
+
 
     /**
      * Aktualisiert die Karte mit den Standorten aller Wohnungen basierend auf den Checkbox-Werten.
@@ -295,7 +303,7 @@ public class MainView extends VerticalLayout {
      */
     private HorizontalLayout createSupportText() {
         Div text = new Div();
-        text.setText("Unterstütze und finde uns auf GitHub: ");
+        text.setText("Finde uns auf GitHub: ");
         text.getStyle().set("display", "inline");
 
         Anchor githubLink = new Anchor("https://github.com/dav354/immobilienverwaltung", "");
@@ -351,6 +359,7 @@ public class MainView extends VerticalLayout {
         checkboxLayout.setAlignItems(FlexComponent.Alignment.START);
         checkboxLayout.setSpacing(true);
         checkboxLayout.setWidthFull();
+        checkboxLayout.getStyle().set("margin-top", "0");
 
         return checkboxLayout;
     }

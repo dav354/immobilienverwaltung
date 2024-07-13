@@ -1,5 +1,6 @@
 package projektarbeit.immobilienverwaltung.ui.views.login;
 
+import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -137,10 +138,10 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
         // Erstellen des Benutzergrids
         userGrid = new Grid<>(User.class);
         userGrid.setColumns(); // Clear existing columns
-        userGrid.addColumn(User::getUsername).setHeader("Username");
+        userGrid.addColumn(User::getUsername).setHeader(createCustomHeader("Username"));
         userGrid.addColumn(new ComponentRenderer<>(user -> new Span(
                 user.getRoles().stream().map(Role::getName).collect(Collectors.joining(", "))
-        ))).setHeader("Roles");
+        ))).setHeader(createCustomHeader("Roles"));
         userGrid.addColumn(new ComponentRenderer<>(user -> {
             HorizontalLayout actions = new HorizontalLayout();
 
@@ -160,12 +161,22 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
             }
 
             return actions;
-        })).setHeader("Actions");
+        })).setHeader(createCustomHeader("Actions"));
 
         add(userGrid);
 
         // Benutzer in das Grid laden
         updateUserGrid();
+    }
+
+    /**
+     * Erstellt eine benutzerdefinierte Header-Komponente mit HTML und CSS-Klassen.
+     *
+     * @param text Der Text für den Header.
+     * @return Die Html-Komponente für den Header.
+     */
+    private Html createCustomHeader(String text) {
+        return new Html("<span class='custom-header'>" + text + "</span>");
     }
 
     private Button getDeleteButton(UserService userService, ConfigurationService configurationService, User user) {

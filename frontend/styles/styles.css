@@ -76,3 +76,48 @@ body {
     margin: 10px;
     text-align: center;
 }
+
+.custom-header {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.dark-combo-box .vaadin-combo-box-overlay {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+.dark-combo-box .vaadin-combo-box-overlay vaadin-combo-box-item {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+.dark-combo-box .vaadin-combo-box-item:hover {
+    background-color: #444444;
+}
+
+.stat-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    border-radius: 10px;
+    background: var(--lumo-base-color);
+    width: 100%;
+    margin: 10px;
+    text-align: center;
+    position: relative; /* Ensure relative positioning for absolute positioning of icon */
+    overflow: hidden;
+}
+
+.stat-div .stat-icon {
+    width: 80px;
+    height: 80px;
+    color: rgba(255, 255, 255, 0.1);
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    pointer-events: none;
+}

@@ -17,7 +17,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.treegrid.TreeGrid;
-import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -90,7 +89,12 @@ public class WohnungListView extends VerticalLayout {
         header.setWidthFull();
         header.setAlignItems(Alignment.CENTER);
 
-        add(header, getToolbar(), createFilterAccordion(), getContent());
+        Text helpText = new Text("Um mehr Infos zu den Wohnungen zu bekommen, in die entsprechende Zeile oder Mieter klicken.");
+        HorizontalLayout help = new HorizontalLayout(helpText);
+        help.setWidthFull();
+        help.setAlignItems(Alignment.START);
+
+        add(header, help, getToolbar(), createFilterAccordion(), getContent());
 
         updateList();
     }
@@ -102,11 +106,11 @@ public class WohnungListView extends VerticalLayout {
      */
     private Accordion createFilterAccordion() {
         HorizontalLayout layout = new HorizontalLayout();
-        VerticalLayout col1 = new VerticalLayout(land, mieter);
-        VerticalLayout col2 = new VerticalLayout(quadratmeter, baujahr);
-        VerticalLayout col3 = new VerticalLayout(schlafzimmer, balkon);
-        VerticalLayout col4 = new VerticalLayout(terasse, garten);
-        VerticalLayout col5 = new VerticalLayout(baeder, klimaanlage);
+        VerticalLayout col1 = createVerticalLayoutWithSpacing(land, mieter);
+        VerticalLayout col2 = createVerticalLayoutWithSpacing(quadratmeter, baujahr);
+        VerticalLayout col3 = createVerticalLayoutWithSpacing(schlafzimmer, balkon);
+        VerticalLayout col4 = createVerticalLayoutWithSpacing(terasse, garten);
+        VerticalLayout col5 = createVerticalLayoutWithSpacing(baeder, klimaanlage);
 
         mieter.setValue(true);
         baujahr.setValue(true);
@@ -130,54 +134,68 @@ public class WohnungListView extends VerticalLayout {
     }
 
     /**
+     * Erstellt ein VerticalLayout mit festgelegtem Abstand zwischen den Komponenten.
+     *
+     * @param components die Komponenten, die dem Layout hinzugefügt werden sollen.
+     * @return das konfigurierte VerticalLayout.
+     */
+    private VerticalLayout createVerticalLayoutWithSpacing(Component... components) {
+        VerticalLayout layout = new VerticalLayout(components);
+        layout.setPadding(false);
+        layout.setSpacing(false);
+        layout.setMargin(false);
+        return layout;
+    }
+
+    /**
      * Aktualisiert die Spalten im TreeGrid, um Wohnungsdetails anzuzeigen.
      * Richtet hierarchische und standardmäßige Spalten ein, einschließlich benutzerdefinierter Komponenten und Formatierungen.
      */
     private void updateGridColumns() {
         treeGrid.removeAllColumns();
 
-        treeGrid.addHierarchyColumn(Wohnung::getPostleitzahl).setHeader("PLZ");
-        treeGrid.addColumn(Wohnung::getStadt).setHeader("Stadt");
-        treeGrid.addColumn(Wohnung::getStrasseMitHausnummer).setHeader("Adresse").setAutoWidth(true);
-        if (land.getValue()) treeGrid.addColumn(wohnung -> wohnung.getLand().getName()).setHeader("Land");
+        treeGrid.addHierarchyColumn(Wohnung::getPostleitzahl).setHeader(createCustomHeader("PLZ"));
+        treeGrid.addColumn(Wohnung::getStadt).setHeader(createCustomHeader("Stadt"));
+        treeGrid.addColumn(Wohnung::getStrasseMitHausnummer).setHeader(createCustomHeader("Adresse")).setAutoWidth(true);
+        if (land.getValue()) treeGrid.addColumn(wohnung -> wohnung.getLand().getName()).setHeader(createCustomHeader("Land"));
 
         stockwerkColumn = treeGrid.addColumn(wohnung -> {
             return wohnung.getStockwerk() != null ? wohnung.getStockwerk() : "";
-        }).setHeader(new Html("<div>Stock-<br>werk</div>")).setTextAlign(ColumnTextAlign.CENTER);
+        }).setHeader(createCustomHeader("<div>Stock-<br>werk</div>")).setTextAlign(ColumnTextAlign.CENTER);
 
         wohnungsnummerColumn = treeGrid.addColumn(wohnung -> {
             return wohnung.getWohnungsnummer() != null ? wohnung.getWohnungsnummer() : "";
-        }).setHeader(new Html("<div>Wohnungs-<br>nummer</div>")).setTextAlign(ColumnTextAlign.CENTER);
+        }).setHeader(createCustomHeader("<div>Wohnungs-<br>nummer</div>")).setTextAlign(ColumnTextAlign.CENTER);
 
         anzahlWohnungenColumn = treeGrid.addColumn(wohnung -> {
             return wohnung.getSubWohnungen().size() > 1 ? wohnung.getSubWohnungen().size() : "";
-        }).setHeader(new Html("<div>Anzahl<br>Wohnungen</div>")).setTextAlign(ColumnTextAlign.CENTER);
+        }).setHeader(createCustomHeader("<div>Anzahl<br>Wohnungen</div>")).setTextAlign(ColumnTextAlign.CENTER);
         anzahlWohnungenColumn.setVisible(false);
 
         // Spalten für Filteroptionen hinzufügen
         if (quadratmeter.getValue())
-            treeGrid.addColumn(wohnung -> wohnung.isHeader() ? "" : Integer.toString(wohnung.getGesamtQuadratmeter())).setHeader("m²");
+            treeGrid.addColumn(wohnung -> wohnung.isHeader() ? "" : Integer.toString(wohnung.getGesamtQuadratmeter())).setHeader(createCustomHeader("m²"));
         if (baujahr.getValue())
-            treeGrid.addColumn(wohnung -> wohnung.isHeader() ? "" : Integer.toString(wohnung.getBaujahr())).setHeader("Baujahr");
+            treeGrid.addColumn(wohnung -> wohnung.isHeader() ? "" : Integer.toString(wohnung.getBaujahr())).setHeader(createCustomHeader("Baujahr"));
         if (baeder.getValue())
             treeGrid.addColumn(wohnung -> wohnung.isHeader() ? "" : Integer.toString(wohnung.getAnzahlBaeder()))
-                    .setHeader("Bäder").setTextAlign(ColumnTextAlign.CENTER);
+                    .setHeader(createCustomHeader("Bäder")).setTextAlign(ColumnTextAlign.CENTER);
         if (schlafzimmer.getValue())
             treeGrid.addColumn(wohnung -> wohnung.isHeader() ? "" : Integer.toString(wohnung.getAnzahlSchlafzimmer()))
-                    .setHeader(new Html("<div>Schlaf-<br>zimmer</div>"))
+                    .setHeader(createCustomHeader("<div>Schlaf-<br>zimmer</div>"))
                     .setTextAlign(ColumnTextAlign.CENTER);
         if (balkon.getValue())
             treeGrid.addComponentColumn(wohnung -> wohnung.isHeader() ? createEmptyIcon() : createIcon(wohnung.isHatBalkon()))
-                    .setHeader("Balkon").setTextAlign(ColumnTextAlign.CENTER);
+                    .setHeader(createCustomHeader("Balkon")).setTextAlign(ColumnTextAlign.CENTER);
         if (terasse.getValue())
             treeGrid.addComponentColumn(wohnung -> wohnung.isHeader() ? createEmptyIcon() : createIcon(wohnung.isHatTerrasse()))
-                    .setHeader("Terrasse").setTextAlign(ColumnTextAlign.CENTER);
+                    .setHeader(createCustomHeader("Terrasse")).setTextAlign(ColumnTextAlign.CENTER);
         if (garten.getValue())
             treeGrid.addComponentColumn(wohnung -> wohnung.isHeader() ? createEmptyIcon() : createIcon(wohnung.isHatGarten()))
-                    .setHeader("Garten").setTextAlign(ColumnTextAlign.CENTER);
+                    .setHeader(createCustomHeader("Garten")).setTextAlign(ColumnTextAlign.CENTER);
         if (klimaanlage.getValue())
             treeGrid.addComponentColumn(wohnung -> wohnung.isHeader() ? createEmptyIcon() : createIcon(wohnung.isHatKlimaanlage()))
-                    .setHeader(new Html("<div>Klima-<br>anlage</div>"));
+                    .setHeader(createCustomHeader("<div>Klima-<br>anlage</div>"));
 
         if (mieter.getValue()) {
             treeGrid.addComponentColumn(wohnung -> {
@@ -193,7 +211,7 @@ public class WohnungListView extends VerticalLayout {
                         return new Div(new Text("Kein Mieter"));
                     }
                 }
-            }).setHeader("Mieter");
+            }).setHeader(createCustomHeader("Mieter"));
         }
         treeGrid.setSizeFull();
         treeGrid.setSizeFull();
@@ -313,5 +331,15 @@ public class WohnungListView extends VerticalLayout {
         Icon icon = new Icon();
         icon.setVisible(false);
         return icon;
+    }
+
+    /**
+     * Erstellt eine benutzerdefinierte Überschrift für die Tabelle.
+     *
+     * @param text der Text der Überschrift.
+     * @return das konfigurierte Div-Element mit der benutzerdefinierten CSS-Klasse.
+     */
+    private Html createCustomHeader(String text) {
+        return new Html("<div class='custom-header'>" + text + "</div>");
     }
 }

@@ -5,6 +5,7 @@ import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -65,7 +66,7 @@ public class MainLayout extends AppLayout {
         title.setText("Immobilienverwaltung");
         title.getStyle().set("font-weight", "bold").set("font-size", "24px");
 
-        // Erstelle einen Layout für Logo und Titel
+        // Erstelle ein Layout für Logo und Titel
         HorizontalLayout logoTitleLayout = new HorizontalLayout(title);
         logoTitleLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         logoTitleLayout.setSpacing(true);
@@ -124,18 +125,18 @@ public class MainLayout extends AppLayout {
      * Erstellt die Fußzeile des Layouts.
      */
     private VerticalLayout createFooter() {
-        Button logoutButton = new Button("Logout", event -> securityService.logout());
+        Button logoutButton = new Button("Logout", VaadinIcon.SIGN_OUT.create());
         logoutButton.addClassName("footer-button");
+        logoutButton.addClickListener(event -> securityService.logout());
 
         Button toggleDarkModeButton = new Button(isDarkMode ? "Toggle Light Mode" : "Toggle Dark Mode");
+        toggleDarkModeButton.setIcon(new Icon(VaadinIcon.ADJUST));
         toggleDarkModeButton.addClassName("footer-button");
 
         toggleDarkModeButton.addClickListener(event -> {
             isDarkMode = !isDarkMode;
             configurationService.setDarkMode(isDarkMode);
             applyDarkMode();
-
-            // Reload the page to apply the changes
             getUI().ifPresent(ui -> ui.getPage().reload());
         });
 

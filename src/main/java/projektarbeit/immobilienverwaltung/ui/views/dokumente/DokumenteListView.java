@@ -1,5 +1,6 @@
 package projektarbeit.immobilienverwaltung.ui.views.dokumente;
 
+import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -75,10 +76,18 @@ public class DokumenteListView extends VerticalLayout {
         header.setAlignItems(Alignment.CENTER);
         header.expand(header.getComponentAt(0));
 
+        Html helpText = new Html("<span>Für detailliertere Informationen auf den Mieter oder Wohnung klicken.<br>Zum Hinzufügen neuer Dokumente muss zuerst der Mieter oder die Wohnung aufgerufen werden.</span>");
+        HorizontalLayout help = new HorizontalLayout(helpText);
+        help.setWidthFull();
+        help.setAlignItems(Alignment.START);
+
+        setSizeFull();
+        dokumentGrid.setSizeFull();
+
         configureGrid();
         updateDokumenteGrid();
 
-        add(header, createFilterContent(), dokumentGrid);
+        add(header, help, createFilterContent(), dokumentGrid);
     }
 
     /**
@@ -98,6 +107,7 @@ public class DokumenteListView extends VerticalLayout {
         searchField.setClearButtonVisible(true);
 
         filterTypeComboBox.setItems("Mieter", "Wohnung");
+        filterTypeComboBox.addClassName("dark-combo-box");
         filterTypeComboBox.addValueChangeListener(event -> {
             dummy.setVisible(false);
             boolean isMieter = "Mieter".equals(event.getValue());
@@ -107,6 +117,7 @@ public class DokumenteListView extends VerticalLayout {
         });
 
         mieterComboBox.setItems(mieterService.findAllMieter());
+        mieterComboBox.addClassName("dark-combo-box");
         mieterComboBox.setVisible(false);
         mieterComboBox.setClearButtonVisible(true);
         mieterComboBox.setWidthFull();
@@ -114,6 +125,7 @@ public class DokumenteListView extends VerticalLayout {
         mieterComboBox.addValueChangeListener(event -> updateDokumenteGrid());
 
         wohnungComboBox.setItems(wohnungService.findAllWohnungen());
+        wohnungComboBox.addClassName("dark-combo-box");
         wohnungComboBox.setVisible(false);
         wohnungComboBox.setClearButtonVisible(true);
         wohnungComboBox.setWidthFull();
@@ -171,7 +183,7 @@ public class DokumenteListView extends VerticalLayout {
         dokumentGrid.removeAllColumns();
 
         dokumentGrid.addColumn(Dokument::getDokumententyp)
-                .setHeader("Dokumenttyp")
+                .setHeader(createCustomHeader("Dokumenttyp"))
                 .setSortable(true)
                 .setAutoWidth(true);
 
@@ -183,7 +195,7 @@ public class DokumenteListView extends VerticalLayout {
             } else {
                 return new Div(new Text("Kein Mieter"));
             }
-        }).setHeader("Mietername").setSortable(true).setAutoWidth(true);
+        }).setHeader(createCustomHeader("Mietername")).setSortable(true).setAutoWidth(true);
 
         dokumentGrid.addComponentColumn(dokument -> {
             if (dokument.getWohnung() != null) {
@@ -194,7 +206,7 @@ public class DokumenteListView extends VerticalLayout {
                 return link;
             }
             return new Div(new Text("Keine Wohnung"));
-        }).setHeader("Wohnung").setSortable(true).setAutoWidth(true);
+        }).setHeader(createCustomHeader("Wohnung")).setSortable(true).setAutoWidth(true);
 
         dokumentGrid.addComponentColumn(dokument -> {
             HorizontalLayout actionsLayout = new HorizontalLayout();
@@ -222,11 +234,22 @@ public class DokumenteListView extends VerticalLayout {
 
             actionsLayout.add(viewButton, deleteButton, downloadButton);
             return actionsLayout;
-        }).setHeader("Aktionen").setFlexGrow(0).setAutoWidth(true);
+        }).setHeader(createCustomHeader("Aktionen")).setFlexGrow(0).setAutoWidth(true);
 
         dokumentGrid.setItems(dokumentService.findAllDokumente());
         dokumentGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
     }
+
+    /**
+     * Erstellt eine benutzerdefinierte Header-Komponente mit HTML und CSS-Klassen.
+     *
+     * @param text Der Text für den Header.
+     * @return Die Html-Komponente für den Header.
+     */
+    private Html createCustomHeader(String text) {
+        return new Html("<span class='custom-header'>" + text + "</span>");
+    }
+
 
     /**
      * Fügt an geeigneten Stellen in der Adresse Umbrüche ein.
