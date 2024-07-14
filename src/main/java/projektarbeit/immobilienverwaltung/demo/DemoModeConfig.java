@@ -5,9 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import projektarbeit.immobilienverwaltung.model.Configuration;
 import projektarbeit.immobilienverwaltung.repository.MieterRepository;
-import projektarbeit.immobilienverwaltung.repository.UserRepository;
 import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
 import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 
@@ -24,7 +22,6 @@ public class DemoModeConfig {
 
     private final MieterRepository mieterRepository;
     private final WohnungRepository wohnungRepository;
-    private final UserRepository userRepository;
     private final ConfigurationService configurationService;
 
     private boolean isDemoMode = false;
@@ -40,16 +37,13 @@ public class DemoModeConfig {
      *
      * @param mieterRepository     Das Repository zur Verwaltung von Mieter-Entitäten.
      * @param wohnungRepository    Das Repository zur Verwaltung von Wohnungs-Entitäten.
-     * @param userRepository       Das Repository zur Verwaltung von Benutzer-Entitäten.
      * @param configurationService Der Service zur Verwaltung von Konfigurationseinstellungen.
      */
     public DemoModeConfig(MieterRepository mieterRepository,
                           WohnungRepository wohnungRepository,
-                          UserRepository userRepository,
                           ConfigurationService configurationService) {
         this.mieterRepository = mieterRepository;
         this.wohnungRepository = wohnungRepository;
-        this.userRepository = userRepository;
         this.configurationService = configurationService;
     }
 
@@ -69,27 +63,18 @@ public class DemoModeConfig {
         }
 
         if (isDemoMode) {
-            Optional<Configuration> demoModeConfig = configurationService.findByKey("demo.mode.disable");
-
-            if (demoModeConfig.isPresent()) {
-                isDemoMode = Boolean.parseBoolean(demoModeConfig.get().getConfigValue());
+            if (configurationService.isDemoMode()) {
+                isDemoMode = true;
             } else {
                 if (mieterRepository.count() == 0 && wohnungRepository.count() == 0) {
                     logger.info("DEMO Mode aktiv. DEMO Daten werden geladen");
                     isDemoMode = true;
-                    Configuration newConfig = new Configuration();
-                    newConfig.setConfigKey("demo.mode.disable");
-                    newConfig.setConfigValue("false");
-                    configurationService.save(newConfig);
+                    configurationService.setDemoMode(true);
                 } else {
                     logger.warn("DEMO Mode aktiv, aber es existieren bereits Daten. Überspringe laden der Demo Daten.");
                     isDemoMode = false;
-                    Configuration newConfig = new Configuration();
-                    newConfig.setConfigKey("demo.mode.disable");
-                    newConfig.setConfigValue("disable");
-                    configurationService.save(newConfig);
+                    configurationService.setDemoMode(false);
                 }
-
             }
         }
     }

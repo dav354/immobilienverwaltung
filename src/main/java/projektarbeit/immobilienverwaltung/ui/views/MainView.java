@@ -335,23 +335,28 @@ public class MainView extends VerticalLayout {
      *
      * @return Ein HorizontalLayout mit den Checkboxen.
      */
+    /**
+     * Erstellt und konfiguriert ein HorizontalLayout mit Checkboxen zur Auswahl von vermieteten und unvermieteten Wohnungen.
+     *
+     * @return Ein HorizontalLayout mit den Checkboxen.
+     */
     private HorizontalLayout createCheckboxLayout() {
         vermieteteCheckbox = new Checkbox("Vermietete Wohnungen anzeigen");
         unvermieteteCheckbox = new Checkbox("Unvermietete Wohnungen anzeigen");
 
         // Werte aus der Konfiguration setzen, um die Zustände der Checkboxen beim Laden beizubehalten
-        boolean vermieteteChecked = configurationService.getBooleanValue("vermieteteChecked", true);
-        boolean unvermieteteChecked = configurationService.getBooleanValue("unvermieteteChecked", true);
+        boolean vermieteteChecked = configurationService.getVermieteteChecked();
+        boolean unvermieteteChecked = configurationService.getUnvermieteteChecked();
 
         vermieteteCheckbox.setValue(vermieteteChecked);
         unvermieteteCheckbox.setValue(unvermieteteChecked);
 
         vermieteteCheckbox.addValueChangeListener(event -> {
-            configurationService.setBooleanValue("vermieteteChecked", vermieteteCheckbox.getValue());
+            configurationService.setVermieteteChecked(vermieteteCheckbox.getValue());
             getUI().ifPresent(ui -> ui.getPage().reload());
         });
         unvermieteteCheckbox.addValueChangeListener(event -> {
-            configurationService.setBooleanValue("unvermieteteChecked", unvermieteteCheckbox.getValue());
+            configurationService.setUnvermieteteChecked(unvermieteteCheckbox.getValue());
             getUI().ifPresent(ui -> ui.getPage().reload());
         });
 

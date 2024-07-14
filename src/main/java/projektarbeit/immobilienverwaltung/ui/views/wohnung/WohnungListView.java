@@ -33,7 +33,10 @@ import projektarbeit.immobilienverwaltung.ui.views.dialog.WohnungEditDialog;
 import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
 import projektarbeit.immobilienverwaltung.ui.views.mieter.MieterDetailsView;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Die WohnungListView ist die Ansicht, die alle Wohnungen in einer hierarchischen Tabelle darstellt.
@@ -49,6 +52,7 @@ public class WohnungListView extends VerticalLayout {
     private final WohnungService wohnungService;
     private final MietvertragService mietvertragService;
     private final ConfigurationService configurationService;
+    private Set<String> expandedNodeIds = new HashSet<>();
 
     TreeGrid<Wohnung> treeGrid = new TreeGrid<>(Wohnung.class);
     TextField searchField = new TextField();
@@ -66,7 +70,6 @@ public class WohnungListView extends VerticalLayout {
 
     private Grid.Column<Wohnung> wohnungsnummerColumn;
     private Grid.Column<Wohnung> stockwerkColumn;
-    private Grid.Column<Wohnung> anzahlWohnungenColumn;
 
     /**
      * Konstruktor für WohnungListView.
@@ -89,7 +92,7 @@ public class WohnungListView extends VerticalLayout {
         header.setWidthFull();
         header.setAlignItems(Alignment.CENTER);
 
-        Text helpText = new Text("Um mehr Infos zu den Wohnungen zu bekommen, in die entsprechende Zeile oder Mieter klicken.");
+        Html helpText = new Html("<span>Um mehr Infos zu den Wohnungen zu bekommen, in die entsprechende Zeile oder Mieter klicken.<br>Wenn mehrere Wohnungen im selben Haus existieren, expandiere diese um die Wohnungen zu sehen.</span>");
         HorizontalLayout help = new HorizontalLayout(helpText);
         help.setWidthFull();
         help.setAlignItems(Alignment.START);
@@ -130,6 +133,20 @@ public class WohnungListView extends VerticalLayout {
         klimaanlage.addValueChangeListener(event -> updateList());
 
         filter.add("Tabellen Spalten auswählen", layout);
+
+        boolean isExpanded = configurationService.getAccordionState("filterAccordionExpanded", true);
+        if (isExpanded) {
+            filter.open(0);
+        } else {
+            filter.close();
+        }
+
+        filter.addOpenedChangeListener(event -> {
+            int openedIndex = event.getOpenedIndex().orElse(-1);
+            boolean isOpened = openedIndex == 0;
+            configurationService.setAccordionState("filterAccordionExpanded", isOpened);
+        });
+
         return filter;
     }
 
@@ -167,11 +184,6 @@ public class WohnungListView extends VerticalLayout {
             return wohnung.getWohnungsnummer() != null ? wohnung.getWohnungsnummer() : "";
         }).setHeader(createCustomHeader("<div>Wohnungs-<br>nummer</div>")).setTextAlign(ColumnTextAlign.CENTER);
 
-        anzahlWohnungenColumn = treeGrid.addColumn(wohnung -> {
-            return wohnung.getSubWohnungen().size() > 1 ? wohnung.getSubWohnungen().size() : "";
-        }).setHeader(createCustomHeader("<div>Anzahl<br>Wohnungen</div>")).setTextAlign(ColumnTextAlign.CENTER);
-        anzahlWohnungenColumn.setVisible(false);
-
         // Spalten für Filteroptionen hinzufügen
         if (quadratmeter.getValue())
             treeGrid.addColumn(wohnung -> wohnung.isHeader() ? "" : Integer.toString(wohnung.getGesamtQuadratmeter())).setHeader(createCustomHeader("m²"));
@@ -184,18 +196,37 @@ public class WohnungListView extends VerticalLayout {
             treeGrid.addColumn(wohnung -> wohnung.isHeader() ? "" : Integer.toString(wohnung.getAnzahlSchlafzimmer()))
                     .setHeader(createCustomHeader("<div>Schlaf-<br>zimmer</div>"))
                     .setTextAlign(ColumnTextAlign.CENTER);
-        if (balkon.getValue())
+        if (balkon.getValue()) {
             treeGrid.addComponentColumn(wohnung -> wohnung.isHeader() ? createEmptyIcon() : createIcon(wohnung.isHatBalkon()))
-                    .setHeader(createCustomHeader("Balkon")).setTextAlign(ColumnTextAlign.CENTER);
-        if (terasse.getValue())
+                    .setHeader(createCustomHeader("Balkon"))
+                    .setTextAlign(ColumnTextAlign.CENTER)
+                    .setSortable(true)
+                    .setComparator((wohnung1, wohnung2) -> Boolean.compare(wohnung1.isHatBalkon(), wohnung2.isHatBalkon()));
+        }
+
+        if (terasse.getValue()) {
             treeGrid.addComponentColumn(wohnung -> wohnung.isHeader() ? createEmptyIcon() : createIcon(wohnung.isHatTerrasse()))
-                    .setHeader(createCustomHeader("Terrasse")).setTextAlign(ColumnTextAlign.CENTER);
-        if (garten.getValue())
+                    .setHeader(createCustomHeader("Terrasse"))
+                    .setTextAlign(ColumnTextAlign.CENTER)
+                    .setSortable(true)
+                    .setComparator((wohnung1, wohnung2) -> Boolean.compare(wohnung1.isHatTerrasse(), wohnung2.isHatTerrasse()));
+        }
+
+        if (garten.getValue()) {
             treeGrid.addComponentColumn(wohnung -> wohnung.isHeader() ? createEmptyIcon() : createIcon(wohnung.isHatGarten()))
-                    .setHeader(createCustomHeader("Garten")).setTextAlign(ColumnTextAlign.CENTER);
-        if (klimaanlage.getValue())
+                    .setHeader(createCustomHeader("Garten"))
+                    .setTextAlign(ColumnTextAlign.CENTER)
+                    .setSortable(true)
+                    .setComparator((wohnung1, wohnung2) -> Boolean.compare(wohnung1.isHatGarten(), wohnung2.isHatGarten()));
+        }
+
+        if (klimaanlage.getValue()) {
             treeGrid.addComponentColumn(wohnung -> wohnung.isHeader() ? createEmptyIcon() : createIcon(wohnung.isHatKlimaanlage()))
-                    .setHeader(createCustomHeader("<div>Klima-<br>anlage</div>"));
+                    .setHeader(createCustomHeader("<div>Klima-<br>anlage</div>"))
+                    .setTextAlign(ColumnTextAlign.CENTER)
+                    .setSortable(true)
+                    .setComparator((wohnung1, wohnung2) -> Boolean.compare(wohnung1.isHatKlimaanlage(), wohnung2.isHatKlimaanlage()));
+        }
 
         if (mieter.getValue()) {
             treeGrid.addComponentColumn(wohnung -> {
@@ -217,6 +248,10 @@ public class WohnungListView extends VerticalLayout {
         treeGrid.setSizeFull();
 
         treeGrid.getColumns().forEach(col -> col.setAutoWidth(true).setSortable(true));
+
+        boolean anyExpanded = !expandedNodeIds.isEmpty();
+        stockwerkColumn.setVisible(anyExpanded);
+        wohnungsnummerColumn.setVisible(anyExpanded);
     }
 
     /**
@@ -227,7 +262,10 @@ public class WohnungListView extends VerticalLayout {
         List<Wohnung> wohnungen = wohnungService.findWohnungenWithHierarchy(searchField.getValue());
         TableUtils.configureTreeGrid(treeGrid, wohnungen, 50, Wohnung::getSubWohnungen);
         treeGrid.setItems(wohnungen, Wohnung::getSubWohnungen);
-        wohnungen.stream().filter(Wohnung::isHeader).forEach(treeGrid::expand);
+        restoreExpandedState();
+        wohnungen.stream()
+                .filter(wohnung -> expandedNodeIds.contains(wohnung.getUniqueIdentifier()))
+                .forEach(treeGrid::expand);
         updateGridColumns();
     }
 
@@ -249,16 +287,15 @@ public class WohnungListView extends VerticalLayout {
         });
 
         treeGrid.addExpandListener(event -> {
+            event.getItems().forEach(item -> expandedNodeIds.add(item.getUniqueIdentifier()));
+            saveExpandedState();
             updateGridColumns();
-            wohnungsnummerColumn.setVisible(true);
-            stockwerkColumn.setVisible(true);
-            anzahlWohnungenColumn.setVisible(false);
         });
+
         treeGrid.addCollapseListener(event -> {
+            event.getItems().forEach(item -> expandedNodeIds.remove(item.getUniqueIdentifier()));
+            saveExpandedState();
             updateGridColumns();
-            wohnungsnummerColumn.setVisible(false);
-            stockwerkColumn.setVisible(false);
-            anzahlWohnungenColumn.setVisible(true);
         });
     }
 
@@ -341,5 +378,30 @@ public class WohnungListView extends VerticalLayout {
      */
     private Html createCustomHeader(String text) {
         return new Html("<div class='custom-header'>" + text + "</div>");
+    }
+
+    /**
+     * Speichert den erweiterten Zustand der TreeGrid-Knoten.
+     * Nur gültige (nicht-leere) Knotennamen werden gespeichert.
+     */
+    private void saveExpandedState() {
+        Set<String> validExpandedNodeIds = new HashSet<>();
+        for (String nodeId : expandedNodeIds) {
+            if (nodeId != null && !nodeId.isEmpty()) {
+                validExpandedNodeIds.add(nodeId);
+            }
+        }
+        configurationService.saveExpandedNodes(new ArrayList<>(validExpandedNodeIds));
+    }
+
+    /**
+     * Stellt den erweiterten Zustand der TreeGrid-Knoten wieder her.
+     * Basierend auf dem gespeicherten Zustand wird die Sichtbarkeit der Spalten 'stockwerk' und 'wohnungsnummer' aktualisiert.
+     */
+    private void restoreExpandedState() {
+        expandedNodeIds = new HashSet<>(configurationService.getExpandedNodes());
+        boolean anyExpanded = !expandedNodeIds.isEmpty();
+        stockwerkColumn.setVisible(anyExpanded);
+        wohnungsnummerColumn.setVisible(anyExpanded);
     }
 }

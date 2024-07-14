@@ -97,7 +97,6 @@ public class DokumentDemo implements CommandLineRunner {
                 }
 
                 for (int i = 0; i < wohnungen.size(); i++) {
-                    Mieter mieter = mieterList.get(i);
                     Wohnung wohnung = wohnungen.get(i);
 
                     Dokument grundriss = new Dokument(wohnung, null, "Grundriss", "/path/to/eigentumsnachweis" + (i + 1) + ".pdf");

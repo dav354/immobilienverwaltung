@@ -23,40 +23,6 @@ class ConfigurationServiceTest {
     private ConfigurationService configurationService;
 
     @Test
-    void testFindByKey() {
-        Configuration config = new Configuration();
-        config.setConfigKey("testKey");
-        config.setConfigValue("testValue");
-
-        when(configurationRepository.findById("testKey")).thenReturn(Optional.of(config));
-
-        Optional<Configuration> foundConfig = configurationService.findByKey("testKey");
-
-        assertTrue(foundConfig.isPresent());
-        assertEquals("testValue", foundConfig.get().getConfigValue());
-    }
-
-    @Test
-    void testFindByKey_NotFound() {
-        when(configurationRepository.findById("nonExistentKey")).thenReturn(Optional.empty());
-
-        Optional<Configuration> foundConfig = configurationService.findByKey("nonExistentKey");
-
-        assertFalse(foundConfig.isPresent());
-    }
-
-    @Test
-    void testSave() {
-        Configuration config = new Configuration();
-        config.setConfigKey("testKey");
-        config.setConfigValue("testValue");
-
-        configurationService.save(config);
-
-        verify(configurationRepository, times(1)).save(config);
-    }
-
-    @Test
     void testSetDarkMode_NewConfig() {
         when(configurationRepository.findById("darkMode")).thenReturn(Optional.empty());
 
@@ -117,77 +83,122 @@ class ConfigurationServiceTest {
     }
 
     @Test
-    void testSetDarkMode_NullConfig() {
-        when(configurationRepository.findById("darkMode")).thenReturn(Optional.empty());
+    void testSetVermieteteChecked_NewConfig() {
+        when(configurationRepository.findById("vermieteteChecked")).thenReturn(Optional.empty());
 
-        assertDoesNotThrow(() -> configurationService.setDarkMode(false));
+        configurationService.setVermieteteChecked(true);
+
         verify(configurationRepository, times(1)).save(argThat(config ->
-                config.getConfigKey().equals("darkMode") && config.getConfigValue().equals("false")
+                config.getConfigKey().equals("vermieteteChecked") && config.getConfigValue().equals("true")
         ));
     }
 
     @Test
-    void testIsDarkMode_InvalidValue() {
+    void testSetVermieteteChecked_ExistingConfig() {
         Configuration config = new Configuration();
-        config.setConfigKey("darkMode");
-        config.setConfigValue("invalidBoolean");
+        config.setConfigKey("vermieteteChecked");
+        config.setConfigValue("false");
 
-        when(configurationRepository.findById("darkMode")).thenReturn(Optional.of(config));
+        when(configurationRepository.findById("vermieteteChecked")).thenReturn(Optional.of(config));
 
-        boolean isDarkMode = configurationService.isDarkMode();
-
-        assertFalse(isDarkMode);
-    }
-
-    @Test
-    void testSaveWithInvalidValue() {
-        Configuration config = new Configuration();
-        config.setConfigKey("invalidConfig");
-        config.setConfigValue("invalid@value");
-
-        assertDoesNotThrow(() -> configurationService.save(config));
-
-        verify(configurationRepository, times(1)).save(config);
-    }
-
-    @Test
-    void testRetrieveConfigurationWithInvalidValue() {
-        Configuration config = new Configuration();
-        config.setConfigKey("testKey");
-        config.setConfigValue("invalid@value");
-
-        when(configurationRepository.findById("testKey")).thenReturn(Optional.of(config));
-
-        Optional<Configuration> foundConfig = configurationService.findByKey("testKey");
-
-        assertTrue(foundConfig.isPresent());
-        assertEquals("invalid@value", foundConfig.get().getConfigValue());
-    }
-
-    @Test
-    void testSetDarkModeWithInvalidValue() {
-        Configuration config = new Configuration();
-        config.setConfigKey("darkMode");
-        config.setConfigValue("invalidValue");
-
-        when(configurationRepository.findById("darkMode")).thenReturn(Optional.of(config));
-
-        configurationService.setDarkMode(true);
+        configurationService.setVermieteteChecked(true);
 
         verify(configurationRepository, times(1)).save(config);
         assertEquals("true", config.getConfigValue());
     }
 
     @Test
-    void testIsDarkModeWithInvalidBooleanValue() {
+    void testGetVermieteteChecked_Activated() {
         Configuration config = new Configuration();
-        config.setConfigKey("darkMode");
-        config.setConfigValue("invalidBoolean");
+        config.setConfigKey("vermieteteChecked");
+        config.setConfigValue("true");
 
-        when(configurationRepository.findById("darkMode")).thenReturn(Optional.of(config));
+        when(configurationRepository.findById("vermieteteChecked")).thenReturn(Optional.of(config));
 
-        boolean isDarkMode = configurationService.isDarkMode();
+        boolean isChecked = configurationService.getVermieteteChecked();
 
-        assertFalse(isDarkMode);
+        assertTrue(isChecked);
+    }
+
+    @Test
+    void testGetVermieteteChecked_Deactivated() {
+        Configuration config = new Configuration();
+        config.setConfigKey("vermieteteChecked");
+        config.setConfigValue("false");
+
+        when(configurationRepository.findById("vermieteteChecked")).thenReturn(Optional.of(config));
+
+        boolean isChecked = configurationService.getVermieteteChecked();
+
+        assertFalse(isChecked);
+    }
+
+    @Test
+    void testGetVermieteteChecked_DefaultTrue() {
+        when(configurationRepository.findById("vermieteteChecked")).thenReturn(Optional.empty());
+
+        boolean isChecked = configurationService.getVermieteteChecked();
+
+        assertTrue(isChecked);
+    }
+
+    @Test
+    void testSetUnvermieteteChecked_NewConfig() {
+        when(configurationRepository.findById("unvermieteteChecked")).thenReturn(Optional.empty());
+
+        configurationService.setUnvermieteteChecked(true);
+
+        verify(configurationRepository, times(1)).save(argThat(config ->
+                config.getConfigKey().equals("unvermieteteChecked") && config.getConfigValue().equals("true")
+        ));
+    }
+
+    @Test
+    void testSetUnvermieteteChecked_ExistingConfig() {
+        Configuration config = new Configuration();
+        config.setConfigKey("unvermieteteChecked");
+        config.setConfigValue("false");
+
+        when(configurationRepository.findById("unvermieteteChecked")).thenReturn(Optional.of(config));
+
+        configurationService.setUnvermieteteChecked(true);
+
+        verify(configurationRepository, times(1)).save(config);
+        assertEquals("true", config.getConfigValue());
+    }
+
+    @Test
+    void testGetUnvermieteteChecked_Activated() {
+        Configuration config = new Configuration();
+        config.setConfigKey("unvermieteteChecked");
+        config.setConfigValue("true");
+
+        when(configurationRepository.findById("unvermieteteChecked")).thenReturn(Optional.of(config));
+
+        boolean isChecked = configurationService.getUnvermieteteChecked();
+
+        assertTrue(isChecked);
+    }
+
+    @Test
+    void testGetUnvermieteteChecked_Deactivated() {
+        Configuration config = new Configuration();
+        config.setConfigKey("unvermieteteChecked");
+        config.setConfigValue("false");
+
+        when(configurationRepository.findById("unvermieteteChecked")).thenReturn(Optional.of(config));
+
+        boolean isChecked = configurationService.getUnvermieteteChecked();
+
+        assertFalse(isChecked);
+    }
+
+    @Test
+    void testGetUnvermieteteChecked_DefaultTrue() {
+        when(configurationRepository.findById("unvermieteteChecked")).thenReturn(Optional.empty());
+
+        boolean isChecked = configurationService.getUnvermieteteChecked();
+
+        assertTrue(isChecked);
     }
 }

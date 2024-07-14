@@ -61,23 +61,18 @@ public class WohnungDemo implements CommandLineRunner {
 
             // Wohnungen mit ihren entsprechenden Attributen direkt erstellen
             Wohnung w1 = new Wohnung("Münzstraße", "12", "97070", "Würzburg", Land.DE, 200, 1900, 2, 2, true, true, true, true, null, null);
-            w1.setLatitude(49.794500); w1.setLongitude(9.930800);
             wohnungService.save(w1);
 
-            Wohnung w2 = new Wohnung("Geschwister-Scholl-Platz", "1", "80539", "München", Land.DE, 50, 2000, 1, 1, false, false, false, false, null, null);
-            w2.setLatitude(48.150800); w2.setLongitude(11.580200);
+            Wohnung w2 = new Wohnung("Geschwister-Scholl-Platz", "1", "80539", "München", Land.DE, 50, 2000, 1, 1, false, false, false, false, "2", "1b");
             wohnungService.save(w2);
 
             Wohnung w3 = new Wohnung("Keplerstraße", "7", "70174", "Stuttgart", Land.DE, 120, 1985, 1, 3, true, false, true, false, null, null);
-            w3.setLatitude(48.781500); w3.setLongitude(9.172300);
             wohnungService.save(w3);
 
             Wohnung w4 = new Wohnung("Rämistrasse", "71", "8006", "Zürich", Land.CH, 85, 1995, 2, 2, false, true, false, true, null, null);
-            w4.setLatitude(47.376900); w4.setLongitude(8.541700);
             wohnungService.save(w4);
 
             Wohnung w5 = new Wohnung("Unter den Linden", "6", "10117", "Berlin", Land.DE, 222, 1967, 2, 2, true, true, true, true, null, null);
-            w5.setLatitude(52.516300); w5.setLongitude(13.377700);
             wohnungService.save(w5);
 
             Wohnung w6 = new Wohnung("Adickesallee", "32", "60322", "Frankfurt am Main", Land.DE, 35, 1943, 1, 1, false, false, false, false, null, null);
@@ -100,6 +95,9 @@ public class WohnungDemo implements CommandLineRunner {
 
             Wohnung w12 = new Wohnung("Augustinerstraße", "26", "97070", "Würzburg", Land.DE, 55, 2008, 2, 2, false, true, false, true, "2", "5");
             wohnungService.save(w12);
+
+            Wohnung w13 = new Wohnung("Geschwister-Scholl-Platz", "1", "80539", "München", Land.DE, 50, 2000, 1, 1, false, false, false, false, "2", "1a");
+            wohnungService.save(w13);
 
             logger.info("Wohnungsdaten geladen.");
         } else {

@@ -609,6 +609,21 @@ public class Wohnung {
     }
 
     /**
+     * Gibt einen eindeutigen Bezeichner für die Wohnung zurück.
+     * Der Bezeichner basiert auf der Straße, Hausnummer, Postleitzahl und Stadt.
+     * Wenn eine der Eigenschaften null ist, wird der String "null" verwendet.
+     *
+     * @return Ein eindeutiger Bezeichner für die Wohnung als String.
+     */
+    public String getUniqueIdentifier() {
+        return String.format("%s_%s_%s_%s",
+                this.strasse != null ? this.strasse : "null",
+                this.hausnummer != null ? this.hausnummer : "null",
+                this.postleitzahl != null ? this.postleitzahl : "null",
+                this.stadt != null ? this.stadt : "null");
+    }
+
+    /**
      * Gibt eine String-Darstellung dieser Wohnung zurück.
      *
      * @return eine String-Darstellung dieser Wohnung
