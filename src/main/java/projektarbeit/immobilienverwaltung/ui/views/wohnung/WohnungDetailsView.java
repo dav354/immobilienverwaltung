@@ -38,7 +38,9 @@ import projektarbeit.immobilienverwaltung.ui.views.dialog.ZaehlerstandDialog;
 import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
 import projektarbeit.immobilienverwaltung.ui.views.dokumente.DokumenteListView;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 /**
@@ -306,7 +308,9 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
     private Grid<Dokument> createDokumentGrid() {
         Grid<Dokument> dokumentGrid = new Grid<>(Dokument.class);
         dokumentGrid.setColumns(); // Entferne die automatische Spalteneinstellung
-        dokumentGrid.addColumn(Dokument::getDokumententyp).setHeader(createCustomHeader("Dokumententyp"));
+        dokumentGrid.addColumn(Dokument::getDokumententyp)
+                .setHeader(createCustomHeader("Dokumententyp"))
+                .setSortable(true);
         dokumentGrid.setWidth("50%");
 
         dokumentGrid.addComponentColumn(dokument -> {
@@ -340,11 +344,19 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
      * @return das Grid für Zählerstände
      */
     private Grid<Zaehlerstand> createZaehlerstandGrid() {
+        DateTimeFormatter germanFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy").withLocale(Locale.GERMANY);
         Grid<Zaehlerstand> zaehlerstandGrid = new Grid<>(Zaehlerstand.class);
+
         zaehlerstandGrid.setColumns(); // Entferne die automatische Spalteneinstellung
-        zaehlerstandGrid.addColumn(Zaehlerstand::getName).setHeader(createCustomHeader("Name"));
-        zaehlerstandGrid.addColumn(Zaehlerstand::getAblesedatum).setHeader(createCustomHeader("Ablesedatum"));
-        zaehlerstandGrid.addColumn(Zaehlerstand::getAblesewert).setHeader(createCustomHeader("Ablesewert"));
+        zaehlerstandGrid.addColumn(Zaehlerstand::getName)
+                .setHeader(createCustomHeader("Name"))
+                .setSortable(true);
+        zaehlerstandGrid.addColumn(zaehlerstand -> zaehlerstand.getAblesedatum().format(germanFormatter))
+                .setHeader(createCustomHeader("Ablesedatum"))
+                .setSortable(true);
+        zaehlerstandGrid.addColumn(Zaehlerstand::getAblesewert)
+                .setHeader(createCustomHeader("Ablesewert"))
+                .setSortable(true);
         zaehlerstandGrid.setWidth("50%");
 
         zaehlerstandGrid.addComponentColumn(zaehlerstand -> {
