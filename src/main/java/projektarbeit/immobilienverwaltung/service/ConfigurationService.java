@@ -158,6 +158,29 @@ public class ConfigurationService {
     }
 
     /**
+     * Setzt den Zustand einer Checkbox in der Konfiguration.
+     *
+     * @param key   Der Schlüssel der Konfiguration.
+     * @param value Der zu setzende boolesche Wert für den Checkbox-Zustand.
+     */
+    @Transactional
+    public void setCheckboxState(String key, boolean value) {
+        setBooleanValue(key, value);
+    }
+
+    /**
+     * Gibt den Zustand einer Checkbox aus der Konfiguration zurück.
+     *
+     * @param key          Der Schlüssel der Konfiguration.
+     * @param defaultValue Der Standardwert, der zurückgegeben wird, wenn der Schlüssel nicht gefunden wird.
+     * @return Der boolesche Wert aus der Konfiguration.
+     */
+    @Transactional
+    public boolean getCheckboxState(String key, boolean defaultValue) {
+        return getBooleanValue(key, defaultValue);
+    }
+
+    /**
      * Setzt einen booleschen Wert in der Konfiguration.
      *
      * @param key   Der Schlüssel der Konfiguration.

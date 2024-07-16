@@ -2,10 +2,10 @@ package projektarbeit.immobilienverwaltung.ui.views.mieter;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Html;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Span;
@@ -25,6 +25,7 @@ import projektarbeit.immobilienverwaltung.model.Mietvertrag;
 import projektarbeit.immobilienverwaltung.service.*;
 import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
+import projektarbeit.immobilienverwaltung.ui.views.dialog.MieterEditDialog;
 
 import java.text.NumberFormat;
 import java.time.LocalDate;
@@ -33,6 +34,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+/**
+ * Die MieterListView zeigt eine Liste der Mieter an.
+ * Sie ermöglicht das Filtern, Hinzufügen und Bearbeiten von Mieterdaten.
+ */
 @PermitAll
 @Route(value = "mieter", layout = MainLayout.class)
 @PageTitle("Mieter")
@@ -87,6 +92,9 @@ public class MieterListView extends VerticalLayout {
         closeEditor();
     }
 
+    /**
+     * Schließt den Editor und stellt die Sichtbarkeit der Gitter und Werkzeugleiste wieder her.
+     */
     private void closeEditor() {
         form.setMieter(null);
         form.setVisible(false);
@@ -95,11 +103,19 @@ public class MieterListView extends VerticalLayout {
         removeClassName("editing");
     }
 
+    /**
+     * Aktualisiert die Liste der Mieter basierend auf dem Filtertext.
+     */
     private void updateList() {
         List<Mieter> mieterList = mieterService.findAllMieter(filterText.getValue());
         TableUtils.configureGrid(grid, mieterList, 50);
     }
 
+    /**
+     * Erstellt das Inhaltslayout, das das Gitter und das Formular enthält.
+     *
+     * @return das konfigurierte Inhaltslayout
+     */
     private Component getContent() {
         HorizontalLayout content = new HorizontalLayout(grid, form);
         content.setFlexGrow(2, grid);
@@ -108,6 +124,9 @@ public class MieterListView extends VerticalLayout {
         return content;
     }
 
+    /**
+     * Konfiguriert das Formular für die Mieterbearbeitung.
+     */
     private void configureForm() {
         form = new MieterForm(mieterService, mietvertragService, wohnungService, dokumentService, configurationService);
         form.setWidth("100%");
@@ -124,12 +143,22 @@ public class MieterListView extends VerticalLayout {
         form.addListener(MieterForm.CloseEvent.class, event -> closeEditor());
     }
 
+    /**
+     * Speichert die Änderungen an einem Mieter.
+     *
+     * @param event das SaveEvent, das die Änderungen enthält
+     */
     private void saveMieter(MieterForm.SaveEvent event) {
         mieterService.saveMieter(event.getContact());
         updateList();
         closeEditor();
     }
 
+    /**
+     * Löscht einen Mieter.
+     *
+     * @param event das DeleteEvent, das den zu löschenden Mieter enthält
+     */
     private void deleteMieter(MieterForm.DeleteEvent event) {
         mieterService.deleteMieter(event.getContact());
         updateList();
@@ -162,9 +191,23 @@ public class MieterListView extends VerticalLayout {
         grid.getColumns().forEach(col -> col.setAutoWidth(true).setSortable(true));
 
         // Listener für die Auswahl eines Mieters zum Bearbeiten hinzufügen
-        grid.asSingleSelect().addValueChangeListener(e -> editMieter(e.getValue()));
+        grid.asSingleSelect().addValueChangeListener(e -> {
+            if (e.getValue() != null) {
+                getUI().ifPresent(ui -> ui.navigate(MieterDetailsView.class, e.getValue().getMieter_id()));
+            }
+        });
     }
 
+    /**
+     * Fügt eine Spalte zum Gitter hinzu, die Informationen aus dem Mietvertrag anzeigt.
+     *
+     * @param valueProvider der Wertelieferant für die Spalte
+     * @param headerHtml    die HTML-Überschrift der Spalte
+     * @param isCurrency    ob der Wert als Währung formatiert werden soll
+     * @param isDate        ob der Wert als Datum formatiert werden soll
+     * @param isMietende    ob es sich um das Mietende handelt (für spezielle Formatierung)
+     * @param <T>           der Typ des Wertes
+     */
     private <T> void addMietvertragColumn(ValueProvider<Mietvertrag, T> valueProvider, String headerHtml, boolean isCurrency, boolean isDate, boolean isMietende) {
         grid.addColumn(new ComponentRenderer<>(mieter -> {
                     List<Mietvertrag> mietvertraege = mietvertragService.findByMieter(mieter.getMieter_id());
@@ -188,8 +231,7 @@ public class MieterListView extends VerticalLayout {
                     Span span = new Span();
                     span.getElement().setProperty("innerHTML", content);
                     return span;
-                })).setHeader(new Html("<div>" + headerHtml + "</div>"))
-                .setTextAlign(ColumnTextAlign.CENTER);
+                })).setHeader(new Html("<div>" + headerHtml + "</div>"));
     }
 
     private <T> void addMietvertragColumn(ValueProvider<Mietvertrag, T> valueProvider) {
@@ -200,6 +242,11 @@ public class MieterListView extends VerticalLayout {
         addMietvertragColumn(valueProvider, headerHtml, isCurrency, false, false);
     }
 
+    /**
+     * Öffnet den Editor zur Bearbeitung eines Mieters.
+     *
+     * @param mieter der zu bearbeitende Mieter
+     */
     private void editMieter(Mieter mieter) {
         if (mieter == null) {
             closeEditor();
@@ -213,8 +260,13 @@ public class MieterListView extends VerticalLayout {
         }
     }
 
+    /**
+     * Erstellt die Werkzeugleiste mit Filterfeld und Button zum Hinzufügen eines Mieters.
+     *
+     * @return die konfigurierte Werkzeugleiste
+     */
     private HorizontalLayout getToolbar() {
-        filterText.setPlaceholder("Filter nach Name");
+        filterText.setPlaceholder("Filter nach Name...");
         filterText.setClearButtonVisible(true);
         filterText.setPrefixComponent(VaadinIcon.SEARCH.create());
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
@@ -231,38 +283,99 @@ public class MieterListView extends VerticalLayout {
         return toolbar;
     }
 
+    /**
+     * Erstellt ein Akkordeon für Filteroptionen.
+     *
+     * @return das konfigurierte Akkordeon
+     */
     private Accordion createFilterAccordion() {
         HorizontalLayout layout = new HorizontalLayout();
-        VerticalLayout col1 = new VerticalLayout(telefonnummer, email);
-        VerticalLayout col2 = new VerticalLayout(einkommen, miete);
-        VerticalLayout col3 = new VerticalLayout(kaution, anzahlBewohner);
-        VerticalLayout col4 = new VerticalLayout(mietbeginn, mietende);
-        VerticalLayout col5 = new VerticalLayout(mietobjekt);
+        VerticalLayout col1 = createVerticalLayoutWithSpacing(telefonnummer, email);
+        VerticalLayout col2 = createVerticalLayoutWithSpacing(einkommen, miete);
+        VerticalLayout col3 = createVerticalLayoutWithSpacing(kaution, mietobjekt);
+        VerticalLayout col4 = createVerticalLayoutWithSpacing(mietbeginn, mietende);
+        VerticalLayout col5 = createVerticalLayoutWithSpacing(anzahlBewohner);
 
-        name.setValue(true);
-        vorname.setValue(true);
-        telefonnummer.setValue(true);
-        email.setValue(true);
-        mietobjekt.setValue(true);
+        name.setValue(configurationService.getCheckboxState("nameCheckbox", true));
+        vorname.setValue(configurationService.getCheckboxState("vornameCheckbox", true));
+        telefonnummer.setValue(configurationService.getCheckboxState("telefonnummerCheckbox", true));
+        email.setValue(configurationService.getCheckboxState("emailCheckbox", true));
+        einkommen.setValue(configurationService.getCheckboxState("einkommenCheckbox", false));
+        miete.setValue(configurationService.getCheckboxState("mieteCheckbox", false));
+        kaution.setValue(configurationService.getCheckboxState("kautionCheckbox", false));
+        anzahlBewohner.setValue(configurationService.getCheckboxState("anzahlBewohnerCheckbox", false));
+        mietbeginn.setValue(configurationService.getCheckboxState("mietbeginnCheckbox", false));
+        mietende.setValue(configurationService.getCheckboxState("mietendeCheckbox", false));
+        mietobjekt.setValue(configurationService.getCheckboxState("mietobjektCheckbox", true));
 
         layout.add(col1, col2, col3, col4, col5);
 
-        name.addValueChangeListener(event -> updateGridColumns());
-        vorname.addValueChangeListener(event -> updateGridColumns());
-        telefonnummer.addValueChangeListener(event -> updateGridColumns());
-        email.addValueChangeListener(event -> updateGridColumns());
-        einkommen.addValueChangeListener(event -> updateGridColumns());
-        miete.addValueChangeListener(event -> updateGridColumns());
-        kaution.addValueChangeListener(event -> updateGridColumns());
-        anzahlBewohner.addValueChangeListener(event -> updateGridColumns());
-        mietbeginn.addValueChangeListener(event -> updateGridColumns());
-        mietende.addValueChangeListener(event -> updateGridColumns());
-        mietobjekt.addValueChangeListener(event -> updateGridColumns());
+        name.addValueChangeListener(event -> {
+            configurationService.setCheckboxState("nameCheckbox", name.getValue());
+            updateGridColumns();
+        });
+        vorname.addValueChangeListener(event -> {
+            configurationService.setCheckboxState("vornameCheckbox", vorname.getValue());
+            updateGridColumns();
+        });
+        telefonnummer.addValueChangeListener(event -> {
+            configurationService.setCheckboxState("telefonnummerCheckbox", telefonnummer.getValue());
+            updateGridColumns();
+        });
+        email.addValueChangeListener(event -> {
+            configurationService.setCheckboxState("emailCheckbox", email.getValue());
+            updateGridColumns();
+        });
+        einkommen.addValueChangeListener(event -> {
+            configurationService.setCheckboxState("einkommenCheckbox", einkommen.getValue());
+            updateGridColumns();
+        });
+        miete.addValueChangeListener(event -> {
+            configurationService.setCheckboxState("mieteCheckbox", miete.getValue());
+            updateGridColumns();
+        });
+        kaution.addValueChangeListener(event -> {
+            configurationService.setCheckboxState("kautionCheckbox", kaution.getValue());
+            updateGridColumns();
+        });
+        anzahlBewohner.addValueChangeListener(event -> {
+            configurationService.setCheckboxState("anzahlBewohnerCheckbox", anzahlBewohner.getValue());
+            updateGridColumns();
+        });
+        mietbeginn.addValueChangeListener(event -> {
+            configurationService.setCheckboxState("mietbeginnCheckbox", mietbeginn.getValue());
+            updateGridColumns();
+        });
+        mietende.addValueChangeListener(event -> {
+            configurationService.setCheckboxState("mietendeCheckbox", mietende.getValue());
+            updateGridColumns();
+        });
+        mietobjekt.addValueChangeListener(event -> {
+            configurationService.setCheckboxState("mietobjektCheckbox", mietobjekt.getValue());
+            updateGridColumns();
+        });
 
         filter.add("Tabellen Spalten auswählen", layout);
+
+        boolean isExpanded = configurationService.getAccordionState("mieterFilterAccordionExpanded", true);
+        if (isExpanded) {
+            filter.open(0);
+        } else {
+            filter.close();
+        }
+
+        filter.addOpenedChangeListener(event -> {
+            int openedIndex = event.getOpenedIndex().orElse(-1);
+            boolean isOpened = openedIndex == 0;
+            configurationService.setAccordionState("mieterFilterAccordionExpanded", isOpened);
+        });
+
         return filter;
     }
 
+    /**
+     * Aktualisiert die Spalten im Gitter basierend auf den ausgewählten Filteroptionen.
+     */
     private void updateGridColumns() {
         grid.removeAllColumns();
 
@@ -291,15 +404,31 @@ public class MieterListView extends VerticalLayout {
         grid.getColumns().forEach(col -> col.setAutoWidth(true).setSortable(true));
     }
 
+    /**
+     * Fügt einen neuen Mieter hinzu.
+     */
     private void addMieter() {
         grid.asSingleSelect().clear();
-
-        form.loeschen.setVisible(false);
-        form.setVisible(true);
-        grid.setVisible(false);
-        toolbar.setVisible(false);
         Mieter neuerMieter = new Mieter();
-        form.setMieter(neuerMieter);
-        addClassName("editing");
+
+        MieterEditDialog dialog = new MieterEditDialog(mieterService, neuerMieter, () -> {
+            updateList();
+            getUI().ifPresent(ui -> ui.navigate(MieterDetailsView.class, neuerMieter.getMieter_id()));
+        }, configurationService);
+        dialog.open();
+    }
+
+    /**
+     * Erstellt ein VerticalLayout mit festgelegtem Abstand zwischen den Komponenten.
+     *
+     * @param components die Komponenten, die dem Layout hinzugefügt werden sollen.
+     * @return das konfigurierte VerticalLayout.
+     */
+    private VerticalLayout createVerticalLayoutWithSpacing(Component... components) {
+        VerticalLayout layout = new VerticalLayout(components);
+        layout.setPadding(false);
+        layout.setSpacing(false);
+        layout.setMargin(true);
+        return layout;
     }
 }

@@ -115,26 +115,64 @@ public class WohnungListView extends VerticalLayout {
         VerticalLayout col4 = createVerticalLayoutWithSpacing(terasse, garten);
         VerticalLayout col5 = createVerticalLayoutWithSpacing(baeder, klimaanlage);
 
-        mieter.setValue(true);
-        baujahr.setValue(true);
+        land.setValue(configurationService.getCheckboxState("landCheckbox", false));
+        quadratmeter.setValue(configurationService.getCheckboxState("quadratmeterCheckbox", false));
+        baujahr.setValue(configurationService.getCheckboxState("baujahrCheckbox", true));
+        baeder.setValue(configurationService.getCheckboxState("baederCheckbox", false));
+        schlafzimmer.setValue(configurationService.getCheckboxState("schlafzimmerCheckbox", false));
+        balkon.setValue(configurationService.getCheckboxState("balkonCheckbox", false));
+        terasse.setValue(configurationService.getCheckboxState("terasseCheckbox", false));
+        garten.setValue(configurationService.getCheckboxState("gartenCheckbox", false));
+        klimaanlage.setValue(configurationService.getCheckboxState("klimaanlageCheckbox", false));
+        mieter.setValue(configurationService.getCheckboxState("mieterCheckbox", true));
 
         layout.add(col1, col2, col3, col4, col5);
 
-        // Listener für Filteroptionen hinzufügen
-        land.addValueChangeListener(event -> updateList());
-        mieter.addValueChangeListener(event -> updateList());
-        quadratmeter.addValueChangeListener(event -> updateList());
-        baujahr.addValueChangeListener(event -> updateList());
-        baeder.addValueChangeListener(event -> updateList());
-        schlafzimmer.addValueChangeListener(event -> updateList());
-        balkon.addValueChangeListener(event -> updateList());
-        terasse.addValueChangeListener(event -> updateList());
-        garten.addValueChangeListener(event -> updateList());
-        klimaanlage.addValueChangeListener(event -> updateList());
+        // Add value change listeners to save state and update the grid
+        land.addValueChangeListener(event -> {
+            configurationService.setCheckboxState("landCheckbox", land.getValue());
+            updateList();
+        });
+        quadratmeter.addValueChangeListener(event -> {
+            configurationService.setCheckboxState("quadratmeterCheckbox", quadratmeter.getValue());
+            updateList();
+        });
+        baujahr.addValueChangeListener(event -> {
+            configurationService.setCheckboxState("baujahrCheckbox", baujahr.getValue());
+            updateList();
+        });
+        baeder.addValueChangeListener(event -> {
+            configurationService.setCheckboxState("baederCheckbox", baeder.getValue());
+            updateList();
+        });
+        schlafzimmer.addValueChangeListener(event -> {
+            configurationService.setCheckboxState("schlafzimmerCheckbox", schlafzimmer.getValue());
+            updateList();
+        });
+        balkon.addValueChangeListener(event -> {
+            configurationService.setCheckboxState("balkonCheckbox", balkon.getValue());
+            updateList();
+        });
+        terasse.addValueChangeListener(event -> {
+            configurationService.setCheckboxState("terasseCheckbox", terasse.getValue());
+            updateList();
+        });
+        garten.addValueChangeListener(event -> {
+            configurationService.setCheckboxState("gartenCheckbox", garten.getValue());
+            updateList();
+        });
+        klimaanlage.addValueChangeListener(event -> {
+            configurationService.setCheckboxState("klimaanlageCheckbox", klimaanlage.getValue());
+            updateList();
+        });
+        mieter.addValueChangeListener(event -> {
+            configurationService.setCheckboxState("mieterCheckbox", mieter.getValue());
+            updateList();
+        });
 
         filter.add("Tabellen Spalten auswählen", layout);
 
-        boolean isExpanded = configurationService.getAccordionState("filterAccordionExpanded", true);
+        boolean isExpanded = configurationService.getAccordionState("wohnungFilterAccordionExpanded", true);
         if (isExpanded) {
             filter.open(0);
         } else {
@@ -144,7 +182,7 @@ public class WohnungListView extends VerticalLayout {
         filter.addOpenedChangeListener(event -> {
             int openedIndex = event.getOpenedIndex().orElse(-1);
             boolean isOpened = openedIndex == 0;
-            configurationService.setAccordionState("filterAccordionExpanded", isOpened);
+            configurationService.setAccordionState("wohnungFilterAccordionExpanded", isOpened);
         });
 
         return filter;
@@ -160,7 +198,7 @@ public class WohnungListView extends VerticalLayout {
         VerticalLayout layout = new VerticalLayout(components);
         layout.setPadding(false);
         layout.setSpacing(false);
-        layout.setMargin(false);
+        layout.setMargin(true);
         return layout;
     }
 
