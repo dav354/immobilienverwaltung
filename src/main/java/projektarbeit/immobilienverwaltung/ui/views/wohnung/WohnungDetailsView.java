@@ -1,6 +1,7 @@
 package projektarbeit.immobilienverwaltung.ui.views.wohnung;
 
 import com.vaadin.flow.component.Composite;
+import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -304,7 +305,8 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
      */
     private Grid<Dokument> createDokumentGrid() {
         Grid<Dokument> dokumentGrid = new Grid<>(Dokument.class);
-        dokumentGrid.setColumns("dokumententyp");
+        dokumentGrid.setColumns(); // Entferne die automatische Spalteneinstellung
+        dokumentGrid.addColumn(Dokument::getDokumententyp).setHeader(createCustomHeader("Dokumententyp"));
         dokumentGrid.setWidth("50%");
 
         dokumentGrid.addComponentColumn(dokument -> {
@@ -324,7 +326,7 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
 
             actionsLayout.add(viewButton, deleteButton, downloadButton);
             return actionsLayout;
-        }).setHeader("Actions").setFlexGrow(0).setAutoWidth(true);
+        }).setHeader(createCustomHeader("Actions")).setFlexGrow(0).setAutoWidth(true);
 
         List<Dokument> dokuments = dokumentService.findDokumenteByWohnung(currentWohnung);
         TableUtils.configureGrid(dokumentGrid, dokuments, tableRowHeight);
@@ -339,7 +341,10 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
      */
     private Grid<Zaehlerstand> createZaehlerstandGrid() {
         Grid<Zaehlerstand> zaehlerstandGrid = new Grid<>(Zaehlerstand.class);
-        zaehlerstandGrid.setColumns("name", "ablesedatum", "ablesewert");
+        zaehlerstandGrid.setColumns(); // Entferne die automatische Spalteneinstellung
+        zaehlerstandGrid.addColumn(Zaehlerstand::getName).setHeader(createCustomHeader("Name"));
+        zaehlerstandGrid.addColumn(Zaehlerstand::getAblesedatum).setHeader(createCustomHeader("Ablesedatum"));
+        zaehlerstandGrid.addColumn(Zaehlerstand::getAblesewert).setHeader(createCustomHeader("Ablesewert"));
         zaehlerstandGrid.setWidth("50%");
 
         zaehlerstandGrid.addComponentColumn(zaehlerstand -> {
@@ -361,7 +366,7 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
             });
 
             return deleteButton;
-        }).setHeader("Aktionen").setAutoWidth(true);
+        }).setHeader(createCustomHeader("Aktionen")).setAutoWidth(true);
 
         List<Zaehlerstand> zaehlerstaende = zaehlerstandService.findZaehlerstandByWohnung(currentWohnung);
         TableUtils.configureGrid(zaehlerstandGrid, zaehlerstaende, tableRowHeight);
@@ -386,6 +391,16 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
             container.add(labelSpan, valueSpan);
             formLayout.add(container);
         }
+    }
+
+    /**
+     * Erstellt eine benutzerdefinierte Überschrift für die Tabelle.
+     *
+     * @param text der Text der Überschrift.
+     * @return das konfigurierte Div-Element mit der benutzerdefinierten CSS-Klasse.
+     */
+    private Html createCustomHeader(String text) {
+        return new Html("<div class='custom-header'>" + text + "</div>");
     }
 
     /**
