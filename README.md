@@ -15,6 +15,8 @@
 
 Diese Anwendung ermöglicht die Verwaltung von Immobilien und deren Mietern.
 
+Für die Korrekte Darstellung dieser Readme Page bitte zu [GitHub](https://github.com/dav354/immobilienverwaltung) wechseln. Dort gibt es auch die Dokumentation in den [Releases](https://github.com/dav354/immobilienverwaltung/releases) und den Docker Container unter [packages](https://github.com/dav354/immobilienverwaltung/pkgs/container/immobilienverwaltung) zum Download.
+
 ---
 
 > ⚠️ **Warnung**
