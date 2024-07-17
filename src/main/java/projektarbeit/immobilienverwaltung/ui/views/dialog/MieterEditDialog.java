@@ -3,25 +3,39 @@ package projektarbeit.immobilienverwaltung.ui.views.dialog;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.converter.StringToDoubleConverter;
 import com.vaadin.flow.data.validator.DoubleRangeValidator;
 import com.vaadin.flow.data.validator.RegexpValidator;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.service.MieterService;
 import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
 import projektarbeit.immobilienverwaltung.service.ConfigurationService;
+import projektarbeit.immobilienverwaltung.ui.layout.DialogLayout;
 
-public class MieterEditDialog extends Dialog {
+/**
+ * Diese Klasse repräsentiert einen Dialog zur Bearbeitung eines Mieters.
+ * Benutzer können den Namen, Vornamen, Telefonnummer, E-Mail und das Einkommen des Mieters bearbeiten.
+ * Nach dem Speichern werden die Änderungen an den Mieter übernommen.
+ */
+public class MieterEditDialog extends DialogLayout {
 
+    /**
+     * Konstruktor für den MieterEditDialog. Erstellung des Dialogfensters mit seinen Eingabefeldern.
+     *
+     * @param mieterService         Der Service für Mieteroperationen.
+     * @param mieter                Der zu bearbeitende Mieter.
+     * @param onSuccess             Eine Runnable-Funktion, die nach erfolgreichem Speichern aufgerufen wird.
+     * @param configurationService  Der Service für die Konfiguration.
+     */
     private final Binder<Mieter> binder = new Binder<>(Mieter.class);
 
     public MieterEditDialog(MieterService mieterService, Mieter mieter, Runnable onSuccess, ConfigurationService configurationService) {
-        //TODO darkmode mit configurationService
-        //super(configurationService);
+        super(configurationService);
 
         FormLayout formLayout = new FormLayout();
 
@@ -44,11 +58,13 @@ public class MieterEditDialog extends Dialog {
         TextField emailField = new TextField("Email");
         binder.forField(emailField).asRequired("Email ist erforderlich")
                 .withValidator(new RegexpValidator("Ungültige E-Mail-Adresse", "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", true))
+
                 .bind(Mieter::getEmail, Mieter::setEmail);
 
-        NumberField einkommenField = new NumberField("Einkommen");
+        TextField einkommenField = new TextField("Einkommen");
         binder.forField(einkommenField).asRequired("Einkommen ist erforderlich")
-                .withValidator(new DoubleRangeValidator("Einkommen muss positiv sein", 0.1 , 1000000000.0))
+                .withValidator(new RegexpValidator("Nur Zahlen erlaubt", "^[0-9]+$"))
+                .withConverter(new StringToDoubleConverter("Bitte geben Sie eine Zahl ein"))
                 .bind(Mieter::getEinkommen, Mieter::setEinkommen);
 
         // Aktuelle Wohnung in den Binder einlesen
@@ -72,12 +88,19 @@ public class MieterEditDialog extends Dialog {
 
         // Größe des Dialogs festlegen
         setWidth("450px");
-        setHeight("475px");
+        setHeight("500px");
 
         // Speichern-Callback nach dem Schließen des Dialogs hinzufügen
         addDialogCloseActionListener(e -> onSuccess.run());
     }
 
+    /**
+     * Methode zum Speichern der Mieterdaten.
+     *
+     * @param mieter                Der Mieter, dessen Daten gespeichert werden sollen.
+     * @param mieterService         Der Service für Mieteroperationen.
+     * @param onSuccess             Die Callback-Funktion, die nach erfolgreichem Speichern aufgerufen wird.
+     */
     private void saveMieter(Mieter mieter, MieterService mieterService, Runnable onSuccess) {
         if (binder.writeBeanIfValid(mieter)) {
             mieterService.saveMieter(mieter);

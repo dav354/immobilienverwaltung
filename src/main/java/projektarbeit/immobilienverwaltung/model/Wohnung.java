@@ -609,6 +609,23 @@ public class Wohnung {
     }
 
     /**
+     * Gibt die kürzere formatierte Adresse der Wohnung zurück.
+     * <p>
+     * Das Adressformat umfasst nur die Stadt, die Straße und die Hausnummer.
+     * Wenn die Adresse oder die Postleitzahl null ist, wird "Keine Adresse" zurückgegeben.
+     *
+     * @return eine formatierte Zeichenkette, die die Adresse der Wohnung darstellt, oder "Keine Adresse", wenn die Adresse oder die Postleitzahl null ist.
+     */
+    public String getSmallFormattedAddress() {
+        return String.format("%s %s %s %s %s",
+                stadt,
+                strasse,
+                hausnummer,
+                stockwerk != null ? "(" + stockwerk + "ter Stock, " : "",
+                wohnungsnummer != null ? wohnungsnummer + "te Wohnung)" : "");
+    }
+
+    /**
      * Gibt einen eindeutigen Bezeichner für die Wohnung zurück.
      * Der Bezeichner basiert auf der Straße, Hausnummer, Postleitzahl und Stadt.
      * Wenn eine der Eigenschaften null ist, wird der String "null" verwendet.

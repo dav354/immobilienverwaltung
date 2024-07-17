@@ -2,7 +2,6 @@ package projektarbeit.immobilienverwaltung.ui.views.mieter;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Html;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -177,7 +176,7 @@ public class MieterListView extends VerticalLayout {
             Double einkommen = item.getEinkommen();
             String formattedEinkommen = NumberFormat.getCurrencyInstance(Locale.GERMANY).format(einkommen);
             return new Span(formattedEinkommen);
-        })).setHeader("Einkommen").setSortable(true);
+        })).setHeader(createCustomHeader("Einkommen")).setSortable(true);
 
         // Zusätzliche Mietvertrags-Spalten hinzufügen
         addMietvertragColumn(Mietvertrag::getMiete, "Miete", true);
@@ -240,24 +239,6 @@ public class MieterListView extends VerticalLayout {
 
     private <T> void addMietvertragColumn(ValueProvider<Mietvertrag, T> valueProvider, String headerHtml, boolean isCurrency) {
         addMietvertragColumn(valueProvider, headerHtml, isCurrency, false, false);
-    }
-
-    /**
-     * Öffnet den Editor zur Bearbeitung eines Mieters.
-     *
-     * @param mieter der zu bearbeitende Mieter
-     */
-    private void editMieter(Mieter mieter) {
-        if (mieter == null) {
-            closeEditor();
-        } else {
-            form.setMieter(mieter);
-            form.setVisible(true);
-            grid.setVisible(false);
-            toolbar.setVisible(false);
-            form.loeschen.setVisible(true);
-            addClassName("editing");
-        }
     }
 
     /**
@@ -379,17 +360,17 @@ public class MieterListView extends VerticalLayout {
     private void updateGridColumns() {
         grid.removeAllColumns();
 
-        grid.addColumn("name").setHeader("Name");
-        grid.addColumn("vorname").setHeader("Vorname");
-        if (telefonnummer.getValue()) grid.addColumn("telefonnummer").setHeader("Telefonnummer");
-        if (email.getValue()) grid.addColumn("email").setHeader("Email");
+        grid.addColumn(Mieter::getName).setHeader(createCustomHeader("Name")).setSortable(true);
+        grid.addColumn(Mieter::getVorname).setHeader(createCustomHeader("Vorname")).setSortable(true);
+        if (telefonnummer.getValue()) grid.addColumn(Mieter::getTelefonnummer).setHeader(createCustomHeader("Telefonnummer")).setSortable(true);
+        if (email.getValue()) grid.addColumn(Mieter::getEmail).setHeader(createCustomHeader("Email")).setSortable(true);
 
         if (einkommen.getValue()) {
             grid.addColumn(new ComponentRenderer<>(item -> {
                 Double einkommen = item.getEinkommen();
                 String formattedEinkommen = NumberFormat.getCurrencyInstance(Locale.GERMANY).format(einkommen);
                 return new Span(formattedEinkommen);
-            })).setHeader("Einkommen").setSortable(true);
+            })).setHeader(createCustomHeader("Einkommen")).setSortable(true);
         }
 
         if (miete.getValue()) addMietvertragColumn(Mietvertrag::getMiete, "Miete", true);
@@ -416,6 +397,16 @@ public class MieterListView extends VerticalLayout {
             getUI().ifPresent(ui -> ui.navigate(MieterDetailsView.class, neuerMieter.getMieter_id()));
         }, configurationService);
         dialog.open();
+    }
+
+    /**
+     * Erstellt eine benutzerdefinierte Überschrift für die Tabelle.
+     *
+     * @param text der Text der Überschrift.
+     * @return das konfigurierte Div-Element mit der benutzerdefinierten CSS-Klasse.
+     */
+    private Html createCustomHeader(String text) {
+        return new Html("<div class='custom-header'>" + text + "</div>");
     }
 
     /**

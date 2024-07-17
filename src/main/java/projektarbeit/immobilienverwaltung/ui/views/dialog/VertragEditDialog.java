@@ -5,7 +5,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.NumberField;
@@ -19,20 +18,20 @@ import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 import projektarbeit.immobilienverwaltung.service.MietvertragService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
+import projektarbeit.immobilienverwaltung.ui.layout.DialogLayout;
 
-
-public class VertragEditDialog extends Dialog {
+/*
+public class VertragEditDialog extends DialogLayout {
 
     private final Binder<Mietvertrag> binder = new Binder<>(Mietvertrag.class);
 
     public VertragEditDialog(MietvertragService mietvertragService, Mietvertrag mietvertrag, Runnable onSuccess, ConfigurationService configurationService, WohnungService wohnungService) {
-        //TODO darkmode mit configurationService
-        //super(configurationService);
+        super(configurationService);
 
         FormLayout formLayout = new FormLayout();
 
         ComboBox<Wohnung> wohnungComboBox = new ComboBox<>("Wohnung");
-        wohnungComboBox.setItems(wohnungService.findAllWohnungen());
+        wohnungComboBox.setItems(wohnungService.findWohnungenWithoutMietvertrag());
         wohnungComboBox.setItemLabelGenerator(Wohnung::getFormattedAddress);
         binder.forField(wohnungComboBox).asRequired("Wohnung ist erforderlich")
                 .bind(Mietvertrag::getWohnung,Mietvertrag::setWohnung);
@@ -105,4 +104,6 @@ public class VertragEditDialog extends Dialog {
         }
     }
 }
+
+ */
 

@@ -2,6 +2,7 @@ package projektarbeit.immobilienverwaltung.ui.views.mieter;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Composite;
+import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -14,7 +15,6 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.LocalDateRenderer;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
@@ -22,20 +22,22 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 import projektarbeit.immobilienverwaltung.model.*;
-import projektarbeit.immobilienverwaltung.repository.MieterRepository;
 import projektarbeit.immobilienverwaltung.service.*;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.ConfirmationDialog;
 import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.MieterEditDialog;
-import projektarbeit.immobilienverwaltung.ui.views.dialog.VertragEditDialog;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.VertragHinzufuegenDialog;
 import projektarbeit.immobilienverwaltung.ui.views.dokumente.DokumenteListView;
 import projektarbeit.immobilienverwaltung.ui.views.wohnung.WohnungListView;
-
 import java.util.List;
-//TODO Mieter Edit darkmode, Mieter Löschen, Mietvertrag Hinzufügen
+
+/**
+ * Diese Klasse stellt die Detailansicht eines Mieters dar und ermöglicht das Anzeigen von Mieterinformationen,
+ * das Hinzufügen und Löschen von Mietverträgen sowie das Verwalten von Dokumenten.
+ * Außerdem können Mieter bearbeitet und gelöscht werden.
+ */
 @PermitAll
 @Route(value = "mieter-details", layout = MainLayout.class)
 @PageTitle("Mieter Detail")
@@ -51,7 +53,17 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
     private String previousView;
     Mieter currentMieter;
     List<Mietvertrag> mietvertrage;
+    private Grid<Mietvertrag> mietvertragGrid;
 
+    /**
+     * Konstruktor für die MieterDetailsView.
+     *
+     * @param mietvertragService    Der Service für Mietverträge.
+     * @param mieterService         Der Service für Mieter.
+     * @param dokumentService       Der Service für Dokumente.
+     * @param wohnungsService       Der Service für Wohnungen.
+     * @param configurationService  Der Service für die Konfiguration.
+     */
     public MieterDetailsView(MietvertragService mietvertragService, MieterService mieterService, DokumentService dokumentService, WohnungService wohnungsService, ConfigurationService configurationService) {
         this.mietvertragService = mietvertragService;
         this.mieterService = mieterService;
@@ -60,6 +72,12 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         this.configurationService = configurationService;
     }
 
+    /**
+     * Setzt die Parameter für die View basierend auf der Mieter-ID.
+     *
+     * @param event     Das Ereignis, das den Parameter enthält.
+     * @param mieterId  Die ID des Mieters.
+     */
     @Override
     public void setParameter(BeforeEvent event, Long mieterId) {
         currentMieter = mieterService.findById(mieterId);
@@ -71,6 +89,9 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         }
     }
 
+    /**
+     * Initialisiert die View-Komponenten und fügt sie dem Layout hinzu.
+     */
     private void setupView() {
         getContent().setWidth("100%");
         getContent().getStyle().set("flex-grow", "1");
@@ -81,6 +102,11 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         );
     }
 
+    /**
+     * Erstellt den Header für die Mieterinformationen.
+     *
+     * @return Der Header als HorizontalLayout.
+     */
     private HorizontalLayout createMieterHeader() {
         HorizontalLayout layout = new HorizontalLayout();
         H1 mieterHeading = new H1("Mieter");
@@ -89,6 +115,11 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         return layout;
     }
 
+    /**
+     * Erstellt den Button zum Bearbeiten des Mieters.
+     *
+     * @return Der Edit-Button für den Mieter.
+     */
     private Button createMieterEditButton() {
         Button mieterEditButton = new Button("Edit");
         mieterEditButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -99,6 +130,11 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         return mieterEditButton;
     }
 
+    /**
+     * Erstellt den Button zum Löschen des Mieters.
+     *
+     * @return Der Löschen-Button für den Mieter.
+     */
     private Button createMieterLoeschenButton() {
         Button mieterLoeschenButton = new Button("Löschen");
         mieterLoeschenButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -117,6 +153,11 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         return mieterLoeschenButton;
     }
 
+    /**
+     * Erstellt den Button zum Schließen der View.
+     *
+     * @return Der Schließen-Button.
+     */
     private Button createSchliessenButton() {
         Button schliessenButton = new Button("Schließen");
         schliessenButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
@@ -132,6 +173,11 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         return schliessenButton;
     }
 
+    /**
+     * Erstellt das Layout für die Mieterinformationen.
+     *
+     * @return Das HorizontalLayout für die Mieterinformationen.
+     */
     private HorizontalLayout createMieterLayout() {
         HorizontalLayout layout = new HorizontalLayout();
         layout.setWidthFull();
@@ -147,6 +193,11 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         return layout;
     }
 
+    /**
+     * Erstellt das FormLayout für die Anzeige der Mieterdetails.
+     *
+     * @return Das FormLayout mit den Mieterdetails.
+     */
     private FormLayout createMieterInfos() {
         FormLayout layout = new FormLayout();
         layout.setWidth("450px");
@@ -155,10 +206,7 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
                 new FormLayout.ResponsiveStep("500px", 2)
         );
 
-        HorizontalLayout horizontalLayout = new HorizontalLayout();
-        horizontalLayout.add(createMieterHeader());
-        horizontalLayout.setWidthFull();
-        layout.add(horizontalLayout);
+        layout.add(createMieterHeader());
 
         addDetailToFormLayout(layout, "Name", currentMieter.getName());
         addDetailToFormLayout(layout, "Vorname", currentMieter.getVorname());
@@ -169,6 +217,13 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         return layout;
     }
 
+    /**
+     * Fügt ein Detail zum FormLayout hinzu, wenn der Wert nicht null ist.
+     *
+     * @param formLayout    Das FormLayout, zu dem das Detail hinzugefügt werden soll.
+     * @param label         Das Label für das Detail.
+     * @param value         Der Wert des Details.
+     */
     private void addDetailToFormLayout(FormLayout formLayout, String label, String value) {
         if (value != null) {
             Div container = new Div();
@@ -181,6 +236,11 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         }
     }
 
+    /**
+     * Erstellt den Header für die Mietverträge.
+     *
+     * @return Der Header als HorizontalLayout.
+     */
     private HorizontalLayout createMietervertragHeader() {
         HorizontalLayout layout = new HorizontalLayout();
         H1 mietervertragHeading = new H1("Mietvertrag");
@@ -189,52 +249,53 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         return layout;
     }
 
+    /**
+     * Erstellt den Button zum Hinzufügen eines Mietvertrags.
+     *
+     * @return Der Button zum Hinzufügen eines Mietvertrags.
+     */
     private Button createVertragHinzufuegenButton() {
         Button vertragEditButton = new Button("Hinzufügen");
         vertragEditButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         vertragEditButton.addClickListener(event -> {
             VertragHinzufuegenDialog editDialog = new VertragHinzufuegenDialog(currentMieter, mietvertragService, this::refreshView, configurationService, wohnungsService);
             editDialog.open();
+            mietvertragGrid.setItems(mietvertragService.findByMieter(currentMieter.getMieter_id()));
         });
         return vertragEditButton;
     }
 
+    /**
+     * Erstellt das Grid für die Mietverträge.
+     *
+     * @return Das Grid mit den Mietverträgen.
+     */
     private Grid <Mietvertrag> createMietvertragsGrid(){
 
         // Grid für Mietvertragsdaten erstellen
-        Grid<Mietvertrag> mietvertragGrid = new Grid<>();
-        mietvertragGrid.setItems(mietvertrage);// Methode, um die Mietverträge zu erhalten
+        mietvertragGrid = new Grid<>();
+        mietvertragGrid.setItems(mietvertrage);
 
         // Spalten im Grid definieren
-        mietvertragGrid.addColumn(Mietvertrag::getWohnung)
-                .setHeader("Wohnung");
+        mietvertragGrid.addColumn(mietvertrag -> mietvertrag.getWohnung().getSmallFormattedAddress())
+                .setHeader(createCustomHeader("Wohnung"));
         mietvertragGrid.addColumn(Mietvertrag::getMietbeginn)
-                .setHeader("Mietbeginn")
+                .setHeader(createCustomHeader("Mietbeginn"))
                 .setRenderer(new LocalDateRenderer<>(Mietvertrag::getMietbeginn, "dd.MM.yyyy"));
         mietvertragGrid.addColumn(Mietvertrag::getMietende)
-                .setHeader("Mietende")
+                .setHeader(createCustomHeader("Mietende"))
                 .setRenderer(new LocalDateRenderer<>(Mietvertrag::getMietende, "dd.MM.yyyy"));
         mietvertragGrid.addColumn(Mietvertrag::getKaution)
-                .setHeader("Kaution");
+                .setHeader(createCustomHeader("Kaution"));
         mietvertragGrid.addColumn(Mietvertrag::getMiete)
-                .setHeader("Miete");
+                .setHeader(createCustomHeader("Miete"));
         mietvertragGrid.addColumn(Mietvertrag::getAnzahlBewohner)
-                .setHeader("Anzahl Bewohner").setTextAlign(ColumnTextAlign.CENTER);
+                .setHeader(createCustomHeader("Anzahl Bewohner")).setTextAlign(ColumnTextAlign.CENTER);
 
         TableUtils.configureGrid(mietvertragGrid, mietvertrage, tableRowHeight);
 
         mietvertragGrid.addComponentColumn(mietvertrag -> {
             HorizontalLayout actionsLayout = new HorizontalLayout();
-
-            Button viewButton = new Button(new Icon("eye"));
-            viewButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-            viewButton.getElement().setAttribute("title", "View");
-
-            viewButton.addClickListener(event -> {
-                VertragEditDialog editDialog = new VertragEditDialog(mietvertragService, mietvertrag, this::refreshView, configurationService, wohnungsService);
-                editDialog.open();
-            });
-
 
             Button deleteButton = new Button(new Icon("close"));
             deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -244,9 +305,8 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
                 ConfirmationDialog confirmationDialog = new ConfirmationDialog(
                         "Möchten Sie diesen Mietvertrag wirklich löschen? Es werden auch alle Dokumente mit gelöscht.",
                         () -> {
-                            mietvertragService.deleteMietvertrag(mietvertrag);
-                            mietvertrage.remove(mietvertrag); // Entferne den Mietvertrag aus der Liste
-                            mietvertragGrid.setItems(mietvertrage); // Aktualisiere die Grid-Daten
+                            mieterService.deleteMietvertrag(mietvertrag);
+                            mietvertragGrid.setItems(mietvertragService.findByMieter(currentMieter.getMieter_id()));
                             NotificationPopup.showSuccessNotification("Mietvertrag erfolgreich gelöscht.");
                         },
                         configurationService
@@ -254,15 +314,20 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
                 confirmationDialog.open();
             });
 
-            actionsLayout.add(viewButton, deleteButton);
+            actionsLayout.add(deleteButton);
             return actionsLayout;
-        }).setHeader("Actions").setFlexGrow(0).setAutoWidth(true);
+        }).setHeader(createCustomHeader("Actions")).setFlexGrow(0).setAutoWidth(true);
 
         mietvertragGrid.setWidthFull();
 
         return mietvertragGrid;
     }
 
+    /**
+     * Erstellt das Layout für die Mietvertragsinformationen.
+     *
+     * @return Das VerticalLayout für die Mietvertragsinformationen.
+     */
     private VerticalLayout createMietVertragInfos() {
         // Vertikales Layout für Titel und Grid erstellen
         VerticalLayout verticalLayout = new VerticalLayout();
@@ -274,6 +339,11 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         return verticalLayout;
     }
 
+    /**
+     * Erstellt einen Separator als Div-Element.
+     *
+     * @return Das Div-Element als Separator.
+     */
     private Component createSeparator() {
         Div separator = new Div();
         separator.getStyle().set("border-top", "1px solid var(--lumo-contrast-20pct)");
@@ -282,6 +352,11 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         return separator;
     }
 
+    /**
+     * Erstellt das Layout für die Dokumente.
+     *
+     * @return Das HorizontalLayout für die Dokumente.
+     */
     HorizontalLayout createDokumenteLayout() {
         HorizontalLayout layout = new HorizontalLayout();
         HorizontalLayout dokumentHeaderLayout = new HorizontalLayout();
@@ -300,9 +375,15 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         return layout;
     }
 
+    /**
+     * Erstellt das Grid für die Dokumente.
+     *
+     * @return Das Grid mit den Dokumenten.
+     */
     private Grid<Dokument> createDokumentGrid() {
         Grid<Dokument> dokumentGrid = new Grid<>(Dokument.class);
-        dokumentGrid.setColumns("dokumententyp");
+        dokumentGrid.setColumns();
+        dokumentGrid.addColumn(Dokument::getDokumententyp).setHeader(createCustomHeader("Dokumententyp"));
         dokumentGrid.setWidth("500px");
 
         dokumentGrid.addComponentColumn(dokument -> {
@@ -322,12 +403,22 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
 
             actionsLayout.add(viewButton, deleteButton, downloadButton);
             return actionsLayout;
-        }).setHeader("Actions").setFlexGrow(0).setAutoWidth(true);
+        }).setHeader(createCustomHeader("Actions")).setFlexGrow(0).setAutoWidth(true);
 
         List<Dokument> dokuments = dokumentService.findDokumenteByMieter(currentMieter);
         TableUtils.configureGrid(dokumentGrid, dokuments, tableRowHeight);
 
         return dokumentGrid;
+    }
+
+    /**
+     * Erstellt eine benutzerdefinierte Überschrift für die Tabelle.
+     *
+     * @param text der Text der Überschrift.
+     * @return das konfigurierte Div-Element mit der benutzerdefinierten CSS-Klasse.
+     */
+    private Html createCustomHeader(String text) {
+        return new Html("<div class='custom-header'>" + text + "</div>");
     }
 
     /**

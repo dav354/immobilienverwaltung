@@ -5,7 +5,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.NumberField;
@@ -20,22 +19,40 @@ import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 import projektarbeit.immobilienverwaltung.service.MietvertragService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
+import projektarbeit.immobilienverwaltung.ui.layout.DialogLayout;
 
-public class VertragHinzufuegenDialog extends Dialog {
+/**
+ * Diese Klasse stellt einen Dialog zum Hinzufügen eines Mietvertrags für einen Mieter dar.
+ * Benutzer können eine Wohnung auswählen und Details wie Miete, Mietbeginn, Mietende, Kaution und Anzahl der Bewohner eingeben.
+ * Nach dem Speichern wird der Mietvertrag zum Mieter hinzugefügt.
+ */
+public class VertragHinzufuegenDialog extends DialogLayout {
 
     private final Binder<Mietvertrag> binder = new Binder<>(Mietvertrag.class);
 
+    /**
+     * Konstruktor für den VertragHinzufuegenDialog. Erstellung des Dialogfensters mit seinen Eingabefeldern.
+     *
+     * @param mieter                Der Mieter, dem der Mietvertrag hinzugefügt wird.
+     * @param mietvertragService    Der Service für Mietverträge.
+     * @param onSuccess             Eine Callback-Funktion, die nach erfolgreichem Speichern ausgeführt wird.
+     * @param configurationService  Der Service für die Konfiguration.
+     * @param wohnungService        Der Service für Wohnungen.
+     */
     public VertragHinzufuegenDialog(Mieter mieter, MietvertragService mietvertragService, Runnable onSuccess, ConfigurationService configurationService, WohnungService wohnungService) {
 
-        Mietvertrag mietvertrag = new Mietvertrag();
+        super(configurationService);
 
-        //TODO darkmode mit configurationService
-        //super(configurationService);
+        Mietvertrag mietvertrag = new Mietvertrag();
+        mietvertrag.setMieter(mieter); // Mieter setzen
+
+        // Setze den Mietvertrag im Binder
+        binder.setBean(mietvertrag);
 
         FormLayout formLayout = new FormLayout();
 
         ComboBox<Wohnung> wohnungComboBox = new ComboBox<>("Wohnung");
-        wohnungComboBox.setItems(wohnungService.findAllWohnungen());
+        wohnungComboBox.setItems(wohnungService.findWohnungenWithoutMietvertrag());
         wohnungComboBox.setItemLabelGenerator(Wohnung::getFormattedAddress);
         binder.forField(wohnungComboBox).asRequired("Wohnung ist erforderlich")
                 .bind(Mietvertrag::getWohnung,Mietvertrag::setWohnung);
@@ -46,11 +63,11 @@ public class VertragHinzufuegenDialog extends Dialog {
                 .bind(Mietvertrag::getMiete, Mietvertrag::setMiete);
 
         DatePicker mietbeginn = new DatePicker("Mietbeginn");
-        binder.forField(mietbeginn)
+        binder.forField(mietbeginn).asRequired("Mietbeginn nicht vorhanden")
                 .bind(Mietvertrag::getMietbeginn, Mietvertrag::setMietbeginn);
 
         DatePicker mietende = new DatePicker("Mietende");
-        binder.forField(mietende).asRequired("Mietende nicht vorhanden")
+        binder.forField(mietende)
                 .withValidator((value, context) -> {
                     if (value == null) {
                         return ValidationResult.ok();
@@ -74,7 +91,7 @@ public class VertragHinzufuegenDialog extends Dialog {
 
         formLayout.add(wohnungComboBox, miete, mietbeginn, mietende, kaution, anzahlBewohner);
 
-        Button saveButton = new Button("Speichern", event -> saveMietvertrag(mieter,mietvertrag, mietvertragService, onSuccess));
+        Button saveButton = new Button("Speichern", event -> saveMietvertrag(mietvertrag, mietvertragService, onSuccess));
         saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         Button cancelButton = new Button("Abbrechen", event -> close());
         cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
@@ -96,40 +113,20 @@ public class VertragHinzufuegenDialog extends Dialog {
         addDialogCloseActionListener(e -> onSuccess.run());
     }
 
-    private void saveMietvertrag(Mieter currentMieter,Mietvertrag mietvertrag, MietvertragService mietvertragService, Runnable onSuccess) {
-        // Neue Instanz von Mietvertrag erstellen
-        Mietvertrag newMietvertrag = new Mietvertrag();
-
-        // Daten aus Binder in den neuen Mietvertrag übertragen, wenn gültig
+    /**
+     * Methode zum Speichern des Mietvertrags.
+     *
+     * @param mietvertrag           Der Mietvertrag, der gespeichert werden soll.
+     * @param mietvertragService    Der Service für Mietverträge.
+     * @param onSuccess             Die Callback-Funktion, die nach erfolgreichem Speichern aufgerufen wird.
+     */
+    private void saveMietvertrag(Mietvertrag mietvertrag, MietvertragService mietvertragService, Runnable onSuccess) {
+        // Daten aus Binder in den Mietvertrag übertragen, wenn gültig
         if (binder.writeBeanIfValid(mietvertrag)) {
-            // Sicherstellen, dass binder.getBean() nicht null ist
-            Mietvertrag bean = binder.getBean();
-            if (bean != null) {
-                // Werte aus dem Binder in den neuen Mietvertrag übertragen
-                newMietvertrag.setMieter(bean.getMieter());
-                newMietvertrag.setWohnung(bean.getWohnung());
-                newMietvertrag.setMietbeginn(bean.getMietbeginn());
-                newMietvertrag.setMietende(bean.getMietende());
-                newMietvertrag.setMiete(bean.getMiete());
-                newMietvertrag.setKaution(bean.getKaution());
-                newMietvertrag.setAnzahlBewohner(bean.getAnzahlBewohner());
-
-                // Mietvertrag speichern
-                mietvertragService.createAndSaveMietvertrag(
-                        newMietvertrag.getMieter(),
-                        newMietvertrag.getWohnung(),
-                        newMietvertrag.getMietbeginn(),
-                        newMietvertrag.getMietende(),
-                        newMietvertrag.getMiete(),
-                        newMietvertrag.getKaution(),
-                        newMietvertrag.getAnzahlBewohner());
-
-                onSuccess.run();
-                this.close();
-                NotificationPopup.showSuccessNotification("Mietvertrag gespeichert");
-            } else {
-                NotificationPopup.showWarningNotification("Fehler beim Zugriff auf die Eingabedaten.");
-            }
+            mietvertragService.saveMietvertrag(mietvertrag);
+            NotificationPopup.showSuccessNotification("Mietvertrag gespeichert");
+            onSuccess.run();
+            this.close();
         } else {
             NotificationPopup.showWarningNotification("Bitte füllen Sie alle erforderlichen Felder aus.");
         }
