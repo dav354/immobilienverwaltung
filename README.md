@@ -23,10 +23,6 @@ Für die Korrekte Darstellung dieser Readme Page bitte zu [GitHub](https://githu
 >
 > Under heavy development
 
-<div align="center">
-    <img src="assets/progproj.gif" width="30%" alt="project"/>
-</div>
-
 ## Inhaltsverzeichnis
 
 - [Frameworks](#frameworks)
