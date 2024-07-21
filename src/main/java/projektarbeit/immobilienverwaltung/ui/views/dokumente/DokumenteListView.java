@@ -214,23 +214,19 @@ public class DokumenteListView extends VerticalLayout {
             Button viewButton = new Button(new Icon("eye"));
             viewButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
             viewButton.getElement().setAttribute("title", "View");
-            viewButton.addClickListener(event -> {
-                // Handle view action
-            });
+            viewButton.addClickListener(event -> dokumentService.viewDokument(dokument));
 
             Button deleteButton = new Button(new Icon("close"));
             deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
             deleteButton.getElement().setAttribute("title", "Delete");
             deleteButton.addClickListener(event -> {
-                // Handle delete action
+                dokumentService.deleteDokument(dokument, dokumentGrid, dokument.getWohnung(), 53, configurationService, this::refreshView);
             });
 
             Button downloadButton = new Button(new Icon("download"));
             downloadButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             downloadButton.getElement().setAttribute("title", "Download");
-            downloadButton.addClickListener(event -> {
-                // Handle download action
-            });
+            downloadButton.addClickListener(event -> dokumentService.downloadDokument(dokument));
 
             actionsLayout.add(viewButton, deleteButton, downloadButton);
             return actionsLayout;
@@ -271,4 +267,7 @@ public class DokumenteListView extends VerticalLayout {
         return sb.toString();
     }
 
+    public void refreshView() {
+        updateDokumenteGrid();
+    }
 }

@@ -1,11 +1,9 @@
 package projektarbeit.immobilienverwaltung.ui.views.mieter;
 
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Composite;
-import com.vaadin.flow.component.Html;
-import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
@@ -23,6 +21,7 @@ import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 import projektarbeit.immobilienverwaltung.model.*;
 import projektarbeit.immobilienverwaltung.service.*;
+import projektarbeit.immobilienverwaltung.ui.components.UploadUtils;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.ConfirmationDialog;
 import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
@@ -361,10 +360,10 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         HorizontalLayout layout = new HorizontalLayout();
         HorizontalLayout dokumentHeaderLayout = new HorizontalLayout();
         H2 dokumenteHeading = new H2("Dokumente");
-        Button addDokumentButton = new Button("Add Dokument");
-        addDokumentButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-        dokumentHeaderLayout.add(dokumenteHeading, addDokumentButton);
+        HorizontalLayout uploadLayout = UploadUtils.createUploadButton("Add Dokument", dokumentService, currentMieter, this::refreshView);
+
+        dokumentHeaderLayout.add(dokumenteHeading, uploadLayout);
         dokumentHeaderLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         dokumentHeaderLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         dokumentHeaderLayout.setWidth("50%");
@@ -382,32 +381,8 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
      */
     private Grid<Dokument> createDokumentGrid() {
         Grid<Dokument> dokumentGrid = new Grid<>(Dokument.class);
-        dokumentGrid.setColumns();
-        dokumentGrid.addColumn(Dokument::getDokumententyp).setHeader(createCustomHeader("Dokumententyp"));
-        dokumentGrid.setWidth("500px");
-
-        dokumentGrid.addComponentColumn(dokument -> {
-            HorizontalLayout actionsLayout = new HorizontalLayout();
-
-            Button viewButton = new Button(new Icon("eye"));
-            viewButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-            viewButton.getElement().setAttribute("title", "View");
-
-            Button deleteButton = new Button(new Icon("close"));
-            deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
-            deleteButton.getElement().setAttribute("title", "Delete");
-
-            Button downloadButton = new Button(new Icon("download"));
-            downloadButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-            downloadButton.getElement().setAttribute("title", "Download");
-
-            actionsLayout.add(viewButton, deleteButton, downloadButton);
-            return actionsLayout;
-        }).setHeader(createCustomHeader("Actions")).setFlexGrow(0).setAutoWidth(true);
-
         List<Dokument> dokuments = dokumentService.findDokumenteByMieter(currentMieter);
-        TableUtils.configureGrid(dokumentGrid, dokuments, tableRowHeight);
-
+        dokumentService.configureDokumentGrid(dokumentGrid, dokuments, currentMieter, tableRowHeight, configurationService, this::refreshView);
         return dokumentGrid;
     }
 

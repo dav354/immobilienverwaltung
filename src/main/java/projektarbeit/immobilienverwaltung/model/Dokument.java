@@ -36,6 +36,9 @@ public class Dokument {
     @NotBlank(message = "Dateipfad darf nicht leer sein")
     private String dateipfad;
 
+    @Column
+    private String mimeType;
+
     /**
      * Standardkonstruktor für JPA.
      */
@@ -150,6 +153,15 @@ public class Dokument {
         this.dateipfad = dateipfad;
     }
 
+
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+
     /**
      * Gibt eine String-Darstellung dieses Dokuments zurück.
      *
@@ -163,6 +175,7 @@ public class Dokument {
                 "', mieter='" + (mieter != null ? mieter.getMieter_id() : "Keine") +
                 "', dokumententyp='" + dokumententyp +
                 "', dateipfad='" + dateipfad +
+                "', mimeType='" + mimeType +
                 "']";
     }
 }

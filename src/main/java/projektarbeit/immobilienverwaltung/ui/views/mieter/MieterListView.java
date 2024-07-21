@@ -2,7 +2,6 @@ package projektarbeit.immobilienverwaltung.ui.views.mieter;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Html;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -49,8 +48,6 @@ public class MieterListView extends VerticalLayout {
 
     private final MieterService mieterService;
     private final MietvertragService mietvertragService;
-    private final WohnungService wohnungService;
-    private final DokumentService dokumentService;
     private final ConfigurationService configurationService;
 
     Grid<Mieter> grid = new Grid<>(Mieter.class);
@@ -68,21 +65,17 @@ public class MieterListView extends VerticalLayout {
     Checkbox mietende = new Checkbox("Mietende");
     Checkbox mietobjekt = new Checkbox("Mietobjekt");
 
-    MieterForm form;
     HorizontalLayout toolbar;
 
-    public MieterListView(MieterService mieterService, MietvertragService mietvertragService, WohnungService wohnungService, DokumentService dokumentService, ConfigurationService configurationService) {
+    public MieterListView(MieterService mieterService, MietvertragService mietvertragService, ConfigurationService configurationService) {
         this.mieterService = mieterService;
         this.mietvertragService = mietvertragService;
-        this.wohnungService = wohnungService;
-        this.dokumentService = dokumentService;
         this.configurationService = configurationService;
 
         addClassName("mieter-list");
         setSizeFull();
 
         configureGrid();
-        configureForm();
 
         HorizontalLayout header = new HorizontalLayout(new H1("Mieter Übersicht"));
         header.setWidthFull();
@@ -93,19 +86,8 @@ public class MieterListView extends VerticalLayout {
 
         updateList();
         updateGridColumns();
-        closeEditor();
     }
 
-    /**
-     * Schließt den Editor und stellt die Sichtbarkeit der Gitter und Werkzeugleiste wieder her.
-     */
-    private void closeEditor() {
-        form.setMieter(null);
-        form.setVisible(false);
-        grid.setVisible(true);
-        toolbar.setVisible(true);
-        removeClassName("editing");
-    }
 
     /**
      * Aktualisiert die Liste der Mieter basierend auf dem Filtertext.
@@ -121,52 +103,11 @@ public class MieterListView extends VerticalLayout {
      * @return das konfigurierte Inhaltslayout
      */
     private Component getContent() {
-        HorizontalLayout content = new HorizontalLayout(grid, form);
+        HorizontalLayout content = new HorizontalLayout(grid);
         content.setFlexGrow(2, grid);
         content.addClassNames("content");
         content.setSizeFull();
         return content;
-    }
-
-    /**
-     * Konfiguriert das Formular für die Mieterbearbeitung.
-     */
-    private void configureForm() {
-        form = new MieterForm(mieterService, mietvertragService, wohnungService, dokumentService, configurationService);
-        form.setWidth("100%");
-        form.setVisible(false);
-
-        form.addListener(MieterForm.SaveEvent.class, event -> {
-            saveMieter(event);
-            closeEditor();
-        });
-        form.addListener(MieterForm.DeleteEvent.class, event -> {
-            deleteMieter(event);
-            closeEditor();
-        });
-        form.addListener(MieterForm.CloseEvent.class, event -> closeEditor());
-    }
-
-    /**
-     * Speichert die Änderungen an einem Mieter.
-     *
-     * @param event das SaveEvent, das die Änderungen enthält
-     */
-    private void saveMieter(MieterForm.SaveEvent event) {
-        mieterService.saveMieter(event.getContact());
-        updateList();
-        closeEditor();
-    }
-
-    /**
-     * Löscht einen Mieter.
-     *
-     * @param event das DeleteEvent, das den zu löschenden Mieter enthält
-     */
-    private void deleteMieter(MieterForm.DeleteEvent event) {
-        mieterService.deleteMieter(event.getContact());
-        updateList();
-        closeEditor();
     }
 
     private void configureGrid() {

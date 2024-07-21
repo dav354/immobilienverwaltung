@@ -5,6 +5,7 @@ import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
@@ -28,6 +29,7 @@ import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 import projektarbeit.immobilienverwaltung.service.DokumentService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.service.ZaehlerstandService;
+import projektarbeit.immobilienverwaltung.ui.components.UploadUtils;
 import projektarbeit.immobilienverwaltung.ui.views.MainView;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.ConfirmationDialog;
 import projektarbeit.immobilienverwaltung.ui.components.MapComponent;
@@ -42,7 +44,6 @@ import projektarbeit.immobilienverwaltung.ui.views.mieter.MieterListView;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 /**
  * View zur Anzeige der Details einer Wohnung.
@@ -260,15 +261,13 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
      *
      * @return das Header-Layout für Dokumente
      */
-    private
-
-    HorizontalLayout createDokumentHeaderLayout() {
+    private HorizontalLayout createDokumentHeaderLayout() {
         HorizontalLayout dokumentHeaderLayout = new HorizontalLayout();
         H1 dokumenteHeading = new H1("Dokumente");
-        Button addDokumentButton = new Button("Add Dokument");
-        addDokumentButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-        dokumentHeaderLayout.add(dokumenteHeading, addDokumentButton);
+        HorizontalLayout uploadLayout = UploadUtils.createUploadButton("Add Dokument", dokumentService, currentWohnung, this::refreshView);
+
+        dokumentHeaderLayout.add(dokumenteHeading, uploadLayout);
         dokumentHeaderLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         dokumentHeaderLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         dokumentHeaderLayout.setWidth("50%");
@@ -307,34 +306,8 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
      */
     private Grid<Dokument> createDokumentGrid() {
         Grid<Dokument> dokumentGrid = new Grid<>(Dokument.class);
-        dokumentGrid.setColumns(); // Entferne die automatische Spalteneinstellung
-        dokumentGrid.addColumn(Dokument::getDokumententyp)
-                .setHeader(createCustomHeader("Dokumententyp"))
-                .setSortable(true);
-        dokumentGrid.setWidth("50%");
-
-        dokumentGrid.addComponentColumn(dokument -> {
-            HorizontalLayout actionsLayout = new HorizontalLayout();
-
-            Button viewButton = new Button(new Icon("eye"));
-            viewButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-            viewButton.getElement().setAttribute("title", "View");
-
-            Button deleteButton = new Button(new Icon("close"));
-            deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
-            deleteButton.getElement().setAttribute("title", "Delete");
-
-            Button downloadButton = new Button(new Icon("download"));
-            downloadButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-            downloadButton.getElement().setAttribute("title", "Download");
-
-            actionsLayout.add(viewButton, deleteButton, downloadButton);
-            return actionsLayout;
-        }).setHeader(createCustomHeader("Actions")).setFlexGrow(0).setAutoWidth(true);
-
         List<Dokument> dokuments = dokumentService.findDokumenteByWohnung(currentWohnung);
-        TableUtils.configureGrid(dokumentGrid, dokuments, tableRowHeight);
-
+        dokumentService.configureDokumentGrid(dokumentGrid, dokuments, currentWohnung, tableRowHeight, configurationService, this::refreshView);
         return dokumentGrid;
     }
 
