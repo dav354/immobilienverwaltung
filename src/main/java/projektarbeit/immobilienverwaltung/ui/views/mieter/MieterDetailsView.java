@@ -12,7 +12,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -35,6 +34,7 @@ import projektarbeit.immobilienverwaltung.ui.views.dialog.ConfirmationDialog;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.MieterEditDialog;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.VertragHinzufuegenDialog;
 import projektarbeit.immobilienverwaltung.ui.views.dokumente.DokumenteListView;
+import projektarbeit.immobilienverwaltung.ui.views.wohnung.WohnungDetailsView;
 import projektarbeit.immobilienverwaltung.ui.views.wohnung.WohnungListView;
 
 import java.util.List;
@@ -172,12 +172,19 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         Button schliessenButton = new Button("Schließen");
         schliessenButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         schliessenButton.addClickListener(event -> {
-            if ("dokumente".equals(previousView)) {
-                UI.getCurrent().navigate(DokumenteListView.class);
-            } else if ("wohnungen".equals(previousView)) {
-                UI.getCurrent().navigate(WohnungListView.class);
-            } else {
-                UI.getCurrent().navigate(MieterListView.class);
+            switch (previousView) {
+                case "dokumente" -> UI.getCurrent().navigate(DokumenteListView.class);
+                case "wohnungen" -> UI.getCurrent().navigate(WohnungListView.class);
+                case "wohnungen-details" -> {
+                    String wohnungIdParam = getUI().orElseThrow().getInternals().getActiveViewLocation().getQueryParameters().getParameters().get("wohnungId").getFirst();
+                    if (wohnungIdParam != null) {
+                        Long wohnungId = Long.valueOf(wohnungIdParam);
+                        UI.getCurrent().navigate(WohnungDetailsView.class, wohnungId);
+                    } else {
+                        UI.getCurrent().navigate(WohnungListView.class);
+                    }
+                }
+                case null, default -> UI.getCurrent().navigate(MieterListView.class);
             }
         });
         return schliessenButton;

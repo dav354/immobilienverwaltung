@@ -1,5 +1,6 @@
 package projektarbeit.immobilienverwaltung.ui.views.wohnung;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -14,15 +15,10 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.BeforeEvent;
-import com.vaadin.flow.router.HasUrlParameter;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.*;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
-import projektarbeit.immobilienverwaltung.model.Dokument;
-import projektarbeit.immobilienverwaltung.model.Wohnung;
-import projektarbeit.immobilienverwaltung.model.Zaehlerstand;
+import projektarbeit.immobilienverwaltung.model.*;
 import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 import projektarbeit.immobilienverwaltung.service.DokumentService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
@@ -34,6 +30,7 @@ import projektarbeit.immobilienverwaltung.ui.views.dialog.ConfirmationDialog;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.WohnungEditDialog;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.ZaehlerstandDialog;
 import projektarbeit.immobilienverwaltung.ui.views.dokumente.DokumenteListView;
+import projektarbeit.immobilienverwaltung.ui.views.mieter.MieterDetailsView;
 import projektarbeit.immobilienverwaltung.ui.views.mieter.MieterListView;
 
 import java.time.format.DateTimeFormatter;
@@ -216,8 +213,20 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         addDetailToFormLayout(layout, "Balkon", currentWohnung.isHatBalkon() ? "Ja" : "Nein");
         addDetailToFormLayout(layout, "Terrasse", currentWohnung.isHatTerrasse() ? "Ja" : "Nein");
         addDetailToFormLayout(layout, "Klimaanlage", currentWohnung.isHatKlimaanlage() ? "Ja" : "Nein");
-
+        addDetailToFormLayout(layout, "Mieter", createMieterComponent());
         return layout;
+    }
+
+    private Component createMieterComponent() {
+        Mietvertrag mietvertrag = currentWohnung.getMietvertrag();
+        if (mietvertrag != null && mietvertrag.getMieter() != null) {
+            Mieter mieter = mietvertrag.getMieter();
+            RouterLink link = new RouterLink(mieter.getFullName(), MieterDetailsView.class, mieter.getMieter_id());
+            link.getElement().setAttribute("href", link.getHref() + "?previousView=wohnungen-details&wohnungId=" + currentWohnung.getWohnung_id());
+            return link;
+        } else {
+            return new Span("kein Mieter vorhanden");
+        }
     }
 
     /**
