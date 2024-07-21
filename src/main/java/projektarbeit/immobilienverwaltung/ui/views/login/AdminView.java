@@ -183,6 +183,7 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
         Button deleteButton = new Button("Delete");
         deleteButton.addClickListener(e -> {
             ConfirmationDialog confirmationDialog = new ConfirmationDialog(
+                    "Löschen",
                     "Are you sure you want to delete the user " + user.getUsername() + "?",
                     () -> {
                         boolean deleted = userService.deleteUser(user);

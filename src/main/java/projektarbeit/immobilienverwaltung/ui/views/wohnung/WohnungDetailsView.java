@@ -140,6 +140,7 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         wohnungLoeschenButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         wohnungLoeschenButton.addClickListener(event -> {
             ConfirmationDialog confirmationDialog = new ConfirmationDialog(
+                    "Löschen",
                     "Möchten Sie diese Wohnung wirklich löschen? Es werden auch alle Dokumente mit gelöscht.",
                     () -> {
                         wohnungService.delete(currentWohnung);
@@ -339,6 +340,7 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
 
             deleteButton.addClickListener(event -> {
                 ConfirmationDialog confirmationDialog = new ConfirmationDialog(
+                        "Löschen",
                         "Möchten Sie diesen Zählerstand wirklich löschen?",
                         () -> {
                             zaehlerstandService.deleteZaehlerstand(zaehlerstand);

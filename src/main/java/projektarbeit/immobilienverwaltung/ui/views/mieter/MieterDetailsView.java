@@ -139,6 +139,7 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         mieterLoeschenButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         mieterLoeschenButton.addClickListener(event -> {
             ConfirmationDialog confirmationDialog = new ConfirmationDialog(
+                    "Löschen",
                     "Möchten Sie diesen Mieter wirklich löschen? Es werden auch alle Dokumente mit gelöscht.",
                     () -> {
                         mieterService.deleteMieter(currentMieter);
@@ -302,6 +303,7 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
 
             deleteButton.addClickListener(event -> {
                 ConfirmationDialog confirmationDialog = new ConfirmationDialog(
+                        "Löschen",
                         "Möchten Sie diesen Mietvertrag wirklich löschen? Es werden auch alle Dokumente mit gelöscht.",
                         () -> {
                             mieterService.deleteMietvertrag(mietvertrag);

@@ -232,6 +232,7 @@ public class DokumentService {
      */
     public void deleteDokument(Dokument dokument, Grid<Dokument> dokumentGrid, Object entity, int tableRowHeight, ConfigurationService configurationService, Runnable refreshView) {
         ConfirmationDialog confirmationDialog = new ConfirmationDialog(
+                "Löschen",
                 "Möchten Sie dieses Dokument wirklich löschen?",
                 () -> {
                     deleteFile(dokument.getDateipfad());
