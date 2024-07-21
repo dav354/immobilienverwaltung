@@ -85,4 +85,13 @@ public class DemoModeConfig {
     public boolean isDemoMode() {
         return isDemoMode;
     }
+
+
+    /**
+     * Setzt den Demo-Modus auf false, nachdem die Daten geladen wurden.
+     */
+    public void disableDemoMode() {
+        isDemoMode = false;
+        configurationService.setDemoMode(false);
+    }
 }

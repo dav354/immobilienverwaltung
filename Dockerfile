@@ -20,7 +20,7 @@ EXPOSE $PORT
 WORKDIR /app
 
 # Kopieren aller notwendigen Dateien und Erstellen des Verzeichnisses für Dokumente in einem Schritt
-COPY DEMO /app/DEMO-DATA
+COPY DEMO /app/DEMO
 COPY target/immobilienverwaltung-0.0.1-SNAPSHOT.jar app.jar
 RUN mkdir -p data
 

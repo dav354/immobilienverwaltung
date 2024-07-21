@@ -57,6 +57,7 @@ public class MietvertragDemo implements CommandLineRunner {
     public void run(String... args) throws Exception {
         if (demoModeConfig.isDemoMode()) {
             assignMietvertragDemo();
+            demoModeConfig.disableDemoMode();
         } else {
             logger.info("Demo-Modus ist AUS. Zuweisung der Mietverträge wird übersprungen.");
         }
