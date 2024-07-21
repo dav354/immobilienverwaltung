@@ -51,9 +51,11 @@ class DokumentServiceTest {
         Dokument dokumentWithMieter = new Dokument();
         dokumentWithMieter.setWohnung(wohnung);
         dokumentWithMieter.setMieter(new Mieter());
+        dokumentWithMieter.setDateipfad("valid/path/to/document1.pdf");
 
         Dokument dokumentWithoutMieter = new Dokument();
         dokumentWithoutMieter.setWohnung(wohnung);
+        dokumentWithoutMieter.setDateipfad("valid/path/to/document2.pdf");
 
         List<Dokument> dokumentList = new ArrayList<>();
         dokumentList.add(dokumentWithMieter);
@@ -162,9 +164,11 @@ class DokumentServiceTest {
         Wohnung wohnung = new Wohnung();
         Dokument dokumentWithoutMieter1 = new Dokument();
         dokumentWithoutMieter1.setWohnung(wohnung);
+        dokumentWithoutMieter1.setDateipfad("valid/path/to/document1.pdf");
 
         Dokument dokumentWithoutMieter2 = new Dokument();
         dokumentWithoutMieter2.setWohnung(wohnung);
+        dokumentWithoutMieter2.setDateipfad("valid/path/to/document2.pdf");
 
         List<Dokument> dokumentList = new ArrayList<>();
         dokumentList.add(dokumentWithoutMieter1);
