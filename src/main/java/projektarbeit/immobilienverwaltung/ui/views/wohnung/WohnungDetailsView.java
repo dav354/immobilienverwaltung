@@ -37,6 +37,7 @@ import projektarbeit.immobilienverwaltung.ui.views.dialog.WohnungEditDialog;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.ZaehlerstandDialog;
 import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
 import projektarbeit.immobilienverwaltung.ui.views.dokumente.DokumenteListView;
+import projektarbeit.immobilienverwaltung.ui.views.mieter.MieterListView;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -160,12 +161,11 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         Button schliessenButton = new Button("Schließen");
         schliessenButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         schliessenButton.addClickListener(event -> {
-            if ("dokumente".equals(previousView)) {
-                UI.getCurrent().navigate(DokumenteListView.class);
-            } else if ("dashboard".equals(previousView)){
-                UI.getCurrent().navigate(MainView.class);
-            } else {
-                UI.getCurrent().navigate(WohnungListView.class);
+            switch (previousView) {
+                case "dokumente" -> UI.getCurrent().navigate(DokumenteListView.class);
+                case "dashboard" -> UI.getCurrent().navigate(MainView.class);
+                case "mieter-list" -> UI.getCurrent().navigate(MieterListView.class);
+                case null, default -> UI.getCurrent().navigate(WohnungListView.class);
             }
         });
         return schliessenButton;

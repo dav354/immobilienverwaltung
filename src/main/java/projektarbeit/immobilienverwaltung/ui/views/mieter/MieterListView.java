@@ -2,6 +2,7 @@ package projektarbeit.immobilienverwaltung.ui.views.mieter;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Html;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -17,14 +18,17 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.spring.annotation.UIScope;
 import jakarta.annotation.security.PermitAll;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Mietvertrag;
+import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.service.*;
 import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.MieterEditDialog;
+import projektarbeit.immobilienverwaltung.ui.views.wohnung.WohnungDetailsView;
 
 import java.text.NumberFormat;
 import java.time.LocalDate;
@@ -380,8 +384,27 @@ public class MieterListView extends VerticalLayout {
             addMietvertragColumn(Mietvertrag::getAnzahlBewohner, "Anzahl<br>Bewohner", false);
         if (mietbeginn.getValue()) addMietvertragColumn(Mietvertrag::getMietbeginn);
         if (mietende.getValue()) addMietvertragColumn(Mietvertrag::getMietende, "Mietende", false, true, true);
-        if (mietobjekt.getValue())
-            addMietvertragColumn(mietvertrag -> mietvertrag.getWohnung().getFormattedAddress(), "Mietobjekt", false);
+
+        grid.addColumn(new ComponentRenderer<>(mieter -> {
+            List<Mietvertrag> mietvertraege = mietvertragService.findByMieter(mieter.getMieter_id());
+
+            String content = mietvertraege.isEmpty() ? "" : mietvertraege.stream()
+                    .map(mietvertrag -> {
+                        Wohnung wohnung = mietvertrag.getWohnung();
+                        if (wohnung != null) {
+                            RouterLink link = new RouterLink(wohnung.getFormattedAddress(), WohnungDetailsView.class, wohnung.getWohnung_id());
+                            link.getElement().setAttribute("href", link.getHref() + "?previousView=mieter-list");
+                            return link.getElement().getOuterHTML();
+                        } else {
+                            return "";
+                        }
+                    })
+                    .collect(Collectors.joining("<br>"));
+
+            Span span = new Span();
+            span.getElement().setProperty("innerHTML", content);
+            return span;
+        })).setHeader(createCustomHeader("Mietobjekt")).setSortable(true);
 
         grid.getColumns().forEach(col -> col.setAutoWidth(true).setSortable(true));
     }
