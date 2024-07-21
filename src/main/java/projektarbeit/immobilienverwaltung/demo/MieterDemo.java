@@ -9,7 +9,7 @@ import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.repository.MieterRepository;
 import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
-import java.time.LocalDate;
+
 import java.util.List;
 
 /**
@@ -72,28 +72,28 @@ public class MieterDemo implements CommandLineRunner {
                 Mieter mieter1 = new Mieter("Doe", "John", "0123456789", "john@doe.com", 3000);
                 mieterRepository.save(mieter1);
 
-                Mieter mieter2 = new Mieter("Doe", "Jane", "9876543210","jane@doe.com", 4000);
+                Mieter mieter2 = new Mieter("Doe", "Jane", "9876543210", "jane@doe.com", 4000);
                 mieterRepository.save(mieter2);
 
-                Mieter mieter3 = new Mieter("Mustermann", "Max", "1234567890","max.mustermann@web.de", 2500);
+                Mieter mieter3 = new Mieter("Mustermann", "Max", "1234567890", "max.mustermann@web.de", 2500);
                 mieterRepository.save(mieter3);
 
-                Mieter mieter4 = new Mieter("Mustermann", "Erika", "0987654321", "erika.musterfrau@gmx.de",2800);
+                Mieter mieter4 = new Mieter("Mustermann", "Erika", "0987654321", "erika.musterfrau@gmx.de", 2800);
                 mieterRepository.save(mieter4);
 
                 Mieter mieter5 = new Mieter("Schmidt", "Peter", "0123456788", "peter.schmitt83@gmail.com", 3200);
                 mieterRepository.save(mieter5);
 
-                Mieter mieter6 = new Mieter("Schneider", "Laura", "9876543211","laura.schneider03@icloud.com", 4200);
+                Mieter mieter6 = new Mieter("Schneider", "Laura", "9876543211", "laura.schneider03@icloud.com", 4200);
                 mieterRepository.save(mieter6);
 
-                Mieter mieter7 = new Mieter("Matt", "John", "0123456789","jomat@tuta.de", 3000);
+                Mieter mieter7 = new Mieter("Matt", "John", "0123456789", "jomat@tuta.de", 3000);
                 mieterRepository.save(mieter7);
 
-                Mieter mieter8 = new Mieter("Matt", "Jane", "9876543210", "jamat@tuta.de",4000);
+                Mieter mieter8 = new Mieter("Matt", "Jane", "9876543210", "jamat@tuta.de", 4000);
                 mieterRepository.save(mieter8);
 
-                Mieter mieter9 = new Mieter("Musterfrau", "Max", "1234567890","MaxMusterfrau@gmail.com", 2500);
+                Mieter mieter9 = new Mieter("Musterfrau", "Max", "1234567890", "MaxMusterfrau@gmail.com", 2500);
                 mieterRepository.save(mieter9);
 
                 Mieter mieter10 = new Mieter("Musterfrau", "Erika", "0987654321", "erika@musterfrau.de", 2800);
@@ -102,7 +102,7 @@ public class MieterDemo implements CommandLineRunner {
                 Mieter mieter11 = new Mieter("Becker", "Lukas", "0123456788", "becker.lukas@gmail.com", 3200);
                 mieterRepository.save(mieter11);
 
-                Mieter mieter12 = new Mieter("Schneider", "Moritz", "9876543211","moritz.schneider@mailbox.org", 4200);
+                Mieter mieter12 = new Mieter("Schneider", "Moritz", "9876543211", "moritz.schneider@mailbox.org", 4200);
                 mieterRepository.save(mieter12);
 
                 logger.info("Mieterdaten geladen.");

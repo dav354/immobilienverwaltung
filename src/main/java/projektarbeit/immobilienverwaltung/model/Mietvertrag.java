@@ -63,12 +63,12 @@ public class Mietvertrag {
     /**
      * Erstellt einen neuen Mietvertrag mit den angegebenen Details.
      *
-     * @param mieter     Der Mieter (Mieter), der mit dem Mietvertrag verknüpft ist.
-     * @param wohnung    Die Immobilie (Wohnung), die mit dem Mietvertrag verknüpft ist.
-     * @param mietbeginn Das Startdatum des Mietvertrags.
-     * @param mietende   Das Enddatum des Mietvertrags.
-     * @param kaution    Die Kautionssumme für den Mietvertrag.
-     * @param miete      Die monatliche Miete für den Mietvertrag.
+     * @param mieter         Der Mieter (Mieter), der mit dem Mietvertrag verknüpft ist.
+     * @param wohnung        Die Immobilie (Wohnung), die mit dem Mietvertrag verknüpft ist.
+     * @param mietbeginn     Das Startdatum des Mietvertrags.
+     * @param mietende       Das Enddatum des Mietvertrags.
+     * @param kaution        Die Kautionssumme für den Mietvertrag.
+     * @param miete          Die monatliche Miete für den Mietvertrag.
      * @param anzahlBewohner Die Anzahl der Bewohner.
      */
     public Mietvertrag(Mieter mieter,

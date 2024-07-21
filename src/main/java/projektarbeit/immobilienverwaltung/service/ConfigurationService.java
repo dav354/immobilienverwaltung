@@ -27,16 +27,6 @@ public class ConfigurationService {
     }
 
     /**
-     * Setzt den Dark Mode-Status in der Datenbank.
-     *
-     * @param isDarkMode Der neue Dark Mode-Status.
-     */
-    @Transactional
-    public void setDarkMode(boolean isDarkMode) {
-        setBooleanValue("darkMode", isDarkMode);
-    }
-
-    /**
      * Prüft, ob der Dark Mode aktiviert ist.
      *
      * @return true, wenn der Dark Mode aktiviert ist, sonst false.
@@ -47,13 +37,13 @@ public class ConfigurationService {
     }
 
     /**
-     * Setzt den Demo-Modus-Status in der Datenbank.
+     * Setzt den Dark Mode-Status in der Datenbank.
      *
-     * @param isDemoMode Der neue Demo-Modus-Status.
+     * @param isDarkMode Der neue Dark Mode-Status.
      */
     @Transactional
-    public void setDemoMode(boolean isDemoMode) {
-        setBooleanValue("demoMode", isDemoMode);
+    public void setDarkMode(boolean isDarkMode) {
+        setBooleanValue("darkMode", isDarkMode);
     }
 
     /**
@@ -67,13 +57,13 @@ public class ConfigurationService {
     }
 
     /**
-     * Setzt den Status der Checkbox für vermietete Wohnungen.
+     * Setzt den Demo-Modus-Status in der Datenbank.
      *
-     * @param checked Der neue Status der Checkbox für vermietete Wohnungen.
+     * @param isDemoMode Der neue Demo-Modus-Status.
      */
     @Transactional
-    public void setVermieteteChecked(boolean checked) {
-        setBooleanValue("vermieteteChecked", checked);
+    public void setDemoMode(boolean isDemoMode) {
+        setBooleanValue("demoMode", isDemoMode);
     }
 
     /**
@@ -87,13 +77,13 @@ public class ConfigurationService {
     }
 
     /**
-     * Setzt den Status der Checkbox für unvermietete Wohnungen.
+     * Setzt den Status der Checkbox für vermietete Wohnungen.
      *
-     * @param checked Der neue Status der Checkbox für unvermietete Wohnungen.
+     * @param checked Der neue Status der Checkbox für vermietete Wohnungen.
      */
     @Transactional
-    public void setUnvermieteteChecked(boolean checked) {
-        setBooleanValue("unvermieteteChecked", checked);
+    public void setVermieteteChecked(boolean checked) {
+        setBooleanValue("vermieteteChecked", checked);
     }
 
     /**
@@ -104,6 +94,16 @@ public class ConfigurationService {
     @Transactional
     public boolean getUnvermieteteChecked() {
         return getBooleanValue("unvermieteteChecked", true);
+    }
+
+    /**
+     * Setzt den Status der Checkbox für unvermietete Wohnungen.
+     *
+     * @param checked Der neue Status der Checkbox für unvermietete Wohnungen.
+     */
+    @Transactional
+    public void setUnvermieteteChecked(boolean checked) {
+        setBooleanValue("unvermieteteChecked", checked);
     }
 
     /**
@@ -137,7 +137,7 @@ public class ConfigurationService {
     /**
      * Setzt den Status des Accordion in der Konfiguration.
      *
-     * @param key       Der Schlüssel der Konfiguration.
+     * @param key        Der Schlüssel der Konfiguration.
      * @param isExpanded Der zu setzende boolesche Wert.
      */
     @Transactional

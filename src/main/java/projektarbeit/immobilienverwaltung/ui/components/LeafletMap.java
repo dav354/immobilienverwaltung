@@ -15,8 +15,8 @@ import java.util.List;
 @JsModule("./map.js")
 public class LeafletMap extends VerticalLayout {
 
-    private Div mapContainer;
-    private List<Marker> markers;
+    private final Div mapContainer;
+    private final List<Marker> markers;
 
     /**
      * Konstruktor für die LeafletMap-Klasse.

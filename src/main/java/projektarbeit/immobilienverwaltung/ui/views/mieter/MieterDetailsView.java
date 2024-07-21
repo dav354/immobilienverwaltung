@@ -1,14 +1,18 @@
 package projektarbeit.immobilienverwaltung.ui.views.mieter;
 
-import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Composite;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -19,18 +23,23 @@ import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
-import projektarbeit.immobilienverwaltung.model.*;
+import projektarbeit.immobilienverwaltung.model.Dokument;
+import projektarbeit.immobilienverwaltung.model.Mieter;
+import projektarbeit.immobilienverwaltung.model.Mietvertrag;
 import projektarbeit.immobilienverwaltung.service.*;
-import projektarbeit.immobilienverwaltung.ui.components.UploadUtils;
-import projektarbeit.immobilienverwaltung.ui.views.dialog.ConfirmationDialog;
 import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
-import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
+import projektarbeit.immobilienverwaltung.ui.components.UploadUtils;
+import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
+import projektarbeit.immobilienverwaltung.ui.views.dialog.ConfirmationDialog;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.MieterEditDialog;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.VertragHinzufuegenDialog;
 import projektarbeit.immobilienverwaltung.ui.views.dokumente.DokumenteListView;
 import projektarbeit.immobilienverwaltung.ui.views.wohnung.WohnungListView;
+
 import java.util.List;
+
+import static projektarbeit.immobilienverwaltung.ui.components.TableUtils.createCustomHeader;
 
 /**
  * Diese Klasse stellt die Detailansicht eines Mieters dar und ermöglicht das Anzeigen von Mieterinformationen,
@@ -49,19 +58,19 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
     private final WohnungService wohnungsService;
     private final ConfigurationService configurationService;
     private final int tableRowHeight = 54;
-    private String previousView;
     Mieter currentMieter;
     List<Mietvertrag> mietvertrage;
+    private String previousView;
     private Grid<Mietvertrag> mietvertragGrid;
 
     /**
      * Konstruktor für die MieterDetailsView.
      *
-     * @param mietvertragService    Der Service für Mietverträge.
-     * @param mieterService         Der Service für Mieter.
-     * @param dokumentService       Der Service für Dokumente.
-     * @param wohnungsService       Der Service für Wohnungen.
-     * @param configurationService  Der Service für die Konfiguration.
+     * @param mietvertragService   Der Service für Mietverträge.
+     * @param mieterService        Der Service für Mieter.
+     * @param dokumentService      Der Service für Dokumente.
+     * @param wohnungsService      Der Service für Wohnungen.
+     * @param configurationService Der Service für die Konfiguration.
      */
     public MieterDetailsView(MietvertragService mietvertragService, MieterService mieterService, DokumentService dokumentService, WohnungService wohnungsService, ConfigurationService configurationService) {
         this.mietvertragService = mietvertragService;
@@ -74,8 +83,8 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
     /**
      * Setzt die Parameter für die View basierend auf der Mieter-ID.
      *
-     * @param event     Das Ereignis, das den Parameter enthält.
-     * @param mieterId  Die ID des Mieters.
+     * @param event    Das Ereignis, das den Parameter enthält.
+     * @param mieterId Die ID des Mieters.
      */
     @Override
     public void setParameter(BeforeEvent event, Long mieterId) {
@@ -164,7 +173,7 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         schliessenButton.addClickListener(event -> {
             if ("dokumente".equals(previousView)) {
                 UI.getCurrent().navigate(DokumenteListView.class);
-            } else if ("wohnungen".equals(previousView)){
+            } else if ("wohnungen".equals(previousView)) {
                 UI.getCurrent().navigate(WohnungListView.class);
             } else {
                 UI.getCurrent().navigate(MieterListView.class);
@@ -220,9 +229,9 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
     /**
      * Fügt ein Detail zum FormLayout hinzu, wenn der Wert nicht null ist.
      *
-     * @param formLayout    Das FormLayout, zu dem das Detail hinzugefügt werden soll.
-     * @param label         Das Label für das Detail.
-     * @param value         Der Wert des Details.
+     * @param formLayout Das FormLayout, zu dem das Detail hinzugefügt werden soll.
+     * @param label      Das Label für das Detail.
+     * @param value      Der Wert des Details.
      */
     private void addDetailToFormLayout(FormLayout formLayout, String label, String value) {
         if (value != null) {
@@ -270,7 +279,7 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
      *
      * @return Das Grid mit den Mietverträgen.
      */
-    private Grid <Mietvertrag> createMietvertragsGrid(){
+    private Grid<Mietvertrag> createMietvertragsGrid() {
 
         // Grid für Mietvertragsdaten erstellen
         mietvertragGrid = new Grid<>();
@@ -386,16 +395,6 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         List<Dokument> dokuments = dokumentService.findDokumenteByMieter(currentMieter);
         dokumentService.configureDokumentGrid(dokumentGrid, dokuments, currentMieter, tableRowHeight, configurationService, this::refreshView);
         return dokumentGrid;
-    }
-
-    /**
-     * Erstellt eine benutzerdefinierte Überschrift für die Tabelle.
-     *
-     * @param text der Text der Überschrift.
-     * @return das konfigurierte Div-Element mit der benutzerdefinierten CSS-Klasse.
-     */
-    private Html createCustomHeader(String text) {
-        return new Html("<div class='custom-header'>" + text + "</div>");
     }
 
     /**

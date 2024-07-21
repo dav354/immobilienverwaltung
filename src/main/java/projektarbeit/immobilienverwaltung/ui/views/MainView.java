@@ -1,10 +1,11 @@
 package projektarbeit.immobilienverwaltung.ui.views;
 
+import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -15,17 +16,15 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
-import com.vaadin.flow.component.AttachEvent;
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
+import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 import projektarbeit.immobilienverwaltung.service.DashboardService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.ui.components.LeafletMap;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
-import projektarbeit.immobilienverwaltung.model.Wohnung;
-
-import jakarta.annotation.PostConstruct;
 import projektarbeit.immobilienverwaltung.ui.views.wohnung.WohnungDetailsView;
 
 import java.text.NumberFormat;
@@ -60,7 +59,7 @@ public class MainView extends VerticalLayout {
      * Konstruktor für die MainView-Klasse.
      *
      * @param dashboardService der Service, der die Daten für die Statistiken bereitstellt.
-     * @param wohnungService der Service, der die Daten für die Wohnungen bereitstellt.
+     * @param wohnungService   der Service, der die Daten für die Wohnungen bereitstellt.
      */
     @Autowired
     public MainView(DashboardService dashboardService, WohnungService wohnungService, ConfigurationService configurationService) {
@@ -137,9 +136,9 @@ public class MainView extends VerticalLayout {
     /**
      * Erstellt ein Div-Element für eine Statistik.
      *
-     * @param title   der Titel der Statistik.
-     * @param value   der Wert der Statistik.
-     * @param icon    das Icon der Statistik.
+     * @param title der Titel der Statistik.
+     * @param value der Wert der Statistik.
+     * @param icon  das Icon der Statistik.
      * @return ein Div-Element, das die Statistik anzeigt.
      */
     private Div createStatDiv(String title, String value, Icon icon) {
@@ -223,7 +222,7 @@ public class MainView extends VerticalLayout {
     /**
      * Erstellt und konfiguriert ein Div-Element mit Titel und Wert.
      *
-     * @param title Der Titel des Div-Elements.
+     * @param title                  Der Titel des Div-Elements.
      * @param formattedMieteinnahmen Der formatierte Wert der Mieteinnahmen.
      * @return Ein Div-Element, das den Titel und den Wert anzeigt.
      */

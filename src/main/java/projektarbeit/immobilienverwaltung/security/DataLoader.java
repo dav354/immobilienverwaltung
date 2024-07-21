@@ -1,5 +1,6 @@
 package projektarbeit.immobilienverwaltung.security;
 
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,7 +11,6 @@ import projektarbeit.immobilienverwaltung.model.User;
 import projektarbeit.immobilienverwaltung.repository.RoleRepository;
 import projektarbeit.immobilienverwaltung.repository.UserRepository;
 
-import jakarta.annotation.PostConstruct;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
@@ -23,24 +23,21 @@ import java.util.Optional;
 public class DataLoader {
 
     private static final Logger logger = LoggerFactory.getLogger(DataLoader.class);
-
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
     // Injection des Admin-Benutzernamens aus der Umgebungsvariable oder den Anwendungseigenschaften
     @Value("${admin.username}")
     private String adminUsername;
-
     // Injection des Admin-Passworts aus der Umgebungsvariable oder den Anwendungseigenschaften
     @Value("${admin.password}")
     private String adminPassword;
 
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
-
     /**
      * Konstruktor für DataLoader.
      *
-     * @param userRepository Das Repository zur Interaktion mit Benutzerdaten in der Datenbank.
-     * @param roleRepository Das Repository zur Interaktion mit Rollendaten in der Datenbank.
+     * @param userRepository  Das Repository zur Interaktion mit Benutzerdaten in der Datenbank.
+     * @param roleRepository  Das Repository zur Interaktion mit Rollendaten in der Datenbank.
      * @param passwordEncoder Der Encoder zum Verschlüsseln von Benutzerpasswörtern.
      */
     public DataLoader(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {

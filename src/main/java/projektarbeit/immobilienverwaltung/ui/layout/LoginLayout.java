@@ -12,7 +12,7 @@ import com.vaadin.flow.theme.lumo.Lumo;
  */
 @CssImport("./styles/shared-styles.css")
 @AnonymousAllowed
-public class    LoginLayout extends VerticalLayout implements RouterLayout {
+public class LoginLayout extends VerticalLayout implements RouterLayout {
 
     /**
      * Konstruktor für die LoginLayout-Klasse.

@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import projektarbeit.immobilienverwaltung.model.Dokument;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.repository.DokumentRepository;
@@ -29,20 +28,18 @@ import java.util.Random;
 public class DokumentDemo implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(DokumentDemo.class);
-
+    private static final String DEMO_PDF_PATH = "DEMO/demo_pdf_document.pdf";
+    private static final String DEMO_SVG_PATH = "DEMO/genericbuilding2.svg";
     private final DemoModeConfig demoModeConfig;
     private final DokumentRepository dokumentRepository;
     private final WohnungRepository wohnungRepository;
     private final MieterRepository mieterRepository;
     private final DokumentService dokumentService;
 
-    private static final String DEMO_PDF_PATH = "DEMO/demo_pdf_document.pdf";
-    private static final String DEMO_SVG_PATH = "DEMO/genericbuilding2.svg";
-
     /**
      * Konstruktor für DokumentDemo.
      *
-     * @param demoModeConfig    Die Konfiguration des Demo-Modus.
+     * @param demoModeConfig     Die Konfiguration des Demo-Modus.
      * @param dokumentRepository Das Repository zur Verwaltung von Dokument-Entitäten.
      * @param wohnungRepository  Das Repository zur Verwaltung von Wohnungs-Entitäten.
      * @param mieterRepository   Das Repository zur Verwaltung von Mieter-Entitäten.

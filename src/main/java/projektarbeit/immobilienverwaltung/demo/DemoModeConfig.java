@@ -9,8 +9,6 @@ import projektarbeit.immobilienverwaltung.repository.MieterRepository;
 import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
 import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 
-import java.util.Optional;
-
 /**
  * Konfigurationsklasse zur Verwaltung des Demo-Modus.
  * Diese Klasse liest die Einstellung des Demo-Modus aus den Anwendungseigenschaften und bietet eine Methode zur Überprüfung, ob der Demo-Modus aktiviert ist.

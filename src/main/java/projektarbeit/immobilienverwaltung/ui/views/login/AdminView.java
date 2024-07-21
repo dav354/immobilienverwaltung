@@ -1,6 +1,5 @@
 package projektarbeit.immobilienverwaltung.ui.views.login;
 
-import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -29,16 +28,17 @@ import projektarbeit.immobilienverwaltung.repository.RoleRepository;
 import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 import projektarbeit.immobilienverwaltung.service.SecurityService;
 import projektarbeit.immobilienverwaltung.service.UserService;
-import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
+import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
 import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
-
-import projektarbeit.immobilienverwaltung.ui.components.*;
+import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.ConfirmationDialog;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static projektarbeit.immobilienverwaltung.ui.components.TableUtils.createCustomHeader;
 
 /**
  * Diese Klasse stellt die Admin-Ansicht dar, die es einem Administrator ermöglicht, Benutzer zu verwalten.
@@ -57,9 +57,9 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
     /**
      * Konstruktor für die AdminView-Klasse.
      *
-     * @param userService      der UserService zur Verwaltung der Benutzer
-     * @param roleRepository   das RoleRepository zur Verwaltung der Rollen
-     * @param securityService  der SecurityService zur Handhabung der Sicherheitsfunktionen
+     * @param userService     der UserService zur Verwaltung der Benutzer
+     * @param roleRepository  das RoleRepository zur Verwaltung der Rollen
+     * @param securityService der SecurityService zur Handhabung der Sicherheitsfunktionen
      */
 
     @Autowired
@@ -167,16 +167,6 @@ public class AdminView extends VerticalLayout implements BeforeEnterObserver {
 
         // Benutzer in das Grid laden
         updateUserGrid();
-    }
-
-    /**
-     * Erstellt eine benutzerdefinierte Header-Komponente mit HTML und CSS-Klassen.
-     *
-     * @param text Der Text für den Header.
-     * @return Die Html-Komponente für den Header.
-     */
-    private Html createCustomHeader(String text) {
-        return new Html("<span class='custom-header'>" + text + "</span>");
     }
 
     private Button getDeleteButton(UserService userService, ConfigurationService configurationService, User user) {

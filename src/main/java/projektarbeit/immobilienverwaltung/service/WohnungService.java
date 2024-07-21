@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import projektarbeit.immobilienverwaltung.model.*;
 import projektarbeit.immobilienverwaltung.repository.*;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

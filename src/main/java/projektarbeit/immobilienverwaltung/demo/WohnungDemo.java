@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import projektarbeit.immobilienverwaltung.model.Land;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
-import projektarbeit.immobilienverwaltung.model.Land;
 
 /**
  * Initialisiert die Wohnungsdaten zu Demozwecken.

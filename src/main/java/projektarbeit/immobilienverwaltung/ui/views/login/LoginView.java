@@ -25,7 +25,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
      * Konstruktor für die LoginView-Klasse.
      * Initialisiert das Layout und die Komponenten der Login-Ansicht.
      */
-    public LoginView(){
+    public LoginView() {
         addClassName("login-view");
         setSizeFull();
         setAlignItems(Alignment.CENTER);
@@ -46,7 +46,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
         // Informiert den Benutzer über einen Authentifizierungsfehler
-        if(beforeEnterEvent.getLocation()
+        if (beforeEnterEvent.getLocation()
                 .getQueryParameters()
                 .getParameters()
                 .containsKey("error")) {

@@ -32,9 +32,9 @@ public class MietvertragDemo implements CommandLineRunner {
     /**
      * Konstruktor für MietvertragDemo.
      *
-     * @param demoModeConfig    Die Konfiguration des Demo-Modus.
-     * @param mieterRepository  Das Repository zur Verwaltung von Mieter-Entitäten.
-     * @param wohnungRepository Das Repository zur Verwaltung von Wohnungs-Entitäten.
+     * @param demoModeConfig     Die Konfiguration des Demo-Modus.
+     * @param mieterRepository   Das Repository zur Verwaltung von Mieter-Entitäten.
+     * @param wohnungRepository  Das Repository zur Verwaltung von Wohnungs-Entitäten.
      * @param mietvertragService Der Service zur Verwaltung mietvertragbezogener Operationen.
      */
     public MietvertragDemo(DemoModeConfig demoModeConfig,

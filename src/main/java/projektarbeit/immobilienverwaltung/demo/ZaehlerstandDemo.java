@@ -5,16 +5,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import projektarbeit.immobilienverwaltung.model.Zaehlerstand;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
+import projektarbeit.immobilienverwaltung.model.Zaehlerstand;
 import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
 import projektarbeit.immobilienverwaltung.repository.ZaehlerstandRepository;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.Random;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Initialisiert die Zaehlerstand-Daten (Zählerstände) zu Demozwecken.
@@ -34,9 +34,9 @@ public class ZaehlerstandDemo implements CommandLineRunner {
     /**
      * Konstruktor für ZaehlerstandDemo.
      *
-     * @param demoModeConfig       Die Konfiguration des Demo-Modus.
+     * @param demoModeConfig         Die Konfiguration des Demo-Modus.
      * @param zaehlerstandRepository Das Repository zur Verwaltung von Zaehlerstand-Entitäten.
-     * @param wohnungRepository    Das Repository zur Verwaltung von Wohnungs-Entitäten.
+     * @param wohnungRepository      Das Repository zur Verwaltung von Wohnungs-Entitäten.
      */
     public ZaehlerstandDemo(DemoModeConfig demoModeConfig,
                             ZaehlerstandRepository zaehlerstandRepository,

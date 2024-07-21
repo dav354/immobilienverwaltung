@@ -23,7 +23,9 @@ import jakarta.annotation.security.PermitAll;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Mietvertrag;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
-import projektarbeit.immobilienverwaltung.service.*;
+import projektarbeit.immobilienverwaltung.service.ConfigurationService;
+import projektarbeit.immobilienverwaltung.service.MieterService;
+import projektarbeit.immobilienverwaltung.service.MietvertragService;
 import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.MieterEditDialog;
@@ -35,6 +37,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
+
+import static projektarbeit.immobilienverwaltung.ui.components.TableUtils.createCustomHeader;
 
 /**
  * Die MieterListView zeigt eine Liste der Mieter an.
@@ -155,28 +159,28 @@ public class MieterListView extends VerticalLayout {
      */
     private <T> void addMietvertragColumn(ValueProvider<Mietvertrag, T> valueProvider, String headerHtml, boolean isCurrency, boolean isDate, boolean isMietende) {
         grid.addColumn(new ComponentRenderer<>(mieter -> {
-                    List<Mietvertrag> mietvertraege = mietvertragService.findByMieter(mieter.getMieter_id());
+            List<Mietvertrag> mietvertraege = mietvertragService.findByMieter(mieter.getMieter_id());
 
-                    String content = mietvertraege.isEmpty() ? "" : mietvertraege.stream()
-                            .map(mietvertrag -> {
-                                T value = valueProvider.apply(mietvertrag);
+            String content = mietvertraege.isEmpty() ? "" : mietvertraege.stream()
+                    .map(mietvertrag -> {
+                        T value = valueProvider.apply(mietvertrag);
 
-                                if (isCurrency) {
-                                    return NumberFormat.getCurrencyInstance(Locale.GERMANY).format(value);
-                                } else if (isDate && value instanceof LocalDate) {
-                                    return ((LocalDate) value).format(DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.GERMANY));
-                                } else if (isMietende && value == null && mietvertrag.getMietbeginn() != null) {
-                                    return "Unbefristet";
-                                } else {
-                                    return value != null ? value.toString() : "";
-                                }
-                            })
-                            .collect(Collectors.joining("<br>"));
+                        if (isCurrency) {
+                            return NumberFormat.getCurrencyInstance(Locale.GERMANY).format(value);
+                        } else if (isDate && value instanceof LocalDate) {
+                            return ((LocalDate) value).format(DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.GERMANY));
+                        } else if (isMietende && value == null && mietvertrag.getMietbeginn() != null) {
+                            return "Unbefristet";
+                        } else {
+                            return value != null ? value.toString() : "";
+                        }
+                    })
+                    .collect(Collectors.joining("<br>"));
 
-                    Span span = new Span();
-                    span.getElement().setProperty("innerHTML", content);
-                    return span;
-                })).setHeader(createCustomHeader(headerHtml));
+            Span span = new Span();
+            span.getElement().setProperty("innerHTML", content);
+            return span;
+        })).setHeader(createCustomHeader(headerHtml));
     }
 
     private <T> void addMietvertragColumn(ValueProvider<Mietvertrag, T> valueProvider) {
@@ -308,7 +312,8 @@ public class MieterListView extends VerticalLayout {
 
         grid.addColumn(Mieter::getName).setHeader(createCustomHeader("Name")).setSortable(true);
         grid.addColumn(Mieter::getVorname).setHeader(createCustomHeader("Vorname")).setSortable(true);
-        if (telefonnummer.getValue()) grid.addColumn(Mieter::getTelefonnummer).setHeader(createCustomHeader("Telefonnummer")).setSortable(true);
+        if (telefonnummer.getValue())
+            grid.addColumn(Mieter::getTelefonnummer).setHeader(createCustomHeader("Telefonnummer")).setSortable(true);
         if (email.getValue()) grid.addColumn(Mieter::getEmail).setHeader(createCustomHeader("Email")).setSortable(true);
 
         if (einkommen.getValue()) {
@@ -362,16 +367,6 @@ public class MieterListView extends VerticalLayout {
             getUI().ifPresent(ui -> ui.navigate(MieterDetailsView.class, neuerMieter.getMieter_id()));
         }, configurationService);
         dialog.open();
-    }
-
-    /**
-     * Erstellt eine benutzerdefinierte Überschrift für die Tabelle.
-     *
-     * @param text der Text der Überschrift.
-     * @return das konfigurierte Div-Element mit der benutzerdefinierten CSS-Klasse.
-     */
-    private Html createCustomHeader(String text) {
-        return new Html("<div class='custom-header'>" + text + "</div>");
     }
 
     /**

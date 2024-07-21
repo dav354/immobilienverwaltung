@@ -33,11 +33,11 @@ public class VertragHinzufuegenDialog extends DialogLayout {
     /**
      * Konstruktor für den VertragHinzufuegenDialog. Erstellung des Dialogfensters mit seinen Eingabefeldern.
      *
-     * @param mieter                Der Mieter, dem der Mietvertrag hinzugefügt wird.
-     * @param mietvertragService    Der Service für Mietverträge.
-     * @param onSuccess             Eine Callback-Funktion, die nach erfolgreichem Speichern ausgeführt wird.
-     * @param configurationService  Der Service für die Konfiguration.
-     * @param wohnungService        Der Service für Wohnungen.
+     * @param mieter               Der Mieter, dem der Mietvertrag hinzugefügt wird.
+     * @param mietvertragService   Der Service für Mietverträge.
+     * @param onSuccess            Eine Callback-Funktion, die nach erfolgreichem Speichern ausgeführt wird.
+     * @param configurationService Der Service für die Konfiguration.
+     * @param wohnungService       Der Service für Wohnungen.
      */
     public VertragHinzufuegenDialog(Mieter mieter, MietvertragService mietvertragService, Runnable onSuccess, ConfigurationService configurationService, WohnungService wohnungService) {
 
@@ -55,7 +55,7 @@ public class VertragHinzufuegenDialog extends DialogLayout {
         wohnungComboBox.setItems(wohnungService.findWohnungenWithoutMietvertrag());
         wohnungComboBox.setItemLabelGenerator(Wohnung::getFormattedAddress);
         binder.forField(wohnungComboBox).asRequired("Wohnung ist erforderlich")
-                .bind(Mietvertrag::getWohnung,Mietvertrag::setWohnung);
+                .bind(Mietvertrag::getWohnung, Mietvertrag::setWohnung);
 
         NumberField miete = new NumberField("Miete");
         binder.forField(miete).asRequired("Miete muss positiv sein")
@@ -116,9 +116,9 @@ public class VertragHinzufuegenDialog extends DialogLayout {
     /**
      * Methode zum Speichern des Mietvertrags.
      *
-     * @param mietvertrag           Der Mietvertrag, der gespeichert werden soll.
-     * @param mietvertragService    Der Service für Mietverträge.
-     * @param onSuccess             Die Callback-Funktion, die nach erfolgreichem Speichern aufgerufen wird.
+     * @param mietvertrag        Der Mietvertrag, der gespeichert werden soll.
+     * @param mietvertragService Der Service für Mietverträge.
+     * @param onSuccess          Die Callback-Funktion, die nach erfolgreichem Speichern aufgerufen wird.
      */
     private void saveMietvertrag(Mietvertrag mietvertrag, MietvertragService mietvertragService, Runnable onSuccess) {
         // Daten aus Binder in den Mietvertrag übertragen, wenn gültig

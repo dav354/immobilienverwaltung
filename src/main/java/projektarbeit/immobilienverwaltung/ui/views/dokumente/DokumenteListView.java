@@ -34,6 +34,8 @@ import projektarbeit.immobilienverwaltung.ui.views.wohnung.WohnungDetailsView;
 
 import java.util.List;
 
+import static projektarbeit.immobilienverwaltung.ui.components.TableUtils.createCustomHeader;
+
 /**
  * Die DokumenteListView ist die Ansicht, die alle Dokumente in einer Tabelle darstellt.
  * Sie ermöglicht das Filtern und Durchsuchen der Dokumente nach Mietern oder Wohnungen.
@@ -235,17 +237,6 @@ public class DokumenteListView extends VerticalLayout {
         dokumentGrid.setItems(dokumentService.findAllDokumente());
         dokumentGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
     }
-
-    /**
-     * Erstellt eine benutzerdefinierte Header-Komponente mit HTML und CSS-Klassen.
-     *
-     * @param text Der Text für den Header.
-     * @return Die Html-Komponente für den Header.
-     */
-    private Html createCustomHeader(String text) {
-        return new Html("<span class='custom-header'>" + text + "</span>");
-    }
-
 
     /**
      * Fügt an geeigneten Stellen in der Adresse Umbrüche ein.

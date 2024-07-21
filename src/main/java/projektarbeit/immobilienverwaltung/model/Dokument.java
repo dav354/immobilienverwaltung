@@ -2,8 +2,6 @@ package projektarbeit.immobilienverwaltung.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 
 /**
  * Repräsentiert eine Dokument-Entität, die einer Immobilie (Wohnung) oder einem Mieter zugeordnet ist.

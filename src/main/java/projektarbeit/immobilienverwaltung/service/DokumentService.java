@@ -35,6 +35,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.UUID;
 
+import static projektarbeit.immobilienverwaltung.ui.components.TableUtils.createCustomHeader;
+
 /**
  * Service-Klasse zur Verwaltung von Dokument-Entitäten.
  */
@@ -295,11 +297,11 @@ public class DokumentService {
     /**
      * Behandelt das Hochladen von Dateien.
      *
-     * @param fileName     Der Name der hochgeladenen Datei.
-     * @param inputStream  Der InputStream der hochgeladenen Datei.
-     * @param mimeType     Der MIME-Typ der hochgeladenen Datei.
-     * @param entity       Das Objekt (Wohnung oder Mieter), zu dem das Dokument gehört.
-     * @param refreshView  Die Methode zum Aktualisieren der Ansicht.
+     * @param fileName    Der Name der hochgeladenen Datei.
+     * @param inputStream Der InputStream der hochgeladenen Datei.
+     * @param mimeType    Der MIME-Typ der hochgeladenen Datei.
+     * @param entity      Das Objekt (Wohnung oder Mieter), zu dem das Dokument gehört.
+     * @param refreshView Die Methode zum Aktualisieren der Ansicht.
      */
     public void handleFileUpload(String fileName, InputStream inputStream, String mimeType, Object entity, Runnable refreshView) {
         try {
@@ -396,7 +398,7 @@ public class DokumentService {
      */
     public void configureDokumentGrid(Grid<Dokument> dokumentGrid, List<Dokument> dokuments, Object entity, int tableRowHeight, ConfigurationService configurationService, Runnable refreshView) {
         dokumentGrid.setColumns(); // Entferne die automatische Spalteneinstellung
-        dokumentGrid.addColumn(Dokument::getDokumententyp).setHeader("Dokumententyp");
+        dokumentGrid.addColumn(Dokument::getDokumententyp).setHeader(createCustomHeader("Dokumententyp"));
 
         dokumentGrid.addComponentColumn(dokument -> {
             HorizontalLayout actionsLayout = new HorizontalLayout();
@@ -418,10 +420,11 @@ public class DokumentService {
 
             actionsLayout.add(viewButton, deleteButton, downloadButton);
             return actionsLayout;
-        }).setHeader("Actions").setFlexGrow(0).setAutoWidth(true);
+        }).setHeader(createCustomHeader("Actions")).setFlexGrow(0).setAutoWidth(true);
 
         TableUtils.configureGrid(dokumentGrid, dokuments, tableRowHeight);
     }
+
 
     /**
      * Gibt den Speicherort für Dokumente zurück.

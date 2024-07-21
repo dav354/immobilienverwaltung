@@ -32,7 +32,7 @@ public class SecurityConfig extends VaadinWebSecurity {
      * @param userRepository Das Repository für Benutzer.
      */
     @Autowired
-    public SecurityConfig(UserRepository userRepository){
+    public SecurityConfig(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

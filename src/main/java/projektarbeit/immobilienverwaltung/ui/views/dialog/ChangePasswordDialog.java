@@ -40,7 +40,8 @@ public class ChangePasswordDialog extends DialogLayout {
                 .asRequired("Neues Passwort ist erforderlich")
                 .withValidator(password -> password.matches("(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,20}"),
                         "Das Passwort muss 8-20 Zeichen lang sein, Groß- und Kleinbuchstaben, eine Zahl und ein Sonderzeichen (@#$%^&+=!) enthalten.")
-                .bind(user -> "", (user, password) -> {}); // Dummy-Bindung
+                .bind(user -> "", (user, password) -> {
+                }); // Dummy-Bindung
 
         PasswordField confirmPasswordField = new PasswordField("Passwort bestätigen");
         binder.forField(confirmPasswordField)
@@ -48,7 +49,8 @@ public class ChangePasswordDialog extends DialogLayout {
                 .withValidator(password -> password.matches("(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,20}"),
                         "Das Passwort muss 8-20 Zeichen lang sein, Groß- und Kleinbuchstaben, eine Zahl und ein Sonderzeichen (@#$%^&+=!) enthalten.")
                 .withValidator(confirmPassword -> confirmPassword.equals(newPasswordField.getValue()), "Passwörter stimmen nicht überein")
-                .bind(user -> "", (user, password) -> {}); // Dummy-Bindung
+                .bind(user -> "", (user, password) -> {
+                }); // Dummy-Bindung
 
         // Felder zum Formularlayout hinzufügen
         formLayout.add(newPasswordField, confirmPasswordField);

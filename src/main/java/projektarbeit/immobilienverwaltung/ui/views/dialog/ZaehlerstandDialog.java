@@ -25,9 +25,9 @@ public class ZaehlerstandDialog extends DialogLayout {
     /**
      * Konstruktor für ZaehlerstandDialog.
      *
-     * @param zaehlerstandService der Service zur Verwaltung der Zaehlerstand-Operationen.
-     * @param zaehlerstand der zu bearbeitende Zaehlerstand.
-     * @param onSave der Callback, der nach dem Speichern des Zaehlerstands ausgeführt wird.
+     * @param zaehlerstandService  der Service zur Verwaltung der Zaehlerstand-Operationen.
+     * @param zaehlerstand         der zu bearbeitende Zaehlerstand.
+     * @param onSave               der Callback, der nach dem Speichern des Zaehlerstands ausgeführt wird.
      * @param configurationService der ConfigurationService zur Verwaltung der Konfigurationseinstellungen.
      */
     public ZaehlerstandDialog(ZaehlerstandService zaehlerstandService, Zaehlerstand zaehlerstand, Runnable onSave, ConfigurationService configurationService) {

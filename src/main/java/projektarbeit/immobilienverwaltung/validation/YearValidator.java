@@ -16,7 +16,8 @@ public class YearValidator implements ConstraintValidator<ValidYear, Integer> {
      * @param constraint die Instanz der Constraint-Annotation
      */
     @Override
-    public void initialize(ValidYear constraint) {}
+    public void initialize(ValidYear constraint) {
+    }
 
     /**
      * Validiert, ob das angegebene Jahr gültig ist.

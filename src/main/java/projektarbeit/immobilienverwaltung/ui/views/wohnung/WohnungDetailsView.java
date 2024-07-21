@@ -1,11 +1,9 @@
 package projektarbeit.immobilienverwaltung.ui.views.wohnung;
 
 import com.vaadin.flow.component.Composite;
-import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
@@ -29,21 +27,23 @@ import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 import projektarbeit.immobilienverwaltung.service.DokumentService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.service.ZaehlerstandService;
-import projektarbeit.immobilienverwaltung.ui.components.UploadUtils;
-import projektarbeit.immobilienverwaltung.ui.views.MainView;
-import projektarbeit.immobilienverwaltung.ui.views.dialog.ConfirmationDialog;
 import projektarbeit.immobilienverwaltung.ui.components.MapComponent;
 import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
+import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
+import projektarbeit.immobilienverwaltung.ui.components.UploadUtils;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
+import projektarbeit.immobilienverwaltung.ui.views.MainView;
+import projektarbeit.immobilienverwaltung.ui.views.dialog.ConfirmationDialog;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.WohnungEditDialog;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.ZaehlerstandDialog;
-import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
 import projektarbeit.immobilienverwaltung.ui.views.dokumente.DokumenteListView;
 import projektarbeit.immobilienverwaltung.ui.views.mieter.MieterListView;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+
+import static projektarbeit.immobilienverwaltung.ui.components.TableUtils.createCustomHeader;
 
 /**
  * View zur Anzeige der Details einer Wohnung.
@@ -57,9 +57,9 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
     private final WohnungService wohnungService;
     private final DokumentService dokumentService;
     private final ZaehlerstandService zaehlerstandService;
-    private Wohnung currentWohnung;
     private final ConfigurationService configurationService;
     private final int tableRowHeight = 54;
+    private Wohnung currentWohnung;
     private String previousView;
 
     /**
@@ -378,16 +378,6 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
             container.add(labelSpan, valueSpan);
             formLayout.add(container);
         }
-    }
-
-    /**
-     * Erstellt eine benutzerdefinierte Überschrift für die Tabelle.
-     *
-     * @param text der Text der Überschrift.
-     * @return das konfigurierte Div-Element mit der benutzerdefinierten CSS-Klasse.
-     */
-    private Html createCustomHeader(String text) {
-        return new Html("<div class='custom-header'>" + text + "</div>");
     }
 
     /**

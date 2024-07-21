@@ -4,17 +4,14 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.converter.StringToDoubleConverter;
-import com.vaadin.flow.data.validator.DoubleRangeValidator;
 import com.vaadin.flow.data.validator.RegexpValidator;
-import com.vaadin.flow.data.value.ValueChangeMode;
 import projektarbeit.immobilienverwaltung.model.Mieter;
+import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 import projektarbeit.immobilienverwaltung.service.MieterService;
 import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
-import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 import projektarbeit.immobilienverwaltung.ui.layout.DialogLayout;
 
 /**
@@ -97,9 +94,9 @@ public class MieterEditDialog extends DialogLayout {
     /**
      * Methode zum Speichern der Mieterdaten.
      *
-     * @param mieter                Der Mieter, dessen Daten gespeichert werden sollen.
-     * @param mieterService         Der Service für Mieteroperationen.
-     * @param onSuccess             Die Callback-Funktion, die nach erfolgreichem Speichern aufgerufen wird.
+     * @param mieter        Der Mieter, dessen Daten gespeichert werden sollen.
+     * @param mieterService Der Service für Mieteroperationen.
+     * @param onSuccess     Die Callback-Funktion, die nach erfolgreichem Speichern aufgerufen wird.
      */
     private void saveMieter(Mieter mieter, MieterService mieterService, Runnable onSuccess) {
         if (binder.writeBeanIfValid(mieter)) {

@@ -3,8 +3,8 @@ package projektarbeit.immobilienverwaltung.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import projektarbeit.immobilienverwaltung.model.Mietvertrag;
-import projektarbeit.immobilienverwaltung.repository.MietvertragRepository;
 import projektarbeit.immobilienverwaltung.repository.MieterRepository;
+import projektarbeit.immobilienverwaltung.repository.MietvertragRepository;
 import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
 
 import java.util.HashMap;

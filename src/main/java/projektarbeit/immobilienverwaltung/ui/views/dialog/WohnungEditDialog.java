@@ -32,9 +32,9 @@ public class WohnungEditDialog extends DialogLayout {
     /**
      * Konstruktor für WohnungEditDialog.
      *
-     * @param wohnungService der Service zur Verwaltung von Wohnungen.
-     * @param wohnung die zu bearbeitende Wohnung.
-     * @param onSave der Callback, der nach dem Speichern der Wohnung ausgeführt wird.
+     * @param wohnungService       der Service zur Verwaltung von Wohnungen.
+     * @param wohnung              die zu bearbeitende Wohnung.
+     * @param onSave               der Callback, der nach dem Speichern der Wohnung ausgeführt wird.
      * @param configurationService der ConfigurationService zur Verwaltung der Konfigurationseinstellungen.
      */
     public WohnungEditDialog(WohnungService wohnungService, Wohnung wohnung, Runnable onSave, ConfigurationService configurationService) {

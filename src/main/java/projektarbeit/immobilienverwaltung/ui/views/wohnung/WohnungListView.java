@@ -28,15 +28,17 @@ import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 import projektarbeit.immobilienverwaltung.service.MietvertragService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
+import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.WohnungEditDialog;
-import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
 import projektarbeit.immobilienverwaltung.ui.views.mieter.MieterDetailsView;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static projektarbeit.immobilienverwaltung.ui.components.TableUtils.createCustomHeader;
 
 /**
  * Die WohnungListView ist die Ansicht, die alle Wohnungen in einer hierarchischen Tabelle darstellt.
@@ -52,8 +54,6 @@ public class WohnungListView extends VerticalLayout {
     private final WohnungService wohnungService;
     private final MietvertragService mietvertragService;
     private final ConfigurationService configurationService;
-    private Set<String> expandedNodeIds = new HashSet<>();
-
     TreeGrid<Wohnung> treeGrid = new TreeGrid<>(Wohnung.class);
     TextField searchField = new TextField();
     Accordion filter = new Accordion();
@@ -67,7 +67,7 @@ public class WohnungListView extends VerticalLayout {
     Checkbox garten = new Checkbox("Garten");
     Checkbox klimaanlage = new Checkbox("Klimaanlage");
     Checkbox mieter = new Checkbox("Mieter");
-
+    private Set<String> expandedNodeIds = new HashSet<>();
     private Grid.Column<Wohnung> wohnungsnummerColumn;
     private Grid.Column<Wohnung> stockwerkColumn;
 
@@ -212,7 +212,8 @@ public class WohnungListView extends VerticalLayout {
         treeGrid.addHierarchyColumn(Wohnung::getPostleitzahl).setHeader(createCustomHeader("PLZ"));
         treeGrid.addColumn(Wohnung::getStadt).setHeader(createCustomHeader("Stadt"));
         treeGrid.addColumn(Wohnung::getStrasseMitHausnummer).setHeader(createCustomHeader("Adresse")).setAutoWidth(true);
-        if (land.getValue()) treeGrid.addColumn(wohnung -> wohnung.getLand().getName()).setHeader(createCustomHeader("Land"));
+        if (land.getValue())
+            treeGrid.addColumn(wohnung -> wohnung.getLand().getName()).setHeader(createCustomHeader("Land"));
 
         stockwerkColumn = treeGrid.addColumn(wohnung -> {
             return wohnung.getStockwerk() != null ? wohnung.getStockwerk() : "";
@@ -406,16 +407,6 @@ public class WohnungListView extends VerticalLayout {
         Icon icon = new Icon();
         icon.setVisible(false);
         return icon;
-    }
-
-    /**
-     * Erstellt eine benutzerdefinierte Überschrift für die Tabelle.
-     *
-     * @param text der Text der Überschrift.
-     * @return das konfigurierte Div-Element mit der benutzerdefinierten CSS-Klasse.
-     */
-    private Html createCustomHeader(String text) {
-        return new Html("<div class='custom-header'>" + text + "</div>");
     }
 
     /**
