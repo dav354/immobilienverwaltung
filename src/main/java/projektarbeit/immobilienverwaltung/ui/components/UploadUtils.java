@@ -11,23 +11,35 @@ import projektarbeit.immobilienverwaltung.service.DokumentService;
 
 import java.io.InputStream;
 
+/**
+ * Dienstprogrammklasse für das Erstellen von Upload-Schaltflächen in Vaadin.
+ */
 public class UploadUtils {
 
+    /**
+     * Erstellt ein Layout mit einer Upload-Schaltfläche.
+     *
+     * @param buttonText      Der Text, der auf der Upload-Schaltfläche angezeigt wird.
+     * @param dokumentService Der Dienst zum Verarbeiten des Datei-Uploads.
+     * @param entity          Das Objekt (Wohnung oder Mieter), zu dem das hochgeladene Dokument gehört.
+     * @param refreshView     Die Methode zum Aktualisieren der Ansicht nach dem Upload.
+     * @return Ein HorizontalLayout, das die Upload-Schaltfläche enthält.
+     */
     public static HorizontalLayout createUploadButton(String buttonText, DokumentService dokumentService, Object entity, Runnable refreshView) {
         HorizontalLayout uploadLayout = new HorizontalLayout();
 
-        // Create a memory buffer for handling file uploads
+        // Erstellen eines Speicherpuffers für die Handhabung von Datei-Uploads
         MemoryBuffer buffer = new MemoryBuffer();
         Upload upload = new Upload(buffer);
         upload.setAcceptedFileTypes("application/pdf", "image/*");
 
-        // Create and style the upload button
+        // Erstellen und Stylen der Upload-Schaltfläche
         Button uploadButton = new Button(buttonText, new Icon(VaadinIcon.UPLOAD));
         uploadButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         upload.setUploadButton(uploadButton);
 
-        // Style the upload component
-        upload.setDropAllowed(false); // Disable drop area
+        // Stylen der Upload-Komponente
+        upload.setDropAllowed(false); // Deaktivieren des Drop-Bereichs
         upload.getElement().getStyle().set("box-shadow", "none");
         upload.getElement().getStyle().set("border", "none");
 

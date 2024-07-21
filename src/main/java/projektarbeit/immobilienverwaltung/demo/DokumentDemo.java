@@ -11,8 +11,14 @@ import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.repository.DokumentRepository;
 import projektarbeit.immobilienverwaltung.repository.MieterRepository;
 import projektarbeit.immobilienverwaltung.repository.WohnungRepository;
+import projektarbeit.immobilienverwaltung.service.DokumentService;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Initialisiert die Dokumentdaten zu Demozwecken.
@@ -28,6 +34,10 @@ public class DokumentDemo implements CommandLineRunner {
     private final DokumentRepository dokumentRepository;
     private final WohnungRepository wohnungRepository;
     private final MieterRepository mieterRepository;
+    private final DokumentService dokumentService;
+
+    private static final String DEMO_PDF_PATH = "DEMO/demo_pdf_document.pdf";
+    private static final String DEMO_SVG_PATH = "DEMO/genericbuilding2.svg";
 
     /**
      * Konstruktor für DokumentDemo.
@@ -36,15 +46,18 @@ public class DokumentDemo implements CommandLineRunner {
      * @param dokumentRepository Das Repository zur Verwaltung von Dokument-Entitäten.
      * @param wohnungRepository  Das Repository zur Verwaltung von Wohnungs-Entitäten.
      * @param mieterRepository   Das Repository zur Verwaltung von Mieter-Entitäten.
+     * @param dokumentService    Der Dienst zur Verwaltung von Dokumenten.
      */
     public DokumentDemo(DemoModeConfig demoModeConfig,
                         DokumentRepository dokumentRepository,
                         WohnungRepository wohnungRepository,
-                        MieterRepository mieterRepository) {
+                        MieterRepository mieterRepository,
+                        DokumentService dokumentService) {
         this.demoModeConfig = demoModeConfig;
         this.dokumentRepository = dokumentRepository;
         this.wohnungRepository = wohnungRepository;
         this.mieterRepository = mieterRepository;
+        this.dokumentService = dokumentService;
     }
 
     /**
@@ -76,37 +89,12 @@ public class DokumentDemo implements CommandLineRunner {
 
             // Dokumenteinträge für jeden Mieter erstellen
             if (!wohnungen.isEmpty() && !mieterList.isEmpty()) {
-                for (int i = 0; i < mieterList.size(); i++) {
-                    Mieter mieter = mieterList.get(i);
-                    Wohnung wohnung = i < wohnungen.size() ? wohnungen.get(i) : null;
-
-                    Dokument mietvertrag = new Dokument(wohnung, mieter, "Mietvertrag", "/path/to/mietvertrag" + (i + 1) + ".pdf");
-                    dokumentRepository.save(mietvertrag);
-
-                    Dokument rechnung = new Dokument(wohnung, mieter, "Rechnung", "/path/to/rechnung" + (i + 1) + ".pdf");
-                    dokumentRepository.save(rechnung);
-
-                    Dokument nebenkosten = new Dokument(wohnung, mieter, "Nebenkostenabrechnung Wasser", "/path/to/nebenkosten" + (i + 1) + ".pdf");
-                    dokumentRepository.save(nebenkosten);
-
-                    Dokument nebenkosten2 = new Dokument(wohnung, mieter, "Nebenkostenabrechnung Strom", "/path/to/nebenkosten" + (i + 1) + ".pdf");
-                    dokumentRepository.save(nebenkosten2);
-
-                    Dokument perso = new Dokument(null, mieter, "Personalausweis", "/path/to/eigentumsnachweis" + (i + 1) + ".pdf");
-                    dokumentRepository.save(perso);
+                for (Mieter mieter : mieterList) {
+                    addRandomDocumentsForEntity(mieter, null);
                 }
 
-                for (int i = 0; i < wohnungen.size(); i++) {
-                    Wohnung wohnung = wohnungen.get(i);
-
-                    Dokument grundriss = new Dokument(wohnung, null, "Grundriss", "/path/to/eigentumsnachweis" + (i + 1) + ".pdf");
-                    dokumentRepository.save(grundriss);
-
-                    Dokument foto1 = new Dokument(wohnung, null, "Bild-Küche", "/path/to/picture028932" + (i + 1) + ".png");
-                    dokumentRepository.save(foto1);
-
-                    Dokument foto2 = new Dokument(wohnung, null, "Bild-Wohnzimmer", "/path/to/picture98423" + (i + 1) + ".png");
-                    dokumentRepository.save(foto2);
+                for (Wohnung wohnung : wohnungen) {
+                    addRandomDocumentsForEntity(null, wohnung);
                 }
 
                 logger.info("Dokumentdaten geladen.");
@@ -115,6 +103,36 @@ public class DokumentDemo implements CommandLineRunner {
             }
         } else {
             logger.info("Dokumentdaten existieren bereits, Initialisierung wird übersprungen.");
+        }
+    }
+
+    /**
+     * Fügt zufällig 1 bis 3 Dokumente für eine gegebene Wohnung oder Mieter hinzu.
+     *
+     * @param mieter  Der Mieter, zu dem die Dokumente hinzugefügt werden.
+     * @param wohnung Die Wohnung, zu der die Dokumente hinzugefügt werden.
+     */
+    private void addRandomDocumentsForEntity(Mieter mieter, Wohnung wohnung) {
+        String[] demoFiles = {DEMO_PDF_PATH, DEMO_SVG_PATH};
+        Random random = new Random();
+        int numOfDocuments = random.nextInt(5) + 1;
+
+        for (int i = 0; i < numOfDocuments; i++) {
+            String filePath = demoFiles[random.nextInt(demoFiles.length)];
+            Path path = Paths.get(filePath);
+            String fileName = path.getFileName().toString();
+            String dokumententyp = fileName.substring(0, fileName.lastIndexOf('.'));
+            String dateiendung = fileName.substring(fileName.lastIndexOf('.') + 1);
+
+            try {
+                if (Files.exists(path)) {
+                    dokumentService.saveFileAsDemo(path, wohnung, mieter, dokumententyp, i, dateiendung);
+                } else {
+                    logger.warn("Datei {} existiert nicht, wird übersprungen.", filePath);
+                }
+            } catch (IOException e) {
+                logger.error("Fehler beim Kopieren der Datei", e);
+            }
         }
     }
 }

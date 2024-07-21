@@ -19,6 +19,9 @@ EXPOSE $PORT
 # Arbeitsverzeichnis im Container festlegen
 WORKDIR /app
 
+# Kopieren des DEMO-Ordners in den Container
+COPY DEMO /app/DEMO
+
 # Kopieren der gebauten ausführbaren JAR-Datei in den Container
 COPY target/immobilienverwaltung-0.0.1-SNAPSHOT.jar app.jar
 

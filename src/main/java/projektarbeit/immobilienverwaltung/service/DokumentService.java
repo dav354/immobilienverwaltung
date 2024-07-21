@@ -5,15 +5,11 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.html.IFrame;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.upload.SucceededEvent;
-import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.server.StreamResource;
 import jakarta.annotation.PostConstruct;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +31,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,9 +41,8 @@ import java.util.UUID;
 @Service
 public class DokumentService {
 
-    private final DokumentRepository dokumentRepository;
     private static final Logger logger = LoggerFactory.getLogger(DokumentService.class);
-
+    private final DokumentRepository dokumentRepository;
     @Value("${document.storage.path}")
     private String storagePath;
 
@@ -151,8 +147,6 @@ public class DokumentService {
      * @param dokument Das anzuzeigende Dokument.
      */
     public void viewDokument(Dokument dokument) {
-        logFileDetails(dokument.getDateipfad());
-
         String mimeType = dokument.getMimeType();
         StreamResource resource = new StreamResource(dokument.getDokumententyp(),
                 () -> {
@@ -188,14 +182,6 @@ public class DokumentService {
         }
     }
 
-    private void logFileDetails(String filePath) {
-        Path path = Paths.get(filePath);
-        logger.info("Dateipfad: {}", filePath);
-        logger.info("Existiert: {}", Files.exists(path));
-        logger.info("Lesbar: {}", Files.isReadable(path));
-    }
-
-
     /**
      * Bietet ein Dokument zum Download an.
      *
@@ -224,10 +210,10 @@ public class DokumentService {
     /**
      * Löscht ein Dokument und aktualisiert das Dokument-Grid.
      *
-     * @param dokument           Das zu löschende Dokument.
-     * @param dokumentGrid       Das Dokument-Grid, das aktualisiert werden soll.
-     * @param entity             Das Objekt (Wohnung oder Mieter), zu dem das Dokument gehört.
-     * @param tableRowHeight     Die Höhe der Tabellenzeile.
+     * @param dokument             Das zu löschende Dokument.
+     * @param dokumentGrid         Das Dokument-Grid, das aktualisiert werden soll.
+     * @param entity               Das Objekt (Wohnung oder Mieter), zu dem das Dokument gehört.
+     * @param tableRowHeight       Die Höhe der Tabellenzeile.
      * @param configurationService Der Konfigurationsservice.
      */
     public void deleteDokument(Dokument dokument, Grid<Dokument> dokumentGrid, Object entity, int tableRowHeight, ConfigurationService configurationService, Runnable refreshView) {
@@ -262,15 +248,14 @@ public class DokumentService {
     /**
      * Speichert eine hochgeladene Datei und erstellt ein entsprechendes Dokument.
      *
-     * @param file           Die hochgeladene Datei.
-     * @param wohnung        Die Wohnung, zu der das Dokument gehört.
-     * @param mieter         Der Mieter, zu dem das Dokument gehört.
-     * @param dokumententyp  Der Typ des Dokuments.
-     * @return Das gespeicherte Dokument.
+     * @param file          Die hochgeladene Datei.
+     * @param wohnung       Die Wohnung, zu der das Dokument gehört.
+     * @param mieter        Der Mieter, zu dem das Dokument gehört.
+     * @param dokumententyp Der Typ des Dokuments.
      */
-    public Dokument saveFile(MultipartFile file, Wohnung wohnung, Mieter mieter, String dokumententyp) {
+    public void saveFile(MultipartFile file, Wohnung wohnung, Mieter mieter, String dokumententyp) {
         String fileExtension = getFileExtension(file.getOriginalFilename());
-        String newFileName = UUID.randomUUID().toString() + "." + fileExtension;
+        String newFileName = UUID.randomUUID() + "." + fileExtension;
         Path destinationFile = rootLocation.resolve(
                         Paths.get(newFileName))
                 .normalize().toAbsolutePath();
@@ -286,7 +271,7 @@ public class DokumentService {
 
             Dokument dokument = new Dokument(wohnung, mieter, dokumententyp, destinationFile.toString());
             dokument.setMimeType(mimeType); // MIME-Typ setzen
-            return dokumentRepository.save(dokument);
+            dokumentRepository.save(dokument);
         } catch (IOException e) {
             logger.error("Fehler beim Speichern der Datei", e);
             throw new RuntimeException("Failed to store file " + file.getOriginalFilename(), e);
@@ -310,10 +295,11 @@ public class DokumentService {
     /**
      * Behandelt das Hochladen von Dateien.
      *
-     * @param event       Das Upload-Ereignis.
-     * @param buffer      Der Speicherpuffer für die hochgeladene Datei.
-     * @param entity      Das Objekt (Wohnung oder Mieter), zu dem das Dokument gehört.
-     * @param refreshView Die Methode zum Aktualisieren der Ansicht.
+     * @param fileName     Der Name der hochgeladenen Datei.
+     * @param inputStream  Der InputStream der hochgeladenen Datei.
+     * @param mimeType     Der MIME-Typ der hochgeladenen Datei.
+     * @param entity       Das Objekt (Wohnung oder Mieter), zu dem das Dokument gehört.
+     * @param refreshView  Die Methode zum Aktualisieren der Ansicht.
      */
     public void handleFileUpload(String fileName, InputStream inputStream, String mimeType, Object entity, Runnable refreshView) {
         try {
@@ -353,7 +339,7 @@ public class DokumentService {
                 }
 
                 @Override
-                public InputStream getInputStream() throws IOException {
+                public InputStream getInputStream() {
                     return inputStream;
                 }
 
@@ -398,6 +384,16 @@ public class DokumentService {
         }
     }
 
+    /**
+     * Konfiguriert das Dokument-Grid zur Anzeige der Dokumente.
+     *
+     * @param dokumentGrid         Das Dokument-Grid, das konfiguriert werden soll.
+     * @param dokuments            Die Liste der Dokumente, die im Grid angezeigt werden sollen.
+     * @param entity               Das Objekt (Wohnung oder Mieter), zu dem die Dokumente gehören.
+     * @param tableRowHeight       Die Höhe der Tabellenzeile.
+     * @param configurationService Der Konfigurationsservice.
+     * @param refreshView          Die Methode zum Aktualisieren der Ansicht.
+     */
     public void configureDokumentGrid(Grid<Dokument> dokumentGrid, List<Dokument> dokuments, Object entity, int tableRowHeight, ConfigurationService configurationService, Runnable refreshView) {
         dokumentGrid.setColumns(); // Entferne die automatische Spalteneinstellung
         dokumentGrid.addColumn(Dokument::getDokumententyp).setHeader("Dokumententyp");
@@ -425,5 +421,43 @@ public class DokumentService {
         }).setHeader("Actions").setFlexGrow(0).setAutoWidth(true);
 
         TableUtils.configureGrid(dokumentGrid, dokuments, tableRowHeight);
+    }
+
+    /**
+     * Gibt den Speicherort für Dokumente zurück.
+     *
+     * @return der Speicherort für Dokumente
+     */
+    public Path getRootLocation() {
+        return rootLocation;
+    }
+
+    /**
+     * Speichert eine Demodatei und erstellt ein entsprechendes Dokument.
+     *
+     * @param sourcePath    Der Pfad zur Quelldatei.
+     * @param wohnung       Die Wohnung, zu der das Dokument gehört.
+     * @param mieter        Der Mieter, zu dem das Dokument gehört.
+     * @param dokumententyp Der Typ des Dokuments.
+     * @param iteration     Die Iterationsnummer zur Unterscheidung der Dateien.
+     * @throws IOException falls ein Fehler beim Kopieren der Datei auftritt.
+     */
+    public void saveFileAsDemo(Path sourcePath, Wohnung wohnung, Mieter mieter, String dokumententyp, int iteration, String dateiendung) throws IOException {
+        String fileExtension = getFileExtension(sourcePath.getFileName().toString());
+        String newFileName = UUID.randomUUID() + "_demo_data_" + iteration + "." + fileExtension;
+        String anzeigeName = dokumententyp + iteration + "." + dateiendung;
+        Path destinationFile = rootLocation.resolve(Paths.get(newFileName)).normalize().toAbsolutePath();
+
+        Files.copy(sourcePath, destinationFile, StandardCopyOption.REPLACE_EXISTING);
+
+        // Automatisch den MIME-Typ setzen
+        String mimeType = Files.probeContentType(destinationFile);
+        if (mimeType == null) {
+            mimeType = "application/octet-stream"; // Standard-MIME-Typ, falls nicht ermittelt werden kann
+        }
+
+        Dokument dokument = new Dokument(wohnung, mieter, anzeigeName, destinationFile.toString());
+        dokument.setMimeType(mimeType); // MIME-Typ setzen
+        dokumentRepository.save(dokument);
     }
 }
