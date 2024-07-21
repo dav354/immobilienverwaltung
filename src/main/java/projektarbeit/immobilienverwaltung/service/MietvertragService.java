@@ -3,7 +3,6 @@ package projektarbeit.immobilienverwaltung.service;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Mietvertrag;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
@@ -19,7 +18,6 @@ import java.util.List;
 public class MietvertragService {
 
     private final MietvertragRepository mietvertragRepository;
-    private final MieterService mieterService;
 
     /**
      * Konstruktor für MietvertragService mit dem angegebenen Repository.
@@ -27,9 +25,8 @@ public class MietvertragService {
      * @param mietvertragRepository das Repository zur Verwaltung von Mietvertrag-Entitäten
      */
     @Autowired
-    public MietvertragService(MietvertragRepository mietvertragRepository, MieterService mieterService) {
+    public MietvertragService(MietvertragRepository mietvertragRepository) {
         this.mietvertragRepository = mietvertragRepository;
-        this.mieterService = mieterService;
     }
 
     /**
@@ -47,8 +44,6 @@ public class MietvertragService {
      * @param mietvertrag die zu löschende Mietvertrag-Entität
      */
     public void deleteMietvertrag(Mietvertrag mietvertrag) {
-        //Test output
-        System.out.println(mietvertrag);
         mietvertragRepository.delete(mietvertrag);
     }
 
