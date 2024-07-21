@@ -9,12 +9,15 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
@@ -177,6 +180,10 @@ public class DokumenteListView extends VerticalLayout {
         TableUtils.configureGrid(dokumentGrid, dokumente, rowHeight);
     }
 
+    /**
+     * Konfiguriert das Grid zur Anzeige der Dokumente.
+     * Richtet die Spalten und die Aktionsschaltflächen ein.
+     */
     private void configureGrid() {
         dokumentGrid.removeAllColumns();
 
@@ -185,61 +192,50 @@ public class DokumenteListView extends VerticalLayout {
                 .setSortable(true)
                 .setAutoWidth(true);
 
-        dokumentGrid.addColumn(dokument -> {
-                    if (dokument.getMieter() != null) {
-                        return dokument.getMieter().getFullName();
-                    } else {
-                        return "Kein Mieter";
-                    }
-                }).setHeader(createCustomHeader("Mietername"))
-                .setSortable(true)
-                .setAutoWidth(true)
-                .setComparator((dokument1, dokument2) -> {
-                    String mieter1 = dokument1.getMieter() != null ? dokument1.getMieter().getFullName() : "Kein Mieter";
-                    String mieter2 = dokument2.getMieter() != null ? dokument2.getMieter().getFullName() : "Kein Mieter";
-                    return mieter1.compareTo(mieter2);
-                });
+        dokumentGrid.addColumn(new ComponentRenderer<>(dokument -> {
+            if (dokument.getMieter() != null) {
+                RouterLink link = new RouterLink(dokument.getMieter().getFullName(), MieterDetailsView.class, dokument.getMieter().getMieter_id());
+                link.getElement().setAttribute("href", link.getHref() + "?previousView=dokumente");
+                return link;
+            } else {
+                return new Div(new Text("Kein Mieter"));
+            }
+        })).setHeader(createCustomHeader("Mietername")).setSortable(true).setAutoWidth(true);
 
-        dokumentGrid.addColumn(dokument -> {
-                    if (dokument.getWohnung() != null) {
-                        return dokument.getWohnung().getFormattedAddress();
-                    } else {
-                        return "Keine Wohnung";
-                    }
-                }).setHeader(createCustomHeader("Wohnung"))
-                .setSortable(true)
-                .setAutoWidth(true)
-                .setComparator((dokument1, dokument2) -> {
-                    String wohnung1 = dokument1.getWohnung() != null ? dokument1.getWohnung().getFormattedAddress() : "Keine Wohnung";
-                    String wohnung2 = dokument2.getWohnung() != null ? dokument2.getWohnung().getFormattedAddress() : "Keine Wohnung";
-                    return wohnung1.compareTo(wohnung2);
-                });
+        dokumentGrid.addColumn(new ComponentRenderer<>(dokument -> {
+            if (dokument.getWohnung() != null) {
+                String formattedAddress = addLineBreaks(dokument.getWohnung());
+                RouterLink link = new RouterLink("", WohnungDetailsView.class, dokument.getWohnung().getWohnung_id());
+                link.getElement().setProperty("innerHTML", formattedAddress);
+                link.getElement().setAttribute("href", link.getHref() + "?previousView=dokumente");
+                return link;
+            }
+            return new Div(new Text("Keine Wohnung"));
+        })).setHeader(createCustomHeader("Wohnung")).setSortable(true).setAutoWidth(true);
 
-        dokumentGrid.addComponentColumn(dokument -> {
-                    HorizontalLayout actionsLayout = new HorizontalLayout();
+        dokumentGrid.addColumn(new ComponentRenderer<>(dokument -> {
+            HorizontalLayout actionsLayout = new HorizontalLayout();
 
-                    Button viewButton = new Button(new Icon("eye"));
-                    viewButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-                    viewButton.getElement().setAttribute("title", "View");
-                    viewButton.addClickListener(event -> dokumentService.viewDokument(dokument));
+            Button viewButton = new Button(new Icon("eye"));
+            viewButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+            viewButton.getElement().setAttribute("title", "View");
+            viewButton.addClickListener(event -> dokumentService.viewDokument(dokument));
 
-                    Button deleteButton = new Button(new Icon("close"));
-                    deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
-                    deleteButton.getElement().setAttribute("title", "Delete");
-                    deleteButton.addClickListener(event -> {
-                        dokumentService.deleteDokument(dokument, dokumentGrid, dokument.getWohnung(), 53, configurationService, this::refreshView);
-                    });
+            Button deleteButton = new Button(new Icon("close"));
+            deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+            deleteButton.getElement().setAttribute("title", "Delete");
+            deleteButton.addClickListener(event -> {
+                dokumentService.deleteDokument(dokument, dokumentGrid, dokument.getWohnung(), 53, configurationService, this::refreshView);
+            });
 
-                    Button downloadButton = new Button(new Icon("download"));
-                    downloadButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-                    downloadButton.getElement().setAttribute("title", "Download");
-                    downloadButton.addClickListener(event -> dokumentService.downloadDokument(dokument));
+            Button downloadButton = new Button(new Icon("download"));
+            downloadButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            downloadButton.getElement().setAttribute("title", "Download");
+            downloadButton.addClickListener(event -> dokumentService.downloadDokument(dokument));
 
-                    actionsLayout.add(viewButton, deleteButton, downloadButton);
-                    return actionsLayout;
-                }).setHeader(createCustomHeader("Aktionen"))
-                .setFlexGrow(0)
-                .setAutoWidth(true);
+            actionsLayout.add(viewButton, deleteButton, downloadButton);
+            return actionsLayout;
+        })).setHeader(createCustomHeader("Aktionen")).setFlexGrow(0).setAutoWidth(true);
 
         dokumentGrid.setItems(dokumentService.findAllDokumente());
         dokumentGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
