@@ -387,7 +387,7 @@ public class Wohnung {
      *
      * @param mietvertrag der Mietvertrag
      */
-    public void setMietvertraege(Mietvertrag mietvertrag) {
+    public void setMietvertrag(Mietvertrag mietvertrag) {
         this.mietvertrag = mietvertrag;
     }
 

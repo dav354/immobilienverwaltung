@@ -1,6 +1,7 @@
 package projektarbeit.immobilienverwaltung.service;
 
 import jakarta.validation.Valid;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,7 @@ public class MieterService {
     private final ZaehlerstandRepository zaehlerstandRepository;
     private final DokumentRepository dokumentRepository;
     private final MietvertragRepository mietvertragRepository;
+    private final MietvertragService mietvertragService;
 
     /**
      * Konstruktor für MieterService mit den angegebenen Repositories.
@@ -40,12 +42,14 @@ public class MieterService {
                          MieterRepository mieterRepository,
                          ZaehlerstandRepository zaehlerstandRepository,
                          DokumentRepository dokumentRepository,
-                         MietvertragRepository mietvertragRepository) {
+                         MietvertragRepository mietvertragRepository,
+                         MietvertragService mietvertragService) {
         this.wohnungRepository = wohnungRepository;
         this.mieterRepository = mieterRepository;
         this.zaehlerstandRepository = zaehlerstandRepository;
         this.dokumentRepository = dokumentRepository;
         this.mietvertragRepository = mietvertragRepository;
+        this.mietvertragService = mietvertragService;
     }
 
     /**
@@ -123,15 +127,17 @@ public class MieterService {
         if (mieter == null) throw new NullPointerException("Mieter ist null");
 
         List<Mietvertrag> mietvertraege = mietvertragRepository.findByMieter_MieterId(mieter.getMieter_id());
-        mietvertragRepository.deleteAll(mietvertraege);
+        if (!mietvertraege.isEmpty()) mietvertraege.forEach(mietvertragService::deleteMietvertrag);
 
-        List<Dokument> dokumente = new ArrayList<>(mieter.getDokument());
-        for (Dokument dokument : dokumente) {
-            dokument.setMieter(null);
-            dokumentRepository.save(dokument);
+        // Initialisieren der Dokumente-Sammlung
+        mieter = mieterRepository.findById(mieter.getMieter_id()).orElse(null);
+        if (mieter != null) {
+            Hibernate.initialize(mieter.getDokument());
+            List<Dokument> dokumente = new ArrayList<>(mieter.getDokument());
+            if (!dokumente.isEmpty()) dokumentRepository.deleteAll(dokumente);
+
+            mieterRepository.delete(mieter);
         }
-
-        mieterRepository.delete(mieter);
     }
 
     /**
@@ -152,15 +158,6 @@ public class MieterService {
      */
     public boolean emailExists(String email) {
         return mieterRepository.existsByEmail(email);
-    }
-
-    /**
-     * Löscht den Mietvertrag.
-     *
-     * @param mietvertrag der zu löschende Mietvertrag
-     */
-    public void deleteMietvertrag(Mietvertrag mietvertrag) {
-        mietvertragRepository.delete(mietvertrag);
     }
 
     /**

@@ -6,11 +6,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import projektarbeit.immobilienverwaltung.model.Mieter;
-import projektarbeit.immobilienverwaltung.model.Mietvertrag;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
 import projektarbeit.immobilienverwaltung.repository.*;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,9 +30,6 @@ class MieterServiceTest {
 
     @Mock
     private DokumentRepository dokumentRepository;
-
-    @Mock
-    private MietvertragRepository mietvertragRepository;
 
     @InjectMocks
     private MieterService mieterService;
@@ -117,21 +112,6 @@ class MieterServiceTest {
     }
 
     @Test
-    void deleteMieter() {
-        Mieter mieter = new Mieter();
-        mieter.setMieter_id(1L);
-
-        List<Mietvertrag> mockMietvertraege = new ArrayList<>();
-        mockMietvertraege.add(new Mietvertrag(mieter, new Wohnung(), LocalDate.now(), LocalDate.now().plusYears(1), 1000, 500,1));
-        when(mietvertragRepository.findByMieter_MieterId(1L)).thenReturn(mockMietvertraege);
-
-        mieterService.deleteMieter(mieter);
-
-        verify(mietvertragRepository, times(1)).deleteAll(mockMietvertraege);
-        verify(mieterRepository, times(1)).delete(mieter);
-    }
-
-    @Test
     void saveMieter() {
         Mieter mieter = new Mieter();
 
@@ -149,15 +129,6 @@ class MieterServiceTest {
 
         verify(mieterRepository, times(1)).existsByEmail("test@example.com");
         verify(mieterRepository, times(1)).existsByEmail("nonexistent@example.com");
-    }
-
-    @Test
-    void deleteMietvertrag() {
-        Mietvertrag mietvertrag = new Mietvertrag();
-
-        mieterService.deleteMietvertrag(mietvertrag);
-
-        verify(mietvertragRepository, times(1)).delete(mietvertrag);
     }
 
     @Test

@@ -1,8 +1,12 @@
 package projektarbeit.immobilienverwaltung.service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.validation.Valid;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.model.Mietvertrag;
 import projektarbeit.immobilienverwaltung.model.Wohnung;
@@ -17,7 +21,11 @@ import java.util.List;
 @Service
 public class MietvertragService {
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     private final MietvertragRepository mietvertragRepository;
+    private final WohnungService wohnungService;
 
     /**
      * Konstruktor für MietvertragService mit dem angegebenen Repository.
@@ -25,8 +33,9 @@ public class MietvertragService {
      * @param mietvertragRepository das Repository zur Verwaltung von Mietvertrag-Entitäten
      */
     @Autowired
-    public MietvertragService(MietvertragRepository mietvertragRepository) {
+    public MietvertragService(MietvertragRepository mietvertragRepository, WohnungService wohnungService) {
         this.mietvertragRepository = mietvertragRepository;
+        this.wohnungService = wohnungService;
     }
 
     /**
@@ -43,8 +52,20 @@ public class MietvertragService {
      *
      * @param mietvertrag die zu löschende Mietvertrag-Entität
      */
+    @Transactional
     public void deleteMietvertrag(Mietvertrag mietvertrag) {
-        mietvertragRepository.delete(mietvertrag);
+        Mietvertrag managedMietvertrag = entityManager.find(Mietvertrag.class, mietvertrag.getMietvertrag_id());
+
+        if (managedMietvertrag != null) {
+            Mieter m = managedMietvertrag.getMieter();
+            Wohnung w = managedMietvertrag.getWohnung();
+
+            if (w != null && w.getMietvertrag() != null) w.setMietvertrag(null);
+            if (m != null && m.getMietvertraege() != null)  m.getMietvertraege().remove(managedMietvertrag);
+
+            // Löschen Sie den Mietvertrag aus dem Repository
+            mietvertragRepository.delete(managedMietvertrag);
+        }
     }
 
     /**

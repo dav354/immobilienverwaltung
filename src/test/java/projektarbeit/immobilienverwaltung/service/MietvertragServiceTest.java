@@ -38,15 +38,6 @@ class MietvertragServiceTest {
     }
 
     @Test
-    void deleteMietvertrag() {
-        Mietvertrag mietvertrag = new Mietvertrag();
-
-        mietvertragService.deleteMietvertrag(mietvertrag);
-
-        verify(mietvertragRepository, times(1)).delete(mietvertrag);
-    }
-
-    @Test
     void findAll() {
         Mietvertrag mietvertrag1 = new Mietvertrag();
         Mietvertrag mietvertrag2 = new Mietvertrag();

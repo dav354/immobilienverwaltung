@@ -154,7 +154,7 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
                     () -> {
                         mieterService.deleteMieter(currentMieter);
                         NotificationPopup.showSuccessNotification("Mieter erfolgreich gelöscht.");
-                        UI.getCurrent().navigate(WohnungListView.class);
+                        UI.getCurrent().navigate(MieterListView.class);
                     },
                     configurationService
             );
@@ -297,9 +297,10 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
                         "Löschen",
                         "Möchten Sie diesen Mietvertrag wirklich löschen? Es werden auch alle Dokumente mit gelöscht.",
                         () -> {
-                            mieterService.deleteMietvertrag(mietvertrag);
-                            mietvertragGrid.setItems(mietvertragService.findByMieter(currentMieter.getMieter_id()));
+                            mietvertragService.deleteMietvertrag(mietvertrag);
                             NotificationPopup.showSuccessNotification("Mietvertrag erfolgreich gelöscht.");
+                            mietvertragGrid.setItems(mietvertragService.findByMieter(currentMieter.getMieter_id()));
+                            UI.getCurrent().access(this::refreshView);
                         },
                         configurationService
                 );
@@ -385,6 +386,8 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
     public void refreshView() {
         currentMieter = mieterService.findById(currentMieter.getMieter_id());
         if (currentMieter != null) {
+            mietvertrage = mietvertragService.findByMieter(currentMieter.getMieter_id());
+            mietvertragGrid.setItems(mietvertrage);
             getContent().removeAll();
             setupView();
         } else {
