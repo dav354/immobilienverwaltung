@@ -92,7 +92,7 @@ public class WohnungListView extends VerticalLayout {
         header.setWidthFull();
         header.setAlignItems(Alignment.CENTER);
 
-        Html helpText = new Html("<span>Um mehr Infos zu den Wohnungen zu bekommen, in die entsprechende Zeile oder Mieter klicken.<br>Wenn mehrere Wohnungen im selben Haus existieren, expandiere diese um die Wohnungen zu sehen.</span>");
+        Html helpText = new Html("<span>Um mehr Infos zu den Wohnungen zu bekommen, in die entsprechende Zeile klicken.<br>Wenn mehrere Wohnungen im selben Haus existieren, expandiere diese um die Wohnungen zu sehen.</span>");
         HorizontalLayout help = new HorizontalLayout(helpText);
         help.setWidthFull();
         help.setAlignItems(Alignment.START);

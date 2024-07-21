@@ -83,8 +83,9 @@ public class MieterListView extends VerticalLayout {
         HorizontalLayout header = new HorizontalLayout(new H1("Mieter Übersicht"));
         header.setWidthFull();
         header.setAlignItems(Alignment.CENTER);
+        Html helpText = new Html("<span>Um mehr Infos zu den Mietern zu bekommen, in die entsprechende Zeile klicken.</span>");
 
-        add(header, getToolbar(), createFilterAccordion(), getContent());
+        add(header, helpText, getToolbar(), createFilterAccordion(), getContent());
 
         updateList();
         updateGridColumns();
