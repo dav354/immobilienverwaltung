@@ -231,7 +231,7 @@ public class MieterListView extends VerticalLayout {
                     Span span = new Span();
                     span.getElement().setProperty("innerHTML", content);
                     return span;
-                })).setHeader(new Html("<div>" + headerHtml + "</div>"));
+                })).setHeader(createCustomHeader(headerHtml));
     }
 
     private <T> void addMietvertragColumn(ValueProvider<Mietvertrag, T> valueProvider) {
