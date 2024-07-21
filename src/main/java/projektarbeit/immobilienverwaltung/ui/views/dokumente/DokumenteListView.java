@@ -9,15 +9,13 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
-import com.vaadin.flow.data.renderer.TextRenderer;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
@@ -192,6 +190,13 @@ public class DokumenteListView extends VerticalLayout {
                 .setSortable(true)
                 .setAutoWidth(true);
 
+        // Versteckte Spalte für die Mieter-Sortierung
+        dokumentGrid.addColumn(dokument -> dokument.getMieter() != null ? dokument.getMieter().getFullName() : "Kein Mieter")
+                .setHeader("Mietername (sort)")
+                .setSortable(true)
+                .setVisible(false);
+
+        // Sichtbare Spalte für die Mieter mit Links
         dokumentGrid.addColumn(new ComponentRenderer<>(dokument -> {
             if (dokument.getMieter() != null) {
                 RouterLink link = new RouterLink(dokument.getMieter().getFullName(), MieterDetailsView.class, dokument.getMieter().getMieter_id());
@@ -200,8 +205,19 @@ public class DokumenteListView extends VerticalLayout {
             } else {
                 return new Div(new Text("Kein Mieter"));
             }
-        })).setHeader(createCustomHeader("Mietername")).setSortable(true).setAutoWidth(true);
+        })).setHeader(createCustomHeader("Mietername")).setSortable(true).setComparator((d1, d2) -> {
+            String name1 = d1.getMieter() != null ? d1.getMieter().getFullName() : "Kein Mieter";
+            String name2 = d2.getMieter() != null ? d2.getMieter().getFullName() : "Kein Mieter";
+            return name1.compareTo(name2);
+        }).setAutoWidth(true);
 
+        // Versteckte Spalte für die Wohnungs-Sortierung
+        dokumentGrid.addColumn(dokument -> dokument.getWohnung() != null ? dokument.getWohnung().getFormattedAddress() : "Keine Wohnung")
+                .setHeader("Wohnung (sort)")
+                .setSortable(true)
+                .setVisible(false);
+
+        // Sichtbare Spalte für die Wohnung mit Links
         dokumentGrid.addColumn(new ComponentRenderer<>(dokument -> {
             if (dokument.getWohnung() != null) {
                 String formattedAddress = addLineBreaks(dokument.getWohnung());
@@ -211,7 +227,11 @@ public class DokumenteListView extends VerticalLayout {
                 return link;
             }
             return new Div(new Text("Keine Wohnung"));
-        })).setHeader(createCustomHeader("Wohnung")).setSortable(true).setAutoWidth(true);
+        })).setHeader(createCustomHeader("Wohnung")).setSortable(true).setComparator((d1, d2) -> {
+            String address1 = d1.getWohnung() != null ? d1.getWohnung().getFormattedAddress() : "Keine Wohnung";
+            String address2 = d2.getWohnung() != null ? d2.getWohnung().getFormattedAddress() : "Keine Wohnung";
+            return address1.compareTo(address2);
+        }).setAutoWidth(true);
 
         dokumentGrid.addColumn(new ComponentRenderer<>(dokument -> {
             HorizontalLayout actionsLayout = new HorizontalLayout();
