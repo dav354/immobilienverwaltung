@@ -20,9 +20,9 @@ EXPOSE $PORT
 WORKDIR /app
 
 # Kopieren aller notwendigen Dateien und Erstellen des Verzeichnisses für Dokumente in einem Schritt
-COPY DEMO /app/DEMO
+COPY DEMO /app/DEMO-DATA
 COPY target/immobilienverwaltung-0.0.1-SNAPSHOT.jar app.jar
-RUN mkdir -p /data/documents
+RUN mkdir -p /data
 
 # Starten der Spring Boot-Anwendung beim Start des Containers
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
