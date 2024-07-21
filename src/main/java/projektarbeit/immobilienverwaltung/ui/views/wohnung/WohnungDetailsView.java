@@ -27,10 +27,7 @@ import projektarbeit.immobilienverwaltung.service.ConfigurationService;
 import projektarbeit.immobilienverwaltung.service.DokumentService;
 import projektarbeit.immobilienverwaltung.service.WohnungService;
 import projektarbeit.immobilienverwaltung.service.ZaehlerstandService;
-import projektarbeit.immobilienverwaltung.ui.components.MapComponent;
-import projektarbeit.immobilienverwaltung.ui.components.NotificationPopup;
-import projektarbeit.immobilienverwaltung.ui.components.TableUtils;
-import projektarbeit.immobilienverwaltung.ui.components.UploadUtils;
+import projektarbeit.immobilienverwaltung.ui.components.*;
 import projektarbeit.immobilienverwaltung.ui.layout.MainLayout;
 import projektarbeit.immobilienverwaltung.ui.views.MainView;
 import projektarbeit.immobilienverwaltung.ui.views.dialog.ConfirmationDialog;
@@ -43,6 +40,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
+import static projektarbeit.immobilienverwaltung.ui.components.FormUtils.addDetailToFormLayout;
 import static projektarbeit.immobilienverwaltung.ui.components.TableUtils.createCustomHeader;
 
 /**
@@ -359,25 +357,6 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
         TableUtils.configureGrid(zaehlerstandGrid, zaehlerstaende, tableRowHeight);
 
         return zaehlerstandGrid;
-    }
-
-    /**
-     * Fügt ein Detail zum Formularlayout hinzu.
-     *
-     * @param formLayout das Formularlayout
-     * @param label      das Label für das Detail
-     * @param value      der Wert für das Detail
-     */
-    private void addDetailToFormLayout(FormLayout formLayout, String label, String value) {
-        if (value != null) {
-            Div container = new Div();
-            container.getStyle().set("display", "flex").set("justify-content", "space-between");
-            Span labelSpan = new Span(label);
-            Span valueSpan = new Span(value);
-            labelSpan.getStyle().set("font-weight", "bold");
-            container.add(labelSpan, valueSpan);
-            formLayout.add(container);
-        }
     }
 
     /**

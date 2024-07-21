@@ -22,19 +22,8 @@ public class TableUtils {
      * @param items Die Elemente, die im Grid angezeigt werden sollen.
      */
     public static <T> void configureGrid(Grid<T> grid, List<T> items, int rowHeight) {
-        // Setzt die Elemente im Grid
+        configureCommonGridSettings(grid, items.size(), rowHeight);
         grid.setItems(items);
-        grid.addThemeVariants(GridVariant.LUMO_NO_ROW_BORDERS);
-        grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
-        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
-
-        // Berechnet die Höhe basierend auf der Anzahl der Zeilen
-        int rowCount = items.size();
-        int headerHeight = 58; // Höhe des Headers in Pixel
-        int footerHeight = 0; // Höhe des Footers
-
-        // Setzt die Höhe des Grids
-        grid.setHeight((rowCount * rowHeight + headerHeight + footerHeight) + "px");
     }
 
     /**
@@ -46,19 +35,28 @@ public class TableUtils {
      * @param childProvider Die Funktion, die die Kinder eines Elements bereitstellt.
      */
     public static <T> void configureTreeGrid(TreeGrid<T> treeGrid, List<T> items, int rowHeight, ValueProvider<T, Collection<T>> childProvider) {
-        // Setzt die Elemente im TreeGrid
+        configureCommonGridSettings(treeGrid, items.size(), rowHeight);
         treeGrid.setItems(items, childProvider);
-        treeGrid.addThemeVariants(GridVariant.LUMO_NO_ROW_BORDERS);
-        treeGrid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
-        treeGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+    }
 
-        // Berechnet die Höhe basierend auf der Anzahl der Zeilen
-        int rowCount = items.size();
+    /**
+     * Konfiguriert gemeinsame Einstellungen für Grids und TreeGrids.
+     *
+     * @param <T>       Der Typ der Elemente im Grid.
+     * @param grid      Das zu konfigurierende Grid.
+     * @param rowCount  Die Anzahl der Zeilen im Grid.
+     * @param rowHeight Die Höhe jeder Zeile im Grid.
+     */
+    private static <T> void configureCommonGridSettings(Grid<T> grid, int rowCount, int rowHeight) {
+        grid.addThemeVariants(GridVariant.LUMO_NO_ROW_BORDERS);
+        grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
+        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+
         int headerHeight = 58; // Höhe des Headers in Pixel
         int footerHeight = 0; // Höhe des Footers
 
-        // Setzt die Höhe des TreeGrid
-        treeGrid.setHeight((rowCount * rowHeight + headerHeight + footerHeight) + "px");
+        // Setzt die Höhe des Grids
+        grid.setHeight((rowCount * rowHeight + headerHeight + footerHeight) + "px");
     }
 
     /**

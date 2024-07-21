@@ -39,6 +39,7 @@ import projektarbeit.immobilienverwaltung.ui.views.wohnung.WohnungListView;
 
 import java.util.List;
 
+import static projektarbeit.immobilienverwaltung.ui.components.FormUtils.addDetailToFormLayout;
 import static projektarbeit.immobilienverwaltung.ui.components.TableUtils.createCustomHeader;
 
 /**
@@ -224,25 +225,6 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         addDetailToFormLayout(layout, "Einkommen", String.valueOf(currentMieter.getEinkommen()));
 
         return layout;
-    }
-
-    /**
-     * Fügt ein Detail zum FormLayout hinzu, wenn der Wert nicht null ist.
-     *
-     * @param formLayout Das FormLayout, zu dem das Detail hinzugefügt werden soll.
-     * @param label      Das Label für das Detail.
-     * @param value      Der Wert des Details.
-     */
-    private void addDetailToFormLayout(FormLayout formLayout, String label, String value) {
-        if (value != null) {
-            Div container = new Div();
-            container.getStyle().set("display", "flex").set("justify-content", "space-between");
-            Span labelSpan = new Span(label);
-            Span valueSpan = new Span(value);
-            labelSpan.getStyle().set("font-weight", "bold");
-            container.add(labelSpan, valueSpan);
-            formLayout.add(container);
-        }
     }
 
     /**
