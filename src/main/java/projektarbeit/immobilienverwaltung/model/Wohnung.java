@@ -18,7 +18,7 @@ import java.util.List;
         @Index(name = "idx_wohnung_postleitzahl", columnList = "postleitzahl"),
         @Index(name = "idx_wohnung_stadt", columnList = "stadt")
 })
-public class Wohnung {
+public class Wohnung implements Comparable<Wohnung>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -638,6 +638,11 @@ public class Wohnung {
                 this.hausnummer != null ? this.hausnummer : "null",
                 this.postleitzahl != null ? this.postleitzahl : "null",
                 this.stadt != null ? this.stadt : "null");
+    }
+
+    @Override
+    public int compareTo(Wohnung other) {
+        return this.getFormattedAddress().compareTo(other.getFormattedAddress());
     }
 
     /**

@@ -15,7 +15,7 @@ import java.util.List;
 @Table(name = "mieter", indexes = {
         @Index(name = "idx_mieter_email", columnList = "email")
 })
-public class Mieter {
+public class Mieter implements Comparable<Mieter>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -232,6 +232,11 @@ public class Mieter {
      */
     public String getFullName() {
         return vorname + " " + name;
+    }
+
+    @Override
+    public int compareTo(Mieter other) {
+        return this.getFullName().compareTo(other.getFullName());
     }
 
     /**
