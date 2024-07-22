@@ -37,6 +37,8 @@ import projektarbeit.immobilienverwaltung.ui.views.dokumente.DokumenteListView;
 import projektarbeit.immobilienverwaltung.ui.views.wohnung.WohnungDetailsView;
 import projektarbeit.immobilienverwaltung.ui.views.wohnung.WohnungListView;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static projektarbeit.immobilienverwaltung.ui.components.FormUtils.addDetailToFormLayout;
@@ -223,6 +225,10 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
                 new FormLayout.ResponsiveStep("500px", 2)
         );
 
+        Div spacer = new Div();
+        spacer.getStyle().set("height", "20px"); // Feste Höhe für den Abstand
+        layout.add(spacer, 2);
+
         layout.add(createMieterHeader());
 
         addDetailToFormLayout(layout, "Name", currentMieter.getName());
@@ -280,9 +286,10 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         mietvertragGrid.addColumn(Mietvertrag::getMietbeginn)
                 .setHeader(createCustomHeader("Mietbeginn"))
                 .setRenderer(new LocalDateRenderer<>(Mietvertrag::getMietbeginn, "dd.MM.yyyy"));
-        mietvertragGrid.addColumn(Mietvertrag::getMietende)
-                .setHeader(createCustomHeader("Mietende"))
-                .setRenderer(new LocalDateRenderer<>(Mietvertrag::getMietende, "dd.MM.yyyy"));
+        mietvertragGrid.addColumn(mietvertrag -> {
+            LocalDate mietende = mietvertrag.getMietende();
+            return mietende == null ? "Unbefristet" : mietende.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));})
+                .setHeader(createCustomHeader("Mietende"));
         mietvertragGrid.addColumn(Mietvertrag::getKaution)
                 .setHeader(createCustomHeader("Kaution"));
         mietvertragGrid.addColumn(Mietvertrag::getMiete)
@@ -334,7 +341,7 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
 
         verticalLayout.add(createMietervertragHeader(), createMietvertragsGrid());
         verticalLayout.setHeight("400px");
-        verticalLayout.setWidth("1085px");
+        verticalLayout.setWidth("1090px");
 
         return verticalLayout;
     }
@@ -367,7 +374,7 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         dokumentHeaderLayout.add(dokumenteHeading, uploadLayout);
         dokumentHeaderLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         dokumentHeaderLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-        dokumentHeaderLayout.setWidth("50%");
+        dokumentHeaderLayout.setWidth("500px");
 
         VerticalLayout verticalLayout = new VerticalLayout(dokumentHeaderLayout, createDokumentGrid());
         layout.add(verticalLayout);

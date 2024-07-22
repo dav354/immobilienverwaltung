@@ -92,20 +92,11 @@ public class MieterListView extends VerticalLayout {
         updateGridColumns();
     }
 
-
-    /**
-     * Aktualisiert die Liste der Mieter basierend auf dem Filtertext.
-     */
     private void updateList() {
         List<Mieter> mieterList = mieterService.findAllMieter(filterText.getValue());
         TableUtils.configureGrid(grid, mieterList, 50);
     }
 
-    /**
-     * Erstellt das Inhaltslayout, das das Gitter und das Formular enthält.
-     *
-     * @return das konfigurierte Inhaltslayout
-     */
     private Component getContent() {
         HorizontalLayout content = new HorizontalLayout(grid);
         content.setFlexGrow(2, grid);
@@ -118,28 +109,23 @@ public class MieterListView extends VerticalLayout {
         grid.addClassNames("mieter-grid");
         grid.setSizeFull();
 
-        // Standard-Mieterdaten-Spalten
         grid.setColumns("name", "vorname", "telefonnummer", "email");
 
-        // Spalte für das Einkommen mit Währungsformatierung
         grid.addColumn(new ComponentRenderer<>(item -> {
             Double einkommen = item.getEinkommen();
             String formattedEinkommen = NumberFormat.getCurrencyInstance(Locale.GERMANY).format(einkommen);
             return new Span(formattedEinkommen);
         })).setHeader(createCustomHeader("Einkommen")).setSortable(true);
 
-        // Zusätzliche Mietvertrags-Spalten hinzufügen
         addMietvertragColumn(Mietvertrag::getMiete, "Miete", true);
         addMietvertragColumn(Mietvertrag::getKaution, "Kaution", true);
         addMietvertragColumn(Mietvertrag::getAnzahlBewohner, "Anzahl<br>Bewohner", false);
         addMietvertragColumn(Mietvertrag::getMietbeginn);
         addMietvertragColumn(Mietvertrag::getMietende, "Mietende", false, true, true);
-        addMietvertragColumn(mietvertrag -> mietvertrag.getWohnung().getFormattedAddress(), "Mietobjekt", false);
+        addMietvertragColumn(mietvertrag -> mietvertrag.getWohnung() != null ? mietvertrag.getWohnung().getFormattedAddress() : "Keine Wohnung", "Mietobjekt", false);
 
-        // Automatische Breitenanpassung und Sortierbarkeit für alle Spalten
         grid.getColumns().forEach(col -> col.setAutoWidth(true).setSortable(true));
 
-        // Listener für die Auswahl eines Mieters zum Bearbeiten hinzufügen
         grid.asSingleSelect().addValueChangeListener(e -> {
             if (e.getValue() != null) {
                 getUI().ifPresent(ui -> ui.navigate(MieterDetailsView.class, e.getValue().getMieter_id()));
@@ -147,16 +133,6 @@ public class MieterListView extends VerticalLayout {
         });
     }
 
-    /**
-     * Fügt eine Spalte zum Gitter hinzu, die Informationen aus dem Mietvertrag anzeigt.
-     *
-     * @param valueProvider der Wertelieferant für die Spalte
-     * @param headerHtml    die HTML-Überschrift der Spalte
-     * @param isCurrency    ob der Wert als Währung formatiert werden soll
-     * @param isDate        ob der Wert als Datum formatiert werden soll
-     * @param isMietende    ob es sich um das Mietende handelt (für spezielle Formatierung)
-     * @param <T>           der Typ des Wertes
-     */
     private <T> void addMietvertragColumn(ValueProvider<Mietvertrag, T> valueProvider, String headerHtml, boolean isCurrency, boolean isDate, boolean isMietende) {
         grid.addColumn(new ComponentRenderer<>(mieter -> {
             List<Mietvertrag> mietvertraege = mietvertragService.findByMieter(mieter.getMieter_id());
@@ -172,7 +148,7 @@ public class MieterListView extends VerticalLayout {
                         } else if (isMietende && value == null && mietvertrag.getMietbeginn() != null) {
                             return "Unbefristet";
                         } else {
-                            return value != null ? value.toString() : "";
+                            return value != null ? value.toString() : "Keine Wohnung";
                         }
                     })
                     .collect(Collectors.joining("<br>"));
@@ -191,11 +167,6 @@ public class MieterListView extends VerticalLayout {
         addMietvertragColumn(valueProvider, headerHtml, isCurrency, false, false);
     }
 
-    /**
-     * Erstellt die Werkzeugleiste mit Filterfeld und Button zum Hinzufügen eines Mieters.
-     *
-     * @return die konfigurierte Werkzeugleiste
-     */
     private HorizontalLayout getToolbar() {
         filterText.setPlaceholder("Filter nach Name...");
         filterText.setClearButtonVisible(true);
@@ -214,11 +185,6 @@ public class MieterListView extends VerticalLayout {
         return toolbar;
     }
 
-    /**
-     * Erstellt ein Akkordeon für Filteroptionen.
-     *
-     * @return das konfigurierte Akkordeon
-     */
     private Accordion createFilterAccordion() {
         HorizontalLayout layout = new HorizontalLayout();
         VerticalLayout col1 = createVerticalLayoutWithSpacing(telefonnummer, email);
@@ -304,9 +270,6 @@ public class MieterListView extends VerticalLayout {
         return filter;
     }
 
-    /**
-     * Aktualisiert die Spalten im Gitter basierend auf den ausgewählten Filteroptionen.
-     */
     private void updateGridColumns() {
         grid.removeAllColumns();
 
@@ -334,7 +297,7 @@ public class MieterListView extends VerticalLayout {
         grid.addColumn(new ComponentRenderer<>(mieter -> {
             List<Mietvertrag> mietvertraege = mietvertragService.findByMieter(mieter.getMieter_id());
 
-            String content = mietvertraege.isEmpty() ? "" : mietvertraege.stream()
+            String content = mietvertraege.isEmpty() ? "Keine Wohnung" : mietvertraege.stream()
                     .map(mietvertrag -> {
                         Wohnung wohnung = mietvertrag.getWohnung();
                         if (wohnung != null) {
@@ -342,7 +305,7 @@ public class MieterListView extends VerticalLayout {
                             link.getElement().setAttribute("href", link.getHref() + "?previousView=mieter-list");
                             return link.getElement().getOuterHTML();
                         } else {
-                            return "";
+                            return "Keine Wohnung";
                         }
                     })
                     .collect(Collectors.joining("<br>"));
@@ -355,9 +318,6 @@ public class MieterListView extends VerticalLayout {
         grid.getColumns().forEach(col -> col.setAutoWidth(true).setSortable(true));
     }
 
-    /**
-     * Fügt einen neuen Mieter hinzu.
-     */
     private void addMieter() {
         grid.asSingleSelect().clear();
         Mieter neuerMieter = new Mieter();
@@ -369,12 +329,6 @@ public class MieterListView extends VerticalLayout {
         dialog.open();
     }
 
-    /**
-     * Erstellt ein VerticalLayout mit festgelegtem Abstand zwischen den Komponenten.
-     *
-     * @param components die Komponenten, die dem Layout hinzugefügt werden sollen.
-     * @return das konfigurierte VerticalLayout.
-     */
     private VerticalLayout createVerticalLayoutWithSpacing(Component... components) {
         VerticalLayout layout = new VerticalLayout(components);
         layout.setPadding(false);
