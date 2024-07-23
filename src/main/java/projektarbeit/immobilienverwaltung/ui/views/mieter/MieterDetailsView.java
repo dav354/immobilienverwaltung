@@ -280,7 +280,8 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         // Spalten im Grid definieren
         mietvertragGrid.addComponentColumn(mietvertrag -> {
             RouterLink link = new RouterLink(mietvertrag.getWohnung().getSmallFormattedAddress(), WohnungDetailsView.class, mietvertrag.getWohnung().getWohnung_id());
-            link.getElement().setAttribute("href", link.getHref() + "?previousView=mieter-details" + currentMieter.getMieter_id());
+            link.setRoute(WohnungDetailsView.class, mietvertrag.getWohnung().getWohnung_id());
+            link.getElement().setAttribute("href", link.getElement().getAttribute("href") + "?previousView=mieter-details&mieterId=" + currentMieter.getMieter_id());
             return link;
         }).setHeader(createCustomHeader("Wohnung"));
         mietvertragGrid.addColumn(Mietvertrag::getMietbeginn)
