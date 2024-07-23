@@ -162,6 +162,15 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
                 case "dokumente" -> UI.getCurrent().navigate(DokumenteListView.class);
                 case "dashboard" -> UI.getCurrent().navigate(MainView.class);
                 case "mieter-list" -> UI.getCurrent().navigate(MieterListView.class);
+                case "mieter-details" -> {
+                    String mieterIdParam = getUI().orElseThrow().getInternals().getActiveViewLocation().getQueryParameters().getParameters().get("mieterId").getFirst();
+                    if (mieterIdParam != null) {
+                        Long mieterId = Long.valueOf(mieterIdParam);
+                        UI.getCurrent().navigate(MieterDetailsView.class, mieterId);
+                    } else {
+                        UI.getCurrent().navigate(MieterListView.class);
+                    }
+                }
                 case null, default -> UI.getCurrent().navigate(WohnungListView.class);
             }
         });

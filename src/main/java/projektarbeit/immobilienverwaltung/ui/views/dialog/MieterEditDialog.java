@@ -4,9 +4,11 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.converter.StringToDoubleConverter;
+import com.vaadin.flow.data.validator.DoubleRangeValidator;
 import com.vaadin.flow.data.validator.RegexpValidator;
 import projektarbeit.immobilienverwaltung.model.Mieter;
 import projektarbeit.immobilienverwaltung.service.ConfigurationService;
@@ -58,10 +60,9 @@ public class MieterEditDialog extends DialogLayout {
 
                 .bind(Mieter::getEmail, Mieter::setEmail);
 
-        TextField einkommenField = new TextField("Einkommen");
+        NumberField einkommenField = new NumberField("Einkommen");
         binder.forField(einkommenField).asRequired("Einkommen ist erforderlich")
-                .withValidator(new RegexpValidator("Nur Zahlen erlaubt", "^[0-9]+$"))
-                .withConverter(new StringToDoubleConverter("Bitte geben Sie eine Zahl ein"))
+                .withValidator(new DoubleRangeValidator("Einkommen muss positiv sein", 0.1, Double.MAX_VALUE))
                 .bind(Mieter::getEinkommen, Mieter::setEinkommen);
 
         // Aktuelle Wohnung in den Binder einlesen

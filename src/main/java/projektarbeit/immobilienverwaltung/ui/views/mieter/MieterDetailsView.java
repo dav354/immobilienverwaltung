@@ -17,10 +17,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.LocalDateRenderer;
-import com.vaadin.flow.router.BeforeEvent;
-import com.vaadin.flow.router.HasUrlParameter;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.*;
 import jakarta.annotation.security.PermitAll;
 import projektarbeit.immobilienverwaltung.model.Dokument;
 import projektarbeit.immobilienverwaltung.model.Mieter;
@@ -281,8 +278,11 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         mietvertragGrid.setItems(mietvertrage);
 
         // Spalten im Grid definieren
-        mietvertragGrid.addColumn(mietvertrag -> mietvertrag.getWohnung().getSmallFormattedAddress())
-                .setHeader(createCustomHeader("Wohnung"));
+        mietvertragGrid.addComponentColumn(mietvertrag -> {
+            RouterLink link = new RouterLink(mietvertrag.getWohnung().getSmallFormattedAddress(), WohnungDetailsView.class, mietvertrag.getWohnung().getWohnung_id());
+            link.getElement().setAttribute("href", link.getHref() + "?previousView=mieter-details" + currentMieter.getMieter_id());
+            return link;
+        }).setHeader(createCustomHeader("Wohnung"));
         mietvertragGrid.addColumn(Mietvertrag::getMietbeginn)
                 .setHeader(createCustomHeader("Mietbeginn"))
                 .setRenderer(new LocalDateRenderer<>(Mietvertrag::getMietbeginn, "dd.MM.yyyy"));
@@ -340,8 +340,8 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         VerticalLayout verticalLayout = new VerticalLayout();
 
         verticalLayout.add(createMietervertragHeader(), createMietvertragsGrid());
-        verticalLayout.setHeight("400px");
-        verticalLayout.setWidth("1090px");
+        verticalLayout.setSizeFull(); // Layout nimmt die volle verfügbare Größe ein
+        verticalLayout.setFlexGrow(1, createMietvertragsGrid());
 
         return verticalLayout;
     }
@@ -366,6 +366,8 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
      */
     HorizontalLayout createDokumenteLayout() {
         HorizontalLayout layout = new HorizontalLayout();
+        layout.setSizeFull(); // Layout nimmt die volle verfügbare Größe ein
+
         HorizontalLayout dokumentHeaderLayout = new HorizontalLayout();
         H2 dokumenteHeading = new H2("Dokumente");
 
@@ -374,10 +376,14 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         dokumentHeaderLayout.add(dokumenteHeading, uploadLayout);
         dokumentHeaderLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         dokumentHeaderLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-        dokumentHeaderLayout.setWidth("500px");
+        dokumentHeaderLayout.setWidth("100%"); // Header layout soll die gesamte Breite einnehmen
 
         VerticalLayout verticalLayout = new VerticalLayout(dokumentHeaderLayout, createDokumentGrid());
+        verticalLayout.setSizeFull(); // VerticalLayout nimmt die volle verfügbare Größe ein
+        verticalLayout.setFlexGrow(1, createDokumentGrid()); // Grid expandiert, um den verbleibenden Platz einzunehmen
+
         layout.add(verticalLayout);
+        layout.setFlexGrow(1, verticalLayout); // VerticalLayout soll sich ausdehnen, um den Platz einzunehmen
 
         return layout;
     }
@@ -391,6 +397,7 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
         Grid<Dokument> dokumentGrid = new Grid<>(Dokument.class);
         List<Dokument> dokuments = dokumentService.findDokumenteByMieter(currentMieter);
         dokumentService.configureDokumentGrid(dokumentGrid, dokuments, currentMieter, tableRowHeight, configurationService, this::refreshView);
+        dokumentGrid.setSizeFull(); // Grid nimmt die volle verfügbare Größe ein
         return dokumentGrid;
     }
 

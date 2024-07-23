@@ -83,7 +83,7 @@ public class VertragHinzufuegenDialog extends DialogLayout {
 
         IntegerField anzahlBewohner = new IntegerField("Anzahl Bewohner");
         binder.forField(anzahlBewohner).asRequired("Anzahl Bewohner muss null oder positiv sein")
-                .withValidator(new IntegerRangeValidator("Anzahl Bewohner muss null oder positiv sein", 0, Integer.MAX_VALUE))
+                .withValidator(new IntegerRangeValidator("Anzahl Bewohner muss null oder positiv sein", 1, Integer.MAX_VALUE))
                 .bind(Mietvertrag::getAnzahlBewohner, Mietvertrag::setAnzahlBewohner);
 
         // Aktuelle Werte in den Binder einlesen

@@ -71,6 +71,14 @@ public class MieterListView extends VerticalLayout {
 
     HorizontalLayout toolbar;
 
+    /**
+     * Konstruktor für MieterListView.
+     * Initialisiert die Ansicht mit den benötigten Services und Konfiguriert die Ansichtselemente.
+     *
+     * @param mieterService         Service zur Verwaltung von Mieterdaten
+     * @param mietvertragService    Service zur Verwaltung von Mietverträgen
+     * @param configurationService  Service zur Verwaltung von Konfigurationen
+     */
     public MieterListView(MieterService mieterService, MietvertragService mietvertragService, ConfigurationService configurationService) {
         this.mieterService = mieterService;
         this.mietvertragService = mietvertragService;
@@ -92,11 +100,19 @@ public class MieterListView extends VerticalLayout {
         updateGridColumns();
     }
 
+    /**
+     * Aktualisiert die Liste der Mieter im Grid basierend auf dem Filtertext.
+     */
     private void updateList() {
         List<Mieter> mieterList = mieterService.findAllMieter(filterText.getValue());
         TableUtils.configureGrid(grid, mieterList, 50);
     }
 
+    /**
+     * Erstellt das Layout für den Inhalt der Ansicht, welches das Grid enthält.
+     *
+     * @return das Layout mit dem Grid als Inhalt
+     */
     private Component getContent() {
         HorizontalLayout content = new HorizontalLayout(grid);
         content.setFlexGrow(2, grid);
@@ -105,6 +121,9 @@ public class MieterListView extends VerticalLayout {
         return content;
     }
 
+    /**
+     * Konfiguriert das Grid für die Anzeige der Mieterdaten.
+     */
     private void configureGrid() {
         grid.addClassNames("mieter-grid");
         grid.setSizeFull();
@@ -133,6 +152,16 @@ public class MieterListView extends VerticalLayout {
         });
     }
 
+    /**
+     * Fügt eine Spalte für die Mietvertragsdaten zum Grid hinzu.
+     *
+     * @param valueProvider  eine Methode zum Abrufen des Werts aus einem Mietvertrag
+     * @param headerHtml     der Headertext der Spalte
+     * @param isCurrency     gibt an, ob der Wert als Währung formatiert werden soll
+     * @param isDate         gibt an, ob der Wert als Datum formatiert werden soll
+     * @param isMietende     gibt an, ob der Wert "Unbefristet" anzeigen soll, wenn er null ist
+     * @param <T>            der Typ des Werts in der Spalte
+     */
     private <T> void addMietvertragColumn(ValueProvider<Mietvertrag, T> valueProvider, String headerHtml, boolean isCurrency, boolean isDate, boolean isMietende) {
         grid.addColumn(new ComponentRenderer<>(mieter -> {
             List<Mietvertrag> mietvertraege = mietvertragService.findByMieter(mieter.getMieter_id());
@@ -159,14 +188,31 @@ public class MieterListView extends VerticalLayout {
         })).setHeader(createCustomHeader(headerHtml));
     }
 
+    /**
+     * Überladene Methode zum Hinzufügen einer Spalte für Mietvertragsdaten ohne zusätzliche Formatierungen.
+     *
+     * @param valueProvider  eine Methode zum Abrufen des Werts aus einem Mietvertrag
+     * headerHtml der Headertext der Spalte
+     */
     private <T> void addMietvertragColumn(ValueProvider<Mietvertrag, T> valueProvider) {
         addMietvertragColumn(valueProvider, "Mietbeginn", false, true, false);
     }
 
+    /**
+     * Überladene Methode zum Hinzufügen einer Spalte für Mietvertragsdaten ohne spezielle Headertexte.
+     *
+     * @param valueProvider  eine Methode zum Abrufen des Werts aus einem Mietvertrag
+     */
     private <T> void addMietvertragColumn(ValueProvider<Mietvertrag, T> valueProvider, String headerHtml, boolean isCurrency) {
         addMietvertragColumn(valueProvider, headerHtml, isCurrency, false, false);
     }
 
+    /**
+     * Erstellt und konfiguriert die Toolbar für die Ansicht.
+     * Die Toolbar enthält ein Suchfeld und einen Button zum Hinzufügen von Mietern.
+     *
+     * @return die Toolbar als Layout
+     */
     private HorizontalLayout getToolbar() {
         filterText.setPlaceholder("Filter nach Name...");
         filterText.setClearButtonVisible(true);
@@ -185,6 +231,11 @@ public class MieterListView extends VerticalLayout {
         return toolbar;
     }
 
+    /**
+     * Erstellt das Filter-Akkordeon für die Auswahl der anzuzeigenden Spalten im Grid.
+     *
+     * @return das Akkordeon für die Spaltenauswahl
+     */
     private Accordion createFilterAccordion() {
         HorizontalLayout layout = new HorizontalLayout();
         VerticalLayout col1 = createVerticalLayoutWithSpacing(telefonnummer, email);
@@ -270,6 +321,9 @@ public class MieterListView extends VerticalLayout {
         return filter;
     }
 
+    /**
+     * Aktualisiert die Spalten des Grids basierend auf den ausgewählten Filteroptionen.
+     */
     private void updateGridColumns() {
         grid.removeAllColumns();
 
@@ -318,6 +372,9 @@ public class MieterListView extends VerticalLayout {
         grid.getColumns().forEach(col -> col.setAutoWidth(true).setSortable(true));
     }
 
+    /**
+     * Öffnet einen Dialog zum Hinzufügen eines neuen Mieters.
+     */
     private void addMieter() {
         grid.asSingleSelect().clear();
         Mieter neuerMieter = new Mieter();
@@ -329,6 +386,12 @@ public class MieterListView extends VerticalLayout {
         dialog.open();
     }
 
+    /**
+     * Erstellt ein vertikales Layout mit den angegebenen Komponenten und fügt Abstand hinzu.
+     *
+     * @param components die zu platzierenden Komponenten
+     * @return das vertikale Layout
+     */
     private VerticalLayout createVerticalLayoutWithSpacing(Component... components) {
         VerticalLayout layout = new VerticalLayout(components);
         layout.setPadding(false);
