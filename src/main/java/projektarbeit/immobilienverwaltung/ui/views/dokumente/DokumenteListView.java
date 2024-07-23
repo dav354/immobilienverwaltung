@@ -244,9 +244,7 @@ public class DokumenteListView extends VerticalLayout {
             Button deleteButton = new Button(new Icon("close"));
             deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
             deleteButton.getElement().setAttribute("title", "Delete");
-            deleteButton.addClickListener(event -> {
-                dokumentService.deleteDokument(dokument, dokumentGrid, dokument.getWohnung(), 53, configurationService, this::refreshView);
-            });
+            deleteButton.addClickListener(event -> dokumentService.deleteDokument(dokument, dokumentGrid, dokument.getWohnung(), 53, configurationService, this::refreshView));
 
             Button downloadButton = new Button(new Icon("download"));
             downloadButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
