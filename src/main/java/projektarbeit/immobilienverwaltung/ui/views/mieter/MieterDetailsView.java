@@ -283,7 +283,7 @@ public class MieterDetailsView extends Composite<VerticalLayout> implements HasU
             link.setRoute(WohnungDetailsView.class, mietvertrag.getWohnung().getWohnung_id());
             link.getElement().setAttribute("href", link.getElement().getAttribute("href") + "?previousView=mieter-details&mieterId=" + currentMieter.getMieter_id());
             return link;
-        }).setHeader(createCustomHeader("Wohnung"));
+        }).setHeader(createCustomHeader("Wohnung")).setAutoWidth(true).setFlexGrow(1);
         mietvertragGrid.addColumn(Mietvertrag::getMietbeginn)
                 .setHeader(createCustomHeader("Mietbeginn"))
                 .setRenderer(new LocalDateRenderer<>(Mietvertrag::getMietbeginn, "dd.MM.yyyy"));
