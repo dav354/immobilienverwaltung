@@ -21,14 +21,40 @@ Folgende Einstellungen sollten noch angepasst werden:
 
 In der Docker Compose-Datei können folgende Umgebungsvariablen konfiguriert werden:
 
-- **DB_HOST**: Definiert den Hostnamen oder die IP-Adresse der Datenbank. Standardwert ist `db`.
-- **DB_PORT**: Gibt den Port von PostgreSQL an. Standardwert ist `5432`.
-- **DB_NAME**: Der Name der zu verwendenden Datenbank. Standardwert ist `immobilienverwaltung`.
-- **DB_USER**: Der Benutzername für den Datenbankzugriff. Standardwert ist `myuser`.
-- **DB_PASSWORD**: Das Passwort für den Datenbankbenutzer. Standardwert ist `mypassword`.
-- **ADMIN**: Benutzername des Administrators. Standardwert ist `admin`.
-- **ADMIN_PW**: Passwort für den Administrator. Standardwert ist `password`.
-- **DEMO_MODE**: Gibt an, ob Demodaten geladen werden sollen. Kann auf `true` oder `false` gesetzt werden. Standardwert ist `true`.
+\renewcommand{\arraystretch}{1.5}
+\begin{longtable}{|p{4cm}|p{12cm}|}
+\hline
+\rowcolor{gray!25}
+\textbf{Variable} & \textbf{Beschreibung} \\
+\hline
+\endfirsthead
+\hline
+\rowcolor{gray!25}
+\textbf{Variable} & \textbf{Beschreibung} \\
+\hline
+\endhead
+\hline
+\multicolumn{2}{r}{\textit{Fortsetzung auf der nächsten Seite}} \\
+\endfoot
+\hline
+\endlastfoot
+\textbf{DB\_HOST} & Definiert den Hostnamen oder die IP-Adresse der Datenbank. Standardwert ist \texttt{db}. \\
+\hline
+\textbf{DB\_PORT} & Gibt den Port von PostgreSQL an. Standardwert ist \texttt{5432}. \\
+\hline
+\textbf{DB\_NAME} & Der Name der zu verwendenden Datenbank. Standardwert ist \texttt{immobilienverwaltung}. \\
+\hline
+\textbf{DB\_USER} & Der Benutzername für den Datenbankzugriff. Standardwert ist \texttt{myuser}. \\
+\hline
+\textbf{DB\_PASSWORD} & Das Passwort für den Datenbankbenutzer. Standardwert ist \texttt{mypassword}. \\
+\hline
+\textbf{ADMIN} & Benutzername des Administrators. Standardwert ist \texttt{admin}. \\
+\hline
+\textbf{ADMIN\_PW} & Passwort für den Administrator. Standardwert ist \texttt{password}. \\
+\hline
+\textbf{DEMO\_MODE} & Gibt an, ob Demodaten geladen werden sollen. Kann auf \texttt{true} oder \texttt{false} gesetzt werden. Standardwert ist \texttt{true}. \\
+\hline
+\end{longtable}
 
 Passen Sie die Variablen nach Bedarf an, um die Anwendung zu konfigurieren. Nachdem Sie die Datei angepasst haben, können Sie die Anwendung starten und auf die bereitgestellten Dienste zugreifen.
 

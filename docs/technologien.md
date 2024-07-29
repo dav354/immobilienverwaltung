@@ -4,8 +4,7 @@ Wir verwenden einen etablierten und weit verbreiteten Technologie-Stack, der uns
 
 ## Programmiersprache
 
-- **Java 21**:
-    - Die Wahl fiel auf Java, da wir Java bereits aus den Programmiervorlesungen kennen und können. Wir nutzen die neueste LTS-Version, um von den aktuellsten Sprachfeatures und Performance-Verbesserungen zu profitieren.
+- **Java 21**: Die Wahl fiel auf Java, da wir Java bereits aus den Programmiervorlesungen kennen und können. Wir nutzen die neueste LTS-Version, um von den aktuellsten Sprachfeatures und Performance-Verbesserungen zu profitieren.
 
 ## Backend
 
@@ -17,25 +16,20 @@ Wir verwenden einen etablierten und weit verbreiteten Technologie-Stack, der uns
 
 ## Datenbanken
 
-- **H2**:
-    - Wird während der Entwicklungsphase verwendet, da es eine in-memory Datenbank ist, die schnelle Tests und einfache Konfiguration ermöglicht.
-- **PostgreSQL**:
-    - Für das Deployment wird PostgreSQL eingesetzt, eine leistungsstarke und skalierbare relationale Datenbank, die für den Produktiveinsatz bestens geeignet ist.
+- **H2**: Wird während der Entwicklungsphase verwendet, da es eine in-memory Datenbank ist, die schnelle Tests und einfache Konfiguration ermöglicht.
+- **PostgreSQL**: Für das Deployment wird PostgreSQL eingesetzt, eine leistungsstarke und skalierbare relationale Datenbank, die für den Produktiveinsatz bestens geeignet ist.
 
 ## Frontend
 
-- **Vaadin**:
-    - Bietet ein umfassendes Framework für die Erstellung von modernen und reaktiven Benutzeroberflächen in Java, was die Integration mit dem Backend erleichtert.
+- **Vaadin**: Bietet ein umfassendes Framework für die Erstellung von modernen und reaktiven Benutzeroberflächen in Java, was die Integration mit dem Backend erleichtert.
 
 ## Build-Tool
 
-- **Maven**:
-    - Automatisiert den Build-Prozess und das Management von Abhängigkeiten, was die Projektverwaltung effizient und konsistent macht.
+- **Maven**: Automatisiert den Build-Prozess und das Management von Abhängigkeiten, was die Projektverwaltung effizient und konsistent macht.
 
 ## Tests
 
-- **JUnit**:
-    - Ermöglicht das Schreiben und Ausführen von Unit-Tests, um die Qualität und Zuverlässigkeit des Codes sicherzustellen.
+- **JUnit**: Ermöglicht das Schreiben und Ausführen von Unit-Tests, um die Qualität und Zuverlässigkeit des Codes sicherzustellen.
 
 ## Deployment
 

@@ -72,6 +72,8 @@
 - **Beziehungen**:
     - Many-to-One mit `Wohnung`: Jeder Zählerstand gehört zu einer Wohnung.
 
+Die grafische Übersicht gibt es im Anhang Figure 1.
+
 ## User und Role
 - **User**:
     - `Long id PK`
@@ -85,6 +87,8 @@
     - Ein User kann mehrere Rollen haben (Many-to-Many Beziehung).
     - Eine Rolle kann mehreren Usern zugewiesen werden (Many-to-Many Beziehung).
 
+Die grafische Übersicht gibt es im Anhang Figure 2.
+
 ## Konfiguration
 
 Die Configuration-Entität dient zur Speicherung von Konfigurationsparametern in der Datenbank. Sie ermöglicht es, Schlüssel-Wert-Paare für verschiedene Einstellungen innerhalb der Anwendung zu verwalten.
@@ -96,3 +100,5 @@ Attribute
 ### Werte
 - **demo.mode.disable**: Speichert den wert, wenn die Demo Daten initial geladen wurden, dass die Daten nicht bei jedem Start neu geladen werden.
 - **darkMode**: Speichert die Einstellung des Dark Modes, dass die Layout Klassen darauf Zugriff haben.
+
+Die grafische Übersicht gibt es im Anhang Figure 3.

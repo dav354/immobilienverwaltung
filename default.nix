@@ -30,7 +30,22 @@ pkgs.stdenv.mkDerivation {
     done
 
     # Generate the PDF using Pandoc
-    pandoc docs/index.md docs/motivation.md docs/verwendungszweck.md docs/zieluser.md docs/installation.md docs/technologien.md docs/komponenten.md docs/databaseDesign.md docs/useCases.md docs/bilder.md --pdf-engine=pdflatex -o "$OUTPUT_DIR/$OUTPUT_FILE"
+    pandoc docs/index.md \
+           docs/motivation.md \
+           docs/verwendungszweck.md \
+           docs/zieluser.md \
+           docs/installation.md \
+           docs/technologien.md \
+           docs/komponenten.md \
+           docs/databaseDesign.md \
+           docs/useCases.md \
+           docs/bilder.md \
+           --pdf-engine=xelatex \
+           -V geometry:margin=2cm \
+           -V table-use-row-colors=true \
+           --from markdown+pipe_tables+raw_attribute \
+           --include-in-header=docs/header.tex \
+           -o "$OUTPUT_DIR/$OUTPUT_FILE"
 
     # Check if the PDF was successfully created
     if [ $? -eq 0 ]; then
