@@ -1,6 +1,6 @@
 ---
 title: "Dokumentation der Immobilienverwaltung"
-author: "Name"
+author: "Daniel Lang, David Gläsle, Leander Lange"
 date: \today
 geometry: margin=2cm
 toc: true
