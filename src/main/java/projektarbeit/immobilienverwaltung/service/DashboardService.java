@@ -48,7 +48,9 @@ public class DashboardService {
     public Map<String, Long> getImmobilienStats() {
         Map<String, Long> stats = new HashMap<>();
         long totalImmobilien = wohnungRepository.count();
-        long vermieteteImmobilien = mietvertragRepository.findAll().size();
+        long vermieteteImmobilien = mietvertragRepository.findAll().stream()
+                .filter(mietvertrag -> mietvertrag.getMietende() == null || mietvertrag.getMietende().isAfter(java.time.LocalDate.now()))
+                .count();
         stats.put("total", totalImmobilien);
         stats.put("vermietet", vermieteteImmobilien);
         return stats;
