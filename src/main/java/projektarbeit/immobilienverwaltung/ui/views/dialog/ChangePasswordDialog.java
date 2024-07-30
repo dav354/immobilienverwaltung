@@ -33,6 +33,7 @@ public class ChangePasswordDialog extends DialogLayout {
     private void createDialog() {
         // Erstellen des Formularlayouts
         FormLayout formLayout = new FormLayout();
+        addClassName("custom-dialog");
 
         // Erstellen und Binden der Felder
         PasswordField newPasswordField = new PasswordField("Neues Passwort");

@@ -121,3 +121,7 @@ body {
     left: 10px;
     pointer-events: none;
 }
+
+.custom-dialog {
+    z-index: 10000;
+}

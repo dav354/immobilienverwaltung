@@ -67,7 +67,7 @@ public class DokumentService {
     public void init() {
         this.rootLocation = Paths.get(storagePath);
         try {
-            Files.createDirectories(rootLocation); // Erstellen Sie das Verzeichnis, falls es nicht existiert
+            Files.createDirectories(rootLocation);
         } catch (IOException e) {
             throw new RuntimeException("Could not initialize storage location", e);
         }
