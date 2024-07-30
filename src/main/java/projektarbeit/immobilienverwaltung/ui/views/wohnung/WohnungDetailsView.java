@@ -116,7 +116,7 @@ public class WohnungDetailsView extends Composite<VerticalLayout> implements Has
      * @return der Bearbeiten-Button
      */
     private Button createWohnungEditButton() {
-        Button wohnungEditButton = new Button("edit");
+        Button wohnungEditButton = new Button("Edit");
         wohnungEditButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         wohnungEditButton.addClickListener(event -> {
             WohnungEditDialog editDialog = new WohnungEditDialog(wohnungService, currentWohnung, this::refreshView, configurationService);

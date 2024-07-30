@@ -17,16 +17,17 @@ Die Anwendung folgt einer mehrschichtigen Architektur mit folgendem Aufbau:
 
 #### UI-Komponenten
 
-- **MieterForm**: Formular zur Bearbeitung von Mieterdaten. Ermöglicht Eingabe und Validierung von Mieterinformationen und deren Speicherung in der Datenbank.
-- **MieterListView**: Übersicht und Verwaltung der Mieter. Zeigt eine Liste aller Mieter und ermöglicht Hinzufügen, Bearbeiten und Löschen von Mietern.
+- **MieterDetailsView**: Detailansicht eines Mieters, einschließlich Mietverträge und Dokumente. Zeigt vollständige Informationen zu einem Mieter und ermöglicht Verwaltung der zugehörigen Daten.
+- **MieterListView**: Übersicht und Verwaltung der Mieter. Zeigt eine Liste aller Mieter und ermöglicht Hinzufügen von Mietern.
 - **WohnungDetailsView**: Detailansicht einer Wohnung, einschließlich Zählerstände und Dokumente. Zeigt vollständige Informationen zu einer Wohnung und ermöglicht Verwaltung der zugehörigen Daten.
-- **WohnungListView**: Übersicht und Verwaltung der Wohnungen. Zeigt eine Liste aller Wohnungen und ermöglicht Hinzufügen, Bearbeiten und Löschen von Wohnungen.
+- **WohnungListView**: Übersicht und Verwaltung der Wohnungen. Zeigt eine Liste aller Wohnungen und ermöglicht Hinzufügen Wohnungen.
 - **MainView**: Startseite der Anwendung, die Statistiken zu Mieteinnahmen, Immobilien und Mietern anzeigt. Enthält eine Übersichtskarte, die alle Wohnungen darstellt.
 - **DokumenteDetailsView**: Detaillierte Auflistung aller vorhandenen Dokumente. Diese können auch gefiltert werden.
 
 #### Dialoge
 
-- **MieterForm**: Formular zur Eingabe und Bearbeitung von Mieterdaten.
+- **MieterEditDialog**: Dialog zur Eingabe und Bearbeitung von Mieterdaten.
+- **VertragHinzufuegenDialog**: Dialog zur Eingabe und Erstellung von Mietverträgen.
 - **WohnungEditDialog**: Dialog zur Bearbeitung von Wohnungsdaten.
 - **ZaehlerstandDialog**: Dialog zur Eingabe und Bearbeitung von Zählerständen.
 - **ChangePasswordDialog**: Dialog zum Ändern des Passworts des aktuellen Benutzers.

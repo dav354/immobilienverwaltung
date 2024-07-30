@@ -21,7 +21,7 @@ Zusätzlich können Mietern Dokumente und Mietverträge zugeordnet werden. Diese
 
 Mietverträge verknüpfen Mieter mit Wohnungen und enthalten Informationen wie Mietbeginn, Mietende, Miete, Kaution und die Anzahl der Bewohner. Die Validierungen stellen sicher, dass:
 
-- Mietbeginn: Nicht in der Zukunft liegt.
+- Mietbeginn: Darf nicht leer sein.
 - Mietende: Nach dem Mietbeginn liegt, falls gesetzt. Sollte dieser nicht gesetzt sein, wird ein unbefristeter Vertrag angenommen.
 - Miete und Kaution: Positive Werte sind.
 - Anzahl der Bewohner: Mindestens 1 beträgt.
