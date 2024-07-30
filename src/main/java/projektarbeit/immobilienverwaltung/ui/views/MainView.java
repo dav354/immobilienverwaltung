@@ -79,7 +79,7 @@ public class MainView extends VerticalLayout {
         mainLayout.setAlignItems(Alignment.START);
 
         // Initiale Erstellung der Divs
-        mieteinnahmenDiv = createStatDiv("Mieteinnahmen", "€ 5.900", VaadinIcon.EURO.create());
+        mieteinnahmenDiv = createStatDiv("Mieteinnahmen pro Monat", "€ 5.900", VaadinIcon.EURO.create());
         immobilienDiv = createStatDiv("Immobilien", "Gesamt: 12\nVermietet: 6", VaadinIcon.HOME.create());
         mieterDiv = createStatDiv("Anzahl der Mieter", "12", VaadinIcon.USER.create());
         leafletMap = new LeafletMap();
@@ -329,11 +329,6 @@ public class MainView extends VerticalLayout {
         return supportLayout;
     }
 
-    /**
-     * Erstellt und konfiguriert ein HorizontalLayout mit Checkboxen zur Auswahl von vermieteten und unvermieteten Wohnungen.
-     *
-     * @return Ein HorizontalLayout mit den Checkboxen.
-     */
     /**
      * Erstellt und konfiguriert ein HorizontalLayout mit Checkboxen zur Auswahl von vermieteten und unvermieteten Wohnungen.
      *
