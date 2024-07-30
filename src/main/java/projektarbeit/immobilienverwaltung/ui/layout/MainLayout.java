@@ -4,14 +4,12 @@ import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.theme.lumo.Lumo;
@@ -31,8 +29,6 @@ import projektarbeit.immobilienverwaltung.ui.views.wohnung.WohnungListView;
  * Hauptlayout der Anwendung, das die Navigation und das Layout der Anwendung definiert.
  */
 @CssImport("./styles/styles.css")
-@JsModule("./tab-visibility.js")
-@Push
 public class MainLayout extends AppLayout {
 
     private final SecurityService securityService;
