@@ -61,7 +61,7 @@ Vorbedingungen & - Der Benutzer muss die Rolle eines Admins haben und angemeldet
 \hline
 Ablauf & 1. Benutzer öffnet im Burger-Menü die AdminView. \newline 2. Benutzer gibt einen validem Benutzernamen und ein valides Passwort ein, wählt die gewünschte Rolle aus und
 klickt auf die Schaltfläche "add User". \newline 3. System überprüft die eingegebenen informationen. \newline 4. Bei
-ungültigen Informationen: Fehlermeldung anzeigen, Benutzer kann Eingaben korrigieren. \newline 
+ungültigen Informationen: Fehlermeldung anzeigen, Benutzer kann Eingaben korrigieren. \\
 \hline
 Nachbedingungen & Der Benutzer ist erstellt. \\
 \end{longtable}
@@ -94,7 +94,7 @@ Vorbedingungen & - Der Benutzer muss die Rolle eines Admins haben und angemeldet
 Ablauf & 1. Benutzer öffnet im Burger-Menü die AdminView. \newline 2. Benutzer klickt auf den Button Delete des zu löschenden Users.
 \newline 3. Es öffnet sich ein Dialogfenster bei dem das Löschen bestätigt werden muss
 \newline 4. Soll der letzte Admin gelöscht werden, kommt eine Fehlermeldung, dass dies nicht möglich ist
-Admin . \newline
+Admin . \\
 \hline
 Nachbedingungen & Der Benutzer ist aus dem System gelöscht. \\
 \end{longtable}
