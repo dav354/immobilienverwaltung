@@ -1,6 +1,6 @@
 # Use Cases
 
-## Use Case 1: Anmeldung und Abmeldung {#tbl:usecase12 .longtable}
+## Use Case 1: Anmeldung und Abmeldung {#tbl:usecase1 .longtable}
 
 \renewcommand{\arraystretch}{1.5}
 \begin{longtable}{|p{3cm}|p{12cm}|}
@@ -34,7 +34,7 @@ den Benutzer ab und leitet ihn zur Anmeldeseite weiter. \\
 Nachbedingungen & Der Benutzer ist im System abgemeldet. \\
 \end{longtable}
 
-## Use Case 2: User erstellen {#tbl:usecase13 .longtable}
+## Use Case 2: User erstellen {#tbl:usecase2 .longtable}
 
 \renewcommand{\arraystretch}{1.5}
 \begin{longtable}{|p{3cm}|p{12cm}|}
@@ -66,7 +66,7 @@ ungültigen Informationen: Fehlermeldung anzeigen, Benutzer kann Eingaben korrig
 Nachbedingungen & Der Benutzer ist erstellt. \\
 \end{longtable}
 
-## Use Case 3: User löschen {#tbl:usecase14 .longtable}
+## Use Case 3: User löschen {#tbl:usecase3 .longtable}
 
 \renewcommand{\arraystretch}{1.5}
 \begin{longtable}{|p{3cm}|p{12cm}|}
@@ -99,7 +99,7 @@ Admin . \newline
 Nachbedingungen & Der Benutzer ist aus dem System gelöscht. \\
 \end{longtable}
 
-## Use Case 4: Hinzufügen eines neuen Mieters {#tbl:usecase1 .longtable}
+## Use Case 4: Hinzufügen eines neuen Mieters {#tbl:usecase4 .longtable}
 
 \renewcommand{\arraystretch}{1.5}
 \begin{longtable}{|p{3cm}|p{12cm}|}
@@ -135,7 +135,7 @@ die `MieterListView` und zeigt den neuen Mieter an. \\
 Nachbedingungen & Der neue Mieter ist in der Datenbank gespeichert und in der `MieterListView` sichtbar. \\
 \end{longtable}
 
-## Use Case 5: Bearbeiten eines Mieters {#tbl:usecase2 .longtable}
+## Use Case 5: Bearbeiten eines Mieters {#tbl:usecase5 .longtable}
 
 \renewcommand{\arraystretch}{1.5}
 \begin{longtable}{|p{3cm}|p{12cm}|}
@@ -172,7 +172,7 @@ aktualisierten Daten an. \\
 Nachbedingungen & Der neue Mieter ist in der Datenbank aktualisiert und in der `MieterListView` sichtbar. \\
 \end{longtable}
 
-## Use Case 6: Löschen eines Mieter {#tbl:usecase3 .longtable}
+## Use Case 6: Löschen eines Mieter {#tbl:usecase6 .longtable}
 
 \renewcommand{\arraystretch}{1.5}
 \begin{longtable}{|p{3cm}|p{12cm}|}
@@ -207,7 +207,7 @@ Nachbedingungen & Der Mieter und die zugehörige Mietverträge sind aus der Date
 nicht mehr sichtbar. \\
 \end{longtable}
 
-## Use Case 7: Hinzufügen einer neuen Wohnung {#tbl:usecase4 .longtable}
+## Use Case 7: Hinzufügen einer neuen Wohnung {#tbl:usecase7 .longtable}
 
 \renewcommand{\arraystretch}{1.5}
 \begin{longtable}{|p{3cm}|p{12cm}|}
@@ -243,7 +243,7 @@ die `WohnungsListView` und zeigt die neue Wohnung an. \\
 Nachbedingungen & Die neue Wohnung ist in der Datenbank gespeichert und in der `WohnungListView` sichtbar. \\
 \end{longtable}
 
-## Use Case 8: Bearbeiten einer Wohnung {#tbl:usecase5 .longtable}
+## Use Case 8: Bearbeiten einer Wohnung {#tbl:usecase8 .longtable}
 
 \renewcommand{\arraystretch}{1.5}
 \begin{longtable}{|p{3cm}|p{12cm}|}
@@ -280,7 +280,7 @@ Nachbedingungen & Die Änderungen an der Wohnung sind in der Datenbank gespeiche
 sichtbar. \\
 \end{longtable}
 
-## Use Case 9: Löschen einer Wohnung {#tbl:usecase6 .longtable}
+## Use Case 9: Löschen einer Wohnung {#tbl:usecase9 .longtable}
 
 \renewcommand{\arraystretch}{1.5}
 \begin{longtable}{|p{3cm}|p{12cm}|}
@@ -315,7 +315,7 @@ Nachbedingungen & Die Wohnung, die zugehörigen Zählerstände und Mietverträge
 nicht mehr sichtbar. \\
 \end{longtable}
 
-## Use Case 10: Hinzufügen eines neuen Mietvertrags {#tbl:usecase7 .longtable}
+## Use Case 10: Hinzufügen eines neuen Mietvertrags {#tbl:usecase10 .longtable}
 
 \renewcommand{\arraystretch}{1.5}
 \begin{longtable}{|p{3cm}|p{12cm}|}
@@ -352,7 +352,7 @@ den neuen Mietvertrag an. \\
 Nachbedingungen & Der neue Mietvertrag ist in der Datenbank gespeichert und in der `MieterListView` sichtbar. \\
 \end{longtable}
 
-## Use Case 11: Löschen eines Mietvertrags {#tbl:usecase8 .longtable}
+## Use Case 11: Löschen eines Mietvertrags {#tbl:usecase11 .longtable}
 
 \renewcommand{\arraystretch}{1.5}
 \begin{longtable}{|p{3cm}|p{12cm}|}
@@ -387,7 +387,7 @@ Nachbedingungen & Der Mietvertrag und der zugehörige Mieter sind aus der Datenb
 nicht mehr sichtbar. \\
 \end{longtable}
 
-## Use Case 12: Erfassung eines neuen Zählerstands {#tbl:usecase9 .longtable}
+## Use Case 12: Erfassung eines neuen Zählerstands {#tbl:usecase12 .longtable}
 
 \renewcommand{\arraystretch}{1.5}
 \begin{longtable}{|p{3cm}|p{12cm}|}
@@ -423,7 +423,7 @@ die `WohnungDetailsView` und zeigt den neuen Zählerstand an. \\
 Nachbedingungen & Der neue Zählerstand ist in der Datenbank gespeichert und in der `WohnungDetailsView` sichtbar. \\
 \end{longtable}
 
-## Use Case 13: Löschen eines Zählerstands {#tbl:usecase9 .longtable}
+## Use Case 13: Löschen eines Zählerstands {#tbl:usecase13 .longtable}
 
 \renewcommand{\arraystretch}{1.5}
 \begin{longtable}{|p{3cm}|p{12cm}|}
@@ -456,7 +456,7 @@ mit dem Button "Löschen"".\\
 Nachbedingungen & Der bestehende Zählerstand ist in der Datenbank gelöscht und nicht mehr in der `WohnungDetailsView` sichtbar. \\
 \end{longtable}
 
-## Use Case 14: Hochladen eines Dokuments {#tbl:usecase10 .longtable}
+## Use Case 14: Hochladen eines Dokuments {#tbl:usecase14 .longtable}
 
 \renewcommand{\arraystretch}{1.5}
 \begin{longtable}{|p{3cm}|p{12cm}|}
@@ -493,7 +493,7 @@ Nachbedingungen & Das neue Dokument ist in der Datenbank gespeichert und in der 
 oder `WohnungsDetailview` sichtbar. \\
 \end{longtable}
 
-## Use Case 15: Anzeigen eines Dokuments {#tbl:usecase10 .longtable}
+## Use Case 15: Anzeigen eines Dokuments {#tbl:usecase15 .longtable}
 
 \renewcommand{\arraystretch}{1.5}
 \begin{longtable}{|p{3cm}|p{12cm}|}
@@ -527,7 +527,7 @@ Nachbedingungen & Das Dokument wird angezeigt
 \\
 \end{longtable}
 
-## Use Case 16: Download eines Dokuments {#tbl:usecase10 .longtable}
+## Use Case 16: Download eines Dokuments {#tbl:usecase16 .longtable}
 
 \renewcommand{\arraystretch}{1.5}
 \begin{longtable}{|p{3cm}|p{12cm}|}
@@ -561,7 +561,7 @@ Nachbedingungen & Das Dokument wird angezeig und ist lokal gespeichert
 \\
 \end{longtable}
 
-## Use Case 17: Löschen eines Dokuments {#tbl:usecase10 .longtable}
+## Use Case 17: Löschen eines Dokuments {#tbl:usecase17 .longtable}
 
 \renewcommand{\arraystretch}{1.5}
 \begin{longtable}{|p{3cm}|p{12cm}|}
