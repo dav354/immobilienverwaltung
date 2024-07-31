@@ -18,7 +18,7 @@ public class FormUtils {
      * @param value      der Wert für das Detail als String
      */
     public static void addDetailToFormLayout(FormLayout formLayout, String label, String value) {
-        if (value != null) {
+        if (value != null && !value.isEmpty()) {
             addDetailToFormLayout(formLayout, label, new Span(value));
         }
     }
