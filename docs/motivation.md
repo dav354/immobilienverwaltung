@@ -2,7 +2,7 @@
 
 Die Verwaltung von Immobilien umfasst komplexe und zeitaufwändige Aufgaben wie Mieterverwaltung, Mietvertragsmanagement, Zählerstandserfassung und Dokumentation. Diese Prozesse sind traditionell manuell, fehleranfällig und ineffizient.
 
-Die Hauptmotivation für die Entwicklung dieser Anwendung ist die Vereinfachung und Automatisierung dieser Verwaltungsprozesse. Durch die Digitalisierung und Zentralisierung aller relevanten Daten werden Verwaltungsaufgaben effizienter und transparenter gestaltet, was zu einer erheblichen Zeitersparnis und reduzierter Fehleranfälligkeit führt.
+Die Hauptmotivation für die Entwicklung dieser Anwendung ist die Vereinfachung und digitalisierung dieser Verwaltungsprozesse. Durch die Digitalisierung und Zentralisierung aller relevanten Daten werden Verwaltungsaufgaben effizienter und transparenter gestaltet, was zu einer erheblichen Zeitersparnis und reduzierter Fehleranfälligkeit führt.
 
 # Funktionen
 
@@ -12,7 +12,7 @@ Die Mieter-Verwaltung ermöglicht es, Mieter zu erstellen, zu aktualisieren und 
 
 - Name und Vorname: Dürfen nur Buchstaben und Leerzeichen enthalten und müssen zwischen 1 und 100 Zeichen lang sein.
 - Telefonnummer: Muss zwischen 6 und 12 Ziffern enthalten.
-- E-Mail: Muss ein gültiges E-Mail-Format haben und eindeutig sein.
+- E-Mail: Muss ein gültiges E-Mail-Format haben (xxx@xxx.x) und eindeutig sein.
 - Einkommen: Muss ein positiver Wert sein.
 
 Zusätzlich können Mietern Dokumente und Mietverträge zugeordnet werden. Diese werden beim löschen eines Mieters ebenfalls mitgelöscht.
@@ -43,11 +43,17 @@ Wohnungen können ebenfalls Dokumente und Zählerstände zugeordnet werden.  Die
 
 #### 4. Dokumenten-Verwaltung
 
-Dokumente können Mietern oder Wohnungen zugeordnet werden und enthalten Attribute wie Dokumenttyp und Dateipfad. Beide Felder dürfen nicht leer sein und müssen bestimmten Validierungen entsprechen. Sie können auch einzeln gelöscht, heruntergeladen oder angesehen werden werden.
+Dokumente können Mietern oder Wohnungen zugeordnet werden und es wird der Name der Datei angezeigt. Sie können auch einzeln gelöscht, heruntergeladen oder angesehen werden werden.
 
 #### 5. Zählerstand-Verwaltung
 
 Zählerstände sind Wohnungen zugeordnet und enthalten das Ablesedatum und den Ablesewert. Beide Felder müssen gesetzt sein, wobei der Ablesewert positiv sein muss. Diese können auch einzeln gelöscht werden, unabhängig von der Wohnung. 
+
+#### 6. User-Verwaltung
+Die User-Verwaltung ermöglicht es, User zu erstellen, zu aktualisieren und zu löschen. Jeder User hat die Attribute, Benutzername, Passwort und Rolle. Die Attribute Benutzername und Passwort unterliegen strikten Validierungsregeln:
+
+- Benutzername: Zwischen 3 & 10 Zeichen, darf nur aus Zahlen und Buchstaben bestehen, darf nicht mit Leerzeichen beginnen oder enden.
+- Passwort: Zwischen 8 & 20 Zeichen, mind. ein Großbuchstabe, mind. eine Zahl, mind. ein Sonderzeichen (@#$%^&+=!)
 
 #### 6. Beziehungen und Integrität
 

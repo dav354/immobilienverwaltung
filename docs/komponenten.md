@@ -17,11 +17,12 @@ Die Anwendung folgt einer mehrschichtigen Architektur mit folgendem Aufbau:
 
 #### UI-Komponenten
 
-- **MieterDetailsView**: Detailansicht eines Mieters, einschließlich Mietverträge und Dokumente. Zeigt vollständige Informationen zu einem Mieter und ermöglicht Verwaltung der zugehörigen Daten.
-- **MieterListView**: Übersicht und Verwaltung der Mieter. Zeigt eine Liste aller Mieter und ermöglicht Hinzufügen von Mietern.
-- **WohnungDetailsView**: Detailansicht einer Wohnung, einschließlich Zählerstände und Dokumente. Zeigt vollständige Informationen zu einer Wohnung und ermöglicht Verwaltung der zugehörigen Daten.
+- **MainView**: Startseite der Anwendung, die Statistiken zu Mieteinnahmen, Immobilien und Mietern anzeigt. Enthält eine Standortübersicht, die alle Wohnungen darstellt.
+- **AdminView**: Übersicht und Verwaltung von Benutzern. Zeigt eine Liste aller vom Admin erstellten Benutzer. Ermöglicht dass anlegen neuer Benutzer, sowie das ändern der Passwörter und das löschen von Benutzern.
 - **WohnungListView**: Übersicht und Verwaltung der Wohnungen. Zeigt eine Liste aller Wohnungen und ermöglicht Hinzufügen Wohnungen.
-- **MainView**: Startseite der Anwendung, die Statistiken zu Mieteinnahmen, Immobilien und Mietern anzeigt. Enthält eine Übersichtskarte, die alle Wohnungen darstellt.
+- **WohnungDetailsView**: Detailansicht einer Wohnung, einschließlich Zählerstände und Dokumente. Zeigt vollständige Informationen zu einer Wohnung und ermöglicht Verwaltung der zugehörigen Daten.
+- **MieterListView**: Übersicht und Verwaltung der Mieter. Zeigt eine Liste aller Mieter und ermöglicht Hinzufügen von Mietern.
+- **MieterDetailsView**: Detailansicht eines Mieters, einschließlich Mietverträge und Dokumente. Zeigt vollständige Informationen zu einem Mieter und ermöglicht Verwaltung der zugehörigen Daten.
 - **DokumenteDetailsView**: Detaillierte Auflistung aller vorhandenen Dokumente. Diese können auch gefiltert werden.
 
 #### Dialoge
