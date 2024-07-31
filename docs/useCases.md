@@ -62,8 +62,8 @@ der `MieterListView`. \\
 \hline
 Ablauf & 1. Benutzer öffnet die `MieterListView` und klickt auf die Schaltfläche "Mieter hinzufügen". \newline 2. System
 öffnet aus der `MieterDetailsView` den `MieterEditDialog`. \newline 3. Benutzer gibt die Daten des neuen Mieters ein, wie Name, Vorname, Telefonnummer,
-E-Mail und Einkommen. \newline 4. Benutzer klickt auf die Schaltfläche "Speichern". \newline 5. System validiert die
-eingegebenen Daten. \newline 6. Bei Validierungsfehler: Fehlermeldung anzeigen, Benutzer kann Eingaben korrigieren.
+E-Mail und Einkommen. \newline 4. System validiert die eingegebenen Daten.  \newline 5. Bei Validierungsfehler: Fehlermeldung anzeigen,
+Benutzer kann Eingaben korrigieren. \newline 6. Benutzer klickt auf die Schaltfläche "Speichern".
 \newline 7. System speichert die validierten Daten in der Datenbank. \newline 8. System aktualisiert
 die `MieterListView` und zeigt den neuen Mieter an. \\
 \hline
@@ -98,10 +98,10 @@ der `MieterListView`. \\
 \hline
 Ablauf & 1. Benutzer öffnet die `MieterListView` und wählt einen Mieter aus. \newline 2. System öffnet
 die `MieterDetailsView` und zeigt die Details des ausgewählten Mieters. \newline 3. Benutzer klickt auf die
-Schaltfläche "Edit". \newline 4. System öffnet den `MieterEditDialog`. \newline 5. Benutzer ändert die
-gewünschten Daten und klickt auf die Schaltfläche "Speichern". \newline 6. System validiert die eingegebenen Daten.
-\newline 7. Bei Validierungsfehler: Fehlermeldung anzeigen, Benutzer kann Eingaben korrigieren. \newline 8. System
-speichert die validierten Daten in der Datenbank. \newline 9. System aktualisiert die `MieterDetailsView` und zeigt die
+Schaltfläche "Edit" und ändert die gewünschten Daten. \newline 4. System öffnet den `MieterEditDialog`. \newline 5. System validiert die eingegebenen Daten.
+\newline 6. Bei Validierungsfehler: Fehlermeldung anzeigen, Benutzer kann Eingaben korrigieren.
+\newline 7. Benutzer klickt auf die Schaltfläche "Speichern".
+\newline 8. System speichert die validierten Daten in der Datenbank. \newline 9. System aktualisiert die `MieterDetailsView` und zeigt die
 aktualisierten Daten an. \\
 \hline
 Nachbedingungen & Der neue Mieter ist in der Datenbank aktualisiert und in der `MieterListView` sichtbar. \\
@@ -169,9 +169,9 @@ Vorbedingungen & - Der Benutzer muss im System angemeldet sein. \newline - Der B
 der `WohnungsListView`. \\
 \hline
 Ablauf & 1. Benutzer öffnet die `WohnungsListView` und klickt auf die Schaltfläche "Mieter hinzufügen". \newline 2. System
-öffnet aus der `WohnungDetailsView` den `WohnungEditDialog`. \newline 3. Benutzer gibt die Daten der neuen Wohnung ein, wie PLT, Stadt,
-Adresse und Baujahr. \newline 4. Benutzer klickt auf die Schaltfläche "Speichern". \newline 5. System validiert die
-eingegebenen Daten. \newline 6. Bei Validierungsfehler: Fehlermeldung anzeigen, Benutzer kann Eingaben korrigieren.
+öffnet aus der `WohnungDetailsView` den `WohnungEditDialog`. \newline 3. Benutzer gibt die Daten der neuen Wohnung ein, wie PLZ, Stadt,
+Adresse und Baujahr. \newline 4. System validiert die eingegebenen Daten. \newline 5. Bei Validierungsfehler: Fehlermeldung anzeigen,
+Benutzer kann Eingaben korrigieren. \newline 6. Benutzer klickt auf die Schaltfläche "Speichern".
 \newline 7. System speichert die validierten Daten in der Datenbank. \newline 8. System aktualisiert
 die `WohnungsListView` und zeigt die neue Wohnung an. \\
 \hline
@@ -206,10 +206,9 @@ der `WohnungListView`. \\
 \hline
 Ablauf & 1. Benutzer öffnet die `WohnungListView` und wählt eine Wohnung aus. \newline 2. System öffnet
 die `WohnungDetailsView` und zeigt die Details der ausgewählten Wohnung. \newline 3. Benutzer klickt auf die
-Schaltfläche "Edit". \newline 4. System öffnet das `WohnungEditDialog`. \newline 5. Benutzer ändert die
-gewünschten Daten und klickt auf die Schaltfläche "Speichern". \newline 6. System validiert die eingegebenen Daten.
-\newline 7. Bei Validierungsfehler: Fehlermeldung anzeigen, Benutzer kann Eingaben korrigieren. \newline 8. System
-speichert die validierten Daten in der Datenbank. \newline 9. System aktualisiert die `WohnungDetailsView` und zeigt die
+Schaltfläche "Edit" und ändert die gewünschten Daten. \newline 4. System öffnet das `WohnungEditDialog`. \newline 5. System validiert die eingegebenen Daten.
+\newline 6. Bei Validierungsfehler: Fehlermeldung anzeigen, Benutzer kann Eingaben korrigieren. \newline 7. Benutzer klickt auf die Schaltfläche "Speichern".
+\newline 8. System speichert die validierten Daten in der Datenbank. \newline 9. System aktualisiert die `WohnungDetailsView` und zeigt die
 aktualisierten Daten an. \\
 \hline
 Nachbedingungen & Die Änderungen an der Wohnung sind in der Datenbank gespeichert und in der `WohnungDetailsView`
@@ -280,9 +279,9 @@ der `MieterListView`. \\
 Ablauf & 1. Benutzer öffnet die `MieterListView` und wählt einen Mieter aus. \newline 2. System öffnet das `MieterForm`
 und zeigt die Details des ausgewählten Mieters. \newline 3. Benutzer gibt die Mietvertragsdaten ein, wie Mietbeginn,
 Mietende, Miete, Kaution und Anzahl der Bewohner. \newline 4. Benutzer wählt eine Wohnung aus der Liste verfügbarer
-Wohnungen. \newline 5. Benutzer klickt auf die Schaltfläche "Speichern". \newline 6. System validiert die eingegebenen
-Daten. \newline 7. Bei Validierungsfehler: Fehlermeldung anzeigen, Benutzer kann Eingaben korrigieren. \newline 8.
-System speichert die validierten Daten in der Datenbank. \newline 9. System aktualisiert die `MieterListView` und zeigt
+Wohnungen. \newline 5. System validiert die eingegebenen Daten. \newline 6. Bei Validierungsfehler: Fehlermeldung anzeigen, Benutzer kann Eingaben korrigieren.
+\newline 7.  Benutzer klickt auf die Schaltfläche "Speichern". \newline 8. System speichert die validierten Daten in der
+Datenbank. \newline 9. System aktualisiert die `MieterListView` und zeigt
 den neuen Mietvertrag an. \\
 \hline
 Nachbedingungen & Der neue Mietvertrag ist in der Datenbank gespeichert und in der `MieterListView` sichtbar. \\
