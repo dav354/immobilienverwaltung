@@ -604,8 +604,8 @@ public class Wohnung implements Comparable<Wohnung>{
                 stadt,
                 strasse,
                 hausnummer,
-                stockwerk != null ? "(" + stockwerk + "ter Stock, " : "",
-                wohnungsnummer != null ? wohnungsnummer + "te Wohnung)" : "");
+                stockwerk != null && !stockwerk.isEmpty() ? "(" + stockwerk + "ter Stock, " : "",
+                wohnungsnummer != null && !wohnungsnummer.isEmpty() ? wohnungsnummer + "te Wohnung)" : "");
     }
 
     /**
@@ -621,8 +621,8 @@ public class Wohnung implements Comparable<Wohnung>{
                 stadt,
                 strasse,
                 hausnummer,
-                stockwerk != null ? "(" + stockwerk + "ter Stock, " : "",
-                wohnungsnummer != null ? wohnungsnummer + "te Wohnung)" : "");
+                stockwerk != null && !stockwerk.isEmpty() ? "(" + stockwerk + "ter Stock, " : "",
+                wohnungsnummer != null && !wohnungsnummer.isEmpty() ? wohnungsnummer + "te Wohnung)" : "");
     }
 
     /**
