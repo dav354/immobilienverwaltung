@@ -1,13 +1,12 @@
 package projektarbeit.immobilienverwaltung.ui.views;
 
 import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -44,6 +43,10 @@ import java.util.Map;
 @CssImport("./styles/styles.css")
 public class MainView extends VerticalLayout {
 
+    private final static String FONT_BIG = "38px";
+    private final static String FONT_NORMAL = "28px";
+    private final static String FONT_SMALL = "18px";
+
     private final DashboardService dashboardService;
     private final WohnungService wohnungService;
     private final ConfigurationService configurationService;
@@ -79,9 +82,9 @@ public class MainView extends VerticalLayout {
         mainLayout.setAlignItems(Alignment.START);
 
         // Initiale Erstellung der Divs
-        mieteinnahmenDiv = createStatDiv("Mieteinnahmen", "€ 5.900", VaadinIcon.EURO.create());
-        immobilienDiv = createStatDiv("Immobilien", "Gesamt: 12\nVermietet: 6", VaadinIcon.HOME.create());
-        mieterDiv = createStatDiv("Anzahl der Mieter", "12", VaadinIcon.USER.create());
+        mieteinnahmenDiv = createMieteinnahmenDiv(dashboardService.getMieteinnahmen());
+        immobilienDiv = createStatDiv("Immobilien", new Div());
+        mieterDiv = createStatDiv("Anzahl der Mieter", new Div());
         leafletMap = new LeafletMap();
         leafletMap.getStyle().set("border-radius", "10px");
 
@@ -134,46 +137,6 @@ public class MainView extends VerticalLayout {
     }
 
     /**
-     * Erstellt ein Div-Element für eine Statistik.
-     *
-     * @param title der Titel der Statistik.
-     * @param value der Wert der Statistik.
-     * @param icon  das Icon der Statistik.
-     * @return ein Div-Element, das die Statistik anzeigt.
-     */
-    private Div createStatDiv(String title, String value, Icon icon) {
-        Div statDiv = new Div();
-        statDiv.addClassName("stat-div");
-
-        statDiv.getStyle().set("display", "flex")
-                .set("flex-direction", "column")
-                .set("align-items", "center")
-                .set("justify-content", "center")
-                .set("padding", "20px")
-                .set("box-shadow", "0 4px 8px 0 rgba(0,0,0,0.2)")
-                .set("border-radius", "10px")
-                .set("background", "var(--lumo-base-color)")
-                .set("position", "relative"); // Wichtig für die Positionierung des Icons
-
-        // Add explicit width and height to icon
-        icon.getStyle().set("width", "80px").set("height", "80px");
-        icon.getStyle().set("color", "rgba(255, 255, 255, 0.1)"); // Leicht transparent
-        icon.getStyle().set("position", "absolute").set("bottom", "10px").set("left", "10px"); // Positionierung unten links
-        icon.addClassName("stat-icon");
-
-        H1 statTitle = new H1(title);
-        statTitle.getStyle().set("margin", "0").set("font-size", "24px").set("color", "white");
-
-        Div statValue = new Div();
-        statValue.setText(value);
-        statValue.getStyle().set("font-size", "36px").set("margin", "10px 0 0 0").set("color", "white");
-
-        statDiv.add(statTitle, statValue, icon); // Icon zuletzt hinzufügen
-        return statDiv;
-    }
-
-
-    /**
      * Aktualisiert die Karte mit den Standorten aller Wohnungen basierend auf den Checkbox-Werten.
      */
     private void updateMap() {
@@ -203,44 +166,69 @@ public class MainView extends VerticalLayout {
     }
 
     /**
+     * Erstellt ein Div-Element für eine Statistik.
+     *
+     * @param title          der Titel der Statistik.
+     * @param valueComponent der Wert der Statistik.
+     * @return ein Div-Element, das die Statistik anzeigt.
+     */
+    private Div createStatDiv(String title, Component valueComponent) {
+        Div statDiv = new Div();
+        statDiv.addClassName("stat-div");
+
+        statDiv.getStyle().set("display", "flex")
+                .set("flex-direction", "column")
+                .set("align-items", "center")
+                .set("justify-content", "center")
+                .set("padding", "20px")
+                .set("box-shadow", "0 4px 8px 0 rgba(0,0,0,0.2)")
+                .set("border-radius", "10px")
+                .set("background", "var(--lumo-base-color)")
+                .set("position", "relative");
+
+        H1 statTitle = new H1(title);
+        statTitle.getStyle().set("margin", "0").set("font-size", FONT_BIG).set("color", "white");
+
+        statDiv.add(statTitle, valueComponent);
+
+        return statDiv;
+    }
+
+    /**
      * Erstellt ein Div-Element zur Anzeige der Mieteinnahmen.
      *
      * @param mieteinnahmen die Gesamtsumme der Mieteinnahmen.
      * @return ein Div-Element, das die Mieteinnahmen anzeigt.
      */
     private Div createMieteinnahmenDiv(double mieteinnahmen) {
-        H1 title = new H1("Mieteinnahmen");
-        title.getStyle().set("text-align", "center");
-
         // Formatieren der Zahl mit Tausendertrennzeichen
         NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.GERMANY);
         String formattedMieteinnahmen = "€ " + numberFormat.format(mieteinnahmen);
 
-        return getDiv(title, formattedMieteinnahmen);
-    }
+        // Hauptwert-Layout
+        HorizontalLayout valueLayout = new HorizontalLayout();
+        valueLayout.setAlignItems(FlexComponent.Alignment.BASELINE);
+        valueLayout.setSpacing(false);
 
-    /**
-     * Erstellt und konfiguriert ein Div-Element mit Titel und Wert.
-     *
-     * @param title                  Der Titel des Div-Elements.
-     * @param formattedMieteinnahmen Der formatierte Wert der Mieteinnahmen.
-     * @return Ein Div-Element, das den Titel und den Wert anzeigt.
-     */
-    private Div getDiv(H1 title, String formattedMieteinnahmen) {
+        // Hauptwert-Div
         Div value = new Div();
         value.setText(formattedMieteinnahmen);
-        value.getStyle().set("font-size", "48px").set("text-align", "center").set("margin-top", "0");
+        value.getStyle()
+                .set("font-size", FONT_BIG)
+                .set("color", "white")
+                .set("font-weight", "bold");
 
-        Div container = new Div();
-        container.add(title, value);
-        container.getStyle().set("display", "flex")
-                .set("flex-direction", "column")
-                .set("align-items", "center")
-                .set("justify-content", "center")
-                .set("width", "100%")
-                .set("padding", "20px");
+        // Untertext-Div
+        Div subtext = new Div();
+        subtext.setText("pro Monat");
+        subtext.getStyle()
+                .set("font-size", FONT_SMALL) // Kleinere Schriftgröße
+                .set("color", "white")
+                .set("margin-left", "10px");
 
-        return container;
+        valueLayout.add(value, subtext);
+
+        return createStatDiv("Mieteinnahmen", valueLayout);
     }
 
     /**
@@ -260,11 +248,11 @@ public class MainView extends VerticalLayout {
 
         Div totalDiv = new Div();
         totalDiv.setText(total);
-        totalDiv.getStyle().set("font-size", "36px").set("text-align", "center").set("margin-top", "0");
+        totalDiv.getStyle().set("font-size", FONT_BIG).set("text-align", "center").set("margin-top", "0");
 
         Div vermietetDiv = new Div();
         vermietetDiv.setText(vermietet);
-        vermietetDiv.getStyle().set("font-size", "36px").set("text-align", "center").set("margin-top", "0");
+        vermietetDiv.getStyle().set("font-size", FONT_BIG).set("text-align", "center").set("margin-top", "0");
 
         Div container = new Div();
         container.add(title, totalDiv, vermietetDiv);
@@ -292,7 +280,11 @@ public class MainView extends VerticalLayout {
         NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.GERMANY);
         String formattedTotalMieter = numberFormat.format(totalMieter);
 
-        return getDiv(title, formattedTotalMieter);
+        Div value = new Div();
+        value.setText(formattedTotalMieter);
+        value.getStyle().set("font-size", FONT_BIG).set("text-align", "center").set("margin-top", "0");
+
+        return createStatDiv("Anzahl der Mieter", value);
     }
 
     /**
@@ -329,11 +321,6 @@ public class MainView extends VerticalLayout {
         return supportLayout;
     }
 
-    /**
-     * Erstellt und konfiguriert ein HorizontalLayout mit Checkboxen zur Auswahl von vermieteten und unvermieteten Wohnungen.
-     *
-     * @return Ein HorizontalLayout mit den Checkboxen.
-     */
     /**
      * Erstellt und konfiguriert ein HorizontalLayout mit Checkboxen zur Auswahl von vermieteten und unvermieteten Wohnungen.
      *
