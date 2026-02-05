@@ -1,7 +1,16 @@
-# Verwenden eines Basis-Images mit Java Runtime
-FROM openjdk:21-slim
+FROM maven:3.9-eclipse-temurin-21 AS build
+WORKDIR /workspace
 
-# Umgebungsvariablen für den Datenbankzugriff und Demomodus
+COPY pom.xml ./
+
+RUN mvn -q -e -DskipTests dependency:go-offline
+
+COPY src ./src
+RUN mvn -q -DskipTests package
+
+FROM eclipse-temurin:21-jre-jammy
+WORKDIR /app
+
 ENV SPRING_PROFILES_ACTIVE=prod \
     DB_HOST=db \
     DB_PORT=5432 \
@@ -10,19 +19,14 @@ ENV SPRING_PROFILES_ACTIVE=prod \
     DB_PASSWORD=mypassword \
     ADMIN=admin \
     ADMIN_PW=1234 \
-    DEMO_MODE=TRUE
+    DEMO_MODE=TRUE \
+    PORT=8080
 
-# Optionale Umgebungsvariablen für Port-Konfigurationen
-ENV PORT 8080
-EXPOSE $PORT
+EXPOSE 8080
 
-# Arbeitsverzeichnis im Container festlegen
-WORKDIR /app
-
-# Kopieren aller notwendigen Dateien und Erstellen des Verzeichnisses für Dokumente in einem Schritt
 COPY DEMO /app/DEMO
-COPY target/immobilienverwaltung-0.0.1-SNAPSHOT.jar app.jar
-RUN mkdir -p data
+RUN mkdir -p /app/data
 
-# Starten der Spring Boot-Anwendung beim Start des Containers
+COPY --from=build /workspace/target/immobilienverwaltung-0.0.1-SNAPSHOT.jar /app/app.jar
+
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
